@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Katalog & Kasir Pintar - Zokent Group</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 p-6">
+    <div class="max-w-2xl mx-auto">
+        <header class="mb-6 text-center">
+            <h1 class="text-3xl font-bold text-gray-800">Kasir & Katalog Produk</h1>
+            <p class="text-gray-600">Stok otomatis berkurang saat transaksi</p>
+        </header>
+
+        <div id="productList" class="space-y-4">
+            <p class="text-gray-500 text-center">Memuat data produk dari server...</p>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getFirestore, collection, getDocs, doc, updateDoc, increment } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        // Konfigurasi Firebase Zokent Group
+        const firebaseConfig = {
+            apiKey: "KODE_API_KEY_ANDA",
+            authDomain: "my-portofolio-db-2835c.firebaseapp.com",
+            projectId: "my-portofolio-db-2835c",
+            storageBucket: "my-portofolio-db-2835c.appspot.com",
+            messagingSenderId: "420644334513",
+            appId: "1:420644334513:web:4f664fdead2dacbd5d6b90"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        async function loadProducts() {
+            const listDiv = document.getElementById('productList');
+            listDiv.innerHTML = "";
+
+            try {
+                const querySnapshot = await getDocs(collection(db, "products"));
+                if (querySnapshot.empty) {
+                    listDiv.innerHTML = "<p class='text-gray-500 text-center'>Belum ada produk.</p>";
+                    return;
+                }
+
+                querySnapshot.forEach((docSnap) => {
+                    const prod = docSnap.data();
+                    const id = docSnap.id;
+                    const card = document.createElement('div');
+                    card.className = "bg-white p-4 rounded-lg shadow flex justify-between items-center border border-gray-200";
+                    card.innerHTML = `
+                        <div>
+                            <h3 class="font-bold text-lg text-gray-800">${prod.name}</h3>
+                            <p class="text-blue-600 font-semibold">Rp ${Number(prod.price).toLocaleString('id-ID')}</p>
+                            <p class="text-sm text-gray-500 mt-1">Sisa Stok: <span class="font-bold text-gray-700">${prod.stock}</span></p>
+                        </div>
+                        <button onclick="prosesBeli('${id}', ${prod.stock})" class="bg-green-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-green-700 transition">Beli / Scan</button>
+                    `;
+                    listDiv.appendChild(card);
+                });
+            } catch (error) {
+                listDiv.innerHTML = "<p class='text-red-500 text-center'>Gagal memuat data produk.</p>";
+            }
+        }
+
+        // Fungsi mengurangi stok saat kasir klik "Beli / Scan"
+        window.prosesBeli = async function(id, currentStock) {
+            if (currentStock <= 0) {
+                alert("Stok barang ini sudah habis!");
+                return;
+            }
+
+            try {
+                const productRef = doc(db, "products", id);
+                await updateDoc(productRef, {
+                    stock: increment(-1)
+                });
+                alert("Transaksi berhasil! Stok otomatis berkurang.");
+                loadProducts(); // Muat ulang daftar agar stok terbaru langsung tampil
+            } catch (error) {
+                alert("Gagal memproses transaksi: " + error.message);
+            }
+        }
+
+        loadProducts();
+    </script>
+</body>
+</html>
+
