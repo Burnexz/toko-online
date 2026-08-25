@@ -16,41 +16,90 @@
     }
 
     body {
+      font-family: Arial, sans-serif;
+      background: #f3f4f6;
       min-height: 100vh;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-family: Arial, sans-serif;
-      background: #f3f4f6;
       padding: 20px;
+      color: #111827;
     }
 
-    .login-box {
+    .container {
       width: 100%;
-      max-width: 400px;
-      background: white;
-      padding: 30px;
-      border-radius: 16px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.10);
+      max-width: 420px;
     }
 
     .logo {
       text-align: center;
-      font-size: 30px;
-      font-weight: bold;
-      margin-bottom: 8px;
+      margin-bottom: 22px;
     }
 
-    .subtitle {
-      text-align: center;
+    .logo h1 {
+      font-size: 27px;
+      margin-bottom: 6px;
+    }
+
+    .logo p {
       color: #6b7280;
-      margin-bottom: 28px;
+      font-size: 14px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 16px;
+      padding: 25px;
+      box-shadow: 0 8px 25px rgba(0,0,0,.08);
+    }
+
+    .tabs {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 22px;
+    }
+
+    .tab {
+      border: none;
+      padding: 12px;
+      border-radius: 9px;
+      background: #e5e7eb;
+      color: #374151;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .tab.active {
+      background: #111827;
+      color: white;
+    }
+
+    .form {
+      display: none;
+    }
+
+    .form.active {
+      display: block;
+    }
+
+    .form h2 {
+      font-size: 20px;
+      margin-bottom: 6px;
+    }
+
+    .form-description {
+      color: #6b7280;
+      font-size: 13px;
+      margin-bottom: 20px;
+      line-height: 1.5;
     }
 
     label {
       display: block;
-      margin-bottom: 7px;
+      font-size: 14px;
       font-weight: bold;
+      margin-bottom: 7px;
     }
 
     input {
@@ -58,7 +107,7 @@
       padding: 13px;
       border: 1px solid #d1d5db;
       border-radius: 9px;
-      margin-bottom: 18px;
+      margin-bottom: 15px;
       font-size: 15px;
     }
 
@@ -67,181 +116,735 @@
       border-color: #111827;
     }
 
-    button {
+    .button {
       width: 100%;
-      padding: 13px;
       border: none;
+      padding: 13px;
       border-radius: 9px;
       background: #111827;
       color: white;
-      font-size: 16px;
       font-weight: bold;
       cursor: pointer;
+      font-size: 15px;
+      margin-top: 5px;
     }
 
-    button:disabled {
-      opacity: 0.6;
+    .button:disabled {
+      opacity: .6;
       cursor: not-allowed;
     }
 
     .message {
-      margin-top: 15px;
-      text-align: center;
-      font-size: 14px;
       min-height: 20px;
+      margin-bottom: 14px;
+      font-size: 13px;
+      line-height: 1.4;
     }
 
-    .hidden {
-      display: none;
+    .info {
+      margin-top: 18px;
+      padding: 12px;
+      border-radius: 9px;
+      background: #f3f4f6;
+      color: #6b7280;
+      font-size: 12px;
+      line-height: 1.5;
     }
   </style>
 </head>
 
 <body>
 
-  <div class="login-box" id="loginBox">
+<div class="container">
 
-    <div class="logo">ZOKENT</div>
+  <div class="logo">
+    <h1>ZOKENT STORE</h1>
+    <p>Panel Pemilik & Administrasi</p>
+  </div>
 
-    <div class="subtitle">
-      Login Admin
-    </div>
 
-    <form id="loginForm">
+  <div class="card">
 
-      <label for="email">Email Pemilik</label>
+    <!-- TAB -->
 
-      <input
-        type="email"
-        id="email"
-        placeholder="Masukkan email"
-        autocomplete="email"
-        required
+    <div class="tabs">
+
+      <button
+        type="button"
+        id="loginTab"
+        class="tab active"
+        onclick="showLogin()"
       >
-
-      <label for="password">Password</label>
-
-      <input
-        type="password"
-        id="password"
-        placeholder="Masukkan password"
-        autocomplete="current-password"
-        required
-      >
-
-      <button type="submit" id="loginButton">
         Login
       </button>
 
-      <div class="message" id="message"></div>
+      <button
+        type="button"
+        id="registerTab"
+        class="tab"
+        onclick="showRegister()"
+      >
+        Daftar
+      </button>
+
+    </div>
+
+
+    <div
+      id="message"
+      class="message"
+    ></div>
+
+
+    <!-- =========================
+         LOGIN
+    ========================== -->
+
+    <form
+      id="loginForm"
+      class="form active"
+    >
+
+      <h2>Login Pemilik</h2>
+
+      <p class="form-description">
+        Masuk menggunakan akun pemilik yang sudah terdaftar.
+      </p>
+
+
+      <label for="loginEmail">
+        Email
+      </label>
+
+      <input
+        type="email"
+        id="loginEmail"
+        required
+        autocomplete="email"
+      >
+
+
+      <label for="loginPassword">
+        Password
+      </label>
+
+      <input
+        type="password"
+        id="loginPassword"
+        required
+        autocomplete="current-password"
+      >
+
+
+      <button
+        type="submit"
+        class="button"
+        id="loginButton"
+      >
+        Login
+      </button>
 
     </form>
 
+
+    <!-- =========================
+         DAFTAR
+    ========================== -->
+
+    <form
+      id="registerForm"
+      class="form"
+    >
+
+      <h2>Daftar Pemilik</h2>
+
+      <p class="form-description">
+        Buat akun pemilik untuk mengelola toko.
+      </p>
+
+
+      <label for="registerEmail">
+        Email
+      </label>
+
+      <input
+        type="email"
+        id="registerEmail"
+        required
+        autocomplete="email"
+      >
+
+
+      <label for="registerPassword">
+        Password
+      </label>
+
+      <input
+        type="password"
+        id="registerPassword"
+        required
+        minlength="6"
+        autocomplete="new-password"
+      >
+
+
+      <label for="registerPasswordConfirm">
+        Ulangi Password
+      </label>
+
+      <input
+        type="password"
+        id="registerPasswordConfirm"
+        required
+        minlength="6"
+        autocomplete="new-password"
+      >
+
+
+      <button
+        type="submit"
+        class="button"
+        id="registerButton"
+      >
+        Daftar Pemilik
+      </button>
+
+    </form>
+
+
+    <div class="info">
+      Akun yang dibuat melalui pendaftaran ini akan menjadi akun pemilik toko.
+    </div>
+
   </div>
 
-  <script>
+</div>
 
-    // ==============================
-    // SUPABASE
-    // ==============================
 
-    const SUPABASE_URL = "https://weuousmvkxmgmsnwiuad.supabase.co";
-    const SUPABASE_ANON_KEY = "sb_publishable_e375KDL0vuoahHO_kWMjwA_a04R4yHb";
+<script>
 
-    const supabaseClient = window.supabase.createClient(
+  // ==========================================
+  // SUPABASE
+  // ==========================================
+
+  const SUPABASE_URL =
+    "https://weuousmvkxmgmsnwiuad.supabase.co";
+
+  const SUPABASE_ANON_KEY =
+    "sb_publishable_e375KDL0vuoahHO_kWMjwA_a04R4yHb";
+
+
+  const supabaseClient =
+    window.supabase.createClient(
       SUPABASE_URL,
       SUPABASE_ANON_KEY
     );
 
 
-    // ==============================
-    // LOGIN
-    // ==============================
+  // ==========================================
+  // TAB LOGIN
+  // ==========================================
 
-    const loginForm = document.getElementById("loginForm");
-    const loginButton = document.getElementById("loginButton");
-    const message = document.getElementById("message");
+  function showLogin() {
 
-    loginForm.addEventListener("submit", async function(event) {
+    document
+      .getElementById("loginForm")
+      .classList.add("active");
 
-      event.preventDefault();
+    document
+      .getElementById("registerForm")
+      .classList.remove("active");
 
-      const email = document.getElementById("email").value.trim();
-      const password = document.getElementById("password").value;
 
-      message.textContent = "";
-      loginButton.disabled = true;
-      loginButton.textContent = "Memproses...";
+    document
+      .getElementById("loginTab")
+      .classList.add("active");
 
-      const { data, error } =
-        await supabaseClient.auth.signInWithPassword({
-          email: email,
-          password: password
-        });
+    document
+      .getElementById("registerTab")
+      .classList.remove("active");
 
-      if (error) {
 
-        message.textContent = "Email atau password salah.";
-        message.style.color = "red";
+    clearMessage();
 
-        loginButton.disabled = false;
-        loginButton.textContent = "Login";
+  }
 
-        return;
+
+  // ==========================================
+  // TAB DAFTAR
+  // ==========================================
+
+  function showRegister() {
+
+    document
+      .getElementById("registerForm")
+      .classList.add("active");
+
+    document
+      .getElementById("loginForm")
+      .classList.remove("active");
+
+
+    document
+      .getElementById("registerTab")
+      .classList.add("active");
+
+    document
+      .getElementById("loginTab")
+      .classList.remove("active");
+
+
+    clearMessage();
+
+  }
+
+
+  // ==========================================
+  // MESSAGE
+  // ==========================================
+
+  function showMessage(
+    text,
+    success = false
+  ) {
+
+    const element =
+      document.getElementById(
+        "message"
+      );
+
+
+    element.textContent =
+      text;
+
+
+    element.style.color =
+      success
+        ? "#166534"
+        : "#991b1b";
+
+  }
+
+
+  function clearMessage() {
+
+    const element =
+      document.getElementById(
+        "message"
+      );
+
+
+    element.textContent = "";
+
+  }
+
+
+  // ==========================================
+  // CEK SESSION
+  // ==========================================
+
+  async function checkExistingSession() {
+
+    const {
+      data: {
+        session
       }
+    } =
+      await supabaseClient.auth.getSession();
 
 
-      // ==============================
-      // CEK PROFILE PEMILIK
-      // ==============================
-
-      const { data: profile, error: profileError } =
-        await supabaseClient
-          .from("profiles")
-          .select("full_name, role, is_active")
-          .eq("id", data.user.id)
-          .single();
+    if (!session) {
+      return;
+    }
 
 
-      if (
-        profileError ||
-        !profile ||
-        profile.role !== "owner" ||
-        profile.is_active !== true
-      ) {
+    const {
+      data: profile
+    } =
+      await supabaseClient
+        .from("profiles")
+        .select(
+          "role, is_active"
+        )
+        .eq(
+          "id",
+          session.user.id
+        )
+        .maybeSingle();
 
-        await supabaseClient.auth.signOut();
 
-        message.textContent =
-          "Akun ini bukan akun Pemilik.";
+    if (
+      profile &&
+      profile.role === "owner" &&
+      profile.is_active === true
+    ) {
 
-        message.style.color = "red";
+      window.location.href =
+        "dashboard.html";
 
-        loginButton.disabled = false;
-        loginButton.textContent = "Login";
+    }
 
-        return;
+  }
+
+
+  // ==========================================
+  // DAFTAR PEMILIK
+  // ==========================================
+
+  document
+    .getElementById("registerForm")
+    .addEventListener(
+      "submit",
+      async function(event) {
+
+        event.preventDefault();
+
+
+        const email =
+          document
+            .getElementById(
+              "registerEmail"
+            )
+            .value
+            .trim();
+
+
+        const password =
+          document
+            .getElementById(
+              "registerPassword"
+            )
+            .value;
+
+
+        const confirmPassword =
+          document
+            .getElementById(
+              "registerPasswordConfirm"
+            )
+            .value;
+
+
+        if (
+          password !==
+          confirmPassword
+        ) {
+
+          showMessage(
+            "Password tidak sama."
+          );
+
+          return;
+        }
+
+
+        if (
+          password.length < 6
+        ) {
+
+          showMessage(
+            "Password minimal 6 karakter."
+          );
+
+          return;
+        }
+
+
+        const button =
+          document.getElementById(
+            "registerButton"
+          );
+
+
+        button.disabled =
+          true;
+
+        button.textContent =
+          "Mendaftarkan...";
+
+
+        try {
+
+          // ==============================
+          // BUAT USER AUTH
+          // ==============================
+
+          const {
+            data,
+            error
+          } =
+            await supabaseClient.auth.signUp({
+
+              email:
+                email,
+
+              password:
+                password
+
+            });
+
+
+          if (error) {
+            throw error;
+          }
+
+
+          // ==============================
+          // JIKA EMAIL CONFIRMATION AKTIF
+          // ==============================
+
+          if (
+            !data.user
+          ) {
+
+            throw new Error(
+              "Pendaftaran gagal."
+            );
+
+          }
+
+
+          showMessage(
+            "Pendaftaran berhasil. Silakan login menggunakan akun yang baru dibuat.",
+            true
+          );
+
+
+          document
+            .getElementById(
+              "registerForm"
+            )
+            .reset();
+
+
+          showLogin();
+
+
+          document
+            .getElementById(
+              "loginEmail"
+            )
+            .value =
+            email;
+
+
+        } catch (error) {
+
+          console.error(
+            error
+          );
+
+
+          showMessage(
+            error.message ||
+            "Pendaftaran gagal."
+          );
+
+
+        } finally {
+
+          button.disabled =
+            false;
+
+          button.textContent =
+            "Daftar Pemilik";
+
+        }
+
       }
+    );
 
 
-      // ==============================
-      // BERHASIL
-      // ==============================
+  // ==========================================
+  // LOGIN
+  // ==========================================
 
-      message.textContent =
-        "Login berhasil. Membuka Admin...";
+  document
+    .getElementById("loginForm")
+    .addEventListener(
+      "submit",
+      async function(event) {
 
-      message.style.color = "green";
+        event.preventDefault();
 
-      setTimeout(() => {
 
-        window.location.href = "dashboard.html";
+        const email =
+          document
+            .getElementById(
+              "loginEmail"
+            )
+            .value
+            .trim();
 
-      }, 800);
 
-    });
+        const password =
+          document
+            .getElementById(
+              "loginPassword"
+            )
+            .value;
 
-  </script>
+
+        const button =
+          document.getElementById(
+            "loginButton"
+          );
+
+
+        button.disabled =
+          true;
+
+        button.textContent =
+          "Memeriksa...";
+
+
+        try {
+
+          // ==============================
+          // LOGIN SUPABASE
+          // ==============================
+
+          const {
+            data,
+            error
+          } =
+            await supabaseClient.auth.signInWithPassword({
+
+              email:
+                email,
+
+              password:
+                password
+
+            });
+
+
+          if (error) {
+            throw error;
+          }
+
+
+          if (
+            !data.user
+          ) {
+
+            throw new Error(
+              "Login gagal."
+            );
+
+          }
+
+
+          // ==============================
+          // CEK PROFILE
+          // ==============================
+
+          const {
+            data: profile,
+            error: profileError
+          } =
+            await supabaseClient
+              .from("profiles")
+              .select(
+                "role, is_active"
+              )
+              .eq(
+                "id",
+                data.user.id
+              )
+              .maybeSingle();
+
+
+          if (
+            profileError
+          ) {
+
+            await supabaseClient
+              .auth
+              .signOut();
+
+            throw new Error(
+              "Profile akun belum tersedia."
+            );
+
+          }
+
+
+          if (
+            !profile ||
+            profile.role !== "owner"
+          ) {
+
+            await supabaseClient
+              .auth
+              .signOut();
+
+            throw new Error(
+              "Akun ini bukan akun pemilik."
+            );
+
+          }
+
+
+          if (
+            profile.is_active !== true
+          ) {
+
+            await supabaseClient
+              .auth
+              .signOut();
+
+            throw new Error(
+              "Akun pemilik tidak aktif."
+            );
+
+          }
+
+
+          showMessage(
+            "Login berhasil.",
+            true
+          );
+
+
+          window.location.href =
+            "dashboard.html";
+
+
+        } catch (error) {
+
+          console.error(
+            error
+          );
+
+
+          showMessage(
+            error.message ||
+            "Email atau password salah."
+          );
+
+
+        } finally {
+
+          button.disabled =
+            false;
+
+          button.textContent =
+            "Login";
+
+        }
+
+      }
+    );
+
+
+  // ==========================================
+  // MULAI
+  // ==========================================
+
+  checkExistingSession();
+
+</script>
 
 </body>
 </html>
