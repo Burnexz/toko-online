@@ -93,6 +93,7 @@
     }
 
     input,
+    textarea,
     select {
       width: 100%;
       padding: 12px;
@@ -103,9 +104,27 @@
       background: white;
     }
 
+    textarea {
+      min-height: 90px;
+      resize: vertical;
+    }
+
+    .checkbox-row {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      margin-bottom: 15px;
+    }
+
+    .checkbox-row input {
+      width: auto;
+      margin: 0;
+    }
+
     .form-actions {
       display: flex;
       gap: 10px;
+      margin-top: 5px;
     }
 
     .save-button,
@@ -120,6 +139,11 @@
     .save-button {
       background: #111827;
       color: white;
+    }
+
+    .save-button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
     }
 
     .cancel-button {
@@ -149,6 +173,18 @@
       margin-bottom: 12px;
     }
 
+    .no-image {
+      width: 100%;
+      height: 180px;
+      border-radius: 10px;
+      background: #e5e7eb;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #6b7280;
+      margin-bottom: 12px;
+    }
+
     .product-name {
       font-size: 18px;
       font-weight: bold;
@@ -161,10 +197,10 @@
       margin-bottom: 8px;
     }
 
-    .product-category {
+    .product-info {
       color: #6b7280;
       font-size: 13px;
-      margin-bottom: 12px;
+      margin-bottom: 6px;
     }
 
     .product-status {
@@ -173,7 +209,7 @@
       border-radius: 20px;
       font-size: 12px;
       font-weight: bold;
-      margin-bottom: 12px;
+      margin: 8px 0 12px;
     }
 
     .active {
@@ -214,6 +250,7 @@
       margin-bottom: 15px;
       min-height: 20px;
       font-size: 14px;
+      font-weight: bold;
     }
 
     .loading,
@@ -237,24 +274,46 @@
 
 <header>
   <h1>ZOKENT STORE</h1>
-  <a class="back" href="dashboard.html">← Dashboard</a>
+
+  <a
+    class="back"
+    href="dashboard.html"
+  >
+    ← Dashboard
+  </a>
 </header>
+
 
 <main class="container">
 
   <div class="top">
+
     <h2>Produk</h2>
 
     <button
       class="add-button"
-      onclick="showForm()">
+      onclick="showForm()"
+    >
       + Tambah Produk
     </button>
+
   </div>
 
-  <div id="message" class="message"></div>
 
-  <section id="formBox" class="form-box">
+  <div
+    id="message"
+    class="message"
+  ></div>
+
+
+  <!-- =========================
+       FORM PRODUK
+  ========================== -->
+
+  <section
+    id="formBox"
+    class="form-box"
+  >
 
     <h3>Tambah Produk</h3>
 
@@ -271,8 +330,30 @@
         required
       >
 
+
+      <label for="productSku">
+        SKU / Kode Produk
+      </label>
+
+      <input
+        type="text"
+        id="productSku"
+        placeholder="Contoh: AQUA600"
+      >
+
+
+      <label for="productDescription">
+        Deskripsi
+      </label>
+
+      <textarea
+        id="productDescription"
+        placeholder="Deskripsi produk..."
+      ></textarea>
+
+
       <label for="productPrice">
-        Harga
+        Harga Jual
       </label>
 
       <input
@@ -283,13 +364,20 @@
         required
       >
 
+
       <label for="productCategory">
         Kategori
       </label>
 
-      <select id="productCategory" required>
-        <option value="">Pilih kategori</option>
+      <select
+        id="productCategory"
+        required
+      >
+        <option value="">
+          Pilih kategori
+        </option>
       </select>
+
 
       <label for="productImage">
         URL Foto Produk
@@ -301,19 +389,70 @@
         placeholder="https://..."
       >
 
+
+      <label for="productStock">
+        Jumlah Stok
+      </label>
+
+      <input
+        type="number"
+        id="productStock"
+        placeholder="Contoh: 20"
+        min="0"
+        value="0"
+      >
+
+
+      <div class="checkbox-row">
+
+        <input
+          type="checkbox"
+          id="showInCatalog"
+          checked
+        >
+
+        <label
+          for="showInCatalog"
+          style="margin:0;"
+        >
+          Tampilkan di katalog pelanggan
+        </label>
+
+      </div>
+
+
+      <div class="checkbox-row">
+
+        <input
+          type="checkbox"
+          id="showWhenOutOfStock"
+        >
+
+        <label
+          for="showWhenOutOfStock"
+          style="margin:0;"
+        >
+          Tetap tampilkan jika stok habis
+        </label>
+
+      </div>
+
+
       <div class="form-actions">
 
         <button
           type="submit"
           class="save-button"
-          id="saveButton">
+          id="saveButton"
+        >
           Simpan Produk
         </button>
 
         <button
           type="button"
           class="cancel-button"
-          onclick="hideForm()">
+          onclick="hideForm()"
+        >
           Batal
         </button>
 
@@ -322,6 +461,11 @@
     </form>
 
   </section>
+
+
+  <!-- =========================
+       DAFTAR PRODUK
+  ========================== -->
 
   <section id="productList">
 
@@ -340,36 +484,56 @@
   // SUPABASE
   // ==========================================
 
-  const SUPABASE_URL = "https://weuousmvkxmgmsnwiuad.supabase.co";
-  const SUPABASE_ANON_KEY = "sb_publishable_e375KDL0vuoahHO_kWMjwA_a04R4yHb";
+  const SUPABASE_URL =
+    "https://weuousmvkxmgmsnwiuad.supabase.co";
 
-  const supabaseClient = window.supabase.createClient(
-    SUPABASE_URL,
-    SUPABASE_ANON_KEY
-  );
+  const SUPABASE_ANON_KEY =
+    "sb_publishable_e375KDL0vuoahHO_kWMjwA_a04R4yHb";
+
+
+  const supabaseClient =
+    window.supabase.createClient(
+      SUPABASE_URL,
+      SUPABASE_ANON_KEY
+    );
 
 
   // ==========================================
-  // CEK PEMILIK
+  // CEK OWNER
   // ==========================================
 
   async function checkOwner() {
 
     const {
       data: { user }
-    } = await supabaseClient.auth.getUser();
+    } =
+      await supabaseClient.auth.getUser();
+
 
     if (!user) {
-      window.location.href = "admin.html";
+
+      window.location.href =
+        "admin.html";
+
       return false;
     }
 
-    const { data: profile, error } =
+
+    const {
+      data: profile,
+      error
+    } =
       await supabaseClient
         .from("profiles")
-        .select("role, is_active")
-        .eq("id", user.id)
+        .select(
+          "role, is_active"
+        )
+        .eq(
+          "id",
+          user.id
+        )
         .single();
+
 
     if (
       error ||
@@ -378,60 +542,96 @@
       profile.is_active !== true
     ) {
 
-      await supabaseClient.auth.signOut();
+      await supabaseClient
+        .auth
+        .signOut();
 
-      window.location.href = "admin.html";
+      window.location.href =
+        "admin.html";
 
       return false;
     }
+
 
     return true;
   }
 
 
   // ==========================================
-  // FORM
+  // TAMPILKAN FORM
   // ==========================================
 
   async function showForm() {
 
     document
       .getElementById("formBox")
-      .classList.add("active");
+      .classList
+      .add("active");
+
 
     await loadCategories();
+
 
     document
       .getElementById("productName")
       .focus();
+
   }
 
+
+  // ==========================================
+  // SEMBUNYIKAN FORM
+  // ==========================================
 
   function hideForm() {
 
     document
       .getElementById("formBox")
-      .classList.remove("active");
+      .classList
+      .remove("active");
+
 
     document
       .getElementById("productForm")
       .reset();
+
+
+    document
+      .getElementById("showInCatalog")
+      .checked = true;
+
+
+    document
+      .getElementById("productStock")
+      .value = 0;
+
   }
 
 
   // ==========================================
-  // MESSAGE
+  // PESAN
   // ==========================================
 
-  function showMessage(text, success = false) {
+  function showMessage(
+    text,
+    success = false
+  ) {
 
     const element =
-      document.getElementById("message");
+      document.getElementById(
+        "message"
+      );
 
-    element.textContent = text;
+
+    element.textContent =
+      text;
+
 
     element.style.color =
-      success ? "green" : "red";
+      success
+        ? "green"
+        : "red";
+
   }
 
 
@@ -442,183 +642,367 @@
   async function loadCategories() {
 
     const select =
-      document.getElementById("productCategory");
+      document.getElementById(
+        "productCategory"
+      );
+
 
     select.innerHTML =
-      '<option value="">Memuat kategori...</option>';
+      `<option value="">
+        Memuat kategori...
+      </option>`;
 
 
-    const { data, error } =
+    const {
+      data,
+      error
+    } =
       await supabaseClient
         .from("categories")
-        .select("id, name")
-        .order("name", {
-          ascending: true
-        });
+        .select(
+          "id, name"
+        )
+        .order(
+          "name",
+          {
+            ascending: true
+          }
+        );
 
 
     if (error) {
 
-      console.error(error);
+      console.error(
+        error
+      );
+
 
       select.innerHTML =
-        '<option value="">Gagal memuat kategori</option>';
+        `<option value="">
+          Gagal memuat kategori
+        </option>`;
+
 
       return;
     }
 
 
     select.innerHTML =
-      '<option value="">Pilih kategori</option>';
+      `<option value="">
+        Pilih kategori
+      </option>`;
 
 
-    if (!data || data.length === 0) {
+    if (
+      !data ||
+      data.length === 0
+    ) {
 
       select.innerHTML =
-        '<option value="">Belum ada kategori</option>';
+        `<option value="">
+          Belum ada kategori
+        </option>`;
+
 
       return;
     }
 
 
-    data.forEach(category => {
+    data.forEach(
+      category => {
 
-      const option =
-        document.createElement("option");
+        const option =
+          document.createElement(
+            "option"
+          );
 
-      option.value = category.id;
-      option.textContent = category.name;
 
-      select.appendChild(option);
+        option.value =
+          category.id;
 
-    });
+
+        option.textContent =
+          category.name;
+
+
+        select.appendChild(
+          option
+        );
+
+      }
+    );
 
   }
 
 
   // ==========================================
-  // TAMBAH PRODUK
+  // SIMPAN PRODUK
   // ==========================================
 
   document
-    .getElementById("productForm")
-    .addEventListener("submit", async function(event) {
+    .getElementById(
+      "productForm"
+    )
+    .addEventListener(
+      "submit",
+      async function(event) {
 
-      event.preventDefault();
+        event.preventDefault();
 
 
-      const name =
-        document
-          .getElementById("productName")
-          .value
-          .trim();
-
-      const price =
-        Number(
+        const name =
           document
-            .getElementById("productPrice")
+            .getElementById(
+              "productName"
+            )
             .value
-        );
-
-      const categoryId =
-        document
-          .getElementById("productCategory")
-          .value;
-
-      const imageUrl =
-        document
-          .getElementById("productImage")
-          .value
-          .trim();
+            .trim();
 
 
-      if (!name || !categoryId || price < 0) {
-
-        showMessage(
-          "Lengkapi data produk."
-        );
-
-        return;
-      }
-
-
-      const saveButton =
-        document.getElementById("saveButton");
-
-      saveButton.disabled = true;
-      saveButton.textContent = "Menyimpan...";
+        const sku =
+          document
+            .getElementById(
+              "productSku"
+            )
+            .value
+            .trim();
 
 
-      try {
-
-        // Simpan produk
-        const { data: product, error: productError } =
-          await supabaseClient
-            .from("products")
-            .insert({
-              name: name,
-              price: price,
-              image_url: imageUrl || null,
-              is_active: true
-            })
-            .select()
-            .single();
+        const description =
+          document
+            .getElementById(
+              "productDescription"
+            )
+            .value
+            .trim();
 
 
-        if (productError) {
-          throw productError;
+        const sellingPrice =
+          Number(
+            document
+              .getElementById(
+                "productPrice"
+              )
+              .value
+          );
+
+
+        const categoryId =
+          document
+            .getElementById(
+              "productCategory"
+            )
+            .value;
+
+
+        const imageUrl =
+          document
+            .getElementById(
+              "productImage"
+            )
+            .value
+            .trim();
+
+
+        const stockQuantity =
+          Number(
+            document
+              .getElementById(
+                "productStock"
+              )
+              .value
+          );
+
+
+        const showInCatalog =
+          document
+            .getElementById(
+              "showInCatalog"
+            )
+            .checked;
+
+
+        const showWhenOutOfStock =
+          document
+            .getElementById(
+              "showWhenOutOfStock"
+            )
+            .checked;
+
+
+        // Validasi
+
+        if (
+          !name ||
+          !categoryId ||
+          sellingPrice < 0 ||
+          stockQuantity < 0
+        ) {
+
+          showMessage(
+            "Lengkapi data produk."
+          );
+
+          return;
         }
 
 
-        // Hubungkan produk dengan kategori
-        const { error: categoryError } =
-          await supabaseClient
-            .from("product_categories")
-            .insert({
-              product_id: product.id,
-              category_id: categoryId
-            });
+        const saveButton =
+          document.getElementById(
+            "saveButton"
+          );
 
 
-        if (categoryError) {
+        saveButton.disabled =
+          true;
 
-          // Hapus produk jika hubungan kategori gagal
-          await supabaseClient
-            .from("products")
-            .delete()
-            .eq("id", product.id);
 
-          throw categoryError;
+        saveButton.textContent =
+          "Menyimpan...";
+
+
+        try {
+
+          // ==============================
+          // SIMPAN PRODUK
+          // ==============================
+
+          const {
+            data: product,
+            error: productError
+          } =
+            await supabaseClient
+              .from("products")
+              .insert({
+
+                name:
+                  name,
+
+                catalog_name:
+                  name,
+
+                sku:
+                  sku || null,
+
+                description:
+                  description || null,
+
+                selling_price:
+                  sellingPrice,
+
+                image_url:
+                  imageUrl || null,
+
+                is_active:
+                  true,
+
+                show_in_catalog:
+                  showInCatalog,
+
+                show_when_out_of_stock:
+                  showWhenOutOfStock,
+
+                stock_quantity:
+                  stockQuantity,
+
+                minimum_stock:
+                  0,
+
+                allow_negative_stock:
+                  false
+
+              })
+              .select()
+              .single();
+
+
+          if (
+            productError
+          ) {
+
+            throw productError;
+
+          }
+
+
+          // ==============================
+          // HUBUNGKAN KATEGORI
+          // ==============================
+
+          const {
+            error: categoryError
+          } =
+            await supabaseClient
+              .from(
+                "product_categories"
+              )
+              .insert({
+
+                product_id:
+                  product.id,
+
+                category_id:
+                  categoryId
+
+              });
+
+
+          if (
+            categoryError
+          ) {
+
+            await supabaseClient
+              .from("products")
+              .delete()
+              .eq(
+                "id",
+                product.id
+              );
+
+
+            throw categoryError;
+
+          }
+
+
+          showMessage(
+            "Produk berhasil ditambahkan.",
+            true
+          );
+
+
+          hideForm();
+
+
+          await loadProducts();
+
+
+        } catch (error) {
+
+          console.error(
+            error
+          );
+
+
+          showMessage(
+            error.message ||
+            "Produk gagal ditambahkan."
+          );
+
+
+        } finally {
+
+          saveButton.disabled =
+            false;
+
+
+          saveButton.textContent =
+            "Simpan Produk";
+
         }
 
-
-        showMessage(
-          "Produk berhasil ditambahkan.",
-          true
-        );
-
-
-        hideForm();
-
-        loadProducts();
-
-      } catch (error) {
-
-        console.error(error);
-
-        showMessage(
-          error.message ||
-          "Produk gagal ditambahkan."
-        );
-
-      } finally {
-
-        saveButton.disabled = false;
-        saveButton.textContent = "Simpan Produk";
-
       }
-
-    });
+    );
 
 
   // ==========================================
@@ -628,21 +1012,33 @@
   async function loadProducts() {
 
     const list =
-      document.getElementById("productList");
+      document.getElementById(
+        "productList"
+      );
+
 
     list.innerHTML =
-      '<div class="loading">Memuat produk...</div>';
+      `<div class="loading">
+        Memuat produk...
+      </div>`;
 
 
-    const { data, error } =
+    const {
+      data,
+      error
+    } =
       await supabaseClient
         .from("products")
         .select(`
           id,
           name,
-          price,
+          sku,
+          description,
+          selling_price,
           image_url,
           is_active,
+          show_in_catalog,
+          stock_quantity,
           product_categories (
             categories (
               id,
@@ -650,146 +1046,216 @@
             )
           )
         `)
-        .order("created_at", {
-          ascending: false
-        });
+        .order(
+          "created_at",
+          {
+            ascending: false
+          }
+        );
 
 
     if (error) {
 
-      console.error(error);
+      console.error(
+        error
+      );
+
 
       list.innerHTML =
-        '<div class="empty">Gagal memuat produk.</div>';
+        `<div class="empty">
+          Gagal memuat produk.
+        </div>`;
+
 
       return;
     }
 
 
-    if (!data || data.length === 0) {
+    if (
+      !data ||
+      data.length === 0
+    ) {
 
       list.innerHTML =
-        '<div class="empty">Belum ada produk.</div>';
+        `<div class="empty">
+          Belum ada produk.
+        </div>`;
+
 
       return;
     }
 
 
     list.innerHTML =
-      '<div class="product-list"></div>';
+      `<div class="product-list"></div>`;
+
 
     const grid =
-      list.querySelector(".product-list");
+      list.querySelector(
+        ".product-list"
+      );
 
 
-    data.forEach(product => {
+    data.forEach(
+      product => {
 
-      let categoryName = "Tanpa kategori";
+        let categoryName =
+          "Tanpa kategori";
 
-
-      if (
-        product.product_categories &&
-        product.product_categories.length > 0
-      ) {
-
-        const relation =
-          product.product_categories[0];
 
         if (
-          relation.categories &&
-          relation.categories.name
+          product
+            .product_categories &&
+          product
+            .product_categories
+            .length > 0
         ) {
-          categoryName =
-            relation.categories.name;
+
+          const relation =
+            product
+              .product_categories[0];
+
+
+          if (
+            relation.categories &&
+            relation.categories.name
+          ) {
+
+            categoryName =
+              relation.categories.name;
+
+          }
+
         }
 
-      }
+
+        let image;
 
 
-      const card =
-        document.createElement("div");
+        if (
+          product.image_url
+        ) {
 
-      card.className = "product-card";
+          image =
+            `<img
+              class="product-image"
+              src="${escapeHtml(
+                product.image_url
+              )}"
+              alt="${escapeHtml(
+                product.name
+              )}"
+            >`;
+
+        } else {
+
+          image =
+            `<div class="no-image">
+              Tidak ada foto
+            </div>`;
+
+        }
 
 
-      const image =
-        product.image_url
-          ? `<img
-               class="product-image"
-               src="${escapeHtml(product.image_url)}"
-               alt="${escapeHtml(product.name)}"
-             >`
-          : `<div
-               class="product-image"
-               style="
-                 display:flex;
-                 align-items:center;
-                 justify-content:center;
-                 color:#6b7280;
-               "
-             >
-               Tidak ada foto
-             </div>`;
+        const card =
+          document.createElement(
+            "div"
+          );
 
 
-      card.innerHTML = `
+        card.className =
+          "product-card";
 
-        ${image}
 
-        <div class="product-name">
-          ${escapeHtml(product.name)}
-        </div>
+        card.innerHTML = `
 
-        <div class="product-price">
-          Rp ${formatRupiah(product.price)}
-        </div>
+          ${image}
 
-        <div class="product-category">
-          Kategori: ${escapeHtml(categoryName)}
-        </div>
+          <div class="product-name">
+            ${escapeHtml(
+              product.name
+            )}
+          </div>
 
-        <span class="product-status ${
-          product.is_active
-            ? "active"
-            : "inactive"
-        }">
-          ${
+          <div class="product-price">
+            Rp ${formatRupiah(
+              product.selling_price
+            )}
+          </div>
+
+          <div class="product-info">
+            SKU:
+            ${escapeHtml(
+              product.sku || "-"
+            )}
+          </div>
+
+          <div class="product-info">
+            Kategori:
+            ${escapeHtml(
+              categoryName
+            )}
+          </div>
+
+          <div class="product-info">
+            Stok:
+            ${product.stock_quantity}
+          </div>
+
+          <span class="product-status ${
             product.is_active
-              ? "Aktif"
-              : "Nonaktif"
-          }
-        </span>
+              ? "active"
+              : "inactive"
+          }">
 
-        <div class="actions">
-
-          <button
-            class="action-button toggle-button"
-            onclick="toggleProduct(
-              '${product.id}',
-              ${product.is_active}
-            )"
-          >
             ${
               product.is_active
-                ? "Nonaktifkan"
-                : "Aktifkan"
+                ? "Aktif"
+                : "Nonaktif"
             }
-          </button>
 
-          <button
-            class="action-button delete-button"
-            onclick="deleteProduct('${product.id}')"
-          >
-            Hapus
-          </button>
-
-        </div>
-      `;
+          </span>
 
 
-      grid.appendChild(card);
+          <div class="actions">
 
-    });
+            <button
+              class="action-button toggle-button"
+              onclick="toggleProduct(
+                '${product.id}',
+                ${product.is_active}
+              )"
+            >
+
+              ${
+                product.is_active
+                  ? "Nonaktifkan"
+                  : "Aktifkan"
+              }
+
+            </button>
+
+
+            <button
+              class="action-button delete-button"
+              onclick="deleteProduct(
+                '${product.id}'
+              )"
+            >
+              Hapus
+            </button>
+
+          </div>
+
+        `;
+
+
+        grid.appendChild(
+          card
+        );
+
+      }
+    );
 
   }
 
@@ -803,40 +1269,46 @@
     currentStatus
   ) {
 
-    const newStatus =
-      !currentStatus;
-
-
-    const { error } =
+    const {
+      error
+    } =
       await supabaseClient
         .from("products")
         .update({
-          is_active: newStatus
+          is_active:
+            !currentStatus
         })
-        .eq("id", productId);
+        .eq(
+          "id",
+          productId
+        );
 
 
     if (error) {
 
-      console.error(error);
+      console.error(
+        error
+      );
+
 
       showMessage(
         "Gagal mengubah status produk."
       );
+
 
       return;
     }
 
 
     showMessage(
-      newStatus
+      !currentStatus
         ? "Produk diaktifkan."
         : "Produk dinonaktifkan.",
       true
     );
 
 
-    loadProducts();
+    await loadProducts();
 
   }
 
@@ -845,52 +1317,80 @@
   // HAPUS PRODUK
   // ==========================================
 
-  async function deleteProduct(productId) {
+  async function deleteProduct(
+    productId
+  ) {
 
     const yakin =
       confirm(
         "Yakin ingin menghapus produk ini?"
       );
 
+
     if (!yakin) {
       return;
     }
 
 
-    // Hapus hubungan kategori dahulu
-    const { error: relationError } =
+    // Hapus hubungan kategori
+
+    const {
+      error: relationError
+    } =
       await supabaseClient
-        .from("product_categories")
+        .from(
+          "product_categories"
+        )
         .delete()
-        .eq("product_id", productId);
+        .eq(
+          "product_id",
+          productId
+        );
 
 
-    if (relationError) {
+    if (
+      relationError
+    ) {
 
-      console.error(relationError);
+      console.error(
+        relationError
+      );
+
 
       showMessage(
-        "Gagal menghapus hubungan kategori."
+        "Gagal menghapus kategori produk."
       );
+
 
       return;
     }
 
 
-    const { error } =
+    // Hapus produk
+
+    const {
+      error
+    } =
       await supabaseClient
         .from("products")
         .delete()
-        .eq("id", productId);
+        .eq(
+          "id",
+          productId
+        );
 
 
     if (error) {
 
-      console.error(error);
+      console.error(
+        error
+      );
+
 
       showMessage(
         "Produk gagal dihapus."
       );
+
 
       return;
     }
@@ -902,35 +1402,45 @@
     );
 
 
-    loadProducts();
+    await loadProducts();
 
   }
 
 
   // ==========================================
-  // FORMAT HARGA
+  // FORMAT RUPIAH
   // ==========================================
 
-  function formatRupiah(value) {
+  function formatRupiah(
+    value
+  ) {
 
     return new Intl.NumberFormat(
       "id-ID"
-    ).format(value);
+    ).format(
+      value || 0
+    );
 
   }
 
 
   // ==========================================
-  // ESCAPE HTML
+  // KEAMANAN HTML
   // ==========================================
 
-  function escapeHtml(value) {
+  function escapeHtml(
+    value
+  ) {
 
     const div =
-      document.createElement("div");
+      document.createElement(
+        "div"
+      );
+
 
     div.textContent =
       value ?? "";
+
 
     return div.innerHTML;
 
@@ -938,7 +1448,7 @@
 
 
   // ==========================================
-  // MULAI
+  // JALANKAN
   // ==========================================
 
   (async function() {
@@ -946,8 +1456,11 @@
     const isOwner =
       await checkOwner();
 
+
     if (isOwner) {
-      loadProducts();
+
+      await loadProducts();
+
     }
 
   })();
