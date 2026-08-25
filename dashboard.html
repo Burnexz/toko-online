@@ -194,8 +194,8 @@
     // SUPABASE
     // ==========================================
 
-    const SUPABASE_URL = "MASUKKAN_SUPABASE_URL";
-    const SUPABASE_ANON_KEY = "MASUKKAN_SUPABASE_ANON_KEY";
+    const SUPABASE_URL = "https://weuousmvkxmgmsnwiuad.supabase.co";
+    const SUPABASE_ANON_KEY = "sb_publishable_e375KDL0vuoahHO_kWMjwA_a04R4yHb";
 
     const supabaseClient = window.supabase.createClient(
       SUPABASE_URL,
@@ -258,21 +258,25 @@
 
     function openMenu(menu) {
 
-      if (menu === "produk") {
-        alert("Menu Produk akan kita buat berikutnya.");
-      }
+  if (menu === "produk") {
+    window.location.href = "produk.html";
+    return;
+  }
 
-      if (menu === "kategori") {
-        alert("Menu Kategori akan kita buat berikutnya.");
-      }
+  if (menu === "kategori") {
+    window.location.href = "kategori.html";
+    return;
+  }
 
-      if (menu === "kasir") {
-        alert("Menu Kasir akan kita buat berikutnya.");
-      }
+  if (menu === "kasir") {
+    window.location.href = "kasir.html";
+    return;
+  }
 
-      if (menu === "pengaturan") {
-        alert("Menu Pengaturan akan kita buat berikutnya.");
-      }
+  if (menu === "pengaturan") {
+    window.location.href = "pengaturan.html";
+    return;
+  }
 
     }
 
