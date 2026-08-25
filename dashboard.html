@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Dashboard Admin - Zokent Store</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background: #f3f4f6;
+      color: #111827;
+    }
+
+    .header {
+      background: #111827;
+      color: white;
+      padding: 18px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .brand {
+      font-size: 20px;
+      font-weight: bold;
+    }
+
+    .user-name {
+      font-size: 14px;
+      opacity: 0.9;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 1100px;
+      margin: auto;
+      padding: 25px 20px;
+    }
+
+    .welcome {
+      margin-bottom: 25px;
+    }
+
+    .welcome h1 {
+      font-size: 26px;
+      margin-bottom: 6px;
+    }
+
+    .welcome p {
+      color: #6b7280;
+    }
+
+    .menu-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 15px;
+    }
+
+    .menu-card {
+      background: white;
+      padding: 25px 20px;
+      border-radius: 15px;
+      box-shadow: 0 5px 18px rgba(0,0,0,0.07);
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .menu-card:hover {
+      transform: translateY(-2px);
+    }
+
+    .icon {
+      font-size: 32px;
+      margin-bottom: 12px;
+    }
+
+    .menu-card h2 {
+      font-size: 18px;
+      margin-bottom: 6px;
+    }
+
+    .menu-card p {
+      font-size: 13px;
+      color: #6b7280;
+      line-height: 1.5;
+    }
+
+    .logout {
+      margin-top: 25px;
+      width: 100%;
+      padding: 14px;
+      border: none;
+      border-radius: 10px;
+      background: #dc2626;
+      color: white;
+      font-size: 15px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .loading {
+      position: fixed;
+      inset: 0;
+      background: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      z-index: 10;
+    }
+
+    @media (min-width: 700px) {
+      .menu-grid {
+        grid-template-columns: repeat(4, 1fr);
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="loading" id="loading">
+    Memeriksa login...
+  </div>
+
+  <header class="header">
+    <div class="brand">
+      ZOKENT STORE
+    </div>
+
+    <div class="user-name" id="userName">
+      Pemilik
+    </div>
+  </header>
+
+
+  <main class="container">
+
+    <section class="welcome">
+      <h1>Dashboard Admin</h1>
+      <p>Kelola toko Zokent dari sini.</p>
+    </section>
+
+
+    <section class="menu-grid">
+
+      <div class="menu-card" onclick="openMenu('produk')">
+        <div class="icon">📦</div>
+        <h2>Produk</h2>
+        <p>Tambah, ubah, dan kelola produk toko.</p>
+      </div>
+
+      <div class="menu-card" onclick="openMenu('kategori')">
+        <div class="icon">🏷️</div>
+        <h2>Kategori</h2>
+        <p>Kelola kategori produk toko.</p>
+      </div>
+
+      <div class="menu-card" onclick="openMenu('kasir')">
+        <div class="icon">👥</div>
+        <h2>Kasir</h2>
+        <p>Buat dan kelola akun kasir.</p>
+      </div>
+
+      <div class="menu-card" onclick="openMenu('pengaturan')">
+        <div class="icon">⚙️</div>
+        <h2>Pengaturan</h2>
+        <p>Pengaturan aplikasi dan toko.</p>
+      </div>
+
+    </section>
+
+
+    <button class="logout" id="logoutButton">
+      Keluar
+    </button>
+
+  </main>
+
+
+  <script>
+
+    // ==========================================
+    // SUPABASE
+    // ==========================================
+
+    const SUPABASE_URL = "MASUKKAN_SUPABASE_URL";
+    const SUPABASE_ANON_KEY = "MASUKKAN_SUPABASE_ANON_KEY";
+
+    const supabaseClient = window.supabase.createClient(
+      SUPABASE_URL,
+      SUPABASE_ANON_KEY
+    );
+
+
+    // ==========================================
+    // CEK LOGIN
+    // ==========================================
+
+    async function checkLogin() {
+
+      const {
+        data: { user }
+      } = await supabaseClient.auth.getUser();
+
+
+      if (!user) {
+        window.location.href = "admin.html";
+        return;
+      }
+
+
+      // Ambil profile
+      const { data: profile, error } =
+        await supabaseClient
+          .from("profiles")
+          .select("full_name, role, is_active")
+          .eq("id", user.id)
+          .single();
+
+
+      if (
+        error ||
+        !profile ||
+        profile.role !== "owner" ||
+        profile.is_active !== true
+      ) {
+
+        await supabaseClient.auth.signOut();
+
+        window.location.href = "admin.html";
+        return;
+      }
+
+
+      // Tampilkan nama
+      document.getElementById("userName").textContent =
+        profile.full_name || "Pemilik";
+
+
+      document.getElementById("loading").style.display = "none";
+    }
+
+
+    // ==========================================
+    // MENU
+    // ==========================================
+
+    function openMenu(menu) {
+
+      if (menu === "produk") {
+        alert("Menu Produk akan kita buat berikutnya.");
+      }
+
+      if (menu === "kategori") {
+        alert("Menu Kategori akan kita buat berikutnya.");
+      }
+
+      if (menu === "kasir") {
+        alert("Menu Kasir akan kita buat berikutnya.");
+      }
+
+      if (menu === "pengaturan") {
+        alert("Menu Pengaturan akan kita buat berikutnya.");
+      }
+
+    }
+
+
+    // ==========================================
+    // LOGOUT
+    // ==========================================
+
+    document
+      .getElementById("logoutButton")
+      .addEventListener("click", async function() {
+
+        await supabaseClient.auth.signOut();
+
+        window.location.href = "admin.html";
+
+      });
+
+
+    // Jalankan pemeriksaan login
+    checkLogin();
+
+  </script>
+
+</body>
+</html>
