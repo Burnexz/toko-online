@@ -1,122 +1,247 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login & Panel Admin - Zokent Group</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Admin - Zokent Store</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: Arial, sans-serif;
+      background: #f3f4f6;
+      padding: 20px;
+    }
+
+    .login-box {
+      width: 100%;
+      max-width: 400px;
+      background: white;
+      padding: 30px;
+      border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.10);
+    }
+
+    .logo {
+      text-align: center;
+      font-size: 30px;
+      font-weight: bold;
+      margin-bottom: 8px;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: #6b7280;
+      margin-bottom: 28px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 7px;
+      font-weight: bold;
+    }
+
+    input {
+      width: 100%;
+      padding: 13px;
+      border: 1px solid #d1d5db;
+      border-radius: 9px;
+      margin-bottom: 18px;
+      font-size: 15px;
+    }
+
+    input:focus {
+      outline: none;
+      border-color: #111827;
+    }
+
+    button {
+      width: 100%;
+      padding: 13px;
+      border: none;
+      border-radius: 9px;
+      background: #111827;
+      color: white;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .message {
+      margin-top: 15px;
+      text-align: center;
+      font-size: 14px;
+      min-height: 20px;
+    }
+
+    .hidden {
+      display: none;
+    }
+  </style>
 </head>
-<body class="bg-gray-100 p-6 flex items-center justify-center min-h-screen">
 
-    <!-- BAGIAN 1: KOTAK LOGIN ADMIN -->
-    <div id="loginBox" class="max-w-md w-full bg-white p-6 rounded-lg shadow-md">
-        <h2 class="text-2xl font-bold mb-4 text-gray-800 text-center">Login Admin</h2>
-        <form id="loginForm" class="space-y-4">
-            <div>
-                <label class="block text-gray-700 font-medium mb-1">Username</label>
-                <input type="text" id="username" required class="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
-            </div>
-            <div>
-                <label class="block text-gray-700 font-medium mb-1">Password</label>
-                <input type="password" id="password" required class="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
-            </div>
-            <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded font-semibold hover:bg-blue-700 transition">Masuk</button>
-        </form>
-        <p id="loginMsg" class="mt-4 text-center font-semibold text-red-600"></p>
+<body>
+
+  <div class="login-box" id="loginBox">
+
+    <div class="logo">ZOKENT</div>
+
+    <div class="subtitle">
+      Login Admin
     </div>
 
-    <!-- BAGIAN 2: PANEL UTAMA ADMIN (TERSEMBUNYI SEBELUM LOGIN) -->
-    <div id="adminPanel" class="max-w-md w-full bg-white p-6 rounded-lg shadow-md hidden">
-        <div class="flex justify-between items-center mb-4">
-            <h2 class="text-xl font-bold text-gray-800">Panel Admin - Tambah Produk</h2>
-            <button onclick="logout()" class="text-sm bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600">Keluar</button>
-        </div>
-        
-        <form id="productForm" class="space-y-4">
-            <div>
-                <label class="block text-gray-700 font-medium mb-1">Nama Produk</label>
-                <input type="text" id="name" required class="w-full border rounded px-3 py-2">
-            </div>
-            <div>
-                <label class="block text-gray-700 font-medium mb-1">Harga (Rp)</label>
-                <input type="number" id="price" required class="w-full border rounded px-3 py-2">
-            </div>
-            <div>
-                <label class="block text-gray-700 font-medium mb-1">Jumlah Stok Awal</label>
-                <input type="number" id="stock" required class="w-full border rounded px-3 py-2">
-            </div>
-            <button type="submit" class="w-full bg-green-600 text-white py-2 rounded font-semibold hover:bg-green-700 transition">Simpan Produk</button>
-        </form>
-        <p id="msg" class="mt-4 text-center font-semibold"></p>
-    </div>
+    <form id="loginForm">
 
-    <!-- SKRIP LOGIKA & FIREBASE -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+      <label for="email">Email Pemilik</label>
 
-        // Konfigurasi Firebase Anda
-        const firebaseConfig = {
-            apiKey: "KODE_API_KEY_ANDA",
-            authDomain: "my-portofolio-db-2835c.firebaseapp.com",
-            projectId: "my-portofolio-db-2835c",
-            storageBucket: "my-portofolio-db-2835c.appspot.com",
-            messagingSenderId: "420644334513",
-            appId: "1:420644334513:web:4f664fdead2dacbd5d6b90"
-        };
+      <input
+        type="email"
+        id="email"
+        placeholder="Masukkan email"
+        autocomplete="email"
+        required
+      >
 
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
+      <label for="password">Password</label>
 
-        // ATUR USERNAME & PASSWORD ADMIN ANDA DI SINI
-        const ADMIN_USER = "admin";
-        const ADMIN_PASS = "zokent123"; // Silakan ubah password sesuai keinginan
+      <input
+        type="password"
+        id="password"
+        placeholder="Masukkan password"
+        autocomplete="current-password"
+        required
+      >
 
-        const loginForm = document.getElementById('loginForm');
-        const loginBox = document.getElementById('loginBox');
-        const adminPanel = document.getElementById('adminPanel');
-        const loginMsg = document.getElementById('loginMsg');
+      <button type="submit" id="loginButton">
+        Login
+      </button>
 
-        // Proses Login
-        loginForm.onsubmit = (e) => {
-            e.preventDefault();
-            const u = document.getElementById('username').value;
-            const p = document.getElementById('password').value;
+      <div class="message" id="message"></div>
 
-            if (u === ADMIN_USER && p === ADMIN_PASS) {
-                loginBox.classList.add('hidden');
-                adminPanel.classList.remove('hidden');
-            } else {
-                loginMsg.innerText = "Username atau Password salah!";
-            }
-        };
+    </form>
 
-        // Fungsi Logout
-        window.logout = function() {
-            adminPanel.classList.add('hidden');
-            loginBox.classList.remove('hidden');
-            loginForm.reset();
-            loginMsg.innerText = "";
-        }
+  </div>
 
-        // Proses Simpan Produk ke Firebase
-        document.getElementById('productForm').onsubmit = async (e) => {
-            e.preventDefault();
-            const msg = document.getElementById('msg');
-            try {
-                await addDoc(collection(db, "products"), {
-                    name: document.getElementById('name').value,
-                    price: Number(document.getElementById('price').value),
-                    stock: Number(document.getElementById('stock').value)
-                });
-                msg.innerText = "Produk & Stok berhasil disimpan!";
-                msg.className = "mt-4 text-center font-semibold text-green-600";
-                e.target.reset();
-            } catch (error) {
-                msg.innerText = "Gagal: " + error.message;
-                msg.className = "mt-4 text-center font-semibold text-red-600";
-            }
-        };
-    </script>
+  <script>
+
+    // ==============================
+    // SUPABASE
+    // ==============================
+
+    const SUPABASE_URL = "https://weuousmvkxmgmsnwiuad.supabase.co";
+    const SUPABASE_ANON_KEY = "sb_publishable_e375KDL0vuoahHO_kWMjwA_a04R4yHb";
+
+    const supabaseClient = window.supabase.createClient(
+      SUPABASE_URL,
+      SUPABASE_ANON_KEY
+    );
+
+
+    // ==============================
+    // LOGIN
+    // ==============================
+
+    const loginForm = document.getElementById("loginForm");
+    const loginButton = document.getElementById("loginButton");
+    const message = document.getElementById("message");
+
+    loginForm.addEventListener("submit", async function(event) {
+
+      event.preventDefault();
+
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value;
+
+      message.textContent = "";
+      loginButton.disabled = true;
+      loginButton.textContent = "Memproses...";
+
+      const { data, error } =
+        await supabaseClient.auth.signInWithPassword({
+          email: email,
+          password: password
+        });
+
+      if (error) {
+
+        message.textContent = "Email atau password salah.";
+        message.style.color = "red";
+
+        loginButton.disabled = false;
+        loginButton.textContent = "Login";
+
+        return;
+      }
+
+
+      // ==============================
+      // CEK PROFILE PEMILIK
+      // ==============================
+
+      const { data: profile, error: profileError } =
+        await supabaseClient
+          .from("profiles")
+          .select("full_name, role, is_active")
+          .eq("id", data.user.id)
+          .single();
+
+
+      if (
+        profileError ||
+        !profile ||
+        profile.role !== "owner" ||
+        profile.is_active !== true
+      ) {
+
+        await supabaseClient.auth.signOut();
+
+        message.textContent =
+          "Akun ini bukan akun Pemilik.";
+
+        message.style.color = "red";
+
+        loginButton.disabled = false;
+        loginButton.textContent = "Login";
+
+        return;
+      }
+
+
+      // ==============================
+      // BERHASIL
+      // ==============================
+
+      message.textContent =
+        "Login berhasil. Membuka Admin...";
+
+      message.style.color = "green";
+
+      setTimeout(() => {
+
+        window.location.href = "dashboard.html";
+
+      }, 800);
+
+    });
+
+  </script>
+
 </body>
 </html>
