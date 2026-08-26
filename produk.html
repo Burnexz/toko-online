@@ -8,6 +8,9 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
+  <!-- Library scanner barcode -->
+  <script src="https://unpkg.com/html5-qrcode"></script>
+
   <style>
     * {
       box-sizing: border-box;
@@ -62,13 +65,60 @@
       cursor: pointer;
     }
 
-    .add-button {
+    .add-button,
+    .scan-button {
       border: none;
-      background: #111827;
       color: white;
       padding: 12px 16px;
       border-radius: 9px;
       font-weight: bold;
+    }
+
+    .add-button {
+      background: #111827;
+    }
+
+    .scan-button {
+      width: 100%;
+      background: #2563eb;
+      margin-bottom: 15px;
+    }
+
+    .scanner-box {
+      display: none;
+      background: white;
+      padding: 15px;
+      border-radius: 12px;
+      margin-bottom: 15px;
+      box-shadow: 0 4px 15px rgba(0,0,0,.06);
+    }
+
+    .scanner-box.active {
+      display: block;
+    }
+
+    #reader {
+      width: 100%;
+      overflow: hidden;
+      border-radius: 10px;
+    }
+
+    .close-scanner {
+      width: 100%;
+      margin-top: 10px;
+      border: none;
+      background: #dc2626;
+      color: white;
+      padding: 11px;
+      border-radius: 8px;
+      font-weight: bold;
+    }
+
+    .scanner-info {
+      text-align: center;
+      margin-bottom: 10px;
+      color: #6b7280;
+      font-size: 13px;
     }
 
     .form-box {
@@ -110,6 +160,27 @@
     textarea {
       min-height: 90px;
       resize: vertical;
+    }
+
+    .barcode-row {
+      display: flex;
+      gap: 8px;
+    }
+
+    .barcode-row input {
+      flex: 1;
+    }
+
+    .barcode-row button {
+      height: 46px;
+      border: none;
+      background: #2563eb;
+      color: white;
+      padding: 0 15px;
+      border-radius: 8px;
+      font-weight: bold;
+      margin-bottom: 15px;
+      white-space: nowrap;
     }
 
     .form-actions {
@@ -299,11 +370,40 @@
     class="message">
   </div>
 
+  <!-- SCANNER -->
+
+  <section
+    id="scannerBox"
+    class="scanner-box">
+
+    <div class="scanner-info">
+      Arahkan kamera ke barcode produk
+    </div>
+
+    <div id="reader"></div>
+
+    <button
+      class="close-scanner"
+      onclick="stopScanner()">
+      Tutup Kamera
+    </button>
+
+  </section>
+
+  <!-- FORM -->
+
   <section
     id="formBox"
     class="form-box">
 
     <h3>Tambah Produk</h3>
+
+    <button
+      type="button"
+      class="scan-button"
+      onclick="startScanner()">
+      📷 Scan Barcode dengan Kamera
+    </button>
 
     <form id="productForm">
 
@@ -318,21 +418,32 @@
       >
 
       <label for="productSku">
-        SKU
+        Barcode / SKU
       </label>
 
-      <input
-        type="text"
-        id="productSku"
-      >
+      <div class="barcode-row">
+
+        <input
+          type="text"
+          id="productSku"
+          inputmode="numeric"
+          autocomplete="off"
+        >
+
+        <button
+          type="button"
+          onclick="startScanner()">
+          📷 Scan
+        </button>
+
+      </div>
 
       <label for="productDescription">
         Deskripsi
       </label>
 
       <textarea
-        id="productDescription">
-      </textarea>
+        id="productDescription"></textarea>
 
       <label for="productPrice">
         Harga Jual
@@ -366,7 +477,7 @@
         required>
 
         <option value="">
-          Pilih kategori
+          Memuat kategori...
         </option>
 
       </select>
@@ -377,8 +488,7 @@
 
       <input
         type="url"
-        id="productImage"
-      >
+        id="productImage">
 
       <div class="form-actions">
 
@@ -432,6 +542,31 @@
     );
 
 
+  let html5QrCode = null;
+
+  let scannerRunning = false;
+
+
+  // ==========================================
+  // MESSAGE
+  // ==========================================
+
+  function showMessage(
+    text,
+    success = false
+  ) {
+
+    const element =
+      document.getElementById("message");
+
+    element.textContent = text;
+
+    element.style.color =
+      success ? "green" : "red";
+
+  }
+
+
   // ==========================================
   // FORM
   // ==========================================
@@ -453,6 +588,8 @@
 
   function hideForm() {
 
+    stopScanner();
+
     document
       .getElementById("formBox")
       .classList.remove("active");
@@ -460,28 +597,6 @@
     document
       .getElementById("productForm")
       .reset();
-
-  }
-
-
-  // ==========================================
-  // MESSAGE
-  // ==========================================
-
-  function showMessage(
-    text,
-    success = false
-  ) {
-
-    const element =
-      document.getElementById(
-        "message"
-      );
-
-    element.textContent = text;
-
-    element.style.color =
-      success ? "green" : "red";
 
   }
 
@@ -512,7 +627,10 @@
 
     if (error) {
 
-      console.error(error);
+      console.error(
+        "ERROR KATEGORI:",
+        error
+      );
 
       select.innerHTML =
         '<option value="">Gagal memuat kategori</option>';
@@ -563,7 +681,270 @@
 
 
   // ==========================================
-  // TAMBAH PRODUK
+  // MULAI SCANNER
+  // ==========================================
+
+  async function startScanner() {
+
+    const scannerBox =
+      document.getElementById(
+        "scannerBox"
+      );
+
+    scannerBox.classList.add(
+      "active"
+    );
+
+
+    if (scannerRunning) {
+      return;
+    }
+
+
+    html5QrCode =
+      new Html5Qrcode(
+        "reader"
+      );
+
+
+    const config = {
+      fps: 10,
+      qrbox: {
+        width: 280,
+        height: 150
+      },
+      aspectRatio: 1.777778
+    };
+
+
+    try {
+
+      await html5QrCode.start(
+        {
+          facingMode: "environment"
+        },
+        config,
+        async function(decodedText) {
+
+          document
+            .getElementById(
+              "productSku"
+            )
+            .value =
+              decodedText;
+
+
+          showMessage(
+            "Barcode berhasil dibaca.",
+            true
+          );
+
+
+          await stopScanner();
+
+          await findProductByBarcode(
+            decodedText
+          );
+
+        },
+        function(errorMessage) {
+
+          // Abaikan pesan scanner
+          // selama kamera sedang mencari barcode
+
+        }
+      );
+
+
+      scannerRunning = true;
+
+
+    } catch (error) {
+
+      console.error(
+        "ERROR KAMERA:",
+        error
+      );
+
+
+      scannerBox.classList.remove(
+        "active"
+      );
+
+
+      showMessage(
+        "Kamera tidak bisa digunakan. Pastikan izin kamera diberikan."
+      );
+
+    }
+
+  }
+
+
+  // ==========================================
+  // STOP SCANNER
+  // ==========================================
+
+  async function stopScanner() {
+
+    if (
+      html5QrCode &&
+      scannerRunning
+    ) {
+
+      try {
+
+        await html5QrCode.stop();
+
+        await html5QrCode.clear();
+
+      } catch (error) {
+
+        console.error(
+          error
+        );
+
+      }
+
+    }
+
+
+    scannerRunning = false;
+
+    html5QrCode = null;
+
+
+    document
+      .getElementById(
+        "scannerBox"
+      )
+      .classList.remove(
+        "active"
+      );
+
+  }
+
+
+  // ==========================================
+  // CARI PRODUK BERDASARKAN BARCODE
+  // ==========================================
+
+  async function findProductByBarcode(
+    barcode
+  ) {
+
+    if (!barcode) {
+      return;
+    }
+
+
+    const { data, error } =
+      await supabaseClient
+        .from("products")
+        .select(`
+          id,
+          name,
+          sku,
+          description,
+          selling_price,
+          image_url,
+          product_categories (
+            category_id
+          )
+        `)
+        .eq(
+          "sku",
+          barcode
+        )
+        .maybeSingle();
+
+
+    if (error) {
+
+      console.error(
+        "ERROR CARI BARCODE:",
+        error
+      );
+
+      showMessage(
+        "Barcode terbaca, tetapi pencarian produk gagal."
+      );
+
+      return;
+
+    }
+
+
+    if (!data) {
+
+      showMessage(
+        "Barcode baru. Isi data produk lalu simpan.",
+        true
+      );
+
+      return;
+
+    }
+
+
+    document
+      .getElementById(
+        "productName"
+      )
+      .value =
+        data.name || "";
+
+
+    document
+      .getElementById(
+        "productDescription"
+      )
+      .value =
+        data.description || "";
+
+
+    document
+      .getElementById(
+        "productPrice"
+      )
+      .value =
+        data.selling_price || "";
+
+
+    document
+      .getElementById(
+        "productImage"
+      )
+      .value =
+        data.image_url || "";
+
+
+    if (
+      data.product_categories &&
+      data.product_categories.length
+    ) {
+
+      document
+        .getElementById(
+          "productCategory"
+        )
+        .value =
+          data.product_categories[0]
+            .category_id;
+
+    }
+
+
+    showMessage(
+      "Data produk ditemukan dan diisi otomatis.",
+      true
+    );
+
+  }
+
+
+  // ==========================================
+  // SIMPAN PRODUK
   // ==========================================
 
   document
@@ -661,17 +1042,14 @@
           );
 
 
-        saveButton.disabled = true;
+        saveButton.disabled =
+          true;
 
         saveButton.textContent =
           "Menyimpan...";
 
 
         try {
-
-          // ===============================
-          // SIMPAN PRODUK
-          // ===============================
 
           const { data: product, error } =
             await supabaseClient
@@ -720,10 +1098,6 @@
           }
 
 
-          // ===============================
-          // HUBUNGKAN KATEGORI
-          // ===============================
-
           const { error: categoryError } =
             await supabaseClient
               .from("product_categories")
@@ -767,7 +1141,7 @@
         } catch (error) {
 
           console.error(
-            "ERROR SIMPAN PRODUK:",
+            "ERROR SIMPAN:",
             error
           );
 
@@ -818,8 +1192,6 @@
           selling_price,
           image_url,
           is_active,
-          show_in_catalog,
-          show_when_out_of_stock,
           stock_quantity,
           product_categories (
             category_id,
@@ -839,7 +1211,9 @@
 
     if (error) {
 
-      console.error(error);
+      console.error(
+        error
+      );
 
       list.innerHTML =
         '<div class="empty">Gagal memuat produk.</div>';
@@ -946,7 +1320,8 @@
           product.sku
             ? `
               <div class="product-sku">
-                SKU: ${escapeHtml(
+                Barcode:
+                ${escapeHtml(
                   product.sku
                 )}
               </div>
@@ -1066,8 +1441,6 @@
 
     if (error) {
 
-      console.error(error);
-
       showMessage(
         "Gagal mengubah status produk."
       );
@@ -1077,34 +1450,24 @@
     }
 
 
-    showMessage(
-      !currentStatus
-        ? "Produk diaktifkan."
-        : "Produk dinonaktifkan.",
-      true
-    );
-
-
     await loadProducts();
 
   }
 
 
   // ==========================================
-  // HAPUS PRODUK
+  // HAPUS
   // ==========================================
 
   async function deleteProduct(
     productId
   ) {
 
-    const yakin =
-      confirm(
+    if (
+      !confirm(
         "Yakin ingin menghapus produk ini?"
-      );
-
-
-    if (!yakin) {
+      )
+    ) {
       return;
     }
 
@@ -1120,10 +1483,6 @@
 
 
     if (relationError) {
-
-      console.error(
-        relationError
-      );
 
       showMessage(
         "Gagal menghapus kategori produk."
@@ -1145,8 +1504,6 @@
 
 
     if (error) {
-
-      console.error(error);
 
       showMessage(
         "Produk gagal dihapus."
