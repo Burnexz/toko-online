@@ -18,81 +18,38 @@
     body {
       font-family: Arial, sans-serif;
       background: #f3f4f6;
+      color: #111827;
+    }
+
+    .page {
       min-height: 100vh;
       display: flex;
       align-items: center;
       justify-content: center;
       padding: 20px;
-      color: #111827;
     }
 
-    .container {
+    .login-box {
       width: 100%;
-      max-width: 420px;
+      max-width: 400px;
+      background: white;
+      padding: 28px;
+      border-radius: 16px;
+      box-shadow: 0 8px 30px rgba(0,0,0,.08);
     }
 
     .logo {
       text-align: center;
-      margin-bottom: 22px;
+      margin-bottom: 8px;
+      font-size: 25px;
+      font-weight: bold;
     }
 
-    .logo h1 {
-      font-size: 27px;
-      margin-bottom: 6px;
-    }
-
-    .logo p {
+    .subtitle {
+      text-align: center;
       color: #6b7280;
       font-size: 14px;
-    }
-
-    .card {
-      background: white;
-      border-radius: 16px;
-      padding: 25px;
-      box-shadow: 0 8px 25px rgba(0,0,0,.08);
-    }
-
-    .tabs {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 8px;
-      margin-bottom: 22px;
-    }
-
-    .tab {
-      border: none;
-      padding: 12px;
-      border-radius: 9px;
-      background: #e5e7eb;
-      color: #374151;
-      font-weight: bold;
-      cursor: pointer;
-    }
-
-    .tab.active {
-      background: #111827;
-      color: white;
-    }
-
-    .form {
-      display: none;
-    }
-
-    .form.active {
-      display: block;
-    }
-
-    .form h2 {
-      font-size: 20px;
-      margin-bottom: 6px;
-    }
-
-    .form-description {
-      color: #6b7280;
-      font-size: 13px;
-      margin-bottom: 20px;
-      line-height: 1.5;
+      margin-bottom: 25px;
     }
 
     label {
@@ -107,216 +64,307 @@
       padding: 13px;
       border: 1px solid #d1d5db;
       border-radius: 9px;
-      margin-bottom: 15px;
       font-size: 15px;
+      margin-bottom: 16px;
+      outline: none;
     }
 
     input:focus {
-      outline: none;
       border-color: #111827;
     }
 
-    .button {
+    button {
       width: 100%;
       border: none;
-      padding: 13px;
-      border-radius: 9px;
       background: #111827;
       color: white;
+      padding: 13px;
+      border-radius: 9px;
+      font-size: 15px;
       font-weight: bold;
       cursor: pointer;
-      font-size: 15px;
-      margin-top: 5px;
     }
 
-    .button:disabled {
+    button:disabled {
       opacity: .6;
       cursor: not-allowed;
     }
 
     .message {
       min-height: 20px;
-      margin-bottom: 14px;
-      font-size: 13px;
-      line-height: 1.4;
+      margin-bottom: 12px;
+      text-align: center;
+      font-size: 14px;
     }
 
-    .info {
-      margin-top: 18px;
-      padding: 12px;
-      border-radius: 9px;
-      background: #f3f4f6;
+    .dashboard {
+      display: none;
+      width: 100%;
+      min-height: 100vh;
+    }
+
+    .dashboard.active {
+      display: block;
+    }
+
+    header {
+      background: #111827;
+      color: white;
+      padding: 18px 20px;
+    }
+
+    .header-inner {
+      max-width: 1100px;
+      margin: auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .header-title {
+      font-size: 20px;
+      font-weight: bold;
+    }
+
+    .logout {
+      width: auto;
+      background: #374151;
+      padding: 9px 13px;
+      font-size: 13px;
+    }
+
+    main {
+      max-width: 1100px;
+      margin: auto;
+      padding: 25px 20px;
+    }
+
+    .welcome {
+      background: white;
+      padding: 20px;
+      border-radius: 14px;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 15px rgba(0,0,0,.05);
+    }
+
+    .welcome h2 {
+      margin-bottom: 7px;
+    }
+
+    .welcome p {
       color: #6b7280;
-      font-size: 12px;
-      line-height: 1.5;
+      font-size: 14px;
+    }
+
+    .menu {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 13px;
+    }
+
+    .menu-card {
+      background: white;
+      padding: 20px;
+      border-radius: 14px;
+      box-shadow: 0 4px 15px rgba(0,0,0,.05);
+      cursor: pointer;
+    }
+
+    .menu-card h3 {
+      margin-bottom: 7px;
+    }
+
+    .menu-card p {
+      color: #6b7280;
+      font-size: 13px;
+    }
+
+    @media (min-width: 700px) {
+      .menu {
+        grid-template-columns: repeat(3, 1fr);
+      }
     }
   </style>
 </head>
 
 <body>
 
-<div class="container">
+<!-- ==============================
+     HALAMAN LOGIN
+     ============================== -->
 
-  <div class="logo">
-    <h1>ZOKENT STORE</h1>
-    <p>Panel Pemilik & Administrasi</p>
-  </div>
+<div class="page" id="loginPage">
 
+  <div class="login-box">
 
-  <div class="card">
-
-    <!-- TAB -->
-
-    <div class="tabs">
-
-      <button
-        type="button"
-        id="loginTab"
-        class="tab active"
-        onclick="showLogin()"
-      >
-        Login
-      </button>
-
-      <button
-        type="button"
-        id="registerTab"
-        class="tab"
-        onclick="showRegister()"
-      >
-        Daftar
-      </button>
-
+    <div class="logo">
+      ZOKENT STORE
     </div>
 
+    <div class="subtitle">
+      Login Administrator
+    </div>
 
-    <div
-      id="message"
-      class="message"
-    ></div>
+    <form id="loginForm">
 
-
-    <!-- =========================
-         LOGIN
-    ========================== -->
-
-    <form
-      id="loginForm"
-      class="form active"
-    >
-
-      <h2>Login Pemilik</h2>
-
-      <p class="form-description">
-        Masuk menggunakan akun pemilik yang sudah terdaftar.
-      </p>
-
-
-      <label for="loginEmail">
+      <label for="email">
         Email
       </label>
 
       <input
         type="email"
-        id="loginEmail"
-        required
+        id="email"
+        placeholder="Masukkan email"
         autocomplete="email"
+        required
       >
 
-
-      <label for="loginPassword">
+      <label for="password">
         Password
       </label>
 
       <input
         type="password"
-        id="loginPassword"
-        required
+        id="password"
+        placeholder="Masukkan password"
         autocomplete="current-password"
+        required
       >
 
+      <div
+        class="message"
+        id="loginMessage"
+      ></div>
 
       <button
         type="submit"
-        class="button"
         id="loginButton"
       >
-        Login
+        Masuk
       </button>
 
     </form>
-
-
-    <!-- =========================
-         DAFTAR
-    ========================== -->
-
-    <form
-      id="registerForm"
-      class="form"
-    >
-
-      <h2>Daftar Pemilik</h2>
-
-      <p class="form-description">
-        Buat akun pemilik untuk mengelola toko.
-      </p>
-
-
-      <label for="registerEmail">
-        Email
-      </label>
-
-      <input
-        type="email"
-        id="registerEmail"
-        required
-        autocomplete="email"
-      >
-
-
-      <label for="registerPassword">
-        Password
-      </label>
-
-      <input
-        type="password"
-        id="registerPassword"
-        required
-        minlength="6"
-        autocomplete="new-password"
-      >
-
-
-      <label for="registerPasswordConfirm">
-        Ulangi Password
-      </label>
-
-      <input
-        type="password"
-        id="registerPasswordConfirm"
-        required
-        minlength="6"
-        autocomplete="new-password"
-      >
-
-
-      <button
-        type="submit"
-        class="button"
-        id="registerButton"
-      >
-        Daftar Pemilik
-      </button>
-
-    </form>
-
-
-    <div class="info">
-      Akun yang dibuat melalui pendaftaran ini akan menjadi akun pemilik toko.
-    </div>
 
   </div>
+
+</div>
+
+
+<!-- ==============================
+     DASHBOARD ADMIN
+     ============================== -->
+
+<div
+  class="dashboard"
+  id="dashboardPage"
+>
+
+  <header>
+
+    <div class="header-inner">
+
+      <div class="header-title">
+        ZOKENT STORE
+      </div>
+
+      <button
+        class="logout"
+        onclick="logout()"
+      >
+        Keluar
+      </button>
+
+    </div>
+
+  </header>
+
+
+  <main>
+
+    <section class="welcome">
+
+      <h2>
+        Dashboard Admin
+      </h2>
+
+      <p id="adminEmail">
+        Memuat akun...
+      </p>
+
+    </section>
+
+
+    <section class="menu">
+
+      <div
+        class="menu-card"
+        onclick="openPage('produk.html')"
+      >
+        <h3>Produk</h3>
+        <p>
+          Tambah dan kelola produk toko.
+        </p>
+      </div>
+
+
+      <div
+        class="menu-card"
+        onclick="showComingSoon('Kategori')"
+      >
+        <h3>Kategori</h3>
+        <p>
+          Kelola kategori produk.
+        </p>
+      </div>
+
+
+      <div
+        class="menu-card"
+        onclick="showComingSoon('Stok')"
+      >
+        <h3>Stok</h3>
+        <p>
+          Kontrol persediaan produk.
+        </p>
+      </div>
+
+
+      <div
+        class="menu-card"
+        onclick="showComingSoon('Kasir')"
+      >
+        <h3>Kasir</h3>
+        <p>
+          Kelola akun kasir.
+        </p>
+      </div>
+
+
+      <div
+        class="menu-card"
+        onclick="showComingSoon('Pesanan')"
+      >
+        <h3>Pesanan</h3>
+        <p>
+          Lihat dan kontrol pesanan.
+        </p>
+      </div>
+
+
+      <div
+        class="menu-card"
+        onclick="showComingSoon('Pengaturan')"
+      >
+        <h3>Pengaturan</h3>
+        <p>
+          Pengaturan toko dan sistem.
+        </p>
+      </div>
+
+    </section>
+
+  </main>
 
 </div>
 
@@ -342,65 +390,42 @@
 
 
   // ==========================================
-  // TAB LOGIN
+  // ELEMENT
   // ==========================================
 
-  function showLogin() {
+  const loginPage =
+    document.getElementById(
+      "loginPage"
+    );
 
-    document
-      .getElementById("loginForm")
-      .classList.add("active");
+  const dashboardPage =
+    document.getElementById(
+      "dashboardPage"
+    );
 
-    document
-      .getElementById("registerForm")
-      .classList.remove("active");
+  const loginForm =
+    document.getElementById(
+      "loginForm"
+    );
 
+  const loginButton =
+    document.getElementById(
+      "loginButton"
+    );
 
-    document
-      .getElementById("loginTab")
-      .classList.add("active");
+  const loginMessage =
+    document.getElementById(
+      "loginMessage"
+    );
 
-    document
-      .getElementById("registerTab")
-      .classList.remove("active");
-
-
-    clearMessage();
-
-  }
-
-
-  // ==========================================
-  // TAB DAFTAR
-  // ==========================================
-
-  function showRegister() {
-
-    document
-      .getElementById("registerForm")
-      .classList.add("active");
-
-    document
-      .getElementById("loginForm")
-      .classList.remove("active");
-
-
-    document
-      .getElementById("registerTab")
-      .classList.add("active");
-
-    document
-      .getElementById("loginTab")
-      .classList.remove("active");
-
-
-    clearMessage();
-
-  }
+  const adminEmail =
+    document.getElementById(
+      "adminEmail"
+    );
 
 
   // ==========================================
-  // MESSAGE
+  // TAMPILKAN PESAN
   // ==========================================
 
   function showMessage(
@@ -408,52 +433,176 @@
     success = false
   ) {
 
-    const element =
-      document.getElementById(
-        "message"
-      );
-
-
-    element.textContent =
+    loginMessage.textContent =
       text;
 
-
-    element.style.color =
-      success
-        ? "#166534"
-        : "#991b1b";
+    loginMessage.style.color =
+      success ? "green" : "red";
 
   }
 
 
-  function clearMessage() {
+  // ==========================================
+  // LOGIN
+  // ==========================================
 
-    const element =
-      document.getElementById(
-        "message"
+  loginForm.addEventListener(
+    "submit",
+    async function(event) {
+
+      event.preventDefault();
+
+      const email =
+        document
+          .getElementById("email")
+          .value
+          .trim();
+
+      const password =
+        document
+          .getElementById("password")
+          .value;
+
+
+      loginButton.disabled = true;
+
+      loginButton.textContent =
+        "Memeriksa...";
+
+      showMessage("");
+
+
+      const {
+        data,
+        error
+      } =
+        await supabaseClient.auth.signInWithPassword({
+          email: email,
+          password: password
+        });
+
+
+      if (error) {
+
+        console.error(error);
+
+        showMessage(
+          "Email atau password salah."
+        );
+
+        loginButton.disabled =
+          false;
+
+        loginButton.textContent =
+          "Masuk";
+
+        return;
+      }
+
+
+      if (!data.user) {
+
+        showMessage(
+          "Login gagal."
+        );
+
+        loginButton.disabled =
+          false;
+
+        loginButton.textContent =
+          "Masuk";
+
+        return;
+      }
+
+
+      // ======================================
+      // CEK PROFILE ADMIN
+      // ======================================
+
+      const {
+        data: profile,
+        error: profileError
+      } =
+        await supabaseClient
+          .from("profiles")
+          .select(
+            "role, is_active"
+          )
+          .eq(
+            "id",
+            data.user.id
+          )
+          .single();
+
+
+      if (
+        profileError ||
+        !profile ||
+        profile.role !== "owner" ||
+        profile.is_active !== true
+      ) {
+
+        await supabaseClient.auth.signOut();
+
+        showMessage(
+          "Akun ini bukan akun administrator."
+        );
+
+        loginButton.disabled =
+          false;
+
+        loginButton.textContent =
+          "Masuk";
+
+        return;
+      }
+
+
+      showDashboard(
+        data.user.email
       );
 
+    }
+  );
 
-    element.textContent = "";
+
+  // ==========================================
+  // DASHBOARD
+  // ==========================================
+
+  function showDashboard(
+    email
+  ) {
+
+    loginPage.style.display =
+      "none";
+
+    dashboardPage.classList.add(
+      "active"
+    );
+
+    adminEmail.textContent =
+      "Login sebagai: " + email;
 
   }
 
 
   // ==========================================
-  // CEK SESSION
+  // CEK LOGIN SAAT HALAMAN DIBUKA
   // ==========================================
 
-  async function checkExistingSession() {
+  async function checkLogin() {
 
     const {
       data: {
-        session
+        user
       }
     } =
-      await supabaseClient.auth.getSession();
+      await supabaseClient.auth.getUser();
 
 
-    if (!session) {
+    if (!user) {
       return;
     }
 
@@ -468,9 +617,9 @@
         )
         .eq(
           "id",
-          session.user.id
+          user.id
         )
-        .maybeSingle();
+        .single();
 
 
     if (
@@ -479,8 +628,9 @@
       profile.is_active === true
     ) {
 
-      window.location.href =
-        "dashboard.html";
+      showDashboard(
+        user.email
+      );
 
     }
 
@@ -488,361 +638,53 @@
 
 
   // ==========================================
-  // DAFTAR PEMILIK
+  // LOGOUT
   // ==========================================
 
-  document
-    .getElementById("registerForm")
-    .addEventListener(
-      "submit",
-      async function(event) {
+  async function logout() {
 
-        event.preventDefault();
+    await supabaseClient.auth.signOut();
 
+    window.location.reload();
 
-        const email =
-          document
-            .getElementById(
-              "registerEmail"
-            )
-            .value
-            .trim();
+  }
 
 
-        const password =
-          document
-            .getElementById(
-              "registerPassword"
-            )
-            .value;
+  // ==========================================
+  // BUKA HALAMAN
+  // ==========================================
+
+  function openPage(
+    page
+  ) {
+
+    window.location.href =
+      page;
+
+  }
 
 
-        const confirmPassword =
-          document
-            .getElementById(
-              "registerPasswordConfirm"
-            )
-            .value;
+  // ==========================================
+  // FITUR YANG AKAN DIBUAT
+  // ==========================================
 
+  function showComingSoon(
+    name
+  ) {
 
-        if (
-          password !==
-          confirmPassword
-        ) {
-
-          showMessage(
-            "Password tidak sama."
-          );
-
-          return;
-        }
-
-
-        if (
-          password.length < 6
-        ) {
-
-          showMessage(
-            "Password minimal 6 karakter."
-          );
-
-          return;
-        }
-
-
-        const button =
-          document.getElementById(
-            "registerButton"
-          );
-
-
-        button.disabled =
-          true;
-
-        button.textContent =
-          "Mendaftarkan...";
-
-
-        try {
-
-          // ==============================
-          // BUAT USER AUTH
-          // ==============================
-
-          const {
-            data,
-            error
-          } =
-            await supabaseClient.auth.signUp({
-
-              email:
-                email,
-
-              password:
-                password
-
-            });
-
-
-          if (error) {
-            throw error;
-          }
-
-
-          // ==============================
-          // JIKA EMAIL CONFIRMATION AKTIF
-          // ==============================
-
-          if (
-            !data.user
-          ) {
-
-            throw new Error(
-              "Pendaftaran gagal."
-            );
-
-          }
-
-
-          showMessage(
-            "Pendaftaran berhasil. Silakan login menggunakan akun yang baru dibuat.",
-            true
-          );
-
-
-          document
-            .getElementById(
-              "registerForm"
-            )
-            .reset();
-
-
-          showLogin();
-
-
-          document
-            .getElementById(
-              "loginEmail"
-            )
-            .value =
-            email;
-
-
-        } catch (error) {
-
-          console.error(
-            error
-          );
-
-
-          showMessage(
-            error.message ||
-            "Pendaftaran gagal."
-          );
-
-
-        } finally {
-
-          button.disabled =
-            false;
-
-          button.textContent =
-            "Daftar Pemilik";
-
-        }
-
-      }
+    alert(
+      name +
+      " akan kita aktifkan setelah sistem utama selesai."
     );
 
-
-  // ==========================================
-  // LOGIN
-  // ==========================================
-
-  document
-    .getElementById("loginForm")
-    .addEventListener(
-      "submit",
-      async function(event) {
-
-        event.preventDefault();
-
-
-        const email =
-          document
-            .getElementById(
-              "loginEmail"
-            )
-            .value
-            .trim();
-
-
-        const password =
-          document
-            .getElementById(
-              "loginPassword"
-            )
-            .value;
-
-
-        const button =
-          document.getElementById(
-            "loginButton"
-          );
-
-
-        button.disabled =
-          true;
-
-        button.textContent =
-          "Memeriksa...";
-
-
-        try {
-
-          // ==============================
-          // LOGIN SUPABASE
-          // ==============================
-
-          const {
-            data,
-            error
-          } =
-            await supabaseClient.auth.signInWithPassword({
-
-              email:
-                email,
-
-              password:
-                password
-
-            });
-
-
-          if (error) {
-            throw error;
-          }
-
-
-          if (
-            !data.user
-          ) {
-
-            throw new Error(
-              "Login gagal."
-            );
-
-          }
-
-
-          // ==============================
-          // CEK PROFILE
-          // ==============================
-
-          const {
-            data: profile,
-            error: profileError
-          } =
-            await supabaseClient
-              .from("profiles")
-              .select(
-                "role, is_active"
-              )
-              .eq(
-                "id",
-                data.user.id
-              )
-              .maybeSingle();
-
-
-          if (
-            profileError
-          ) {
-
-            await supabaseClient
-              .auth
-              .signOut();
-
-            throw new Error(
-              "Profile akun belum tersedia."
-            );
-
-          }
-
-
-          if (
-            !profile ||
-            profile.role !== "owner"
-          ) {
-
-            await supabaseClient
-              .auth
-              .signOut();
-
-            throw new Error(
-              "Akun ini bukan akun pemilik."
-            );
-
-          }
-
-
-          if (
-            profile.is_active !== true
-          ) {
-
-            await supabaseClient
-              .auth
-              .signOut();
-
-            throw new Error(
-              "Akun pemilik tidak aktif."
-            );
-
-          }
-
-
-          showMessage(
-            "Login berhasil.",
-            true
-          );
-
-
-          window.location.href =
-            "dashboard.html";
-
-
-        } catch (error) {
-
-          console.error(
-            error
-          );
-
-
-          showMessage(
-            error.message ||
-            "Email atau password salah."
-          );
-
-
-        } finally {
-
-          button.disabled =
-            false;
-
-          button.textContent =
-            "Login";
-
-        }
-
-      }
-    );
+  }
 
 
   // ==========================================
   // MULAI
   // ==========================================
 
-  checkExistingSession();
+  checkLogin();
 
 </script>
 
