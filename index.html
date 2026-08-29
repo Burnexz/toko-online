@@ -3,869 +3,138 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <title>Zokent Store</title>
-
+  <title>Login - Toko Online POS</title>
+  <!-- CDN Tailwind CSS untuk Tampilan Modern -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- CDN Supabase JS SDK -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-  <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    body {
-      font-family: Arial, sans-serif;
-      background: #f5f5f5;
-      color: #111827;
-    }
-
-    header {
-      background: #111827;
-      color: white;
-      padding: 18px 20px;
-      position: sticky;
-      top: 0;
-      z-index: 20;
-    }
-
-    .header-inner {
-      max-width: 1200px;
-      margin: auto;
-    }
-
-    .logo {
-      font-size: 22px;
-      font-weight: bold;
-    }
-
-    .subtitle {
-      font-size: 12px;
-      opacity: .8;
-      margin-top: 3px;
-    }
-
-    .search-box {
-      max-width: 1200px;
-      margin: 18px auto 0;
-      padding: 0 20px;
-    }
-
-    .search-box input {
-      width: 100%;
-      padding: 13px 15px;
-      border: 1px solid #d1d5db;
-      border-radius: 10px;
-      font-size: 15px;
-      background: white;
-    }
-
-    .category-section {
-      max-width: 1200px;
-      margin: 18px auto 0;
-      padding: 0 20px;
-    }
-
-    .category-scroll {
-      display: flex;
-      gap: 9px;
-      overflow-x: auto;
-      padding-bottom: 5px;
-    }
-
-    .category-scroll::-webkit-scrollbar {
-      display: none;
-    }
-
-    .category-button {
-      flex-shrink: 0;
-      border: 1px solid #d1d5db;
-      background: white;
-      color: #111827;
-      padding: 10px 15px;
-      border-radius: 20px;
-      cursor: pointer;
-      font-size: 14px;
-      white-space: nowrap;
-    }
-
-    .category-button.active {
-      background: #111827;
-      color: white;
-    }
-
-    main {
-      max-width: 1200px;
-      margin: 25px auto;
-      padding: 0 20px;
-    }
-
-    .section-title {
-      font-size: 22px;
-      margin-bottom: 15px;
-    }
-
-    .product-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 13px;
-    }
-
-    .product-card {
-      background: white;
-      border-radius: 13px;
-      overflow: hidden;
-      box-shadow: 0 4px 14px rgba(0,0,0,.06);
-    }
-
-    .product-image {
-      width: 100%;
-      height: 170px;
-      object-fit: cover;
-      display: block;
-      background: #e5e7eb;
-    }
-
-    .no-image {
-      height: 170px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: #e5e7eb;
-      color: #6b7280;
-      font-size: 13px;
-    }
-
-    .product-content {
-      padding: 13px;
-    }
-
-    .product-name {
-      font-size: 16px;
-      font-weight: bold;
-      line-height: 1.3;
-      margin-bottom: 7px;
-    }
-
-    .product-description {
-      font-size: 12px;
-      color: #6b7280;
-      margin-bottom: 8px;
-      line-height: 1.4;
-    }
-
-    .product-category {
-      font-size: 12px;
-      color: #6b7280;
-      margin-bottom: 8px;
-    }
-
-    .product-price {
-      font-size: 17px;
-      font-weight: bold;
-      margin-bottom: 12px;
-    }
-
-    .stock {
-      font-size: 12px;
-      margin-bottom: 10px;
-      color: #374151;
-    }
-
-    .order-button {
-      width: 100%;
-      border: none;
-      background: #111827;
-      color: white;
-      padding: 11px;
-      border-radius: 8px;
-      cursor: pointer;
-      font-weight: bold;
-      font-size: 13px;
-    }
-
-    .loading,
-    .empty,
-    .error {
-      background: white;
-      border-radius: 12px;
-      padding: 40px 20px;
-      text-align: center;
-      color: #6b7280;
-    }
-
-    footer {
-      margin-top: 40px;
-      padding: 25px 20px;
-      background: #111827;
-      color: white;
-      text-align: center;
-      font-size: 13px;
-    }
-
-    @media (min-width: 700px) {
-      .product-grid {
-        grid-template-columns: repeat(4, 1fr);
-      }
-
-      .product-image,
-      .no-image {
-        height: 190px;
-      }
-    }
-  </style>
 </head>
+<body class="bg-slate-100 flex items-center justify-center min-h-screen p-4">
 
-<body>
-
-<header>
-  <div class="header-inner">
-    <div class="logo">ZOKENT STORE</div>
-    <div class="subtitle">Toko Kelontong Modern</div>
-  </div>
-</header>
-
-
-<div class="search-box">
-  <input
-    type="search"
-    id="searchInput"
-    placeholder="Cari produk..."
-    autocomplete="off"
-  >
-</div>
-
-
-<section class="category-section">
-
-  <div
-    class="category-scroll"
-    id="categoryList"
-  >
-
-    <button
-      class="category-button active"
-      data-category="all"
-      onclick="selectCategory('all', this)"
-    >
-      Semua
-    </button>
-
-  </div>
-
-</section>
-
-
-<main>
-
-  <h1 class="section-title">
-    Produk
-  </h1>
-
-  <section id="productContainer">
-
-    <div class="loading">
-      Memuat produk...
+  <!-- Card Login Container -->
+  <div class="bg-white p-8 rounded-2xl shadow-xl w-full max-w-md border border-slate-200">
+    <div class="text-center mb-6">
+      <h1 class="text-2xl font-bold text-slate-800">Sistem Toko Online</h1>
+      <p class="text-sm text-slate-500 mt-1">Masuk untuk mengakses Kasir & Dasbor</p>
     </div>
 
-  </section>
+    <!-- Alert Notifikasi Pesan Error -->
+    <div id="alertBox" class="hidden mb-4 p-3 rounded-lg text-sm font-medium"></div>
 
-</main>
+    <!-- Form Login -->
+    <form id="loginForm" class="space-y-4">
+      <div>
+        <label class="block text-sm font-medium text-slate-700 mb-1">Email</label>
+        <input 
+          type="email" 
+          id="email" 
+          required 
+          placeholder="nama@toko.com" 
+          class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none text-slate-800"
+        />
+      </div>
 
+      <div>
+        <label class="block text-sm font-medium text-slate-700 mb-1">Kata Sandi</label>
+        <input 
+          type="password" 
+          id="password" 
+          required 
+          placeholder="••••••••" 
+          class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none text-slate-800"
+        />
+      </div>
 
-<footer>
-
-  <div>© Zokent Store</div>
-
-  <div style="margin-top:5px;">
-    Belanja mudah dan praktis
+      <button 
+        type="submit" 
+        id="btnLogin" 
+        class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2.5 rounded-lg transition-all duration-200 shadow-md hover:shadow-lg disabled:opacity-50"
+      >
+        Masuk Aplikasi
+      </button>
+    </form>
   </div>
 
-</footer>
+  <script>
+    // 1. Konfigurasi Klien Supabase
+    // Ganti nilai berikut dengan URL & ANON KEY dari Supabase Anda
+    const SUPABASE_URL = 'https://weuousmvkxmgmsnwiuad.supabase.co';
+    const SUPABASE_ANON_KEY = 'sb_publishable_e375KDL0vuoahHO_kWMjwA_a04R4yHb';
+    const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
+    const loginForm = document.getElementById('loginForm');
+    const alertBox = document.getElementById('alertBox');
+    const btnLogin = document.getElementById('btnLogin');
 
-<script>
-
-  // ==========================================
-  // SUPABASE
-  // ==========================================
-
-  const SUPABASE_URL =
-    "https://weuousmvkxmgmsnwiuad.supabase.co";
-
-  const SUPABASE_ANON_KEY =
-    "sb_publishable_e375KDL0vuoahHO_kWMjwA_a04R4yHb";
-
-
-  const supabaseClient =
-    window.supabase.createClient(
-      SUPABASE_URL,
-      SUPABASE_ANON_KEY
-    );
-
-
-  let products = [];
-
-  let selectedCategory = "all";
-
-  let searchText = "";
-
-
-  // ==========================================
-  // FORMAT RUPIAH
-  // ==========================================
-
-  function formatRupiah(value) {
-
-    return new Intl.NumberFormat(
-      "id-ID"
-    ).format(value || 0);
-
-  }
-
-
-  // ==========================================
-  // ESCAPE HTML
-  // ==========================================
-
-  function escapeHtml(value) {
-
-    const div =
-      document.createElement("div");
-
-    div.textContent =
-      value ?? "";
-
-    return div.innerHTML;
-
-  }
-
-
-  // ==========================================
-  // LOAD KATEGORI
-  // ==========================================
-
-  async function loadCategories() {
-
-    const categoryList =
-      document.getElementById(
-        "categoryList"
-      );
-
-
-    const { data, error } =
-      await supabaseClient
-        .from("categories")
-        .select("id, name")
-        .order("name", {
-          ascending: true
-        });
-
-
-    if (error) {
-
-      console.error(
-        "ERROR KATEGORI:",
-        error
-      );
-
-      return;
+    // Fungsi Pembantu Tampil Notifikasi Error/Info
+    function showAlert(message, isError = true) {
+      alertBox.textContent = message;
+      alertBox.className = `mb-4 p-3 rounded-lg text-sm font-medium ${
+        isError ? 'bg-red-50 text-red-600 border border-red-200' : 'bg-green-50 text-green-600 border border-green-200'
+      }`;
+      alertBox.classList.remove('hidden');
     }
 
+    // 2. Cek Sesi Pengguna (Redirect Otomatis Jika Sudah Login)
+    async function checkSession() {
+      const { data: { session } } = await _supabase.auth.getSession();
+      if (session) {
+        await redirectUserBasedOnRole(session.user.id);
+      }
+    }
 
-    data.forEach(category => {
+    // 3. Pengarahan Halaman Berdasarkan Peran Pengguna (Role)
+    async function redirectUserBasedOnRole(userId) {
+      const { data: profile, error } = await _supabase
+        .from('profiles')
+        .select('role')
+        .eq('id', userId)
+        .single();
 
-      const button =
-        document.createElement("button");
+      if (error || !profile) {
+        // Default pengarahan jika role belum terkonfigurasi di profiles
+        window.location.href = 'dashboard.html';
+        return;
+      }
 
-      button.className =
-        "category-button";
+      if (profile.role === 'admin') {
+        window.location.href = 'dashboard.html';
+      } else if (profile.role === 'kasir') {
+        window.location.href = 'kasir.html';
+      } else {
+        window.location.href = 'dashboard.html';
+      }
+    }
 
-      button.textContent =
-        category.name;
+    // 4. Handling Submit Form Login
+    loginForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
 
-      button.onclick =
-        function() {
+      btnLogin.disabled = true;
+      btnLogin.textContent = 'Memproses...';
+      alertBox.classList.add('hidden');
 
-          selectCategory(
-            category.id,
-            button
-          );
-
-        };
-
-
-      categoryList.appendChild(
-        button
-      );
-
-    });
-
-  }
-
-
-  // ==========================================
-  // PILIH KATEGORI
-  // ==========================================
-
-  function selectCategory(
-    categoryId,
-    button
-  ) {
-
-    selectedCategory =
-      categoryId;
-
-
-    document
-      .querySelectorAll(
-        ".category-button"
-      )
-      .forEach(item => {
-
-        item.classList.remove(
-          "active"
-        );
-
+      // Panggil API Supabase Auth
+      const { data, error } = await _supabase.auth.signInWithPassword({
+        email: email,
+        password: password,
       });
 
-
-    button.classList.add(
-      "active"
-    );
-
-
-    renderProducts();
-
-  }
-
-
-  // ==========================================
-  // LOAD PRODUK
-  // ==========================================
-
-  async function loadProducts() {
-
-    const container =
-      document.getElementById(
-        "productContainer"
-      );
-
-
-    container.innerHTML = `
-      <div class="loading">
-        Memuat produk...
-      </div>
-    `;
-
-
-    const { data, error } =
-      await supabaseClient
-        .from("products")
-        .select(`
-          id,
-          name,
-          sku,
-          description,
-          selling_price,
-          image_url,
-          is_active,
-          show_in_catalog,
-          show_when_out_of_stock,
-          stock_quantity,
-          product_categories (
-            category_id,
-            categories (
-              id,
-              name
-            )
-          )
-        `)
-        .eq("is_active", true)
-        .eq("show_in_catalog", true)
-        .order("created_at", {
-          ascending: false
-        });
-
-
-    if (error) {
-
-      console.error(
-        "ERROR PRODUK:",
-        error
-      );
-
-
-      container.innerHTML = `
-        <div class="error">
-          Produk gagal dimuat.
-        </div>
-      `;
-
-      return;
-    }
-
-
-    products =
-      data || [];
-
-
-    renderProducts();
-
-  }
-
-
-  // ==========================================
-  // TAMPILKAN PRODUK
-  // ==========================================
-
-  function renderProducts() {
-
-    const container =
-      document.getElementById(
-        "productContainer"
-      );
-
-
-    const filtered =
-      products.filter(product => {
-
-
-        // =========================
-        // FILTER KATEGORI
-        // =========================
-
-        if (
-          selectedCategory !== "all"
-        ) {
-
-          const cocok =
-            product
-              .product_categories
-              ?.some(
-                relation =>
-                  relation.category_id ===
-                  selectedCategory
-              );
-
-
-          if (!cocok) {
-            return false;
-          }
-
-        }
-
-
-        // =========================
-        // FILTER SEARCH
-        // =========================
-
-        if (searchText) {
-
-          const nama =
-            (
-              product.name ||
-              ""
-            ).toLowerCase();
-
-
-          const deskripsi =
-            (
-              product.description ||
-              ""
-            ).toLowerCase();
-
-
-          if (
-            !nama.includes(
-              searchText
-            ) &&
-            !deskripsi.includes(
-              searchText
-            )
-          ) {
-
-            return false;
-
-          }
-
-        }
-
-
-        // =========================
-        // FILTER STOK
-        // =========================
-
-        if (
-          Number(
-            product.stock_quantity
-          ) <= 0 &&
-          !product.show_when_out_of_stock
-        ) {
-
-          return false;
-
-        }
-
-
-        return true;
-
-      });
-
-
-    if (filtered.length === 0) {
-
-      container.innerHTML = `
-        <div class="empty">
-          Produk tidak ditemukan.
-        </div>
-      `;
-
-      return;
-    }
-
-
-    container.innerHTML = `
-      <div class="product-grid"></div>
-    `;
-
-
-    const grid =
-      container.querySelector(
-        ".product-grid"
-      );
-
-
-    filtered.forEach(product => {
-
-      let categoryName =
-        "Tanpa kategori";
-
-
-      if (
-        product.product_categories &&
-        product.product_categories.length > 0
-      ) {
-
-        const relation =
-          product
-            .product_categories[0];
-
-
-        if (
-          relation.categories &&
-          relation.categories.name
-        ) {
-
-          categoryName =
-            relation.categories.name;
-
-        }
-
-      }
-
-
-      let imageHtml;
-
-
-      if (product.image_url) {
-
-        imageHtml = `
-          <img
-            class="product-image"
-            src="${escapeHtml(
-              product.image_url
-            )}"
-            alt="${escapeHtml(
-              product.name
-            )}"
-            loading="lazy"
-          >
-        `;
-
+      if (error) {
+        showAlert('Login gagal: ' + error.message, true);
+        btnLogin.disabled = false;
+        btnLogin.textContent = 'Masuk Aplikasi';
       } else {
-
-        imageHtml = `
-          <div class="no-image">
-            Tidak ada foto
-          </div>
-        `;
-
+        showAlert('Berhasil masuk! Mengarahkan...', false);
+        await redirectUserBasedOnRole(data.user.id);
       }
-
-
-      let stockText;
-
-
-      if (
-        Number(
-          product.stock_quantity
-        ) <= 0
-      ) {
-
-        stockText =
-          "Stok habis";
-
-      } else {
-
-        stockText =
-          "Stok: " +
-          product.stock_quantity;
-
-      }
-
-
-      const card =
-        document.createElement(
-          "div"
-        );
-
-
-      card.className =
-        "product-card";
-
-
-      card.innerHTML = `
-
-        ${imageHtml}
-
-        <div class="product-content">
-
-          <div class="product-name">
-            ${escapeHtml(
-              product.name
-            )}
-          </div>
-
-          ${
-            product.description
-              ? `
-                <div class="product-description">
-                  ${escapeHtml(
-                    product.description
-                  )}
-                </div>
-              `
-              : ""
-          }
-
-          <div class="product-category">
-            ${escapeHtml(
-              categoryName
-            )}
-          </div>
-
-          <div class="product-price">
-            Rp ${formatRupiah(
-              product.selling_price
-            )}
-          </div>
-
-          <div class="stock">
-            ${stockText}
-          </div>
-
-          <button
-            class="order-button"
-            onclick="orderProduct(
-              '${escapeHtml(
-                product.name
-              )}',
-              ${product.selling_price}
-            )"
-          >
-            Pesan via WhatsApp
-          </button>
-
-        </div>
-
-      `;
-
-
-      grid.appendChild(
-        card
-      );
-
     });
 
-  }
-
-
-  // ==========================================
-  // SEARCH
-  // ==========================================
-
-  document
-    .getElementById(
-      "searchInput"
-    )
-    .addEventListener(
-      "input",
-      function(event) {
-
-        searchText =
-          event.target.value
-            .trim()
-            .toLowerCase();
-
-
-        renderProducts();
-
-      }
-    );
-
-
-  // ==========================================
-  // WHATSAPP
-  // ==========================================
-
-  function orderProduct(
-    productName,
-    price
-  ) {
-
-    const phone =
-      "6283863000922";
-
-
-    const message =
-      `Halo Zokent Store, saya mau pesan ${productName} dengan harga Rp ${formatRupiah(price)}.`;
-
-
-    const url =
-      "https://wa.me/" +
-      phone +
-      "?text=" +
-      encodeURIComponent(
-        message
-      );
-
-
-    window.open(
-      url,
-      "_blank"
-    );
-
-  }
-
-
-  // ==========================================
-  // MULAI
-  // ==========================================
-
-  async function init() {
-
-    await loadCategories();
-
-    await loadProducts();
-
-  }
-
-
-  init();
-
-</script>
-
+    // Jalankan pengecekan sesi saat halaman dibuka
+    checkSession();
+  </script>
 </body>
 </html>
