@@ -28,6 +28,9 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 10;
     }
 
     .brand {
@@ -35,9 +38,23 @@
       font-weight: bold;
     }
 
+    .brand-small {
+      font-size: 11px;
+      color: #9ca3af;
+      margin-top: 3px;
+    }
+
+    .user-box {
+      text-align: right;
+    }
+
+    .user-icon {
+      font-size: 22px;
+    }
+
     .user-name {
-      font-size: 14px;
-      opacity: 0.9;
+      font-size: 12px;
+      color: #d1d5db;
     }
 
     .container {
@@ -48,7 +65,7 @@
     }
 
     .welcome {
-      margin-bottom: 25px;
+      margin-bottom: 22px;
     }
 
     .welcome h1 {
@@ -58,42 +75,174 @@
 
     .welcome p {
       color: #6b7280;
+      font-size: 14px;
+    }
+
+    /* =========================
+       RINGKASAN
+    ========================= */
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      margin-bottom: 25px;
+    }
+
+    .summary-card {
+      background: white;
+      padding: 18px;
+      border-radius: 15px;
+      box-shadow: 0 5px 18px rgba(0,0,0,0.06);
+      border: 1px solid #e5e7eb;
+    }
+
+    .summary-icon {
+      font-size: 28px;
+      margin-bottom: 10px;
+    }
+
+    .summary-title {
+      font-size: 12px;
+      color: #6b7280;
+      margin-bottom: 5px;
+    }
+
+    .summary-value {
+      font-size: 22px;
+      font-weight: bold;
+    }
+
+    .blue {
+      color: #2563eb;
+    }
+
+    .green {
+      color: #16a34a;
+    }
+
+    .orange {
+      color: #ea580c;
+    }
+
+    .red {
+      color: #dc2626;
+    }
+
+    /* =========================
+       MENU
+    ========================= */
+
+    .section-title {
+      font-size: 18px;
+      font-weight: bold;
+      margin-bottom: 12px;
+    }
+
+    .section-subtitle {
+      color: #6b7280;
+      font-size: 12px;
+      margin-bottom: 15px;
     }
 
     .menu-grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
-      gap: 15px;
+      gap: 12px;
     }
 
     .menu-card {
       background: white;
-      padding: 25px 20px;
+      padding: 20px 16px;
       border-radius: 15px;
-      box-shadow: 0 5px 18px rgba(0,0,0,0.07);
+      box-shadow: 0 5px 18px rgba(0,0,0,0.06);
       cursor: pointer;
       transition: 0.2s;
+      border: 1px solid #e5e7eb;
+      text-decoration: none;
+      color: inherit;
     }
 
     .menu-card:hover {
       transform: translateY(-2px);
+      box-shadow: 0 8px 22px rgba(0,0,0,0.10);
+    }
+
+    .menu-card:active {
+      transform: scale(0.98);
     }
 
     .icon {
-      font-size: 32px;
-      margin-bottom: 12px;
+      font-size: 31px;
+      margin-bottom: 10px;
     }
 
     .menu-card h2 {
-      font-size: 18px;
-      margin-bottom: 6px;
+      font-size: 16px;
+      margin-bottom: 5px;
     }
 
     .menu-card p {
-      font-size: 13px;
+      font-size: 12px;
       color: #6b7280;
       line-height: 1.5;
     }
+
+    /* =========================
+       STOK MENIPIS
+    ========================= */
+
+    .stock-section {
+      margin-top: 25px;
+      background: white;
+      border-radius: 15px;
+      padding: 18px;
+      box-shadow: 0 5px 18px rgba(0,0,0,0.06);
+      border: 1px solid #e5e7eb;
+    }
+
+    .stock-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 0;
+      border-bottom: 1px solid #f3f4f6;
+    }
+
+    .stock-item:last-child {
+      border-bottom: none;
+    }
+
+    .stock-name {
+      font-size: 13px;
+      font-weight: bold;
+    }
+
+    .stock-sku {
+      font-size: 10px;
+      color: #9ca3af;
+      margin-top: 3px;
+    }
+
+    .stock-number {
+      background: #fee2e2;
+      color: #dc2626;
+      padding: 6px 9px;
+      border-radius: 8px;
+      font-size: 11px;
+      font-weight: bold;
+      white-space: nowrap;
+    }
+
+    .no-stock {
+      color: #6b7280;
+      font-size: 12px;
+      padding: 10px 0;
+    }
+
+    /* =========================
+       LOGOUT
+    ========================= */
 
     .logout {
       margin-top: 25px;
@@ -108,6 +257,14 @@
       cursor: pointer;
     }
 
+    .logout:hover {
+      background: #b91c1c;
+    }
+
+    /* =========================
+       LOADING
+    ========================= */
+
     .loading {
       position: fixed;
       inset: 0;
@@ -116,77 +273,441 @@
       align-items: center;
       justify-content: center;
       font-size: 16px;
-      z-index: 10;
+      z-index: 100;
+    }
+
+    .error-box {
+      background: #fee2e2;
+      color: #991b1b;
+      padding: 15px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+      display: none;
+      font-size: 13px;
     }
 
     @media (min-width: 700px) {
+
+      .summary-grid {
+        grid-template-columns: repeat(4, 1fr);
+      }
+
       .menu-grid {
         grid-template-columns: repeat(4, 1fr);
       }
+
     }
   </style>
 </head>
 
 <body>
 
+  <!-- =========================
+       LOADING
+  ========================= -->
+
   <div class="loading" id="loading">
     Memeriksa login...
   </div>
 
+
+  <!-- =========================
+       HEADER
+  ========================= -->
+
   <header class="header">
-    <div class="brand">
-      ZOKENT STORE
+
+    <div>
+
+      <div class="brand">
+        ZOKENT STORE
+      </div>
+
+      <div class="brand-small">
+        PANEL PEMILIK
+      </div>
+
     </div>
 
-    <div class="user-name" id="userName">
-      Pemilik
+
+    <div class="user-box">
+
+      <div class="user-icon">
+        👤
+      </div>
+
+      <div class="user-name" id="userName">
+        Pemilik
+      </div>
+
     </div>
+
   </header>
 
 
+  <!-- =========================
+       MAIN
+  ========================= -->
+
   <main class="container">
 
+
+    <!-- WELCOME -->
+
     <section class="welcome">
-      <h1>Dashboard Admin</h1>
-      <p>Kelola toko Zokent dari sini.</p>
-    </section>
 
+      <h1>
+        Dashboard Admin
+      </h1>
 
-    <section class="menu-grid">
-
-      <div class="menu-card" onclick="openMenu('produk')">
-        <div class="icon">📦</div>
-        <h2>Produk</h2>
-        <p>Tambah, ubah, dan kelola produk toko.</p>
-      </div>
-
-      <div class="menu-card" onclick="openMenu('kategori')">
-        <div class="icon">🏷️</div>
-        <h2>Kategori</h2>
-        <p>Kelola kategori produk toko.</p>
-      </div>
-
-      <div class="menu-card" onclick="openMenu('kasir')">
-        <div class="icon">👥</div>
-        <h2>Kasir</h2>
-        <p>Buat dan kelola akun kasir.</p>
-      </div>
-
-      <div class="menu-card" onclick="openMenu('pengaturan')">
-        <div class="icon">⚙️</div>
-        <h2>Pengaturan</h2>
-        <p>Pengaturan aplikasi dan toko.</p>
-      </div>
+      <p>
+        Kelola dan pantau toko Zokent dari sini.
+      </p>
 
     </section>
 
+
+    <!-- ERROR -->
+
+    <div class="error-box" id="errorBox"></div>
+
+
+    <!-- =========================
+         RINGKASAN
+    ========================= -->
+
+    <section class="summary-grid">
+
+
+      <!-- TOTAL PRODUK -->
+
+      <div class="summary-card">
+
+        <div class="summary-icon">
+          📦
+        </div>
+
+        <div class="summary-title">
+          Total Produk
+        </div>
+
+        <div class="summary-value blue" id="totalProducts">
+          0
+        </div>
+
+      </div>
+
+
+      <!-- PRODUK AKTIF -->
+
+      <div class="summary-card">
+
+        <div class="summary-icon">
+          ✅
+        </div>
+
+        <div class="summary-title">
+          Produk Aktif
+        </div>
+
+        <div class="summary-value green" id="activeProducts">
+          0
+        </div>
+
+      </div>
+
+
+      <!-- KATEGORI -->
+
+      <div class="summary-card">
+
+        <div class="summary-icon">
+          🏷️
+        </div>
+
+        <div class="summary-title">
+          Total Kategori
+        </div>
+
+        <div class="summary-value orange" id="totalCategories">
+          0
+        </div>
+
+      </div>
+
+
+      <!-- STOK MENIPIS -->
+
+      <div class="summary-card">
+
+        <div class="summary-icon">
+          ⚠️
+        </div>
+
+        <div class="summary-title">
+          Stok Menipis
+        </div>
+
+        <div class="summary-value red" id="lowStock">
+          0
+        </div>
+
+      </div>
+
+
+    </section>
+
+
+    <!-- =========================
+         MENU PENGELOLAAN
+    ========================= -->
+
+    <section>
+
+      <h2 class="section-title">
+        Menu Pengelolaan
+      </h2>
+
+      <p class="section-subtitle">
+        Semua kontrol toko berada di sini.
+      </p>
+
+
+      <div class="menu-grid">
+
+
+        <a href="produk.html" class="menu-card">
+
+          <div class="icon">
+            📦
+          </div>
+
+          <h2>
+            Produk
+          </h2>
+
+          <p>
+            Tambah, ubah, hapus dan kelola produk.
+          </p>
+
+        </a>
+
+
+        <a href="kategori.html" class="menu-card">
+
+          <div class="icon">
+            🏷️
+          </div>
+
+          <h2>
+            Kategori
+          </h2>
+
+          <p>
+            Kelola kategori produk toko.
+          </p>
+
+        </a>
+
+
+        <a href="stok.html" class="menu-card">
+
+          <div class="icon">
+            📊
+          </div>
+
+          <h2>
+            Stok
+          </h2>
+
+          <p>
+            Pantau jumlah stok setiap produk.
+          </p>
+
+        </a>
+
+
+        <a href="barang-masuk.html" class="menu-card">
+
+          <div class="icon">
+            ➕
+          </div>
+
+          <h2>
+            Barang Masuk
+          </h2>
+
+          <p>
+            Tambahkan stok dari supplier.
+          </p>
+
+        </a>
+
+
+        <a href="barang-keluar.html" class="menu-card">
+
+          <div class="icon">
+            ➖
+          </div>
+
+          <h2>
+            Barang Keluar
+          </h2>
+
+          <p>
+            Catat barang yang keluar.
+          </p>
+
+        </a>
+
+
+        <a href="transaksi.html" class="menu-card">
+
+          <div class="icon">
+            🛒
+          </div>
+
+          <h2>
+            Transaksi
+          </h2>
+
+          <p>
+            Lihat dan kelola transaksi toko.
+          </p>
+
+        </a>
+
+
+        <a href="kasir.html" class="menu-card">
+
+          <div class="icon">
+            👨‍💼
+          </div>
+
+          <h2>
+            Kasir
+          </h2>
+
+          <p>
+            Buat dan kelola akun kasir.
+          </p>
+
+        </a>
+
+
+        <a href="pelanggan.html" class="menu-card">
+
+          <div class="icon">
+            👥
+          </div>
+
+          <h2>
+            Pelanggan
+          </h2>
+
+          <p>
+            Kelola data pelanggan toko.
+          </p>
+
+        </a>
+
+
+        <a href="keuangan.html" class="menu-card">
+
+          <div class="icon">
+            💰
+          </div>
+
+          <h2>
+            Keuangan
+          </h2>
+
+          <p>
+            Pantau pendapatan dan pengeluaran.
+          </p>
+
+        </a>
+
+
+        <a href="laporan.html" class="menu-card">
+
+          <div class="icon">
+            📈
+          </div>
+
+          <h2>
+            Laporan
+          </h2>
+
+          <p>
+            Lihat laporan toko.
+          </p>
+
+        </a>
+
+
+        <a href="pengaturan.html" class="menu-card">
+
+          <div class="icon">
+            ⚙️
+          </div>
+
+          <h2>
+            Pengaturan
+          </h2>
+
+          <p>
+            Atur toko dan sistem.
+          </p>
+
+        </a>
+
+
+      </div>
+
+    </section>
+
+
+    <!-- =========================
+         STOK MENIPIS
+    ========================= -->
+
+    <section class="stock-section">
+
+      <h2 class="section-title">
+        ⚠️ Stok Menipis
+      </h2>
+
+      <p class="section-subtitle">
+        Produk yang jumlah stoknya sudah mencapai batas minimum.
+      </p>
+
+      <div id="lowStockList">
+
+        <div class="no-stock">
+          Memuat data stok...
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- =========================
+         LOGOUT
+    ========================= -->
 
     <button class="logout" id="logoutButton">
-      Keluar
+      🔐 Keluar dari Akun Pemilik
     </button>
+
 
   </main>
 
+
+  <!-- =========================
+       SUPABASE
+  ========================= -->
 
   <script>
 
@@ -194,89 +715,384 @@
     // SUPABASE
     // ==========================================
 
-    const SUPABASE_URL = "https://weuousmvkxmgmsnwiuad.supabase.co";
-    const SUPABASE_ANON_KEY = "sb_publishable_e375KDL0vuoahHO_kWMjwA_a04R4yHb";
+    const SUPABASE_URL =
+      "https://weuousmvkxmgmsnwiuad.supabase.co";
 
-    const supabaseClient = window.supabase.createClient(
-      SUPABASE_URL,
-      SUPABASE_ANON_KEY
-    );
+    const SUPABASE_ANON_KEY =
+      "sb_publishable_e375KDL0vuoahHO_kWMjwA_a04R4yHb";
+
+
+    const supabaseClient =
+      window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_ANON_KEY
+      );
 
 
     // ==========================================
-    // CEK LOGIN
+    // ELEMENT
     // ==========================================
 
-    async function checkLogin() {
+    const loading =
+      document.getElementById("loading");
 
-      const {
-        data: { user }
-      } = await supabaseClient.auth.getUser();
+    const errorBox =
+      document.getElementById("errorBox");
 
+    const userName =
+      document.getElementById("userName");
 
-      if (!user) {
-        window.location.href = "admin.html";
-        return;
-      }
+    const totalProducts =
+      document.getElementById("totalProducts");
 
+    const activeProducts =
+      document.getElementById("activeProducts");
 
-      // Ambil profile
-      const { data: profile, error } =
-        await supabaseClient
-          .from("profiles")
-          .select("full_name, role, is_active")
-          .eq("id", user.id)
-          .single();
+    const totalCategories =
+      document.getElementById("totalCategories");
 
+    const lowStock =
+      document.getElementById("lowStock");
 
-      if (
-        error ||
-        !profile ||
-        profile.role !== "owner" ||
-        profile.is_active !== true
-      ) {
-
-        await supabaseClient.auth.signOut();
-
-        window.location.href = "admin.html";
-        return;
-      }
+    const lowStockList =
+      document.getElementById("lowStockList");
 
 
-      // Tampilkan nama
-      document.getElementById("userName").textContent =
-        profile.full_name || "Pemilik";
+    // ==========================================
+    // TAMPILKAN ERROR
+    // ==========================================
 
+    function showError(message) {
 
-      document.getElementById("loading").style.display = "none";
+      errorBox.textContent = message;
+
+      errorBox.style.display = "block";
+
     }
 
 
     // ==========================================
-    // MENU
+    // CEK LOGIN PEMILIK
     // ==========================================
 
-    function openMenu(menu) {
+    async function checkLogin() {
 
-  if (menu === "produk") {
-    window.location.href = "produk.html";
-    return;
-  }
+      try {
 
-  if (menu === "kategori") {
-    window.location.href = "kategori.html";
-    return;
-  }
+        const {
+          data: { user },
+          error
+        } =
+          await supabaseClient.auth.getUser();
 
-  if (menu === "kasir") {
-    window.location.href = "kasir.html";
-    return;
-  }
 
-  if (menu === "pengaturan") {
-    window.location.href = "pengaturan.html";
-    return;
-  }
+        if (error) {
+
+          throw error;
+
+        }
+
+
+        // Tidak login
+
+        if (!user) {
+
+          window.location.href =
+            "login-admin.html";
+
+          return;
+
+        }
+
+
+        // ======================================
+        // CEK PROFILE PEMILIK
+        // ======================================
+
+        const {
+          data: profile,
+          error: profileError
+        } =
+          await supabaseClient
+            .from("profiles")
+            .select("full_name, role, is_active")
+            .eq("id", user.id)
+            .single();
+
+
+        if (profileError) {
+
+          throw profileError;
+
+        }
+
+
+        // Harus owner
+
+        if (
+          !profile ||
+          profile.role !== "owner" ||
+          profile.is_active !== true
+        ) {
+
+          await supabaseClient.auth.signOut();
+
+          alert(
+            "Akun ini bukan akun pemilik atau akun sedang tidak aktif."
+          );
+
+          window.location.href =
+            "login-admin.html";
+
+          return;
+
+        }
+
+
+        // ======================================
+        // NAMA PEMILIK
+        // ======================================
+
+        userName.textContent =
+          profile.full_name || "Pemilik";
+
+
+        // ======================================
+        // LOAD DASHBOARD
+        // ======================================
+
+        await loadDashboard();
+
+
+        // Hilangkan loading
+
+        loading.style.display = "none";
+
+      }
+
+      catch (error) {
+
+        console.error(error);
+
+        showError(
+          "Gagal memuat dashboard: " +
+          error.message
+        );
+
+        loading.style.display = "none";
+
+      }
+
+    }
+
+
+    // ==========================================
+    // LOAD DATA DASHBOARD
+    // ==========================================
+
+    async function loadDashboard() {
+
+
+      // ========================================
+      // TOTAL PRODUK
+      // ========================================
+
+      const {
+        count: productCount,
+        error: productError
+      } =
+        await supabaseClient
+          .from("products")
+          .select("*", {
+            count: "exact",
+            head: true
+          });
+
+
+      if (productError) {
+
+        throw productError;
+
+      }
+
+
+      totalProducts.textContent =
+        productCount || 0;
+
+
+      // ========================================
+      // PRODUK AKTIF
+      // ========================================
+
+      const {
+        count: activeCount,
+        error: activeError
+      } =
+        await supabaseClient
+          .from("products")
+          .select("*", {
+            count: "exact",
+            head: true
+          })
+          .eq("is_active", true);
+
+
+      if (activeError) {
+
+        throw activeError;
+
+      }
+
+
+      activeProducts.textContent =
+        activeCount || 0;
+
+
+      // ========================================
+      // TOTAL KATEGORI
+      // ========================================
+
+      const {
+        count: categoryCount,
+        error: categoryError
+      } =
+        await supabaseClient
+          .from("categories")
+          .select("*", {
+            count: "exact",
+            head: true
+          });
+
+
+      if (categoryError) {
+
+        throw categoryError;
+
+      }
+
+
+      totalCategories.textContent =
+        categoryCount || 0;
+
+
+      // ========================================
+      // STOK MENIPIS
+      // ========================================
+
+      const {
+        data: products,
+        error: stockError
+      } =
+        await supabaseClient
+          .from("products")
+          .select(
+            "id, name, sku, stock_quantity, minimum_stock"
+          )
+          .eq("is_active", true);
+
+
+      if (stockError) {
+
+        throw stockError;
+
+      }
+
+
+      // Cari produk yang stoknya <= minimum stock
+
+      const lowStockProducts =
+        (products || []).filter(product => {
+
+          const stock =
+            Number(product.stock_quantity || 0);
+
+          const minimum =
+            Number(product.minimum_stock || 0);
+
+          return stock <= minimum;
+
+        });
+
+
+      lowStock.textContent =
+        lowStockProducts.length;
+
+
+      // ========================================
+      // TAMPILKAN DAFTAR STOK MENIPIS
+      // ========================================
+
+      if (lowStockProducts.length === 0) {
+
+        lowStockList.innerHTML = `
+          <div class="no-stock">
+            ✅ Tidak ada produk dengan stok menipis.
+          </div>
+        `;
+
+        return;
+
+      }
+
+
+      // Maksimal tampilkan 10
+
+      const displayProducts =
+        lowStockProducts.slice(0, 10);
+
+
+      lowStockList.innerHTML =
+        displayProducts.map(product => {
+
+          const stock =
+            Number(product.stock_quantity || 0);
+
+          const minimum =
+            Number(product.minimum_stock || 0);
+
+          return `
+
+            <div class="stock-item">
+
+              <div>
+
+                <div class="stock-name">
+                  ${escapeHtml(product.name || "Tanpa Nama")}
+                </div>
+
+                <div class="stock-sku">
+                  SKU: ${escapeHtml(product.sku || "-")}
+                  · Minimum: ${minimum}
+                </div>
+
+              </div>
+
+              <div class="stock-number">
+                Stok: ${stock}
+              </div>
+
+            </div>
+
+          `;
+
+        }).join("");
+
+
+    }
+
+
+    // ==========================================
+    // AMANKAN TEKS PRODUK
+    // ==========================================
+
+    function escapeHtml(text) {
+
+      const div =
+        document.createElement("div");
+
+      div.textContent = text;
+
+      return div.innerHTML;
 
     }
 
@@ -287,16 +1103,39 @@
 
     document
       .getElementById("logoutButton")
-      .addEventListener("click", async function() {
+      .addEventListener(
+        "click",
+        async function() {
 
-        await supabaseClient.auth.signOut();
+          const {
+            error
+          } =
+            await supabaseClient.auth.signOut();
 
-        window.location.href = "admin.html";
 
-      });
+          if (error) {
+
+            alert(
+              "Gagal logout: " +
+              error.message
+            );
+
+            return;
+
+          }
 
 
-    // Jalankan pemeriksaan login
+          window.location.href =
+            "login-admin.html";
+
+        }
+      );
+
+
+    // ==========================================
+    // JALANKAN
+    // ==========================================
+
     checkLogin();
 
   </script>
