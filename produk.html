@@ -4,12 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Produk - Zokent Store</title>
+  <title>Kelola Produk - Zokent Store</title>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-  <!-- Library scanner barcode -->
-  <script src="https://unpkg.com/html5-qrcode"></script>
 
   <style>
     * {
@@ -24,137 +21,100 @@
       color: #111827;
     }
 
-    header {
+    .header {
       background: #111827;
       color: white;
       padding: 18px 20px;
+    }
+
+    .header-inner {
+      max-width: 1100px;
+      margin: auto;
       display: flex;
       justify-content: space-between;
       align-items: center;
     }
 
-    header h1 {
+    .brand {
       font-size: 20px;
+      font-weight: bold;
+    }
+
+    .subtitle {
+      font-size: 11px;
+      color: #9ca3af;
+      margin-top: 4px;
     }
 
     .back {
       color: white;
       text-decoration: none;
-      font-size: 14px;
+      font-size: 13px;
+      background: #374151;
+      padding: 9px 12px;
+      border-radius: 8px;
     }
 
     .container {
-      max-width: 1100px;
+      max-width: 900px;
       margin: auto;
       padding: 25px 20px;
     }
 
-    .top {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 15px;
+    .title {
       margin-bottom: 20px;
     }
 
-    .top h2 {
-      font-size: 24px;
+    .title h1 {
+      font-size: 25px;
+      margin-bottom: 5px;
     }
 
-    button {
-      cursor: pointer;
-    }
-
-    .add-button,
-    .scan-button {
-      border: none;
-      color: white;
-      padding: 12px 16px;
-      border-radius: 9px;
-      font-weight: bold;
-    }
-
-    .add-button {
-      background: #111827;
-    }
-
-    .scan-button {
-      width: 100%;
-      background: #2563eb;
-      margin-bottom: 15px;
-    }
-
-    .scanner-box {
-      display: none;
-      background: white;
-      padding: 15px;
-      border-radius: 12px;
-      margin-bottom: 15px;
-      box-shadow: 0 4px 15px rgba(0,0,0,.06);
-    }
-
-    .scanner-box.active {
-      display: block;
-    }
-
-    #reader {
-      width: 100%;
-      overflow: hidden;
-      border-radius: 10px;
-    }
-
-    .close-scanner {
-      width: 100%;
-      margin-top: 10px;
-      border: none;
-      background: #dc2626;
-      color: white;
-      padding: 11px;
-      border-radius: 8px;
-      font-weight: bold;
-    }
-
-    .scanner-info {
-      text-align: center;
-      margin-bottom: 10px;
-      color: #6b7280;
+    .title p {
       font-size: 13px;
+      color: #6b7280;
     }
 
-    .form-box {
-      display: none;
+    .card {
       background: white;
-      padding: 22px;
-      border-radius: 14px;
+      border-radius: 15px;
+      padding: 20px;
+      box-shadow: 0 5px 18px rgba(0,0,0,0.06);
       margin-bottom: 20px;
-      box-shadow: 0 5px 18px rgba(0,0,0,0.07);
     }
 
-    .form-box.active {
-      display: block;
-    }
-
-    .form-box h3 {
+    .card h2 {
+      font-size: 18px;
       margin-bottom: 18px;
+    }
+
+    .form-group {
+      margin-bottom: 15px;
     }
 
     label {
       display: block;
-      margin-bottom: 7px;
+      font-size: 13px;
       font-weight: bold;
-      font-size: 14px;
+      margin-bottom: 6px;
     }
 
     input,
-    textarea,
-    select {
+    select,
+    textarea {
       width: 100%;
       padding: 12px;
       border: 1px solid #d1d5db;
-      border-radius: 8px;
-      margin-bottom: 15px;
-      font-size: 15px;
+      border-radius: 9px;
+      font-size: 14px;
+      outline: none;
       background: white;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+      border-color: #2563eb;
     }
 
     textarea {
@@ -162,185 +122,126 @@
       resize: vertical;
     }
 
-    .barcode-row {
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 15px;
+    }
+
+    .checkbox-area {
+      background: #f9fafb;
+      border: 1px solid #e5e7eb;
+      border-radius: 10px;
+      padding: 14px;
+      margin-top: 10px;
+    }
+
+    .check {
       display: flex;
-      gap: 8px;
+      align-items: center;
+      gap: 9px;
+      margin-bottom: 10px;
+      font-size: 13px;
+      font-weight: normal;
     }
 
-    .barcode-row input {
-      flex: 1;
+    .check:last-child {
+      margin-bottom: 0;
     }
 
-    .barcode-row button {
-      height: 46px;
+    .check input {
+      width: auto;
+    }
+
+    .button {
+      width: 100%;
       border: none;
       background: #2563eb;
       color: white;
-      padding: 0 15px;
-      border-radius: 8px;
+      padding: 14px;
+      border-radius: 10px;
+      font-size: 15px;
       font-weight: bold;
-      margin-bottom: 15px;
-      white-space: nowrap;
+      cursor: pointer;
     }
 
-    .form-actions {
-      display: flex;
-      gap: 10px;
+    .button:hover {
+      background: #1d4ed8;
     }
 
-    .save-button,
-    .cancel-button {
-      border: none;
-      padding: 12px 16px;
-      border-radius: 8px;
-      font-weight: bold;
-    }
-
-    .save-button {
-      background: #111827;
-      color: white;
-    }
-
-    .cancel-button {
-      background: #e5e7eb;
-      color: #111827;
-    }
-
-    .save-button:disabled {
-      opacity: .6;
+    .button:disabled {
+      background: #9ca3af;
       cursor: not-allowed;
     }
 
     .message {
-      min-height: 22px;
+      display: none;
+      padding: 13px;
+      border-radius: 9px;
       margin-bottom: 15px;
-      font-size: 14px;
-      font-weight: bold;
-    }
-
-    .product-list {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 15px;
-    }
-
-    .product-card {
-      background: white;
-      padding: 15px;
-      border-radius: 12px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.06);
-    }
-
-    .product-image {
-      width: 100%;
-      height: 180px;
-      object-fit: cover;
-      border-radius: 10px;
-      background: #e5e7eb;
-      margin-bottom: 12px;
-    }
-
-    .no-image {
-      width: 100%;
-      height: 180px;
-      border-radius: 10px;
-      background: #e5e7eb;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #6b7280;
-      margin-bottom: 12px;
-    }
-
-    .product-name {
-      font-size: 18px;
-      font-weight: bold;
-      margin-bottom: 5px;
-    }
-
-    .product-sku {
-      font-size: 12px;
-      color: #6b7280;
-      margin-bottom: 8px;
-    }
-
-    .product-description {
       font-size: 13px;
-      color: #6b7280;
-      margin-bottom: 8px;
     }
 
-    .product-price {
-      font-size: 17px;
-      font-weight: bold;
-      margin-bottom: 7px;
-    }
-
-    .product-category {
-      font-size: 13px;
-      color: #6b7280;
-      margin-bottom: 7px;
-    }
-
-    .product-stock {
-      font-size: 13px;
-      margin-bottom: 10px;
-    }
-
-    .product-status {
-      display: inline-block;
-      padding: 5px 9px;
-      border-radius: 20px;
-      font-size: 12px;
-      font-weight: bold;
-      margin-bottom: 12px;
-    }
-
-    .active {
+    .success {
+      display: block;
       background: #dcfce7;
       color: #166534;
     }
 
-    .inactive {
+    .error {
+      display: block;
       background: #fee2e2;
       color: #991b1b;
     }
 
-    .actions {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
+    .product-list {
+      margin-top: 10px;
     }
 
-    .action-button {
-      border: none;
-      padding: 9px 12px;
-      border-radius: 8px;
+    .product-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 15px;
+      padding: 14px 0;
+      border-bottom: 1px solid #e5e7eb;
+    }
+
+    .product-item:last-child {
+      border-bottom: none;
+    }
+
+    .product-name {
+      font-size: 14px;
       font-weight: bold;
     }
 
-    .toggle-button {
-      background: #e5e7eb;
-      color: #111827;
-    }
-
-    .delete-button {
-      background: #fee2e2;
-      color: #991b1b;
-    }
-
-    .loading,
-    .empty {
-      text-align: center;
-      padding: 35px;
+    .product-info {
+      font-size: 11px;
       color: #6b7280;
-      background: white;
-      border-radius: 12px;
+      margin-top: 4px;
     }
 
-    @media (min-width: 700px) {
-      .product-list {
-        grid-template-columns: repeat(3, 1fr);
+    .product-price {
+      font-size: 13px;
+      font-weight: bold;
+      color: #dc2626;
+      white-space: nowrap;
+    }
+
+    .loading {
+      position: fixed;
+      inset: 0;
+      background: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 100;
+    }
+
+    @media (min-width: 650px) {
+      .grid {
+        grid-template-columns: repeat(2, 1fr);
       }
     }
   </style>
@@ -348,757 +249,680 @@
 
 <body>
 
-<header>
-  <h1>ZOKENT STORE</h1>
-  <a class="back" href="dashboard.html">← Dashboard</a>
-</header>
-
-<main class="container">
-
-  <div class="top">
-    <h2>Produk</h2>
-
-    <button
-      class="add-button"
-      onclick="showForm()">
-      + Tambah Produk
-    </button>
+  <!-- LOADING -->
+  <div class="loading" id="loading">
+    Memeriksa login...
   </div>
 
-  <div
-    id="message"
-    class="message">
-  </div>
 
-  <!-- SCANNER -->
+  <!-- HEADER -->
+  <header class="header">
 
-  <section
-    id="scannerBox"
-    class="scanner-box">
+    <div class="header-inner">
 
-    <div class="scanner-info">
-      Arahkan kamera ke barcode produk
-    </div>
+      <div>
+        <div class="brand">
+          ZOKENT STORE
+        </div>
 
-    <div id="reader"></div>
-
-    <button
-      class="close-scanner"
-      onclick="stopScanner()">
-      Tutup Kamera
-    </button>
-
-  </section>
-
-  <!-- FORM -->
-
-  <section
-    id="formBox"
-    class="form-box">
-
-    <h3>Tambah Produk</h3>
-
-    <button
-      type="button"
-      class="scan-button"
-      onclick="startScanner()">
-      📷 Scan Barcode dengan Kamera
-    </button>
-
-    <form id="productForm">
-
-      <label for="productName">
-        Nama Produk
-      </label>
-
-      <input
-        type="text"
-        id="productName"
-        required
-      >
-
-      <label for="productSku">
-        Barcode / SKU
-      </label>
-
-      <div class="barcode-row">
-
-        <input
-          type="text"
-          id="productSku"
-          inputmode="numeric"
-          autocomplete="off"
-        >
-
-        <button
-          type="button"
-          onclick="startScanner()">
-          📷 Scan
-        </button>
-
+        <div class="subtitle">
+          KELOLA PRODUK
+        </div>
       </div>
 
-      <label for="productDescription">
-        Deskripsi
-      </label>
+      <a href="dashboard.html" class="back">
+        ← Dashboard
+      </a>
 
-      <textarea
-        id="productDescription"></textarea>
+    </div>
 
-      <label for="productPrice">
-        Harga Jual
-      </label>
+  </header>
 
-      <input
-        type="number"
-        id="productPrice"
-        min="0"
-        required
-      >
 
-      <label for="productStock">
-        Stok
-      </label>
+  <main class="container">
 
-      <input
-        type="number"
-        id="productStock"
-        min="0"
-        value="0"
-        required
-      >
 
-      <label for="productCategory">
-        Kategori
-      </label>
+    <!-- JUDUL -->
 
-      <select
-        id="productCategory"
-        required>
+    <section class="title">
 
-        <option value="">
-          Memuat kategori...
-        </option>
+      <h1>
+        Produk
+      </h1>
 
-      </select>
+      <p>
+        Tambahkan produk baru yang nantinya dapat ditampilkan di toko online.
+      </p>
 
-      <label for="productImage">
-        URL Foto Produk
-      </label>
+    </section>
 
-      <input
-        type="url"
-        id="productImage">
 
-      <div class="form-actions">
+    <!-- PESAN -->
+
+    <div id="message" class="message"></div>
+
+
+    <!-- FORM -->
+
+    <section class="card">
+
+      <h2>
+        ➕ Tambah Produk
+      </h2>
+
+
+      <form id="productForm">
+
+
+        <!-- NAMA + SKU -->
+
+        <div class="grid">
+
+          <div class="form-group">
+
+            <label>
+              Nama Produk *
+            </label>
+
+            <input
+              type="text"
+              id="name"
+              placeholder="Contoh: Beras Premium 5 Kg"
+              required
+            >
+
+          </div>
+
+
+          <div class="form-group">
+
+            <label>
+              SKU
+            </label>
+
+            <input
+              type="text"
+              id="sku"
+              placeholder="Contoh: BRSP5"
+            >
+
+          </div>
+
+        </div>
+
+
+        <!-- KATEGORI + NAMA KATALOG -->
+
+        <div class="grid">
+
+          <div class="form-group">
+
+            <label>
+              Kategori *
+            </label>
+
+            <select id="category" required>
+
+              <option value="">
+                Memuat kategori...
+              </option>
+
+            </select>
+
+          </div>
+
+
+          <div class="form-group">
+
+            <label>
+              Nama di Katalog
+            </label>
+
+            <input
+              type="text"
+              id="catalog_name"
+              placeholder="Kosongkan jika sama dengan nama produk"
+            >
+
+          </div>
+
+        </div>
+
+
+        <!-- DESKRIPSI -->
+
+        <div class="form-group">
+
+          <label>
+            Deskripsi
+          </label>
+
+          <textarea
+            id="description"
+            placeholder="Keterangan produk..."
+          ></textarea>
+
+        </div>
+
+
+        <!-- HARGA -->
+
+        <div class="grid">
+
+          <div class="form-group">
+
+            <label>
+              Harga Jual *
+            </label>
+
+            <input
+              type="number"
+              id="selling_price"
+              placeholder="Contoh: 72000"
+              min="0"
+              required
+            >
+
+          </div>
+
+
+          <div class="form-group">
+
+            <label>
+              URL Gambar
+            </label>
+
+            <input
+              type="url"
+              id="image_url"
+              placeholder="https://..."
+            >
+
+          </div>
+
+        </div>
+
+
+        <!-- STOK -->
+
+        <div class="grid">
+
+          <div class="form-group">
+
+            <label>
+              Stok Awal
+            </label>
+
+            <input
+              type="number"
+              id="stock_quantity"
+              value="0"
+              min="0"
+            >
+
+          </div>
+
+
+          <div class="form-group">
+
+            <label>
+              Minimum Stok
+            </label>
+
+            <input
+              type="number"
+              id="minimum_stock"
+              value="5"
+              min="0"
+            >
+
+          </div>
+
+        </div>
+
+
+        <!-- PENGATURAN -->
+
+        <div class="checkbox-area">
+
+          <label class="check">
+
+            <input
+              type="checkbox"
+              id="is_active"
+              checked
+            >
+
+            Produk aktif
+
+          </label>
+
+
+          <label class="check">
+
+            <input
+              type="checkbox"
+              id="show_in_catalog"
+              checked
+            >
+
+            Tampilkan di katalog pelanggan
+
+          </label>
+
+
+          <label class="check">
+
+            <input
+              type="checkbox"
+              id="show_when_out_of_stock"
+            >
+
+            Tetap tampilkan jika stok habis
+
+          </label>
+
+
+          <label class="check">
+
+            <input
+              type="checkbox"
+              id="allow_negative_stock"
+            >
+
+            Izinkan stok minus
+
+          </label>
+
+        </div>
+
+
+        <br>
+
 
         <button
           type="submit"
-          class="save-button"
-          id="saveButton">
-          Simpan Produk
+          class="button"
+          id="saveButton"
+        >
+          💾 Simpan Produk
         </button>
 
-        <button
-          type="button"
-          class="cancel-button"
-          onclick="hideForm()">
-          Batal
-        </button>
 
+      </form>
+
+    </section>
+
+
+    <!-- PRODUK TERBARU -->
+
+    <section class="card">
+
+      <h2>
+        📦 Produk Terbaru
+      </h2>
+
+      <div
+        id="productList"
+        class="product-list"
+      >
+        Memuat produk...
       </div>
 
-    </form>
-
-  </section>
-
-  <section id="productList">
-
-    <div class="loading">
-      Memuat produk...
-    </div>
-
-  </section>
-
-</main>
+    </section>
 
 
-<script>
-
-  // ==========================================
-  // SUPABASE
-  // ==========================================
-
-  const SUPABASE_URL =
-    "https://weuousmvkxmgmsnwiuad.supabase.co";
-
-  const SUPABASE_ANON_KEY =
-    "sb_publishable_e375KDL0vuoahHO_kWMjwA_a04R4yHb";
-
-  const supabaseClient =
-    window.supabase.createClient(
-      SUPABASE_URL,
-      SUPABASE_ANON_KEY
-    );
+  </main>
 
 
-  let html5QrCode = null;
+  <script>
 
-  let scannerRunning = false;
+    // ==========================================
+    // SUPABASE
+    // ==========================================
+
+    const SUPABASE_URL =
+      "https://weuousmvkxmgmsnwiuad.supabase.co";
+
+    const SUPABASE_ANON_KEY =
+      "sb_publishable_e375KDL0vuoahHO_kWMjwA_a04R4yHb";
 
 
-  // ==========================================
-  // MESSAGE
-  // ==========================================
+    const supabaseClient =
+      window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_ANON_KEY
+      );
 
-  function showMessage(
-    text,
-    success = false
-  ) {
 
-    const element =
+    // ==========================================
+    // ELEMENT
+    // ==========================================
+
+    const loading =
+      document.getElementById("loading");
+
+    const form =
+      document.getElementById("productForm");
+
+    const message =
       document.getElementById("message");
 
-    element.textContent = text;
+    const saveButton =
+      document.getElementById("saveButton");
 
-    element.style.color =
-      success ? "green" : "red";
+    const categorySelect =
+      document.getElementById("category");
 
-  }
-
-
-  // ==========================================
-  // FORM
-  // ==========================================
-
-  async function showForm() {
-
-    document
-      .getElementById("formBox")
-      .classList.add("active");
-
-    await loadCategories();
-
-    document
-      .getElementById("productName")
-      .focus();
-
-  }
+    const productList =
+      document.getElementById("productList");
 
 
-  function hideForm() {
+    // ==========================================
+    // PESAN
+    // ==========================================
 
-    stopScanner();
+    function showMessage(text, type) {
 
-    document
-      .getElementById("formBox")
-      .classList.remove("active");
+      message.textContent = text;
 
-    document
-      .getElementById("productForm")
-      .reset();
+      message.className =
+        "message " + type;
 
-  }
-
-
-  // ==========================================
-  // KATEGORI
-  // ==========================================
-
-  async function loadCategories() {
-
-    const select =
-      document.getElementById(
-        "productCategory"
-      );
-
-    select.innerHTML =
-      '<option value="">Memuat kategori...</option>';
+    }
 
 
-    const { data, error } =
-      await supabaseClient
-        .from("categories")
-        .select("id, name")
-        .order("name", {
-          ascending: true
-        });
+    // ==========================================
+    // CEK LOGIN PEMILIK
+    // ==========================================
 
+    async function checkLogin() {
 
-    if (error) {
-
-      console.error(
-        "ERROR KATEGORI:",
+      const {
+        data: { user },
         error
-      );
-
-      select.innerHTML =
-        '<option value="">Gagal memuat kategori</option>';
-
-      showMessage(
-        "Kategori gagal dimuat."
-      );
-
-      return;
-
-    }
+      } =
+        await supabaseClient.auth.getUser();
 
 
-    select.innerHTML =
-      '<option value="">Pilih kategori</option>';
+      if (error || !user) {
 
+        window.location.href =
+          "login-admin.html";
 
-    if (!data || data.length === 0) {
-
-      select.innerHTML =
-        '<option value="">Belum ada kategori</option>';
-
-      return;
-
-    }
-
-
-    data.forEach(category => {
-
-      const option =
-        document.createElement(
-          "option"
-        );
-
-      option.value =
-        category.id;
-
-      option.textContent =
-        category.name;
-
-      select.appendChild(
-        option
-      );
-
-    });
-
-  }
-
-
-  // ==========================================
-  // MULAI SCANNER
-  // ==========================================
-
-  async function startScanner() {
-
-    const scannerBox =
-      document.getElementById(
-        "scannerBox"
-      );
-
-    scannerBox.classList.add(
-      "active"
-    );
-
-
-    if (scannerRunning) {
-      return;
-    }
-
-
-    html5QrCode =
-      new Html5Qrcode(
-        "reader"
-      );
-
-
-    const config = {
-      fps: 10,
-      qrbox: {
-        width: 280,
-        height: 150
-      },
-      aspectRatio: 1.777778
-    };
-
-
-    try {
-
-      await html5QrCode.start(
-        {
-          facingMode: "environment"
-        },
-        config,
-        async function(decodedText) {
-
-          document
-            .getElementById(
-              "productSku"
-            )
-            .value =
-              decodedText;
-
-
-          showMessage(
-            "Barcode berhasil dibaca.",
-            true
-          );
-
-
-          await stopScanner();
-
-          await findProductByBarcode(
-            decodedText
-          );
-
-        },
-        function(errorMessage) {
-
-          // Abaikan pesan scanner
-          // selama kamera sedang mencari barcode
-
-        }
-      );
-
-
-      scannerRunning = true;
-
-
-    } catch (error) {
-
-      console.error(
-        "ERROR KAMERA:",
-        error
-      );
-
-
-      scannerBox.classList.remove(
-        "active"
-      );
-
-
-      showMessage(
-        "Kamera tidak bisa digunakan. Pastikan izin kamera diberikan."
-      );
-
-    }
-
-  }
-
-
-  // ==========================================
-  // STOP SCANNER
-  // ==========================================
-
-  async function stopScanner() {
-
-    if (
-      html5QrCode &&
-      scannerRunning
-    ) {
-
-      try {
-
-        await html5QrCode.stop();
-
-        await html5QrCode.clear();
-
-      } catch (error) {
-
-        console.error(
-          error
-        );
+        return false;
 
       }
 
+
+      // Cek profile
+
+      const {
+        data: profile,
+        error: profileError
+      } =
+        await supabaseClient
+          .from("profiles")
+          .select("full_name, role, is_active")
+          .eq("id", user.id)
+          .single();
+
+
+      if (
+        profileError ||
+        !profile ||
+        profile.role !== "owner" ||
+        profile.is_active !== true
+      ) {
+
+        await supabaseClient.auth.signOut();
+
+        window.location.href =
+          "login-admin.html";
+
+        return false;
+
+      }
+
+
+      return true;
+
     }
 
 
-    scannerRunning = false;
+    // ==========================================
+    // AMBIL KATEGORI
+    // ==========================================
 
-    html5QrCode = null;
+    async function loadCategories() {
 
-
-    document
-      .getElementById(
-        "scannerBox"
-      )
-      .classList.remove(
-        "active"
-      );
-
-  }
-
-
-  // ==========================================
-  // CARI PRODUK BERDASARKAN BARCODE
-  // ==========================================
-
-  async function findProductByBarcode(
-    barcode
-  ) {
-
-    if (!barcode) {
-      return;
-    }
-
-
-    const { data, error } =
-      await supabaseClient
-        .from("products")
-        .select(`
-          id,
-          name,
-          sku,
-          description,
-          selling_price,
-          image_url,
-          product_categories (
-            category_id
-          )
-        `)
-        .eq(
-          "sku",
-          barcode
-        )
-        .maybeSingle();
-
-
-    if (error) {
-
-      console.error(
-        "ERROR CARI BARCODE:",
+      const {
+        data,
         error
-      );
-
-      showMessage(
-        "Barcode terbaca, tetapi pencarian produk gagal."
-      );
-
-      return;
-
-    }
+      } =
+        await supabaseClient
+          .from("categories")
+          .select("id, name")
+          .order("name", {
+            ascending: true
+          });
 
 
-    if (!data) {
+      if (error) {
 
-      showMessage(
-        "Barcode baru. Isi data produk lalu simpan.",
-        true
-      );
+        console.error(error);
 
-      return;
+        categorySelect.innerHTML = `
+          <option value="">
+            Gagal memuat kategori
+          </option>
+        `;
 
-    }
+        return;
 
-
-    document
-      .getElementById(
-        "productName"
-      )
-      .value =
-        data.name || "";
+      }
 
 
-    document
-      .getElementById(
-        "productDescription"
-      )
-      .value =
-        data.description || "";
+      categorySelect.innerHTML = `
+        <option value="">
+          Pilih kategori
+        </option>
+      `;
 
 
-    document
-      .getElementById(
-        "productPrice"
-      )
-      .value =
-        data.selling_price || "";
+      (data || []).forEach(category => {
 
+        const option =
+          document.createElement("option");
 
-    document
-      .getElementById(
-        "productImage"
-      )
-      .value =
-        data.image_url || "";
+        option.value =
+          category.id;
 
+        option.textContent =
+          category.name;
 
-    if (
-      data.product_categories &&
-      data.product_categories.length
-    ) {
+        categorySelect.appendChild(option);
 
-      document
-        .getElementById(
-          "productCategory"
-        )
-        .value =
-          data.product_categories[0]
-            .category_id;
+      });
 
     }
 
 
-    showMessage(
-      "Data produk ditemukan dan diisi otomatis.",
-      true
-    );
+    // ==========================================
+    // SIMPAN PRODUK
+    // ==========================================
 
-  }
-
-
-  // ==========================================
-  // SIMPAN PRODUK
-  // ==========================================
-
-  document
-    .getElementById("productForm")
-    .addEventListener(
+    form.addEventListener(
       "submit",
       async function(event) {
 
         event.preventDefault();
 
 
-        const name =
-          document
-            .getElementById(
-              "productName"
-            )
-            .value
-            .trim();
-
-
-        const sku =
-          document
-            .getElementById(
-              "productSku"
-            )
-            .value
-            .trim();
-
-
-        const description =
-          document
-            .getElementById(
-              "productDescription"
-            )
-            .value
-            .trim();
-
-
-        const sellingPrice =
-          Number(
-            document
-              .getElementById(
-                "productPrice"
-              )
-              .value
-          );
-
-
-        const stockQuantity =
-          Number(
-            document
-              .getElementById(
-                "productStock"
-              )
-              .value
-          );
-
-
-        const categoryId =
-          document
-            .getElementById(
-              "productCategory"
-            )
-            .value;
-
-
-        const imageUrl =
-          document
-            .getElementById(
-              "productImage"
-            )
-            .value
-            .trim();
-
-
-        if (
-          !name ||
-          !categoryId ||
-          sellingPrice < 0 ||
-          stockQuantity < 0
-        ) {
-
-          showMessage(
-            "Lengkapi data produk."
-          );
-
-          return;
-
-        }
-
-
-        const saveButton =
-          document.getElementById(
-            "saveButton"
-          );
-
-
-        saveButton.disabled =
-          true;
+        saveButton.disabled = true;
 
         saveButton.textContent =
-          "Menyimpan...";
+          "⏳ Menyimpan...";
 
 
         try {
 
-          const { data: product, error } =
+          const categoryId =
+            categorySelect.value;
+
+          const name =
+            document.getElementById("name").value.trim();
+
+          const sku =
+            document.getElementById("sku").value.trim();
+
+          const catalogNameInput =
+            document.getElementById("catalog_name").value.trim();
+
+          const description =
+            document.getElementById("description").value.trim();
+
+          const sellingPrice =
+            Number(
+              document.getElementById("selling_price").value
+            );
+
+          const imageUrl =
+            document.getElementById("image_url").value.trim();
+
+          const stockQuantity =
+            Number(
+              document.getElementById("stock_quantity").value
+            );
+
+          const minimumStock =
+            Number(
+              document.getElementById("minimum_stock").value
+            );
+
+
+          if (!name) {
+
+            throw new Error(
+              "Nama produk wajib diisi."
+            );
+
+          }
+
+
+          if (!categoryId) {
+
+            throw new Error(
+              "Silakan pilih kategori."
+            );
+
+          }
+
+
+          if (!sellingPrice || sellingPrice < 0) {
+
+            throw new Error(
+              "Harga jual tidak valid."
+            );
+
+          }
+
+
+          // ======================================
+          // AMBIL NAMA KATEGORI
+          // ======================================
+
+          const {
+            data: category,
+            error: categoryError
+          } =
+            await supabaseClient
+              .from("categories")
+              .select("name")
+              .eq("id", categoryId)
+              .single();
+
+
+          if (categoryError) {
+
+            throw categoryError;
+
+          }
+
+
+          // ======================================
+          // DATA PRODUK
+          // ======================================
+
+          const productData = {
+
+            name: name,
+
+            catalog_name:
+              catalogNameInput || name,
+
+            sku:
+              sku || null,
+
+            description:
+              description || null,
+
+            selling_price:
+              sellingPrice,
+
+            image_url:
+              imageUrl || null,
+
+            is_active:
+              document.getElementById("is_active").checked,
+
+            show_in_catalog:
+              document.getElementById("show_in_catalog").checked,
+
+            show_when_out_of_stock:
+              document.getElementById("show_when_out_of_stock").checked,
+
+            stock_quantity:
+              stockQuantity,
+
+            minimum_stock:
+              minimumStock,
+
+            allow_negative_stock:
+              document.getElementById("allow_negative_stock").checked
+
+          };
+
+
+          // ======================================
+          // SIMPAN PRODUCTS
+          // ======================================
+
+          const {
+            data: product,
+            error: productError
+          } =
             await supabaseClient
               .from("products")
-              .insert({
-
-                name: name,
-
-                sku:
-                  sku || null,
-
-                description:
-                  description || null,
-
-                selling_price:
-                  sellingPrice,
-
-                image_url:
-                  imageUrl || null,
-
-                is_active:
-                  true,
-
-                show_in_catalog:
-                  true,
-
-                show_when_out_of_stock:
-                  false,
-
-                stock_quantity:
-                  stockQuantity,
-
-                minimum_stock:
-                  0,
-
-                allow_negative_stock:
-                  false
-
-              })
+              .insert(productData)
               .select()
               .single();
 
 
-          if (error) {
-            throw error;
+          if (productError) {
+
+            throw productError;
+
           }
 
 
-          const { error: categoryError } =
+          // ======================================
+          // HUBUNGKAN KE KATEGORI
+          // ======================================
+
+          const {
+            error: relationError
+          } =
             await supabaseClient
               .from("product_categories")
               .insert({
@@ -1112,52 +936,83 @@
               });
 
 
-          if (categoryError) {
+          if (relationError) {
 
-            await supabaseClient
-              .from("products")
-              .delete()
-              .eq(
-                "id",
-                product.id
-              );
+            // Produk sudah tersimpan,
+            // tetapi relasi kategori gagal.
 
-            throw categoryError;
+            console.error(
+              "Kategori gagal dihubungkan:",
+              relationError
+            );
+
+            showMessage(
+              "Produk berhasil disimpan, tetapi kategori belum terhubung: " +
+              relationError.message,
+              "error"
+            );
+
+          } else {
+
+            showMessage(
+              "✅ Produk berhasil ditambahkan dan akan dapat ditampilkan di katalog.",
+              "success"
+            );
 
           }
 
 
+          // ======================================
+          // RESET FORM
+          // ======================================
+
+          form.reset();
+
+
+          document.getElementById(
+            "is_active"
+          ).checked = true;
+
+
+          document.getElementById(
+            "show_in_catalog"
+          ).checked = true;
+
+
+          document.getElementById(
+            "stock_quantity"
+          ).value = 0;
+
+
+          document.getElementById(
+            "minimum_stock"
+          ).value = 5;
+
+
+          // Refresh daftar
+
+          loadProducts();
+
+        }
+
+        catch (error) {
+
+          console.error(error);
+
           showMessage(
-            "Produk berhasil ditambahkan.",
-            true
+            "❌ Gagal menyimpan produk: " +
+            error.message,
+            "error"
           );
 
+        }
 
-          hideForm();
+        finally {
 
-          await loadProducts();
-
-
-        } catch (error) {
-
-          console.error(
-            "ERROR SIMPAN:",
-            error
-          );
-
-          showMessage(
-            error.message ||
-            "Produk gagal disimpan."
-          );
-
-
-        } finally {
-
-          saveButton.disabled =
-            false;
+          saveButton.disabled = false;
 
           saveButton.textContent =
-            "Simpan Produk";
+            "💾 Simpan Produk";
 
         }
 
@@ -1165,411 +1020,114 @@
     );
 
 
-  // ==========================================
-  // LOAD PRODUK
-  // ==========================================
+    // ==========================================
+    // LOAD PRODUK
+    // ==========================================
 
-  async function loadProducts() {
+    async function loadProducts() {
 
-    const list =
-      document.getElementById(
-        "productList"
-      );
-
-
-    list.innerHTML =
-      '<div class="loading">Memuat produk...</div>';
-
-
-    const { data, error } =
-      await supabaseClient
-        .from("products")
-        .select(`
-          id,
-          name,
-          sku,
-          description,
-          selling_price,
-          image_url,
-          is_active,
-          stock_quantity,
-          product_categories (
-            category_id,
-            categories (
-              id,
-              name
-            )
-          )
-        `)
-        .order(
-          "created_at",
-          {
-            ascending: false
-          }
-        );
-
-
-    if (error) {
-
-      console.error(
+      const {
+        data,
         error
-      );
-
-      list.innerHTML =
-        '<div class="empty">Gagal memuat produk.</div>';
-
-      return;
-
-    }
-
-
-    if (
-      !data ||
-      data.length === 0
-    ) {
-
-      list.innerHTML =
-        '<div class="empty">Belum ada produk.</div>';
-
-      return;
-
-    }
+      } =
+        await supabaseClient
+          .from("products")
+          .select(
+            "id, name, sku, selling_price, stock_quantity, is_active"
+          )
+          .order("created_at", {
+            ascending: false
+          })
+          .limit(20);
 
 
-    list.innerHTML =
-      '<div class="product-list"></div>';
+      if (error) {
 
+        productList.innerHTML = `
+          <div style="color:#dc2626;font-size:13px;">
+            Gagal memuat produk: ${escapeHtml(error.message)}
+          </div>
+        `;
 
-    const grid =
-      list.querySelector(
-        ".product-list"
-      );
-
-
-    data.forEach(product => {
-
-      let categoryName =
-        "Tanpa kategori";
-
-
-      if (
-        product.product_categories &&
-        product.product_categories.length
-      ) {
-
-        const relation =
-          product.product_categories[0];
-
-
-        if (
-          relation.categories
-        ) {
-
-          categoryName =
-            relation.categories.name ||
-            "Tanpa kategori";
-
-        }
+        return;
 
       }
 
 
-      const imageHtml =
-        product.image_url
+      if (!data || data.length === 0) {
 
-          ? `
-            <img
-              class="product-image"
-              src="${escapeHtml(
-                product.image_url
-              )}"
-              alt="${escapeHtml(
-                product.name
-              )}"
-            >
-          `
+        productList.innerHTML = `
+          <div style="color:#6b7280;font-size:13px;">
+            Belum ada produk.
+          </div>
+        `;
 
-          : `
-            <div class="no-image">
-              Tidak ada foto
+        return;
+
+      }
+
+
+      productList.innerHTML =
+        data.map(product => {
+
+          return `
+
+            <div class="product-item">
+
+              <div>
+
+                <div class="product-name">
+                  ${escapeHtml(product.name)}
+                </div>
+
+                <div class="product-info">
+                  SKU: ${escapeHtml(product.sku || "-")}
+                  · Stok: ${product.stock_quantity ?? 0}
+                  · ${product.is_active ? "Aktif" : "Nonaktif"}
+                </div>
+
+              </div>
+
+              <div class="product-price">
+                Rp ${formatRupiah(product.selling_price)}
+              </div>
+
             </div>
+
           `;
 
-
-      const card =
-        document.createElement(
-          "div"
-        );
-
-
-      card.className =
-        "product-card";
-
-
-      card.innerHTML = `
-
-        ${imageHtml}
-
-        <div class="product-name">
-          ${escapeHtml(
-            product.name
-          )}
-        </div>
-
-        ${
-          product.sku
-            ? `
-              <div class="product-sku">
-                Barcode:
-                ${escapeHtml(
-                  product.sku
-                )}
-              </div>
-            `
-            : ""
-        }
-
-        ${
-          product.description
-            ? `
-              <div class="product-description">
-                ${escapeHtml(
-                  product.description
-                )}
-              </div>
-            `
-            : ""
-        }
-
-        <div class="product-price">
-          Rp ${formatRupiah(
-            product.selling_price
-          )}
-        </div>
-
-        <div class="product-category">
-          Kategori:
-          ${escapeHtml(
-            categoryName
-          )}
-        </div>
-
-        <div class="product-stock">
-          Stok:
-          ${product.stock_quantity ?? 0}
-        </div>
-
-        <span
-          class="product-status ${
-            product.is_active
-              ? "active"
-              : "inactive"
-          }">
-
-          ${
-            product.is_active
-              ? "Aktif"
-              : "Nonaktif"
-          }
-
-        </span>
-
-        <div class="actions">
-
-          <button
-            class="action-button toggle-button"
-            onclick="toggleProduct(
-              '${product.id}',
-              ${product.is_active}
-            )">
-
-            ${
-              product.is_active
-                ? "Nonaktifkan"
-                : "Aktifkan"
-            }
-
-          </button>
-
-          <button
-            class="action-button delete-button"
-            onclick="deleteProduct(
-              '${product.id}'
-            )">
-
-            Hapus
-
-          </button>
-
-        </div>
-
-      `;
-
-
-      grid.appendChild(
-        card
-      );
-
-    });
-
-  }
-
-
-  // ==========================================
-  // AKTIF / NONAKTIF
-  // ==========================================
-
-  async function toggleProduct(
-    productId,
-    currentStatus
-  ) {
-
-    const { error } =
-      await supabaseClient
-        .from("products")
-        .update({
-
-          is_active:
-            !currentStatus
-
-        })
-        .eq(
-          "id",
-          productId
-        );
-
-
-    if (error) {
-
-      showMessage(
-        "Gagal mengubah status produk."
-      );
-
-      return;
+        }).join("");
 
     }
 
 
-    await loadProducts();
+    // ==========================================
+    // FORMAT RUPIAH
+    // ==========================================
 
-  }
+    function formatRupiah(number) {
 
-
-  // ==========================================
-  // HAPUS
-  // ==========================================
-
-  async function deleteProduct(
-    productId
-  ) {
-
-    if (
-      !confirm(
-        "Yakin ingin menghapus produk ini?"
-      )
-    ) {
-      return;
-    }
-
-
-    const { error: relationError } =
-      await supabaseClient
-        .from("product_categories")
-        .delete()
-        .eq(
-          "product_id",
-          productId
-        );
-
-
-    if (relationError) {
-
-      showMessage(
-        "Gagal menghapus kategori produk."
-      );
-
-      return;
+      return Number(number || 0)
+        .toLocaleString("id-ID");
 
     }
 
 
-    const { error } =
-      await supabaseClient
-        .from("products")
-        .delete()
-        .eq(
-          "id",
-          productId
-        );
+    // ==========================================
+    // ESCAPE HTML
+    // ==========================================
 
+    function escapeHtml(text) {
 
-    if (error) {
+      const div =
+        document.createElement("div");
 
-      showMessage(
-        "Produk gagal dihapus."
-      );
+      div.textContent =
+        text ?? "";
 
-      return;
+      return div.innerHTML;
 
     }
 
 
-    showMessage(
-      "Produk berhasil dihapus.",
-      true
-    );
-
-
-    await loadProducts();
-
-  }
-
-
-  // ==========================================
-  // FORMAT RUPIAH
-  // ==========================================
-
-  function formatRupiah(
-    value
-  ) {
-
-    return new Intl.NumberFormat(
-      "id-ID"
-    ).format(
-      Number(value) || 0
-    );
-
-  }
-
-
-  // ==========================================
-  // ESCAPE HTML
-  // ==========================================
-
-  function escapeHtml(
-    value
-  ) {
-
-    const div =
-      document.createElement(
-        "div"
-      );
-
-    div.textContent =
-      value ?? "";
-
-    return div.innerHTML;
-
-  }
-
-
-  // ==========================================
-  // MULAI
-  // ==========================================
-
-  loadProducts();
-
-</script>
-
-</body>
-</html>
+    // =======================================
