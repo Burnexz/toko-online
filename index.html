@@ -3,203 +3,297 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <title>Zokent Store</title>
-
+  <title>Katalog Toko Online & Pesanan</title>
+  <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
-
-  <style>
-    * {
-      box-sizing: border-box;
-    }
-
-    body {
-      font-family: Arial, sans-serif;
-    }
-
-    .login-card {
-      transition: all 0.2s ease;
-    }
-
-    .login-card:hover {
-      transform: translateY(-4px);
-    }
-
-    .login-card:active {
-      transform: scale(0.98);
-    }
-  </style>
+  <!-- Supabase JS SDK -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
+<body class="bg-slate-50 min-h-screen flex flex-col font-sans">
 
-<body class="bg-slate-100 min-h-screen">
-
-  <!-- ================= HEADER ================= -->
-
-  <header class="bg-[#1b3a4b] text-white shadow-lg">
-
-    <div class="max-w-5xl mx-auto px-5 py-6 text-center">
-
-      <div class="text-4xl mb-2">
-        🏪
+  <!-- Header / Navbar -->
+  <header class="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-sm">
+    <div class="max-w-6xl mx-auto px-4 py-3 flex justify-between items-center">
+      <div>
+        <h1 class="text-xl font-bold text-slate-800">Zokent Store</h1>
+        <p class="text-xs text-slate-500">Katalog & Pemesanan Online</p>
       </div>
-
-      <h1 class="text-2xl font-extrabold text-[#38bdf8]">
-        ZOKENT STORE
-      </h1>
-
-      <p class="text-xs text-slate-300 mt-1">
-        Sistem Manajemen Toko
-      </p>
-
+      
+      <!-- Tombol Keranjang Belanja -->
+      <button onclick="toggleCartModal()" class="relative bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl text-sm font-semibold flex items-center gap-2 transition shadow-sm">
+        <span>🛒 Keranjang</span>
+        <span id="cartBadge" class="bg-red-500 text-white text-xs font-bold px-2 py-0.5 rounded-full hidden">0</span>
+      </button>
     </div>
-
   </header>
 
-
-  <!-- ================= MAIN ================= -->
-
-  <main class="min-h-[calc(100vh-150px)] flex items-center justify-center px-5 py-10">
-
-    <div class="w-full max-w-md">
-
-      <!-- Judul -->
-
-      <div class="text-center mb-7">
-
-        <p class="text-xs text-slate-500 mb-2">
-          SELAMAT DATANG
-        </p>
-
-        <h2 class="text-2xl font-extrabold text-slate-900">
-          Pilih Akses Masuk
-        </h2>
-
-        <p class="text-sm text-slate-500 mt-2">
-          Silakan pilih halaman sesuai dengan akun Anda.
-        </p>
-
-      </div>
-
-
-      <!-- ================= PILIHAN LOGIN ================= -->
-
-      <div class="grid grid-cols-1 gap-4">
-
-
-        <!-- LOGIN PEMILIK -->
-
-        <a
-          href="login-admin.html"
-          class="login-card block bg-white rounded-2xl border border-slate-200 shadow-md p-6"
-        >
-
-          <div class="flex items-center gap-5">
-
-            <div class="w-16 h-16 rounded-2xl bg-blue-50 flex items-center justify-center text-4xl">
-              👑
-            </div>
-
-            <div class="flex-1">
-
-              <h3 class="text-lg font-extrabold text-slate-900">
-                Login Pemilik
-              </h3>
-
-              <p class="text-xs text-slate-500 mt-1">
-                Kelola dan kontrol seluruh toko.
-              </p>
-
-            </div>
-
-            <div class="text-xl text-slate-400">
-              →
-            </div>
-
-          </div>
-
-        </a>
-
-
-        <!-- LOGIN KASIR -->
-
-        <a
-          href="login-kasir.html"
-          class="login-card block bg-white rounded-2xl border border-slate-200 shadow-md p-6"
-        >
-
-          <div class="flex items-center gap-5">
-
-            <div class="w-16 h-16 rounded-2xl bg-emerald-50 flex items-center justify-center text-4xl">
-              👨‍💼
-            </div>
-
-            <div class="flex-1">
-
-              <h3 class="text-lg font-extrabold text-slate-900">
-                Login Kasir
-              </h3>
-
-              <p class="text-xs text-slate-500 mt-1">
-                Masuk untuk melakukan transaksi.
-              </p>
-
-            </div>
-
-            <div class="text-xl text-slate-400">
-              →
-            </div>
-
-          </div>
-
-        </a>
-
-
-      </div>
-
-
-      <!-- ================= INFO ================= -->
-
-      <div class="mt-6 bg-white border border-slate-200 rounded-2xl p-4">
-
-        <div class="flex gap-3">
-
-          <div class="text-xl">
-            ℹ️
-          </div>
-
-          <div>
-
-            <p class="text-xs font-bold text-slate-700">
-              Akses Sistem
-            </p>
-
-            <p class="text-[10px] text-slate-500 mt-1 leading-relaxed">
-              Pemilik dapat mengatur produk, kategori, stok,
-              transaksi, kasir, pelanggan, keuangan, dan laporan.
-              Kasir digunakan khusus untuk kegiatan transaksi.
-            </p>
-
-          </div>
-
-        </div>
-
-      </div>
-
-
+  <!-- Konten Utama -->
+  <main class="max-w-6xl mx-auto px-4 py-6 flex-1 w-full">
+    <!-- Banner Selamat Datang -->
+    <div class="bg-gradient-to-r from-blue-600 to-indigo-700 rounded-2xl p-6 text-white mb-8 shadow-md">
+      <h2 class="text-2xl font-bold mb-1">Selamat Datang di Toko Kami! 👋</h2>
+      <p class="text-blue-100 text-sm">Pilih produk favorit Anda, masukkan ke keranjang, dan langsung pesan sekarang.</p>
     </div>
 
+    <!-- Judul & Filter Produk -->
+    <div class="flex justify-between items-center mb-6">
+      <h3 class="text-lg font-bold text-slate-800">Daftar Produk</h3>
+      <div id="loadingState" class="text-sm text-slate-400">Memuat produk...</div>
+    </div>
+
+    <!-- Grid Katalog Produk -->
+    <div id="productGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+      <!-- Produk akan dimuat secara dinamis via JS -->
+    </div>
   </main>
 
+  <!-- Modal Keranjang & Checkout -->
+  <div id="cartModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex justify-end hidden">
+    <div class="bg-white w-full max-w-md h-full flex flex-col shadow-2xl">
+      <!-- Header Modal -->
+      <div class="p-4 border-b border-slate-200 flex justify-between items-center bg-slate-50">
+        <h3 class="font-bold text-slate-800 text-lg">Pesanan Saya</h3>
+        <button onclick="toggleCartModal()" class="text-slate-400 hover:text-slate-600 text-2xl font-bold">&times;</button>
+      </div>
 
-  <!-- ================= FOOTER ================= -->
+      <!-- Item Keranjang -->
+      <div id="cartItems" class="flex-1 overflow-y-auto p-4 space-y-3">
+        <!-- List barang keranjang -->
+      </div>
 
-  <footer class="text-center py-5 border-t border-slate-200">
+      <!-- Form Pemesan & Pembayaran -->
+      <div class="p-4 border-t border-slate-200 bg-slate-50 space-y-3">
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 mb-1">Nama Pemesan</label>
+          <input type="text" id="customerName" placeholder="Contoh: Budi Santoso" class="w-full px-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-blue-500 outline-none">
+        </div>
 
-    <p class="text-[10px] text-slate-400">
-      © 2026 Zokent Store
-    </p>
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 mb-1">Metode Pembayaran</label>
+          <select id="paymentMethod" class="w-full px-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-blue-500 outline-none">
+            <option value="cash">Tunai / Bayar di Tempat (COD)</option>
+            <option value="qris">QRIS</option>
+            <option value="transfer">Transfer Bank</option>
+          </select>
+        </div>
 
-  </footer>
+        <div class="pt-2 border-t border-slate-200 flex justify-between items-center">
+          <span class="text-sm text-slate-500">Total Pembayaran:</span>
+          <span id="cartTotal" class="text-lg font-bold text-blue-600">Rp 0</span>
+        </div>
 
+        <button onclick="processOrder()" id="btnSubmitOrder" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl transition shadow-md disabled:opacity-50">
+          Kirim Pesanan Sekarang
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // 1. Konfigurasi Klien Supabase
+    const SUPABASE_URL = 'https://YOUR_PROJECT_ID.supabase.co';
+    const SUPABASE_ANON_KEY = 'YOUR_ANON_KEY';
+    const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    // State Keranjang Belanja
+    let cart = [];
+    let productsList = [];
+
+    // Format Rupiah
+    function formatRupiah(number) {
+      return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(number);
+    }
+
+    // 2. Ambil Produk dari Database Supabase
+    async function fetchProducts() {
+      const loading = document.getElementById('loadingState');
+      const container = document.getElementById('productGrid');
+      
+      const { data, error } = await _supabase
+        .from('products')
+        .select('*')
+        .eq('is_active', true);
+
+      loading.classList.add('hidden');
+
+      if (error) {
+        container.innerHTML = `<p class="col-span-full text-center text-red-500">Gagal memuat produk: ${error.message}</p>`;
+        return;
+      }
+
+      productsList = data || [];
+      renderProducts(productsList);
+    }
+
+    // 3. Tampilkan Katalog Produk ke HTML
+    function renderProducts(products) {
+      const container = document.getElementById('productGrid');
+      if (products.length === 0) {
+        container.innerHTML = `<p class="col-span-full text-center text-slate-400 py-10">Belum ada produk yang tersedia.</p>`;
+        return;
+      }
+
+      container.innerHTML = products.map(prod => `
+        <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm flex flex-col hover:shadow-md transition">
+          <img src="${prod.image_url || 'https://via.placeholder.com/200'}" alt="${prod.name}" class="w-full h-36 object-cover bg-slate-100">
+          <div class="p-3 flex-1 flex flex-col justify-between">
+            <div>
+              <h4 class="font-bold text-slate-800 text-sm leading-tight">${prod.name}</h4>
+              <p class="text-xs text-slate-400 mt-1">Stok: ${prod.stock_quantity ?? '-'}</p>
+            </div>
+            <div class="mt-3 flex items-center justify-between">
+              <span class="font-bold text-blue-600 text-sm">${formatRupiah(prod.selling_price || 0)}</span>
+              <button onclick="addToCart('${prod.id}')" class="bg-blue-50 text-blue-600 font-semibold px-2.5 py-1 rounded-lg text-xs hover:bg-blue-600 hover:text-white transition">
+                + Tambah
+              </button>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // 4. Logika Keranjang Belanja
+    function addToCart(productId) {
+      const product = productsList.find(p => p.id === productId);
+      if (!product) return;
+
+      const existingItem = cart.find(item => item.id === productId);
+      if (existingItem) {
+        existingItem.qty += 1;
+      } else {
+        cart.push({
+          id: product.id,
+          name: product.name,
+          price: product.selling_price || 0,
+          qty: 1
+        });
+      }
+      updateCartUI();
+    }
+
+    function changeQty(productId, delta) {
+      const item = cart.find(i => i.id === productId);
+      if (!item) return;
+
+      item.qty += delta;
+      if (item.qty <= 0) {
+        cart = cart.filter(i => i.id !== productId);
+      }
+      updateCartUI();
+    }
+
+    function updateCartUI() {
+      const cartBadge = document.getElementById('cartBadge');
+      const cartItems = document.getElementById('cartItems');
+      const cartTotal = document.getElementById('cartTotal');
+
+      const totalItems = cart.reduce((sum, item) => sum + item.qty, 0);
+      const totalPrice = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+
+      // Badge Count
+      if (totalItems > 0) {
+        cartBadge.textContent = totalItems;
+        cartBadge.classList.remove('hidden');
+      } else {
+        cartBadge.classList.add('hidden');
+      }
+
+      // Render items modal
+      if (cart.length === 0) {
+        cartItems.innerHTML = `<div class="text-center py-10 text-slate-400 text-sm">Keranjang Anda masih kosong</div>`;
+      } else {
+        cartItems.innerHTML = cart.map(item => `
+          <div class="flex justify-between items-center bg-slate-50 p-3 rounded-xl border border-slate-100">
+            <div>
+              <p class="font-bold text-slate-800 text-sm">${item.name}</p>
+              <p class="text-xs text-blue-600 font-semibold">${formatRupiah(item.price)} x ${item.qty}</p>
+            </div>
+            <div class="flex items-center gap-2">
+              <button onclick="changeQty('${item.id}', -1)" class="w-7 h-7 bg-white border border-slate-300 rounded-lg text-slate-600 font-bold hover:bg-slate-100 flex items-center justify-center">-</button>
+              <span class="text-sm font-bold text-slate-800">${item.qty}</span>
+              <button onclick="changeQty('${item.id}', 1)" class="w-7 h-7 bg-white border border-slate-300 rounded-lg text-slate-600 font-bold hover:bg-slate-100 flex items-center justify-center">+</button>
+            </div>
+          </div>
+        `).join('');
+      }
+
+      cartTotal.textContent = formatRupiah(totalPrice);
+    }
+
+    function toggleCartModal() {
+      const modal = document.getElementById('cartModal');
+      modal.classList.toggle('hidden');
+    }
+
+    // 5. Proses Kirim Pesanan ke Supabase
+    async function processOrder() {
+      const name = document.getElementById('customerName').value.trim();
+      const paymentMethod = document.getElementById('paymentMethod').value;
+      const btn = document.getElementById('btnSubmitOrder');
+
+      if (!name) {
+        alert('Silakan masukkan nama Anda!');
+        return;
+      }
+      if (cart.length === 0) {
+        alert('Keranjang belanja masih kosong!');
+        return;
+      }
+
+      btn.disabled = true;
+      btn.textContent = 'Memproses Pesanan...';
+
+      const totalAmount = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+      const invoiceNum = 'ORD-' + Date.now();
+
+      try {
+        // A. Insert ke tabel transactions
+        const { data: trx, error: trxErr } = await _supabase
+          .from('transactions')
+          .insert([{
+            invoice_number: invoiceNum,
+            total_amount: totalAmount,
+            paid_amount: 0,
+            change_amount: 0,
+            payment_method: paymentMethod
+          }])
+          .select()
+          .single();
+
+        if (trxErr) throw trxErr;
+
+        // B. Insert rincian ke tabel transaction_items
+        const itemsToInsert = cart.map(item => ({
+          transaction_id: trx.id,
+          product_id: item.id,
+          quantity: item.qty,
+          unit_price: item.price,
+          subtotal: item.price * item.qty
+        }));
+
+        const { error: itemsErr } = await _supabase
+          .from('transaction_items')
+          .insert(itemsToInsert);
+
+        if (itemsErr) throw itemsErr;
+
+        // C. Berhasil
+        alert(`Pesanan Berhasil Dibuat!\nKode Invoice: ${invoiceNum}\nTerima kasih, ${name}!`);
+        cart = [];
+        document.getElementById('customerName').value = '';
+        updateCartUI();
+        toggleCartModal();
+
+      } catch (err) {
+        alert('Gagal membuat pesanan: ' + err.message);
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Kirim Pesanan Sekarang';
+      }
+    }
+
+    // Jalankan saat halaman dibuka
+    fetchProducts();
+  </script>
 </body>
 </html>
