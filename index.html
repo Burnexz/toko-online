@@ -8,6 +8,8 @@
 
   <script src="https://cdn.tailwindcss.com"></script>
 
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
   <style>
     * {
       box-sizing: border-box;
@@ -18,643 +20,1185 @@
       background: #f5f6f8;
     }
 
-    .hide-scrollbar::-webkit-scrollbar {
-      display: none;
+    .click-effect {
+      transition: all 0.15s ease;
     }
 
-    .hide-scrollbar {
-      scrollbar-width: none;
+    .click-effect:active {
+      transform: scale(0.94);
     }
 
     .product-card {
-      transition: 0.2s;
+      transition: all 0.2s ease;
     }
 
     .product-card:active {
       transform: scale(0.97);
     }
+
+    .category-button {
+      transition: all 0.2s ease;
+    }
+
+    .category-button:active {
+      transform: scale(0.92);
+    }
+
+    .hide {
+      display: none !important;
+    }
+
+    .cart-badge {
+      min-width: 19px;
+      height: 19px;
+      padding: 0 5px;
+      font-size: 10px;
+    }
   </style>
 </head>
 
+
 <body class="text-slate-800">
 
-  <!-- ================================================= -->
-  <!-- HEADER -->
-  <!-- ================================================= -->
 
-  <header class="bg-[#1b3a4b] text-white sticky top-0 z-50 shadow-md">
+<!-- ================================================= -->
+<!-- HEADER -->
+<!-- ================================================= -->
 
-    <div class="max-w-6xl mx-auto px-4">
+<header class="bg-[#1b3a4b] text-white sticky top-0 z-50 shadow-md">
 
-      <div class="flex items-center justify-between py-3">
+  <div class="max-w-6xl mx-auto px-4">
 
-        <div>
-          <p class="text-[9px] text-slate-300 uppercase tracking-widest">
-            TOKO ONLINE
-          </p>
+    <div class="flex items-center justify-between py-3">
 
-          <h1 class="text-xl font-extrabold text-[#38bdf8]">
-            ZOKENT STORE
-          </h1>
-        </div>
+      <!-- LOGO -->
 
+      <div>
 
-        <!-- AKSES LOGIN -->
+        <p class="text-[9px] text-slate-300 uppercase tracking-wider">
+          Toko Online
+        </p>
 
-        <div class="flex gap-2">
-
-          <a
-            href="login-admin.html"
-            class="bg-white/10 hover:bg-white/20 px-3 py-2 rounded-xl text-[10px] font-bold"
-          >
-            👑 Pemilik
-          </a>
-
-          <a
-            href="login-kasir.html"
-            class="bg-white/10 hover:bg-white/20 px-3 py-2 rounded-xl text-[10px] font-bold"
-          >
-            👨‍💼 Kasir
-          </a>
-
-        </div>
+        <h1 class="text-xl font-extrabold text-[#38bdf8]">
+          ZOKENT
+        </h1>
 
       </div>
 
 
-      <!-- SEARCH -->
+      <!-- KERANJANG -->
 
-      <div class="pb-4">
+      <button
+        onclick="openCart()"
+        class="click-effect relative bg-white/10 hover:bg-white/20 p-3 rounded-xl"
+      >
 
-        <div class="relative">
+        <span class="text-2xl">
+          🛒
+        </span>
 
-          <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">
-            🔎
-          </span>
+        <span
+          id="cartCount"
+          class="cart-badge absolute -top-1 -right-1 bg-red-500 text-white rounded-full flex items-center justify-center font-bold"
+        >
+          0
+        </span>
 
-          <input
-            type="text"
-            id="searchInput"
-            placeholder="Cari produk..."
-            class="w-full bg-white text-slate-800 rounded-xl py-3 pl-11 pr-4 text-sm outline-none focus:ring-2 focus:ring-[#38bdf8]"
-          >
+      </button>
 
-        </div>
+    </div>
+
+
+    <!-- SEARCH -->
+
+    <div class="pb-4">
+
+      <div class="relative">
+
+        <input
+          id="searchInput"
+          type="text"
+          placeholder="Cari produk..."
+          oninput="searchProducts()"
+          class="w-full bg-white text-slate-800 rounded-xl px-4 py-3 pl-11 outline-none text-sm shadow-sm"
+        >
+
+        <span class="absolute left-4 top-3 text-lg">
+          🔍
+        </span>
 
       </div>
 
     </div>
 
-  </header>
+  </div>
+
+</header>
+
+
+
+<!-- ================================================= -->
+<!-- MAIN -->
+<!-- ================================================= -->
+
+<main class="max-w-6xl mx-auto px-4 py-5">
+
+
+  <!-- BANNER -->
+
+  <section class="bg-gradient-to-r from-[#1b3a4b] to-[#25627b] rounded-2xl p-5 text-white mb-5 shadow-sm">
+
+    <p class="text-xs text-slate-200">
+      Selamat datang di
+    </p>
+
+    <h2 class="text-2xl font-extrabold mt-1">
+      ZOKENT STORE 🛒
+    </h2>
+
+    <p class="text-xs text-slate-200 mt-2">
+      Belanja kebutuhan Anda dengan mudah.
+    </p>
+
+  </section>
+
 
 
   <!-- ================================================= -->
-  <!-- MAIN -->
+  <!-- KATEGORI -->
   <!-- ================================================= -->
 
-  <main class="max-w-6xl mx-auto px-4 py-5">
+  <section class="mb-6">
 
+    <div class="flex justify-between items-center mb-3">
 
-    <!-- ================================================= -->
-    <!-- BANNER -->
-    <!-- ================================================= -->
+      <div>
 
-    <section class="mb-6">
+        <h2 class="font-extrabold text-base">
+          Kategori
+        </h2>
 
-      <div class="bg-gradient-to-r from-[#1b3a4b] to-[#25617a] rounded-2xl overflow-hidden">
-
-        <div class="p-6 md:p-8 text-white">
-
-          <p class="text-xs text-sky-200 font-bold uppercase tracking-wider">
-            ZOKENT STORE
-          </p>
-
-          <h2 class="text-2xl md:text-3xl font-extrabold mt-2">
-            Belanja Mudah,<br>
-            Semua Ada.
-          </h2>
-
-          <p class="text-xs text-slate-200 mt-3 max-w-sm">
-            Temukan berbagai kebutuhan sehari-hari
-            dengan mudah melalui katalog Zokent Store.
-          </p>
-
-        </div>
-
-      </div>
-
-    </section>
-
-
-    <!-- ================================================= -->
-    <!-- KATEGORI -->
-    <!-- ================================================= -->
-
-    <section class="mb-7">
-
-      <div class="flex items-center justify-between mb-3">
-
-        <div>
-
-          <h2 class="font-extrabold text-lg">
-            Kategori
-          </h2>
-
-          <p class="text-[10px] text-slate-500">
-            Pilih kategori produk
-          </p>
-
-        </div>
-
-        <button
-          onclick="showAllProducts()"
-          class="text-xs font-bold text-sky-600"
-        >
-          Lihat semua
-        </button>
-
-      </div>
-
-
-      <div
-        id="categoryList"
-        class="flex gap-3 overflow-x-auto hide-scrollbar pb-2"
-      >
-
-        <!-- KATEGORI SEMENTARA -->
-
-        <button
-          onclick="filterCategory('all')"
-          class="category-item min-w-[90px] bg-white border border-slate-200 rounded-2xl p-3 text-center shadow-sm"
-        >
-
-          <div class="text-2xl">
-            🛍️
-          </div>
-
-          <p class="text-[10px] font-bold mt-2">
-            Semua
-          </p>
-
-        </button>
-
-
-        <button
-          onclick="filterCategory('Sembako')"
-          class="category-item min-w-[90px] bg-white border border-slate-200 rounded-2xl p-3 text-center shadow-sm"
-        >
-
-          <div class="text-2xl">
-            🍚
-          </div>
-
-          <p class="text-[10px] font-bold mt-2">
-            Sembako
-          </p>
-
-        </button>
-
-
-        <button
-          onclick="filterCategory('Minuman')"
-          class="category-item min-w-[90px] bg-white border border-slate-200 rounded-2xl p-3 text-center shadow-sm"
-        >
-
-          <div class="text-2xl">
-            🥤
-          </div>
-
-          <p class="text-[10px] font-bold mt-2">
-            Minuman
-          </p>
-
-        </button>
-
-
-        <button
-          onclick="filterCategory('Snack')"
-          class="category-item min-w-[90px] bg-white border border-slate-200 rounded-2xl p-3 text-center shadow-sm"
-        >
-
-          <div class="text-2xl">
-            🍪
-          </div>
-
-          <p class="text-[10px] font-bold mt-2">
-            Snack
-          </p>
-
-        </button>
-
-
-        <button
-          onclick="filterCategory('Mandi/Cuci')"
-          class="category-item min-w-[90px] bg-white border border-slate-200 rounded-2xl p-3 text-center shadow-sm"
-        >
-
-          <div class="text-2xl">
-            🧴
-          </div>
-
-          <p class="text-[10px] font-bold mt-2">
-            Mandi/Cuci
-          </p>
-
-        </button>
-
-
-        <button
-          onclick="filterCategory('Bumbu')"
-          class="category-item min-w-[90px] bg-white border border-slate-200 rounded-2xl p-3 text-center shadow-sm"
-        >
-
-          <div class="text-2xl">
-            🌶️
-          </div>
-
-          <p class="text-[10px] font-bold mt-2">
-            Bumbu
-          </p>
-
-        </button>
-
-      </div>
-
-    </section>
-
-
-    <!-- ================================================= -->
-    <!-- PRODUK -->
-    <!-- ================================================= -->
-
-    <section>
-
-      <div class="flex items-center justify-between mb-4">
-
-        <div>
-
-          <h2 class="font-extrabold text-lg">
-            Produk
-          </h2>
-
-          <p class="text-[10px] text-slate-500">
-            Produk pilihan Zokent Store
-          </p>
-
-        </div>
-
-      </div>
-
-
-      <div
-        id="productList"
-        class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-3"
-      >
-
-
-        <!-- PRODUK CONTOH -->
-
-        <div
-          class="product-card bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm"
-          data-category="Sembako"
-          data-name="Beras Premium 5kg"
-        >
-
-          <div class="h-36 bg-slate-100 flex items-center justify-center text-5xl">
-            🍚
-          </div>
-
-          <div class="p-3">
-
-            <p class="text-[9px] text-slate-400">
-              SEMBAKO
-            </p>
-
-            <h3 class="font-bold text-xs mt-1">
-              Beras Premium 5kg
-            </h3>
-
-            <p class="text-sm font-extrabold text-sky-600 mt-2">
-              Rp 72.000
-            </p>
-
-            <button
-              onclick="pesanProduk('Beras Premium 5kg', 72000)"
-              class="w-full mt-3 bg-[#1b3a4b] text-white rounded-xl py-2 text-[10px] font-bold"
-            >
-              Pesan via WhatsApp
-            </button>
-
-          </div>
-
-        </div>
-
-
-        <div
-          class="product-card bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm"
-          data-category="Minuman"
-          data-name="Air Mineral 600ml"
-        >
-
-          <div class="h-36 bg-slate-100 flex items-center justify-center text-5xl">
-            🥤
-          </div>
-
-          <div class="p-3">
-
-            <p class="text-[9px] text-slate-400">
-              MINUMAN
-            </p>
-
-            <h3 class="font-bold text-xs mt-1">
-              Air Mineral 600ml
-            </h3>
-
-            <p class="text-sm font-extrabold text-sky-600 mt-2">
-              Rp 5.000
-            </p>
-
-            <button
-              onclick="pesanProduk('Air Mineral 600ml', 5000)"
-              class="w-full mt-3 bg-[#1b3a4b] text-white rounded-xl py-2 text-[10px] font-bold"
-            >
-              Pesan via WhatsApp
-            </button>
-
-          </div>
-
-        </div>
-
-
-        <div
-          class="product-card bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm"
-          data-category="Minuman"
-          data-name="Teh Pucuk 350ml"
-        >
-
-          <div class="h-36 bg-slate-100 flex items-center justify-center text-5xl">
-            🧃
-          </div>
-
-          <div class="p-3">
-
-            <p class="text-[9px] text-slate-400">
-              MINUMAN
-            </p>
-
-            <h3 class="font-bold text-xs mt-1">
-              Teh Pucuk 350ml
-            </h3>
-
-            <p class="text-sm font-extrabold text-sky-600 mt-2">
-              Rp 4.000
-            </p>
-
-            <button
-              onclick="pesanProduk('Teh Pucuk 350ml', 4000)"
-              class="w-full mt-3 bg-[#1b3a4b] text-white rounded-xl py-2 text-[10px] font-bold"
-            >
-              Pesan via WhatsApp
-            </button>
-
-          </div>
-
-        </div>
-
-
-        <div
-          class="product-card bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm"
-          data-category="Snack"
-          data-name="Snack Pilihan"
-        >
-
-          <div class="h-36 bg-slate-100 flex items-center justify-center text-5xl">
-            🍪
-          </div>
-
-          <div class="p-3">
-
-            <p class="text-[9px] text-slate-400">
-              SNACK
-            </p>
-
-            <h3 class="font-bold text-xs mt-1">
-              Snack Pilihan
-            </h3>
-
-            <p class="text-sm font-extrabold text-sky-600 mt-2">
-              Rp 5.000
-            </p>
-
-            <button
-              onclick="pesanProduk('Snack Pilihan', 5000)"
-              class="w-full mt-3 bg-[#1b3a4b] text-white rounded-xl py-2 text-[10px] font-bold"
-            >
-              Pesan via WhatsApp
-            </button>
-
-          </div>
-
-        </div>
-
-
-      </div>
-
-
-      <!-- TIDAK ADA PRODUK -->
-
-      <div
-        id="noProduct"
-        class="hidden text-center py-12"
-      >
-
-        <div class="text-5xl mb-3">
-          📦
-        </div>
-
-        <p class="font-bold text-slate-700">
-          Produk tidak ditemukan
-        </p>
-
-        <p class="text-xs text-slate-500 mt-1">
-          Coba gunakan kata pencarian lain.
+        <p class="text-[10px] text-slate-500">
+          Pilih kategori produk
         </p>
 
       </div>
 
-    </section>
+    </div>
 
 
-  </main>
+    <div
+      id="categoryList"
+      class="flex gap-2 overflow-x-auto pb-2"
+    >
+
+      <!-- Kategori dari Supabase akan muncul di sini -->
+
+    </div>
+
+  </section>
+
 
 
   <!-- ================================================= -->
-  <!-- FOOTER -->
+  <!-- PRODUK -->
   <!-- ================================================= -->
 
-  <footer class="bg-[#1b3a4b] text-white mt-10">
+  <section>
 
-    <div class="max-w-6xl mx-auto px-4 py-7">
+    <div class="flex items-center justify-between mb-3">
 
-      <h3 class="font-extrabold text-[#38bdf8]">
-        ZOKENT STORE
-      </h3>
+      <div>
 
-      <p class="text-[10px] text-slate-300 mt-2">
-        Belanja kebutuhan sehari-hari dengan mudah.
+        <h2 class="font-extrabold text-base">
+          Produk
+        </h2>
+
+        <p
+          id="productInfo"
+          class="text-[10px] text-slate-500"
+        >
+          Memuat produk...
+        </p>
+
+      </div>
+
+    </div>
+
+
+    <!-- LOADING -->
+
+    <div
+      id="loading"
+      class="text-center py-10"
+    >
+
+      <div class="text-3xl mb-2">
+        ⏳
+      </div>
+
+      <p class="text-sm text-slate-500">
+        Memuat produk...
       </p>
 
-      <div class="border-t border-white/10 mt-5 pt-4">
+    </div>
 
-        <p class="text-[9px] text-slate-400 text-center">
-          © 2026 Zokent Store
+
+    <!-- PRODUK -->
+
+    <div
+      id="productList"
+      class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-3"
+    >
+
+    </div>
+
+
+    <!-- TIDAK ADA PRODUK -->
+
+    <div
+      id="emptyProduct"
+      class="hide text-center py-12"
+    >
+
+      <div class="text-4xl mb-3">
+        📦
+      </div>
+
+      <p class="font-bold">
+        Produk tidak ditemukan
+      </p>
+
+      <p class="text-xs text-slate-500 mt-1">
+        Belum ada produk yang tersedia.
+      </p>
+
+    </div>
+
+  </section>
+
+</main>
+
+
+
+<!-- ================================================= -->
+<!-- CART DRAWER -->
+<!-- ================================================= -->
+
+<div
+  id="cartOverlay"
+  class="hide fixed inset-0 bg-black/40 z-[100]"
+  onclick="closeCart()"
+></div>
+
+
+<div
+  id="cartPanel"
+  class="fixed bottom-0 left-0 right-0 bg-white z-[101] rounded-t-3xl shadow-2xl transform translate-y-full transition-transform duration-300 max-h-[85vh] overflow-hidden"
+>
+
+  <div class="max-w-2xl mx-auto">
+
+    <!-- CART HEADER -->
+
+    <div class="flex items-center justify-between p-5 border-b">
+
+      <div>
+
+        <h2 class="font-extrabold text-lg">
+          Keranjang 🛒
+        </h2>
+
+        <p
+          id="cartTotalItems"
+          class="text-xs text-slate-500"
+        >
+          0 barang
         </p>
 
       </div>
 
+      <button
+        onclick="closeCart()"
+        class="click-effect text-2xl bg-slate-100 rounded-full w-9 h-9"
+      >
+        ×
+      </button>
+
     </div>
 
-  </footer>
+
+    <!-- CART ITEMS -->
+
+    <div
+      id="cartItems"
+      class="p-4 overflow-y-auto max-h-[50vh]"
+    >
+
+    </div>
 
 
-  <!-- ================================================= -->
-  <!-- JAVASCRIPT -->
-  <!-- ================================================= -->
+    <!-- CART FOOTER -->
 
-  <script>
+    <div class="border-t p-5">
 
-    // ==========================================
-    // FORMAT RUPIAH
-    // ==========================================
+      <div class="flex justify-between mb-4">
 
-    function formatRupiah(angka) {
+        <span class="text-sm text-slate-500">
+          Total
+        </span>
 
-      return new Intl.NumberFormat('id-ID', {
-        style: 'currency',
-        currency: 'IDR',
+        <strong
+          id="cartTotalPrice"
+          class="text-lg"
+        >
+          Rp 0
+        </strong>
+
+      </div>
+
+
+      <button
+        onclick="checkout()"
+        class="click-effect w-full bg-[#1b3a4b] hover:bg-[#234c61] text-white py-3 rounded-xl font-bold"
+      >
+        Lanjutkan Pesanan
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+
+<!-- ================================================= -->
+<!-- SCRIPT -->
+<!-- ================================================= -->
+
+<script>
+
+  // =====================================================
+  // SUPABASE
+  // =====================================================
+
+  const SUPABASE_URL =
+    "https://weuousmvkxmgmsnwiuad.supabase.co";
+
+  const SUPABASE_ANON_KEY =
+    "sb_publishable_e375KDL0vuoahHO_kWMjwA_a04R4yHb";
+
+
+  const supabaseClient =
+    window.supabase.createClient(
+      SUPABASE_URL,
+      SUPABASE_ANON_KEY
+    );
+
+
+
+  // =====================================================
+  // DATA
+  // =====================================================
+
+  let products = [];
+
+  let categories = [];
+
+  let cart = [];
+
+  let selectedCategory = "all";
+
+
+
+  // =====================================================
+  // FORMAT RUPIAH
+  // =====================================================
+
+  function rupiah(number) {
+
+    return new Intl.NumberFormat(
+      "id-ID",
+      {
+        style: "currency",
+        currency: "IDR",
         maximumFractionDigits: 0
-      }).format(angka);
+      }
+    ).format(number || 0);
+
+  }
+
+
+
+  // =====================================================
+  // LOAD DATA
+  // =====================================================
+
+  async function loadData() {
+
+    await loadCategories();
+
+    await loadProducts();
+
+  }
+
+
+
+  // =====================================================
+  // LOAD KATEGORI
+  // =====================================================
+
+  async function loadCategories() {
+
+    const { data, error } =
+      await supabaseClient
+        .from("categories")
+        .select("*")
+        .order("name", { ascending: true });
+
+
+    if (error) {
+
+      console.error("Kategori:", error);
+
+      return;
 
     }
 
 
-    // ==========================================
-    // FILTER KATEGORI
-    // ==========================================
+    categories = data || [];
 
-    function filterCategory(category) {
+    renderCategories();
 
-      const products =
-        document.querySelectorAll('.product-card');
-
-      let found = 0;
-
-      products.forEach(product => {
-
-        const productCategory =
-          product.dataset.category;
-
-        if (
-          category === 'all' ||
-          productCategory === category
-        ) {
-
-          product.style.display = '';
-
-          found++;
-
-        } else {
-
-          product.style.display = 'none';
-
-        }
-
-      });
+  }
 
 
-      document.getElementById('noProduct').style.display =
-        found === 0 ? 'block' : 'none';
 
-    }
+  // =====================================================
+  // RENDER KATEGORI
+  // =====================================================
 
+  function renderCategories() {
 
-    // ==========================================
-    // LIHAT SEMUA
-    // ==========================================
-
-    function showAllProducts() {
-
-      filterCategory('all');
-
-      window.scrollTo({
-        top: document.getElementById('productList').offsetTop - 100,
-        behavior: 'smooth'
-      });
-
-    }
+    const container =
+      document.getElementById("categoryList");
 
 
-    // ==========================================
-    // PENCARIAN PRODUK
-    // ==========================================
+    container.innerHTML = "";
 
-    document
-      .getElementById('searchInput')
-      .addEventListener('input', function() {
 
-        const keyword =
-          this.value.toLowerCase().trim();
+    // SEMUA
 
-        const products =
-          document.querySelectorAll('.product-card');
+    const allButton =
+      document.createElement("button");
 
-        let found = 0;
+    allButton.className =
+      "category-button flex-shrink-0 px-4 py-2 rounded-xl text-xs font-bold " +
+      (selectedCategory === "all"
+        ? "bg-[#1b3a4b] text-white"
+        : "bg-white border border-slate-200 text-slate-600");
 
-        products.forEach(product => {
 
-          const name =
-            product.dataset.name.toLowerCase();
+    allButton.textContent = "Semua";
 
-          if (name.includes(keyword)) {
 
-            product.style.display = '';
+    allButton.onclick = function() {
 
-            found++;
+      selectedCategory = "all";
 
-          } else {
+      renderCategories();
 
-            product.style.display = 'none';
+      renderProducts();
 
-          }
+    };
 
+
+    container.appendChild(allButton);
+
+
+
+    categories.forEach(category => {
+
+      const button =
+        document.createElement("button");
+
+
+      button.className =
+        "category-button flex-shrink-0 px-4 py-2 rounded-xl text-xs font-bold " +
+        (selectedCategory === category.id
+          ? "bg-[#1b3a4b] text-white"
+          : "bg-white border border-slate-200 text-slate-600");
+
+
+      button.textContent =
+        category.name;
+
+
+      button.onclick = function() {
+
+        selectedCategory =
+          category.id;
+
+        renderCategories();
+
+        renderProducts();
+
+      };
+
+
+      container.appendChild(button);
+
+    });
+
+  }
+
+
+
+  // =====================================================
+  // LOAD PRODUK
+  // =====================================================
+
+  async function loadProducts() {
+
+    const { data, error } =
+      await supabaseClient
+        .from("products")
+        .select("*")
+        .eq("is_active", true)
+        .eq("show_in_catalog", true)
+        .order("created_at", {
+          ascending: false
         });
 
 
-        document.getElementById('noProduct').style.display =
-          found === 0 ? 'block' : 'none';
+    document
+      .getElementById("loading")
+      .classList.add("hide");
+
+
+    if (error) {
+
+      console.error("Produk:", error);
+
+      document
+        .getElementById("productInfo")
+        .textContent =
+        "Gagal memuat produk.";
+
+      return;
+
+    }
+
+
+    products = data || [];
+
+    renderProducts();
+
+  }
+
+
+
+  // =====================================================
+  // RENDER PRODUK
+  // =====================================================
+
+  function renderProducts() {
+
+    const container =
+      document.getElementById("productList");
+
+    const empty =
+      document.getElementById("emptyProduct");
+
+
+    container.innerHTML = "";
+
+
+    const search =
+      document
+        .getElementById("searchInput")
+        .value
+        .toLowerCase()
+        .trim();
+
+
+    let filtered =
+      products.filter(product => {
+
+
+        const matchCategory =
+          selectedCategory === "all" ||
+          product.category_id === selectedCategory;
+
+
+        const matchSearch =
+          !search ||
+          (product.name || "")
+            .toLowerCase()
+            .includes(search) ||
+          (product.sku || "")
+            .toLowerCase()
+            .includes(search);
+
+
+        return matchCategory &&
+               matchSearch;
 
       });
 
 
-    // ==========================================
-    // PESAN WHATSAPP
-    // ==========================================
 
-    function pesanProduk(nama, harga) {
+    document
+      .getElementById("productInfo")
+      .textContent =
+      filtered.length +
+      " produk tersedia";
 
-      const nomorWhatsApp = "6283863000922";
 
-      const pesan =
-        `Halo Zokent Store, saya ingin memesan ${nama} dengan harga ${formatRupiah(harga)}.`;
 
-      const url =
-        `https://wa.me/${nomorWhatsApp}?text=${encodeURIComponent(pesan)}`;
+    if (filtered.length === 0) {
 
-      window.open(url, '_blank');
+      empty.classList.remove("hide");
+
+      return;
 
     }
 
-  </script>
+
+    empty.classList.add("hide");
+
+
+
+    filtered.forEach(product => {
+
+      const card =
+        document.createElement("div");
+
+
+      card.className =
+        "product-card bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm";
+
+
+      const image =
+        product.image_url
+        ? `<img src="${product.image_url}"
+             class="w-full h-36 object-cover"
+             onerror="this.style.display='none'">`
+        : `
+          <div class="w-full h-36 bg-slate-100 flex items-center justify-center">
+            <span class="text-4xl">📦</span>
+          </div>
+        `;
+
+
+      const stock =
+        Number(product.stock_quantity || 0);
+
+
+      const outOfStock =
+        stock <= 0;
+
+
+      card.innerHTML = `
+
+        <div>
+          ${image}
+        </div>
+
+        <div class="p-3">
+
+          <p class="text-[10px] text-slate-400 mb-1">
+            ${product.sku || ""}
+          </p>
+
+          <h3 class="font-bold text-sm leading-snug line-clamp-2">
+            ${product.name || "Produk"}
+          </h3>
+
+          <p class="text-[#1b3a4b] font-extrabold mt-2">
+            ${rupiah(product.selling_price)}
+          </p>
+
+          <p class="text-[10px] text-slate-500 mt-1">
+            Stok: ${stock}
+          </p>
+
+          <button
+            class="click-effect mt-3 w-full py-2 rounded-xl text-xs font-bold
+            ${outOfStock
+              ? "bg-slate-200 text-slate-400"
+              : "bg-[#1b3a4b] text-white hover:bg-[#234c61]"}"
+            ${outOfStock ? "disabled" : ""}
+            onclick="addToCart('${product.id}')"
+          >
+
+            ${outOfStock
+              ? "Stok Habis"
+              : "+ Keranjang"}
+
+          </button>
+
+        </div>
+
+      `;
+
+
+      container.appendChild(card);
+
+    });
+
+  }
+
+
+
+  // =====================================================
+  // SEARCH
+  // =====================================================
+
+  function searchProducts() {
+
+    renderProducts();
+
+  }
+
+
+
+  // =====================================================
+  // TAMBAH KERANJANG
+  // =====================================================
+
+  function addToCart(productId) {
+
+    const product =
+      products.find(
+        p => p.id === productId
+      );
+
+
+    if (!product) return;
+
+
+    const stock =
+      Number(product.stock_quantity || 0);
+
+
+    if (stock <= 0) {
+
+      alert("Stok produk habis.");
+
+      return;
+
+    }
+
+
+    const existing =
+      cart.find(
+        item => item.id === productId
+      );
+
+
+    if (existing) {
+
+      if (existing.quantity >= stock) {
+
+        alert("Jumlah melebihi stok.");
+
+        return;
+
+      }
+
+      existing.quantity++;
+
+    } else {
+
+      cart.push({
+
+        id: product.id,
+
+        name: product.name,
+
+        price: Number(
+          product.selling_price || 0
+        ),
+
+        image:
+          product.image_url,
+
+        quantity: 1,
+
+        stock: stock
+
+      });
+
+    }
+
+
+    updateCart();
+
+
+    // buka keranjang sebentar sebagai feedback
+
+    const button =
+      event?.currentTarget;
+
+
+    if (button) {
+
+      button.textContent =
+        "✓ Ditambahkan";
+
+      setTimeout(() => {
+
+        if (
+          document.body.contains(button)
+        ) {
+
+          button.textContent =
+            "+ Keranjang";
+
+        }
+
+      }, 700);
+
+    }
+
+  }
+
+
+
+  // =====================================================
+  // UPDATE CART
+  // =====================================================
+
+  function updateCart() {
+
+    const count =
+      cart.reduce(
+        (total, item) =>
+          total + item.quantity,
+        0
+      );
+
+
+    document
+      .getElementById("cartCount")
+      .textContent = count;
+
+
+    renderCart();
+
+  }
+
+
+
+  // =====================================================
+  // RENDER CART
+  // =====================================================
+
+  function renderCart() {
+
+    const container =
+      document.getElementById("cartItems");
+
+
+    const totalItems =
+      cart.reduce(
+        (total, item) =>
+          total + item.quantity,
+        0
+      );
+
+
+    const totalPrice =
+      cart.reduce(
+        (total, item) =>
+          total +
+          (item.price * item.quantity),
+        0
+      );
+
+
+    document
+      .getElementById("cartTotalItems")
+      .textContent =
+      totalItems + " barang";
+
+
+    document
+      .getElementById("cartTotalPrice")
+      .textContent =
+      rupiah(totalPrice);
+
+
+    container.innerHTML = "";
+
+
+    if (cart.length === 0) {
+
+      container.innerHTML = `
+
+        <div class="text-center py-10">
+
+          <div class="text-5xl mb-3">
+            🛒
+          </div>
+
+          <p class="font-bold">
+            Keranjang masih kosong
+          </p>
+
+          <p class="text-xs text-slate-500 mt-1">
+            Tambahkan produk terlebih dahulu.
+          </p>
+
+        </div>
+
+      `;
+
+      return;
+
+    }
+
+
+    cart.forEach(item => {
+
+      const row =
+        document.createElement("div");
+
+
+      row.className =
+        "flex gap-3 py-3 border-b";
+
+
+      row.innerHTML = `
+
+        <div class="w-16 h-16 rounded-xl bg-slate-100 overflow-hidden flex-shrink-0">
+
+          ${
+            item.image
+            ? `<img src="${item.image}"
+                class="w-full h-full object-cover">`
+            : `<div class="w-full h-full flex items-center justify-center text-2xl">📦</div>`
+          }
+
+        </div>
+
+
+        <div class="flex-1">
+
+          <h3 class="font-bold text-sm">
+            ${item.name}
+          </h3>
+
+          <p class="text-xs text-[#1b3a4b] font-bold mt-1">
+            ${rupiah(item.price)}
+          </p>
+
+
+          <div class="flex items-center gap-2 mt-2">
+
+            <button
+              onclick="changeQuantity('${item.id}', -1)"
+              class="click-effect w-7 h-7 rounded-lg bg-slate-100 font-bold"
+            >
+              −
+            </button>
+
+            <span class="text-sm font-bold">
+              ${item.quantity}
+            </span>
+
+            <button
+              onclick="changeQuantity('${item.id}', 1)"
+              class="click-effect w-7 h-7 rounded-lg bg-slate-100 font-bold"
+            >
+              +
+            </button>
+
+          </div>
+
+        </div>
+
+
+        <div class="text-right">
+
+          <p class="font-bold text-sm">
+            ${rupiah(item.price * item.quantity)}
+          </p>
+
+          <button
+            onclick="removeFromCart('${item.id}')"
+            class="text-[10px] text-red-500 mt-2"
+          >
+            Hapus
+          </button>
+
+        </div>
+
+      `;
+
+
+      container.appendChild(row);
+
+    });
+
+  }
+
+
+
+  // =====================================================
+  // UBAH JUMLAH
+  // =====================================================
+
+  function changeQuantity(
+    productId,
+    amount
+  ) {
+
+    const item =
+      cart.find(
+        item => item.id === productId
+      );
+
+
+    if (!item) return;
+
+
+    item.quantity += amount;
+
+
+    if (item.quantity <= 0) {
+
+      cart =
+        cart.filter(
+          item => item.id !== productId
+        );
+
+    }
+
+
+    if (item.quantity > item.stock) {
+
+      item.quantity =
+        item.stock;
+
+      alert("Jumlah melebihi stok.");
+
+    }
+
+
+    updateCart();
+
+  }
+
+
+
+  // =====================================================
+  // HAPUS
+  // =====================================================
+
+  function removeFromCart(productId) {
+
+    cart =
+      cart.filter(
+        item => item.id !== productId
+      );
+
+
+    updateCart();
+
+  }
+
+
+
+  // =====================================================
+  // BUKA KERANJANG
+  // =====================================================
+
+  function openCart() {
+
+    const overlay =
+      document.getElementById("cartOverlay");
+
+    const panel =
+      document.getElementById("cartPanel");
+
+
+    overlay.classList.remove("hide");
+
+
+    setTimeout(() => {
+
+      panel.classList.remove(
+        "translate-y-full"
+      );
+
+    }, 10);
+
+  }
+
+
+
+  // =====================================================
+  // TUTUP KERANJANG
+  // =====================================================
+
+  function closeCart() {
+
+    const panel =
+      document.getElementById("cartPanel");
+
+
+    panel.classList.add(
+      "translate-y-full"
+    );
+
+
+    setTimeout(() => {
+
+      document
+        .getElementById("cartOverlay")
+        .classList.add("hide");
+
+    }, 300);
+
+  }
+
+
+
+  // =====================================================
+  // CHECKOUT
+  // =====================================================
+
+  function checkout() {
+
+    if (cart.length === 0) {
+
+      alert(
+        "Keranjang masih kosong."
+      );
+
+      return;
+
+    }
+
+
+    alert(
+      "Keranjang sudah siap. Sistem checkout akan kita buat berikutnya."
+    );
+
+  }
+
+
+
+  // =====================================================
+  // MULAI
+  // =====================================================
+
+  loadData();
+
+</script>
 
 </body>
 </html>
