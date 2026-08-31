@@ -16,90 +16,116 @@
     }
 
     body {
+      margin: 0;
       font-family: Arial, sans-serif;
       background: #f5f6f8;
-    }
-
-    .click-effect {
-      transition: all 0.15s ease;
-    }
-
-    .click-effect:active {
-      transform: scale(0.94);
+      color: #1f2937;
     }
 
     .product-card {
-      transition: all 0.2s ease;
+      transition: transform .18s ease, box-shadow .18s ease;
     }
 
     .product-card:active {
-      transform: scale(0.97);
+      transform: scale(.96);
     }
 
-    .category-button {
-      transition: all 0.2s ease;
+    .category-btn {
+      transition: .18s ease;
+      white-space: nowrap;
     }
 
-    .category-button:active {
-      transform: scale(0.92);
+    .category-btn:active {
+      transform: scale(.94);
     }
 
-    .hide {
-      display: none !important;
+    .cart-button {
+      transition: .2s ease;
     }
 
-    .cart-badge {
-      min-width: 19px;
-      height: 19px;
-      padding: 0 5px;
-      font-size: 10px;
+    .cart-button:active {
+      transform: scale(.90);
+    }
+
+    .add-animation {
+      animation: pop .25s ease;
+    }
+
+    @keyframes pop {
+      0% {
+        transform: scale(.8);
+      }
+
+      70% {
+        transform: scale(1.15);
+      }
+
+      100% {
+        transform: scale(1);
+      }
+    }
+
+    .modal {
+      animation: modalIn .2s ease;
+    }
+
+    @keyframes modalIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .hide-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+
+    .hide-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
     }
   </style>
 </head>
 
+<body>
 
-<body class="text-slate-800">
-
-
-<!-- ================================================= -->
+<!-- ===================================================== -->
 <!-- HEADER -->
-<!-- ================================================= -->
+<!-- ===================================================== -->
 
-<header class="bg-[#1b3a4b] text-white sticky top-0 z-50 shadow-md">
+<header class="bg-white sticky top-0 z-40 shadow-sm">
 
-  <div class="max-w-6xl mx-auto px-4">
+  <div class="max-w-6xl mx-auto px-4 py-3">
 
-    <div class="flex items-center justify-between py-3">
-
-      <!-- LOGO -->
+    <div class="flex items-center justify-between">
 
       <div>
-
-        <p class="text-[9px] text-slate-300 uppercase tracking-wider">
-          Toko Online
+        <p class="text-[10px] text-gray-500 font-semibold">
+          TOKO ONLINE
         </p>
 
-        <h1 class="text-xl font-extrabold text-[#38bdf8]">
-          ZOKENT
+        <h1 class="text-xl font-extrabold text-blue-700">
+          ZOKENT STORE
         </h1>
-
       </div>
-
 
       <!-- KERANJANG -->
 
       <button
         onclick="openCart()"
-        class="click-effect relative bg-white/10 hover:bg-white/20 p-3 rounded-xl"
+        class="cart-button relative bg-blue-600 text-white w-11 h-11 rounded-full flex items-center justify-center shadow-md"
       >
 
-        <span class="text-2xl">
-          🛒
-        </span>
+        🛒
 
         <span
           id="cartCount"
-          class="cart-badge absolute -top-1 -right-1 bg-red-500 text-white rounded-full flex items-center justify-center font-bold"
+          class="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center"
         >
           0
         </span>
@@ -111,7 +137,7 @@
 
     <!-- SEARCH -->
 
-    <div class="pb-4">
+    <div class="mt-3">
 
       <div class="relative">
 
@@ -119,12 +145,12 @@
           id="searchInput"
           type="text"
           placeholder="Cari produk..."
+          class="w-full bg-gray-100 border border-gray-200 rounded-xl px-4 py-3 pl-11 text-sm outline-none focus:ring-2 focus:ring-blue-500"
           oninput="searchProducts()"
-          class="w-full bg-white text-slate-800 rounded-xl px-4 py-3 pl-11 outline-none text-sm shadow-sm"
         >
 
         <span class="absolute left-4 top-3 text-lg">
-          🔍
+          🔎
         </span>
 
       </div>
@@ -136,182 +162,155 @@
 </header>
 
 
+<!-- ===================================================== -->
+<!-- BANNER -->
+<!-- ===================================================== -->
 
-<!-- ================================================= -->
-<!-- MAIN -->
-<!-- ================================================= -->
+<section class="max-w-6xl mx-auto px-4 pt-4">
 
-<main class="max-w-6xl mx-auto px-4 py-5">
+  <div class="bg-gradient-to-r from-blue-700 to-blue-500 rounded-2xl p-5 text-white shadow-md">
 
-
-  <!-- BANNER -->
-
-  <section class="bg-gradient-to-r from-[#1b3a4b] to-[#25627b] rounded-2xl p-5 text-white mb-5 shadow-sm">
-
-    <p class="text-xs text-slate-200">
-      Selamat datang di
+    <p class="text-xs opacity-90">
+      SELAMAT DATANG
     </p>
 
     <h2 class="text-2xl font-extrabold mt-1">
-      ZOKENT STORE 🛒
+      Belanja lebih mudah 🛒
     </h2>
 
-    <p class="text-xs text-slate-200 mt-2">
-      Belanja kebutuhan Anda dengan mudah.
+    <p class="text-xs mt-2 opacity-90">
+      Pilih kebutuhanmu dan pesan dari rumah.
     </p>
 
-  </section>
+  </div>
+
+</section>
 
 
+<!-- ===================================================== -->
+<!-- KATEGORI -->
+<!-- ===================================================== -->
 
-  <!-- ================================================= -->
-  <!-- KATEGORI -->
-  <!-- ================================================= -->
+<section class="max-w-6xl mx-auto px-4 mt-5">
 
-  <section class="mb-6">
+  <div class="flex items-center justify-between mb-3">
 
-    <div class="flex justify-between items-center mb-3">
+    <h2 class="font-extrabold text-base">
+      Kategori
+    </h2>
 
-      <div>
-
-        <h2 class="font-extrabold text-base">
-          Kategori
-        </h2>
-
-        <p class="text-[10px] text-slate-500">
-          Pilih kategori produk
-        </p>
-
-      </div>
-
-    </div>
+  </div>
 
 
-    <div
-      id="categoryList"
-      class="flex gap-2 overflow-x-auto pb-2"
+  <div
+    id="categoryList"
+    class="flex gap-2 overflow-x-auto hide-scrollbar pb-2"
+  >
+
+    <button
+      onclick="filterCategory('SEMUA', this)"
+      class="category-btn bg-blue-600 text-white px-4 py-2 rounded-full text-xs font-bold"
     >
+      Semua
+    </button>
 
-      <!-- Kategori dari Supabase akan muncul di sini -->
+  </div>
 
-    </div>
-
-  </section>
-
-
-
-  <!-- ================================================= -->
-  <!-- PRODUK -->
-  <!-- ================================================= -->
-
-  <section>
-
-    <div class="flex items-center justify-between mb-3">
-
-      <div>
-
-        <h2 class="font-extrabold text-base">
-          Produk
-        </h2>
-
-        <p
-          id="productInfo"
-          class="text-[10px] text-slate-500"
-        >
-          Memuat produk...
-        </p>
-
-      </div>
-
-    </div>
+</section>
 
 
-    <!-- LOADING -->
+<!-- ===================================================== -->
+<!-- PRODUK -->
+<!-- ===================================================== -->
 
-    <div
-      id="loading"
-      class="text-center py-10"
-    >
+<main class="max-w-6xl mx-auto px-4 mt-5 pb-32">
 
-      <div class="text-3xl mb-2">
-        ⏳
-      </div>
+  <div class="flex items-center justify-between mb-3">
 
-      <p class="text-sm text-slate-500">
+    <div>
+
+      <h2 class="font-extrabold text-base">
+        Produk
+      </h2>
+
+      <p
+        id="productInfo"
+        class="text-[10px] text-gray-500"
+      >
         Memuat produk...
       </p>
 
     </div>
 
+  </div>
 
-    <!-- PRODUK -->
 
-    <div
-      id="productList"
-      class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-3"
-    >
+  <div
+    id="productList"
+    class="grid grid-cols-2 md:grid-cols-4 gap-3"
+  >
 
+  </div>
+
+
+  <!-- LOADING -->
+
+  <div
+    id="loading"
+    class="text-center py-10 text-sm text-gray-500"
+  >
+    Memuat produk...
+  </div>
+
+
+  <!-- KOSONG -->
+
+  <div
+    id="emptyProduct"
+    class="hidden text-center py-10"
+  >
+
+    <div class="text-4xl">
+      📦
     </div>
 
+    <p class="font-bold mt-2">
+      Produk tidak ditemukan
+    </p>
 
-    <!-- TIDAK ADA PRODUK -->
+    <p class="text-xs text-gray-500 mt-1">
+      Coba pilih kategori lain atau gunakan pencarian.
+    </p>
 
-    <div
-      id="emptyProduct"
-      class="hide text-center py-12"
-    >
-
-      <div class="text-4xl mb-3">
-        📦
-      </div>
-
-      <p class="font-bold">
-        Produk tidak ditemukan
-      </p>
-
-      <p class="text-xs text-slate-500 mt-1">
-        Belum ada produk yang tersedia.
-      </p>
-
-    </div>
-
-  </section>
+  </div>
 
 </main>
 
 
-
-<!-- ================================================= -->
-<!-- CART DRAWER -->
-<!-- ================================================= -->
-
-<div
-  id="cartOverlay"
-  class="hide fixed inset-0 bg-black/40 z-[100]"
-  onclick="closeCart()"
-></div>
-
+<!-- ===================================================== -->
+<!-- CART MODAL -->
+<!-- ===================================================== -->
 
 <div
-  id="cartPanel"
-  class="fixed bottom-0 left-0 right-0 bg-white z-[101] rounded-t-3xl shadow-2xl transform translate-y-full transition-transform duration-300 max-h-[85vh] overflow-hidden"
+  id="cartModal"
+  class="hidden fixed inset-0 bg-black/50 z-50 flex items-end justify-center"
 >
 
-  <div class="max-w-2xl mx-auto">
+  <div
+    class="modal bg-white w-full max-w-2xl rounded-t-3xl max-h-[90vh] overflow-y-auto"
+  >
 
-    <!-- CART HEADER -->
-
-    <div class="flex items-center justify-between p-5 border-b">
+    <div class="sticky top-0 bg-white border-b p-4 flex justify-between items-center">
 
       <div>
 
         <h2 class="font-extrabold text-lg">
-          Keranjang 🛒
+          🛒 Keranjang
         </h2>
 
         <p
           id="cartTotalItems"
-          class="text-xs text-slate-500"
+          class="text-xs text-gray-500"
         >
           0 barang
         </p>
@@ -320,7 +319,7 @@
 
       <button
         onclick="closeCart()"
-        class="click-effect text-2xl bg-slate-100 rounded-full w-9 h-9"
+        class="text-2xl text-gray-500"
       >
         ×
       </button>
@@ -328,29 +327,25 @@
     </div>
 
 
-    <!-- CART ITEMS -->
-
     <div
       id="cartItems"
-      class="p-4 overflow-y-auto max-h-[50vh]"
+      class="p-4"
     >
 
     </div>
 
 
-    <!-- CART FOOTER -->
-
-    <div class="border-t p-5">
+    <div class="border-t p-4">
 
       <div class="flex justify-between mb-4">
 
-        <span class="text-sm text-slate-500">
+        <span class="text-sm text-gray-500">
           Total
         </span>
 
         <strong
-          id="cartTotalPrice"
-          class="text-lg"
+          id="cartTotal"
+          class="text-lg text-blue-700"
         >
           Rp 0
         </strong>
@@ -359,10 +354,11 @@
 
 
       <button
-        onclick="checkout()"
-        class="click-effect w-full bg-[#1b3a4b] hover:bg-[#234c61] text-white py-3 rounded-xl font-bold"
+        onclick="openCheckout()"
+        id="checkoutButton"
+        class="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-xl font-bold"
       >
-        Lanjutkan Pesanan
+        Lanjut Checkout
       </button>
 
     </div>
@@ -372,831 +368,1377 @@
 </div>
 
 
+<!-- ===================================================== -->
+<!-- CHECKOUT MODAL -->
+<!-- ===================================================== -->
 
-<!-- ================================================= -->
+<div
+  id="checkoutModal"
+  class="hidden fixed inset-0 bg-black/50 z-50 flex items-end justify-center"
+>
+
+  <div
+    class="modal bg-white w-full max-w-2xl rounded-t-3xl max-h-[95vh] overflow-y-auto"
+  >
+
+    <div class="sticky top-0 bg-white border-b p-4 flex justify-between items-center">
+
+      <h2 class="font-extrabold text-lg">
+        Checkout
+      </h2>
+
+      <button
+        onclick="closeCheckout()"
+        class="text-2xl text-gray-500"
+      >
+        ×
+      </button>
+
+    </div>
+
+
+    <div class="p-4 space-y-4">
+
+      <!-- NAMA -->
+
+      <div>
+
+        <label class="text-xs font-bold">
+          Nama
+        </label>
+
+        <input
+          id="customerName"
+          type="text"
+          placeholder="Nama lengkap"
+          class="w-full mt-1 border rounded-xl px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-blue-500"
+        >
+
+      </div>
+
+
+      <!-- WHATSAPP -->
+
+      <div>
+
+        <label class="text-xs font-bold">
+          Nomor WhatsApp
+        </label>
+
+        <input
+          id="customerPhone"
+          type="tel"
+          placeholder="08xxxxxxxxxx"
+          class="w-full mt-1 border rounded-xl px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-blue-500"
+        >
+
+      </div>
+
+
+      <!-- ALAMAT -->
+
+      <div>
+
+        <label class="text-xs font-bold">
+          Alamat Pengantaran
+        </label>
+
+        <textarea
+          id="customerAddress"
+          rows="3"
+          placeholder="Masukkan alamat lengkap..."
+          class="w-full mt-1 border rounded-xl px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-blue-500"
+        ></textarea>
+
+      </div>
+
+
+      <!-- CATATAN -->
+
+      <div>
+
+        <label class="text-xs font-bold">
+          Catatan Pesanan
+        </label>
+
+        <textarea
+          id="customerNote"
+          rows="2"
+          placeholder="Catatan tambahan (opsional)"
+          class="w-full mt-1 border rounded-xl px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-blue-500"
+        ></textarea>
+
+      </div>
+
+
+      <!-- PEMBAYARAN -->
+
+      <div>
+
+        <label class="text-xs font-bold">
+          Metode Pembayaran
+        </label>
+
+        <select
+          id="paymentMethod"
+          class="w-full mt-1 border rounded-xl px-4 py-3 text-sm outline-none"
+        >
+
+          <option value="qris">
+            QRIS
+          </option>
+
+          <option value="transfer">
+            Transfer Bank
+          </option>
+
+          <option value="cod">
+            COD / Bayar Saat Barang Diantar
+          </option>
+
+        </select>
+
+      </div>
+
+
+      <!-- TOTAL -->
+
+      <div class="bg-gray-50 rounded-xl p-4">
+
+        <div class="flex justify-between">
+
+          <span class="text-sm">
+            Total Pesanan
+          </span>
+
+          <strong
+            id="checkoutTotal"
+            class="text-lg text-blue-700"
+          >
+            Rp 0
+          </strong>
+
+        </div>
+
+      </div>
+
+
+      <button
+        onclick="submitOrder()"
+        id="submitOrderButton"
+        class="w-full bg-green-600 hover:bg-green-700 text-white py-3 rounded-xl font-bold"
+      >
+        Buat Pesanan & WhatsApp
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<!-- ===================================================== -->
 <!-- SCRIPT -->
-<!-- ================================================= -->
+<!-- ===================================================== -->
 
 <script>
 
-  // =====================================================
-  // SUPABASE
-  // =====================================================
+const SUPABASE_URL =
+  "https://weuousmvkxmgmsnwiuad.supabase.co";
 
-  const SUPABASE_URL =
-    "https://weuousmvkxmgmsnwiuad.supabase.co";
+const SUPABASE_ANON_KEY =
+  "sb_publishable_e375KDL0vuoahHO_kWMjwA_a04R4yHb";
 
-  const SUPABASE_ANON_KEY =
-    "sb_publishable_e375KDL0vuoahHO_kWMjwA_a04R4yHb";
-
-
-  const supabaseClient =
-    window.supabase.createClient(
-      SUPABASE_URL,
-      SUPABASE_ANON_KEY
-    );
+const supabaseClient =
+  window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_ANON_KEY
+  );
 
 
+// =====================================================
+// DATA
+// =====================================================
 
-  // =====================================================
-  // DATA
-  // =====================================================
+let products = [];
 
-  let products = [];
+let filteredProducts = [];
 
-  let categories = [];
+let categories = [];
 
-  let cart = [];
+let selectedCategory = "SEMUA";
 
-  let selectedCategory = "all";
-
-
-
-  // =====================================================
-  // FORMAT RUPIAH
-  // =====================================================
-
-  function rupiah(number) {
-
-    return new Intl.NumberFormat(
-      "id-ID",
-      {
-        style: "currency",
-        currency: "IDR",
-        maximumFractionDigits: 0
-      }
-    ).format(number || 0);
-
-  }
+let cart = [];
 
 
+// =====================================================
+// FORMAT RUPIAH
+// =====================================================
 
-  // =====================================================
-  // LOAD DATA
-  // =====================================================
+function formatRupiah(number) {
 
-  async function loadData() {
-
-    await loadCategories();
-
-    await loadProducts();
-
-  }
-
-
-
-  // =====================================================
-  // LOAD KATEGORI
-  // =====================================================
-
-  async function loadCategories() {
-
-    const { data, error } =
-      await supabaseClient
-        .from("categories")
-        .select("*")
-        .order("name", { ascending: true });
-
-
-    if (error) {
-
-      console.error("Kategori:", error);
-
-      return;
-
+  return new Intl.NumberFormat(
+    "id-ID",
+    {
+      style: "currency",
+      currency: "IDR",
+      maximumFractionDigits: 0
     }
+  ).format(number || 0);
+
+}
 
 
-    categories = data || [];
+// =====================================================
+// LOAD PRODUK
+// =====================================================
 
-    renderCategories();
+async function loadProducts() {
 
-  }
+  const loading =
+    document.getElementById("loading");
 
+  const productList =
+    document.getElementById("productList");
 
+  try {
 
-  // =====================================================
-  // RENDER KATEGORI
-  // =====================================================
-
-  function renderCategories() {
-
-    const container =
-      document.getElementById("categoryList");
-
-
-    container.innerHTML = "";
-
-
-    // SEMUA
-
-    const allButton =
-      document.createElement("button");
-
-    allButton.className =
-      "category-button flex-shrink-0 px-4 py-2 rounded-xl text-xs font-bold " +
-      (selectedCategory === "all"
-        ? "bg-[#1b3a4b] text-white"
-        : "bg-white border border-slate-200 text-slate-600");
-
-
-    allButton.textContent = "Semua";
-
-
-    allButton.onclick = function() {
-
-      selectedCategory = "all";
-
-      renderCategories();
-
-      renderProducts();
-
-    };
-
-
-    container.appendChild(allButton);
-
-
-
-    categories.forEach(category => {
-
-      const button =
-        document.createElement("button");
-
-
-      button.className =
-        "category-button flex-shrink-0 px-4 py-2 rounded-xl text-xs font-bold " +
-        (selectedCategory === category.id
-          ? "bg-[#1b3a4b] text-white"
-          : "bg-white border border-slate-200 text-slate-600");
-
-
-      button.textContent =
-        category.name;
-
-
-      button.onclick = function() {
-
-        selectedCategory =
-          category.id;
-
-        renderCategories();
-
-        renderProducts();
-
-      };
-
-
-      container.appendChild(button);
-
-    });
-
-  }
-
-
-
-  // =====================================================
-  // LOAD PRODUK
-  // =====================================================
-
-  async function loadProducts() {
-
-    const { data, error } =
-      await supabaseClient
-        .from("products")
-        .select("*")
-        .eq("is_active", true)
-        .eq("show_in_catalog", true)
-        .order("created_at", {
-          ascending: false
-        });
-
-
-    document
-      .getElementById("loading")
-      .classList.add("hide");
+    const {
+      data,
+      error
+    } = await supabaseClient
+      .from("products")
+      .select(`
+        id,
+        name,
+        catalog_name,
+        sku,
+        description,
+        selling_price,
+        image_url,
+        is_active,
+        show_in_catalog,
+        show_when_out_of_stock,
+        stock_quantity,
+        minimum_stock,
+        allow_negative_stock
+      `)
+      .eq("is_active", true)
+      .eq("show_in_catalog", true)
+      .order("created_at", {
+        ascending: false
+      });
 
 
     if (error) {
-
-      console.error("Produk:", error);
-
-      document
-        .getElementById("productInfo")
-        .textContent =
-        "Gagal memuat produk.";
-
-      return;
-
+      throw error;
     }
 
 
     products = data || [];
 
+    filteredProducts = [...products];
+
+    loading.style.display = "none";
+
+    createCategories();
+
     renderProducts();
+
+  } catch (error) {
+
+    console.error(error);
+
+    loading.innerHTML = `
+      <div class="text-red-500">
+        Gagal memuat produk.
+      </div>
+    `;
 
   }
 
+}
 
 
-  // =====================================================
-  // RENDER PRODUK
-  // =====================================================
+// =====================================================
+// BUAT KATEGORI DARI catalog_name
+// =====================================================
 
-  function renderProducts() {
+function createCategories() {
 
-    const container =
-      document.getElementById("productList");
+  const categorySet = new Set();
 
-    const empty =
-      document.getElementById("emptyProduct");
+  products.forEach(product => {
 
+    if (product.catalog_name) {
 
-    container.innerHTML = "";
-
-
-    const search =
-      document
-        .getElementById("searchInput")
-        .value
-        .toLowerCase()
-        .trim();
-
-
-    let filtered =
-      products.filter(product => {
-
-
-        const matchCategory =
-          selectedCategory === "all" ||
-          product.category_id === selectedCategory;
-
-
-        const matchSearch =
-          !search ||
-          (product.name || "")
-            .toLowerCase()
-            .includes(search) ||
-          (product.sku || "")
-            .toLowerCase()
-            .includes(search);
-
-
-        return matchCategory &&
-               matchSearch;
-
-      });
-
-
-
-    document
-      .getElementById("productInfo")
-      .textContent =
-      filtered.length +
-      " produk tersedia";
-
-
-
-    if (filtered.length === 0) {
-
-      empty.classList.remove("hide");
-
-      return;
+      categorySet.add(
+        product.catalog_name
+      );
 
     }
 
-
-    empty.classList.add("hide");
-
+  });
 
 
-    filtered.forEach(product => {
-
-      const card =
-        document.createElement("div");
+  categories = [...categorySet];
 
 
-      card.className =
-        "product-card bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm";
+  const categoryList =
+    document.getElementById("categoryList");
 
 
-      const image =
-        product.image_url
-        ? `<img src="${product.image_url}"
-             class="w-full h-36 object-cover"
-             onerror="this.style.display='none'">`
-        : `
-          <div class="w-full h-36 bg-slate-100 flex items-center justify-center">
-            <span class="text-4xl">📦</span>
-          </div>
-        `;
+  categoryList.innerHTML = `
+
+    <button
+      onclick="filterCategory('SEMUA', this)"
+      class="category-btn bg-blue-600 text-white px-4 py-2 rounded-full text-xs font-bold"
+    >
+      Semua
+    </button>
+
+  `;
 
 
-      const stock =
-        Number(product.stock_quantity || 0);
+  categories.forEach(category => {
+
+    const button =
+      document.createElement("button");
+
+    button.className =
+      "category-btn bg-white border border-gray-200 px-4 py-2 rounded-full text-xs font-bold text-gray-700";
+
+    button.textContent = category;
+
+    button.onclick = function() {
+
+      filterCategory(
+        category,
+        this
+      );
+
+    };
+
+    categoryList.appendChild(button);
+
+  });
+
+}
 
 
-      const outOfStock =
-        stock <= 0;
+// =====================================================
+// FILTER KATEGORI
+// =====================================================
+
+function filterCategory(
+  category,
+  button
+) {
+
+  selectedCategory = category;
 
 
-      card.innerHTML = `
+  document
+    .querySelectorAll(".category-btn")
+    .forEach(btn => {
 
-        <div>
-          ${image}
-        </div>
+      btn.classList.remove(
+        "bg-blue-600",
+        "text-white"
+      );
 
-        <div class="p-3">
-
-          <p class="text-[10px] text-slate-400 mb-1">
-            ${product.sku || ""}
-          </p>
-
-          <h3 class="font-bold text-sm leading-snug line-clamp-2">
-            ${product.name || "Produk"}
-          </h3>
-
-          <p class="text-[#1b3a4b] font-extrabold mt-2">
-            ${rupiah(product.selling_price)}
-          </p>
-
-          <p class="text-[10px] text-slate-500 mt-1">
-            Stok: ${stock}
-          </p>
-
-          <button
-            class="click-effect mt-3 w-full py-2 rounded-xl text-xs font-bold
-            ${outOfStock
-              ? "bg-slate-200 text-slate-400"
-              : "bg-[#1b3a4b] text-white hover:bg-[#234c61]"}"
-            ${outOfStock ? "disabled" : ""}
-            onclick="addToCart('${product.id}')"
-          >
-
-            ${outOfStock
-              ? "Stok Habis"
-              : "+ Keranjang"}
-
-          </button>
-
-        </div>
-
-      `;
-
-
-      container.appendChild(card);
+      btn.classList.add(
+        "bg-white",
+        "text-gray-700"
+      );
 
     });
 
+
+  if (button) {
+
+    button.classList.remove(
+      "bg-white",
+      "text-gray-700"
+    );
+
+    button.classList.add(
+      "bg-blue-600",
+      "text-white"
+    );
+
   }
 
 
+  applyFilters();
 
-  // =====================================================
-  // SEARCH
-  // =====================================================
-
-  function searchProducts() {
-
-    renderProducts();
-
-  }
+}
 
 
+// =====================================================
+// SEARCH
+// =====================================================
 
-  // =====================================================
-  // TAMBAH KERANJANG
-  // =====================================================
+function searchProducts() {
 
-  function addToCart(productId) {
+  applyFilters();
 
-    const product =
-      products.find(
-        p => p.id === productId
+}
+
+
+// =====================================================
+// APPLY FILTER
+// =====================================================
+
+function applyFilters() {
+
+  const keyword =
+    document
+      .getElementById("searchInput")
+      .value
+      .toLowerCase()
+      .trim();
+
+
+  filteredProducts =
+    products.filter(product => {
+
+      const matchCategory =
+        selectedCategory === "SEMUA" ||
+        product.catalog_name === selectedCategory;
+
+
+      const name =
+        (product.name || "")
+          .toLowerCase();
+
+      const catalogName =
+        (product.catalog_name || "")
+          .toLowerCase();
+
+
+      const matchSearch =
+        !keyword ||
+        name.includes(keyword) ||
+        catalogName.includes(keyword);
+
+
+      return (
+        matchCategory &&
+        matchSearch
       );
 
+    });
 
-    if (!product) return;
 
+  renderProducts();
+
+}
+
+
+// =====================================================
+// RENDER PRODUK
+// =====================================================
+
+function renderProducts() {
+
+  const productList =
+    document.getElementById("productList");
+
+  const empty =
+    document.getElementById("emptyProduct");
+
+  const info =
+    document.getElementById("productInfo");
+
+
+  productList.innerHTML = "";
+
+
+  info.textContent =
+    `${filteredProducts.length} produk`;
+
+
+  if (
+    filteredProducts.length === 0
+  ) {
+
+    empty.classList.remove("hidden");
+
+    return;
+
+  }
+
+
+  empty.classList.add("hidden");
+
+
+  filteredProducts.forEach(product => {
 
     const stock =
       Number(product.stock_quantity || 0);
 
 
-    if (stock <= 0) {
-
-      alert("Stok produk habis.");
-
-      return;
-
-    }
+    const outOfStock =
+      stock <= 0;
 
 
-    const existing =
-      cart.find(
-        item => item.id === productId
-      );
+    const canBuy =
+      !outOfStock ||
+      product.allow_negative_stock === true;
 
 
-    if (existing) {
+    const card =
+      document.createElement("div");
 
-      if (existing.quantity >= stock) {
 
-        alert("Jumlah melebihi stok.");
+    card.className =
+      "product-card bg-white rounded-2xl border border-gray-200 overflow-hidden shadow-sm";
 
-        return;
 
-      }
+    let imageHTML = "";
 
-      existing.quantity++;
+
+    if (product.image_url) {
+
+      imageHTML = `
+
+        <img
+          src="${product.image_url}"
+          alt="${escapeHTML(product.name)}"
+          class="w-full h-36 object-cover"
+          onerror="this.style.display='none'"
+        >
+
+      `;
 
     } else {
 
-      cart.push({
+      imageHTML = `
 
-        id: product.id,
-
-        name: product.name,
-
-        price: Number(
-          product.selling_price || 0
-        ),
-
-        image:
-          product.image_url,
-
-        quantity: 1,
-
-        stock: stock
-
-      });
-
-    }
-
-
-    updateCart();
-
-
-    // buka keranjang sebentar sebagai feedback
-
-    const button =
-      event?.currentTarget;
-
-
-    if (button) {
-
-      button.textContent =
-        "✓ Ditambahkan";
-
-      setTimeout(() => {
-
-        if (
-          document.body.contains(button)
-        ) {
-
-          button.textContent =
-            "+ Keranjang";
-
-        }
-
-      }, 700);
-
-    }
-
-  }
-
-
-
-  // =====================================================
-  // UPDATE CART
-  // =====================================================
-
-  function updateCart() {
-
-    const count =
-      cart.reduce(
-        (total, item) =>
-          total + item.quantity,
-        0
-      );
-
-
-    document
-      .getElementById("cartCount")
-      .textContent = count;
-
-
-    renderCart();
-
-  }
-
-
-
-  // =====================================================
-  // RENDER CART
-  // =====================================================
-
-  function renderCart() {
-
-    const container =
-      document.getElementById("cartItems");
-
-
-    const totalItems =
-      cart.reduce(
-        (total, item) =>
-          total + item.quantity,
-        0
-      );
-
-
-    const totalPrice =
-      cart.reduce(
-        (total, item) =>
-          total +
-          (item.price * item.quantity),
-        0
-      );
-
-
-    document
-      .getElementById("cartTotalItems")
-      .textContent =
-      totalItems + " barang";
-
-
-    document
-      .getElementById("cartTotalPrice")
-      .textContent =
-      rupiah(totalPrice);
-
-
-    container.innerHTML = "";
-
-
-    if (cart.length === 0) {
-
-      container.innerHTML = `
-
-        <div class="text-center py-10">
-
-          <div class="text-5xl mb-3">
-            🛒
-          </div>
-
-          <p class="font-bold">
-            Keranjang masih kosong
-          </p>
-
-          <p class="text-xs text-slate-500 mt-1">
-            Tambahkan produk terlebih dahulu.
-          </p>
-
+        <div class="w-full h-36 bg-gray-100 flex items-center justify-center text-4xl">
+          📦
         </div>
 
       `;
 
-      return;
+    }
+
+
+    let stockHTML = "";
+
+
+    if (outOfStock) {
+
+      stockHTML = `
+
+        <span class="text-[9px] text-red-600 font-bold">
+          Stok habis
+        </span>
+
+      `;
+
+    } else if (
+      stock <= Number(product.minimum_stock || 0)
+    ) {
+
+      stockHTML = `
+
+        <span class="text-[9px] text-orange-600 font-bold">
+          Stok terbatas
+        </span>
+
+      `;
+
+    } else {
+
+      stockHTML = `
+
+        <span class="text-[9px] text-green-600 font-bold">
+          Stok tersedia
+        </span>
+
+      `;
 
     }
 
 
-    cart.forEach(item => {
+    card.innerHTML = `
 
-      const row =
-        document.createElement("div");
+      ${imageHTML}
 
+      <div class="p-3">
 
-      row.className =
-        "flex gap-3 py-3 border-b";
+        <p class="text-[9px] text-gray-400">
+          ${escapeHTML(product.catalog_name || "")}
+        </p>
 
+        <h3 class="font-bold text-sm mt-1 line-clamp-2">
+          ${escapeHTML(product.name || "Produk")}
+        </h3>
 
-      row.innerHTML = `
+        <p class="text-blue-700 font-extrabold mt-2">
+          ${formatRupiah(product.selling_price)}
+        </p>
 
-        <div class="w-16 h-16 rounded-xl bg-slate-100 overflow-hidden flex-shrink-0">
-
-          ${
-            item.image
-            ? `<img src="${item.image}"
-                class="w-full h-full object-cover">`
-            : `<div class="w-full h-full flex items-center justify-center text-2xl">📦</div>`
-          }
-
+        <div class="mt-1">
+          ${stockHTML}
         </div>
 
+        <button
+          class="w-full mt-3 py-2 rounded-xl text-xs font-bold ${
+            canBuy
+              ? "bg-blue-600 text-white hover:bg-blue-700"
+              : "bg-gray-200 text-gray-400"
+          }"
+          ${canBuy ? "" : "disabled"}
+          onclick="addToCart('${product.id}')"
+        >
+          ${canBuy ? "+ Keranjang" : "Stok Habis"}
+        </button>
 
-        <div class="flex-1">
+      </div>
 
-          <h3 class="font-bold text-sm">
-            ${item.name}
-          </h3>
-
-          <p class="text-xs text-[#1b3a4b] font-bold mt-1">
-            ${rupiah(item.price)}
-          </p>
-
-
-          <div class="flex items-center gap-2 mt-2">
-
-            <button
-              onclick="changeQuantity('${item.id}', -1)"
-              class="click-effect w-7 h-7 rounded-lg bg-slate-100 font-bold"
-            >
-              −
-            </button>
-
-            <span class="text-sm font-bold">
-              ${item.quantity}
-            </span>
-
-            <button
-              onclick="changeQuantity('${item.id}', 1)"
-              class="click-effect w-7 h-7 rounded-lg bg-slate-100 font-bold"
-            >
-              +
-            </button>
-
-          </div>
-
-        </div>
+    `;
 
 
-        <div class="text-right">
+    productList.appendChild(card);
 
-          <p class="font-bold text-sm">
-            ${rupiah(item.price * item.quantity)}
-          </p>
+  });
 
-          <button
-            onclick="removeFromCart('${item.id}')"
-            class="text-[10px] text-red-500 mt-2"
-          >
-            Hapus
-          </button>
-
-        </div>
-
-      `;
+}
 
 
-      container.appendChild(row);
+// =====================================================
+// ESCAPE HTML
+// =====================================================
+
+function escapeHTML(value) {
+
+  return String(value || "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+
+}
+
+
+// =====================================================
+// TAMBAH KERANJANG
+// =====================================================
+
+function addToCart(productId) {
+
+  const product =
+    products.find(
+      p => String(p.id) === String(productId)
+    );
+
+
+  if (!product) return;
+
+
+  const stock =
+    Number(product.stock_quantity || 0);
+
+
+  if (
+    stock <= 0 &&
+    product.allow_negative_stock !== true
+  ) {
+
+    alert("Stok produk habis.");
+
+    return;
+
+  }
+
+
+  const existing =
+    cart.find(
+      item =>
+        String(item.product.id) ===
+        String(productId)
+    );
+
+
+  if (existing) {
+
+    existing.quantity++;
+
+  } else {
+
+    cart.push({
+
+      product: product,
+
+      quantity: 1
 
     });
 
   }
 
 
+  updateCart();
 
-  // =====================================================
-  // UBAH JUMLAH
-  // =====================================================
 
-  function changeQuantity(
-    productId,
-    amount
+  const count =
+    document.getElementById("cartCount");
+
+
+  count.classList.remove("add-animation");
+
+  void count.offsetWidth;
+
+  count.classList.add("add-animation");
+
+}
+
+
+// =====================================================
+// UPDATE CART
+// =====================================================
+
+function updateCart() {
+
+  const totalItems =
+    cart.reduce(
+      (total, item) =>
+        total + item.quantity,
+      0
+    );
+
+
+  document.getElementById(
+    "cartCount"
+  ).textContent = totalItems;
+
+}
+
+
+// =====================================================
+// BUKA CART
+// =====================================================
+
+function openCart() {
+
+  renderCart();
+
+  document
+    .getElementById("cartModal")
+    .classList.remove("hidden");
+
+}
+
+
+// =====================================================
+// TUTUP CART
+// =====================================================
+
+function closeCart() {
+
+  document
+    .getElementById("cartModal")
+    .classList.add("hidden");
+
+}
+
+
+// =====================================================
+// RENDER CART
+// =====================================================
+
+function renderCart() {
+
+  const container =
+    document.getElementById("cartItems");
+
+
+  const totalElement =
+    document.getElementById("cartTotal");
+
+
+  const itemsElement =
+    document.getElementById("cartTotalItems");
+
+
+  container.innerHTML = "";
+
+
+  if (cart.length === 0) {
+
+    container.innerHTML = `
+
+      <div class="text-center py-10">
+
+        <div class="text-5xl">
+          🛒
+        </div>
+
+        <p class="font-bold mt-3">
+          Keranjang masih kosong
+        </p>
+
+        <p class="text-xs text-gray-500 mt-1">
+          Tambahkan produk terlebih dahulu.
+        </p>
+
+      </div>
+
+    `;
+
+
+    totalElement.textContent =
+      "Rp 0";
+
+    itemsElement.textContent =
+      "0 barang";
+
+    return;
+
+  }
+
+
+  let total = 0;
+
+  let totalItems = 0;
+
+
+  cart.forEach((item, index) => {
+
+    const product =
+      item.product;
+
+
+    const subtotal =
+      Number(product.selling_price || 0) *
+      item.quantity;
+
+
+    total += subtotal;
+
+    totalItems += item.quantity;
+
+
+    const div =
+      document.createElement("div");
+
+
+    div.className =
+      "flex gap-3 py-3 border-b";
+
+
+    div.innerHTML = `
+
+      <div class="w-16 h-16 bg-gray-100 rounded-xl overflow-hidden flex-shrink-0">
+
+        ${
+          product.image_url
+            ? `<img src="${product.image_url}" class="w-full h-full object-cover">`
+            : `<div class="w-full h-full flex items-center justify-center text-2xl">📦</div>`
+        }
+
+      </div>
+
+
+      <div class="flex-1">
+
+        <h3 class="font-bold text-sm">
+          ${escapeHTML(product.name)}
+        </h3>
+
+        <p class="text-xs text-blue-700 font-bold mt-1">
+          ${formatRupiah(product.selling_price)}
+        </p>
+
+
+        <div class="flex items-center gap-2 mt-2">
+
+          <button
+            onclick="changeQuantity(${index}, -1)"
+            class="w-7 h-7 rounded-full bg-gray-200 font-bold"
+          >
+            −
+          </button>
+
+          <span class="text-sm font-bold">
+            ${item.quantity}
+          </span>
+
+          <button
+            onclick="changeQuantity(${index}, 1)"
+            class="w-7 h-7 rounded-full bg-blue-600 text-white font-bold"
+          >
+            +
+          </button>
+
+        </div>
+
+      </div>
+
+
+      <div class="text-right">
+
+        <p class="text-sm font-extrabold">
+          ${formatRupiah(subtotal)}
+        </p>
+
+        <button
+          onclick="removeFromCart(${index})"
+          class="text-[10px] text-red-500 mt-2"
+        >
+          Hapus
+        </button>
+
+      </div>
+
+    `;
+
+
+    container.appendChild(div);
+
+  });
+
+
+  totalElement.textContent =
+    formatRupiah(total);
+
+
+  itemsElement.textContent =
+    `${totalItems} barang`;
+
+}
+
+
+// =====================================================
+// UBAH JUMLAH
+// =====================================================
+
+function changeQuantity(index, amount) {
+
+  const item =
+    cart[index];
+
+
+  if (!item) return;
+
+
+  const newQuantity =
+    item.quantity + amount;
+
+
+  const stock =
+    Number(
+      item.product.stock_quantity || 0
+    );
+
+
+  if (
+    amount > 0 &&
+    stock > 0 &&
+    newQuantity > stock &&
+    item.product.allow_negative_stock !== true
   ) {
 
-    const item =
-      cart.find(
-        item => item.id === productId
-      );
+    alert("Jumlah melebihi stok.");
 
-
-    if (!item) return;
-
-
-    item.quantity += amount;
-
-
-    if (item.quantity <= 0) {
-
-      cart =
-        cart.filter(
-          item => item.id !== productId
-        );
-
-    }
-
-
-    if (item.quantity > item.stock) {
-
-      item.quantity =
-        item.stock;
-
-      alert("Jumlah melebihi stok.");
-
-    }
-
-
-    updateCart();
+    return;
 
   }
 
 
+  if (newQuantity <= 0) {
 
-  // =====================================================
-  // HAPUS
-  // =====================================================
+    cart.splice(index, 1);
 
-  function removeFromCart(productId) {
+  } else {
 
-    cart =
-      cart.filter(
-        item => item.id !== productId
-      );
-
-
-    updateCart();
+    item.quantity = newQuantity;
 
   }
 
 
+  updateCart();
 
-  // =====================================================
-  // BUKA KERANJANG
-  // =====================================================
+  renderCart();
 
-  function openCart() {
-
-    const overlay =
-      document.getElementById("cartOverlay");
-
-    const panel =
-      document.getElementById("cartPanel");
+}
 
 
-    overlay.classList.remove("hide");
+// =====================================================
+// HAPUS CART
+// =====================================================
+
+function removeFromCart(index) {
+
+  cart.splice(index, 1);
+
+  updateCart();
+
+  renderCart();
+
+}
 
 
-    setTimeout(() => {
+// =====================================================
+// CHECKOUT
+// =====================================================
 
-      panel.classList.remove(
-        "translate-y-full"
-      );
+function openCheckout() {
 
-    }, 10);
+  if (cart.length === 0) {
+
+    alert("Keranjang masih kosong.");
+
+    return;
 
   }
 
 
-
-  // =====================================================
-  // TUTUP KERANJANG
-  // =====================================================
-
-  function closeCart() {
-
-    const panel =
-      document.getElementById("cartPanel");
-
-
-    panel.classList.add(
-      "translate-y-full"
+  const total =
+    cart.reduce(
+      (sum, item) =>
+        sum +
+        Number(item.product.selling_price || 0) *
+        item.quantity,
+      0
     );
 
 
-    setTimeout(() => {
-
-      document
-        .getElementById("cartOverlay")
-        .classList.add("hide");
-
-    }, 300);
-
-  }
+  document.getElementById(
+    "checkoutTotal"
+  ).textContent =
+    formatRupiah(total);
 
 
+  closeCart();
 
-  // =====================================================
-  // CHECKOUT
-  // =====================================================
 
-  function checkout() {
+  document
+    .getElementById("checkoutModal")
+    .classList.remove("hidden");
 
-    if (cart.length === 0) {
+}
 
-      alert(
-        "Keranjang masih kosong."
-      );
 
-      return;
+// =====================================================
+// CLOSE CHECKOUT
+// =====================================================
 
-    }
+function closeCheckout() {
 
+  document
+    .getElementById("checkoutModal")
+    .classList.add("hidden");
+
+}
+
+
+// =====================================================
+// SUBMIT ORDER
+// =====================================================
+
+async function submitOrder() {
+
+  const name =
+    document
+      .getElementById("customerName")
+      .value
+      .trim();
+
+
+  const phone =
+    document
+      .getElementById("customerPhone")
+      .value
+      .trim();
+
+
+  const address =
+    document
+      .getElementById("customerAddress")
+      .value
+      .trim();
+
+
+  const note =
+    document
+      .getElementById("customerNote")
+      .value
+      .trim();
+
+
+  const payment =
+    document
+      .getElementById("paymentMethod")
+      .value;
+
+
+  if (!name || !phone || !address) {
 
     alert(
-      "Keranjang sudah siap. Sistem checkout akan kita buat berikutnya."
+      "Nama, nomor WhatsApp, dan alamat wajib diisi."
     );
+
+    return;
 
   }
 
 
+  if (cart.length === 0) {
 
-  // =====================================================
-  // MULAI
-  // =====================================================
+    alert("Keranjang kosong.");
 
-  loadData();
+    return;
+
+  }
+
+
+  const button =
+    document.getElementById(
+      "submitOrderButton"
+    );
+
+
+  button.disabled = true;
+
+  button.textContent =
+    "Menyimpan pesanan...";
+
+
+  try {
+
+    const total =
+      cart.reduce(
+        (sum, item) =>
+          sum +
+          Number(item.product.selling_price || 0) *
+          item.quantity,
+        0
+      );
+
+
+    // =================================================
+    // DATA PESANAN
+    // =================================================
+
+    const orderItems =
+      cart.map(item => ({
+
+        product_id:
+          item.product.id,
+
+        product_name:
+          item.product.name,
+
+        sku:
+          item.product.sku,
+
+        quantity:
+          item.quantity,
+
+        price:
+          Number(
+            item.product.selling_price || 0
+          ),
+
+        subtotal:
+          Number(
+            item.product.selling_price || 0
+          ) *
+          item.quantity
+
+      }));
+
+
+    // =================================================
+    // SIMPAN KE TABEL orders
+    // =================================================
+
+    const {
+      data: order,
+      error
+    } = await supabaseClient
+      .from("orders")
+      .insert({
+
+        customer_name: name,
+
+        customer_phone: phone,
+
+        delivery_address: address,
+
+        note: note,
+
+        payment_method: payment,
+
+        total_amount: total,
+
+        status: "pending"
+
+      })
+      .select()
+      .single();
+
+
+    if (error) {
+
+      throw error;
+
+    }
+
+
+    // =================================================
+    // SIMPAN ITEM PESANAN
+    // =================================================
+
+    const itemsToInsert =
+      orderItems.map(item => ({
+
+        order_id:
+          order.id,
+
+        product_id:
+          item.product_id,
+
+        product_name:
+          item.product_name,
+
+        sku:
+          item.sku,
+
+        quantity:
+          item.quantity,
+
+        price:
+          item.price,
+
+        subtotal:
+          item.subtotal
+
+      }));
+
+
+    const {
+      error: itemError
+    } = await supabaseClient
+      .from("order_items")
+      .insert(itemsToInsert);
+
+
+    if (itemError) {
+
+      throw itemError;
+
+    }
+
+
+    // =================================================
+    // WHATSAPP
+    // =================================================
+
+    const whatsappNumber =
+      "6283863000922";
+
+
+    let message =
+      `Halo Zokent Store 👋%0A%0A`;
+
+    message +=
+      `Saya ingin memesan:%0A%0A`;
+
+
+    cart.forEach((item, index) => {
+
+      const subtotal =
+        Number(item.product.selling_price || 0) *
+        item.quantity;
+
+
+      message +=
+        `${index + 1}. ${item.product.name}%0A`;
+
+      message +=
+        `   ${item.quantity} x ${formatRupiah(item.product.selling_price)}%0A`;
+
+      message +=
+        `   Subtotal: ${formatRupiah(subtotal)}%0A%0A`;
+
+    });
+
+
+    message +=
+      `Total: ${formatRupiah(total)}%0A`;
+
+    message +=
+      `Pembayaran: ${payment.toUpperCase()}%0A%0A`;
+
+    message +=
+      `Nama: ${name}%0A`;
+
+    message +=
+      `WhatsApp: ${phone}%0A`;
+
+    message +=
+      `Alamat: ${address}%0A`;
+
+
+    if (note) {
+
+      message +=
+        `Catatan: ${note}%0A`;
+
+    }
+
+
+    message +=
+      `%0ANomor Pesanan: ${order.id}`;
+
+
+    // =================================================
+    // KOSONGKAN KERANJANG
+    // =================================================
+
+    cart = [];
+
+    updateCart();
+
+
+    // =================================================
+    // BUKA WHATSAPP
+    // =================================================
+
+    window.location.href =
+      `https://wa.me/${whatsappNumber}?text=${message}`;
+
+
+  } catch (error) {
+
+    console.error(error);
+
+    alert(
+      "Pesanan gagal disimpan: " +
+      error.message
+    );
+
+    button.disabled = false;
+
+    button.textContent =
+      "Buat Pesanan & WhatsApp";
+
+  }
+
+}
+
+
+// =====================================================
+// MULAI
+// =====================================================
+
+loadProducts();
 
 </script>
 
