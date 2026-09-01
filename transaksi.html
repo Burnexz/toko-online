@@ -1,0 +1,1316 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Transaksi - Zokent Store</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background: #f3f4f6;
+      color: #111827;
+    }
+
+    .header {
+      background: #111827;
+      color: white;
+      padding: 16px;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .header-inner {
+      max-width: 1100px;
+      margin: auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .header h1 {
+      font-size: 20px;
+    }
+
+    .back-btn {
+      background: #374151;
+      color: white;
+      border: none;
+      padding: 9px 13px;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: auto;
+      padding: 20px;
+    }
+
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 18px;
+      gap: 10px;
+    }
+
+    .top h2 {
+      font-size: 24px;
+    }
+
+    .refresh {
+      border: none;
+      background: #2563eb;
+      color: white;
+      padding: 10px 15px;
+      border-radius: 9px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .filter {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      margin-bottom: 18px;
+      padding-bottom: 4px;
+    }
+
+    .filter button {
+      border: 1px solid #d1d5db;
+      background: white;
+      padding: 9px 14px;
+      border-radius: 20px;
+      white-space: nowrap;
+      cursor: pointer;
+      font-size: 13px;
+    }
+
+    .filter button.active {
+      background: #2563eb;
+      color: white;
+      border-color: #2563eb;
+    }
+
+    .order-card {
+      background: white;
+      border-radius: 15px;
+      margin-bottom: 14px;
+      box-shadow: 0 3px 12px rgba(0,0,0,.06);
+      overflow: hidden;
+    }
+
+    .order-head {
+      padding: 15px;
+      border-bottom: 1px solid #eee;
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .order-number {
+      font-size: 12px;
+      color: #6b7280;
+      word-break: break-all;
+    }
+
+    .customer {
+      font-weight: bold;
+      margin-top: 4px;
+    }
+
+    .status {
+      border: none;
+      border-radius: 20px;
+      padding: 7px 10px;
+      font-size: 11px;
+      font-weight: bold;
+      cursor: pointer;
+      height: fit-content;
+    }
+
+    .status.pending {
+      background: #fef3c7;
+      color: #92400e;
+    }
+
+    .status.diproses {
+      background: #dbeafe;
+      color: #1d4ed8;
+    }
+
+    .status.dikirim {
+      background: #ede9fe;
+      color: #6d28d9;
+    }
+
+    .status.selesai {
+      background: #dcfce7;
+      color: #166534;
+    }
+
+    .status.dibatalkan {
+      background: #fee2e2;
+      color: #b91c1c;
+    }
+
+    .order-body {
+      padding: 15px;
+    }
+
+    .info-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 15px;
+      padding: 5px 0;
+      font-size: 13px;
+    }
+
+    .info-label {
+      color: #6b7280;
+    }
+
+    .items {
+      margin-top: 12px;
+      border-top: 1px solid #eee;
+      padding-top: 10px;
+    }
+
+    .item {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 7px 0;
+      font-size: 13px;
+    }
+
+    .item-name {
+      font-weight: bold;
+    }
+
+    .item-detail {
+      color: #6b7280;
+      font-size: 11px;
+      margin-top: 2px;
+    }
+
+    .total {
+      border-top: 1px solid #eee;
+      margin-top: 10px;
+      padding-top: 12px;
+      display: flex;
+      justify-content: space-between;
+      font-weight: bold;
+    }
+
+    .total-price {
+      color: #2563eb;
+      font-size: 18px;
+    }
+
+    .actions {
+      padding: 12px 15px;
+      background: #f9fafb;
+      display: flex;
+      gap: 8px;
+    }
+
+    .actions button {
+      flex: 1;
+      padding: 10px;
+      border: none;
+      border-radius: 9px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .wa-btn {
+      background: #16a34a;
+      color: white;
+    }
+
+    .detail-btn {
+      background: #e5e7eb;
+      color: #111827;
+    }
+
+    .empty {
+      text-align: center;
+      padding: 60px 20px;
+      color: #6b7280;
+    }
+
+    .empty-icon {
+      font-size: 45px;
+      margin-bottom: 10px;
+    }
+
+    .loading {
+      text-align: center;
+      padding: 50px;
+      color: #6b7280;
+    }
+
+    .modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.5);
+      z-index: 50;
+      display: none;
+      align-items: flex-end;
+      justify-content: center;
+    }
+
+    .modal.show {
+      display: flex;
+    }
+
+    .modal-box {
+      width: 100%;
+      max-width: 600px;
+      max-height: 90vh;
+      overflow-y: auto;
+      background: white;
+      border-radius: 22px 22px 0 0;
+      padding: 20px;
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+
+    .modal-header h2 {
+      font-size: 19px;
+    }
+
+    .close {
+      border: none;
+      background: #f3f4f6;
+      width: 35px;
+      height: 35px;
+      border-radius: 50%;
+      font-size: 20px;
+      cursor: pointer;
+    }
+
+    .detail-section {
+      background: #f9fafb;
+      border-radius: 12px;
+      padding: 13px;
+      margin-bottom: 12px;
+    }
+
+    .detail-section h3 {
+      font-size: 13px;
+      margin-bottom: 8px;
+    }
+
+    .detail-text {
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    @media (min-width: 700px) {
+      .order-card {
+        margin-bottom: 18px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<header class="header">
+  <div class="header-inner">
+
+    <h1>🛒 ZOKENT STORE</h1>
+
+    <button
+      class="back-btn"
+      onclick="window.location.href='dashboard.html'"
+    >
+      ← Dashboard
+    </button>
+
+  </div>
+</header>
+
+
+<main class="container">
+
+  <div class="top">
+
+    <div>
+      <h2>Transaksi</h2>
+
+      <p
+        id="orderInfo"
+        style="color:#6b7280;font-size:13px;margin-top:4px;"
+      >
+        Memuat pesanan...
+      </p>
+    </div>
+
+    <button
+      class="refresh"
+      onclick="loadOrders()"
+    >
+      ↻ Refresh
+    </button>
+
+  </div>
+
+
+  <!-- FILTER -->
+
+  <div class="filter">
+
+    <button
+      class="active"
+      onclick="filterStatus('SEMUA', this)"
+    >
+      Semua
+    </button>
+
+    <button onclick="filterStatus('pending', this)">
+      Pending
+    </button>
+
+    <button onclick="filterStatus('diproses', this)">
+      Diproses
+    </button>
+
+    <button onclick="filterStatus('dikirim', this)">
+      Dikirim
+    </button>
+
+    <button onclick="filterStatus('selesai', this)">
+      Selesai
+    </button>
+
+    <button onclick="filterStatus('dibatalkan', this)">
+      Dibatalkan
+    </button>
+
+  </div>
+
+
+  <div id="loading" class="loading">
+    Memuat transaksi...
+  </div>
+
+
+  <div id="orderList"></div>
+
+
+  <div
+    id="empty"
+    class="empty"
+    style="display:none;"
+  >
+
+    <div class="empty-icon">
+      🛒
+    </div>
+
+    <strong>
+      Belum ada transaksi
+    </strong>
+
+    <p style="font-size:12px;margin-top:5px;">
+      Pesanan pelanggan akan muncul di sini.
+    </p>
+
+  </div>
+
+</main>
+
+
+<!-- ================================================= -->
+<!-- MODAL DETAIL -->
+<!-- ================================================= -->
+
+<div
+  id="detailModal"
+  class="modal"
+>
+
+  <div class="modal-box">
+
+    <div class="modal-header">
+
+      <h2>
+        Detail Pesanan
+      </h2>
+
+      <button
+        class="close"
+        onclick="closeDetail()"
+      >
+        ×
+      </button>
+
+    </div>
+
+    <div id="detailContent"></div>
+
+  </div>
+
+</div>
+
+
+<script>
+
+// =====================================================
+// SUPABASE
+// =====================================================
+
+const SUPABASE_URL =
+  "https://weuousmvkxmgmsnwiuad.supabase.co";
+
+const SUPABASE_ANON_KEY =
+  "sb_publishable_e375KDL0vuoahHO_kWMjwA_a04R4yHb";
+
+const supabaseClient =
+  window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_ANON_KEY
+  );
+
+
+// =====================================================
+// DATA
+// =====================================================
+
+let orders = [];
+
+let orderItems = [];
+
+let selectedStatus = "SEMUA";
+
+
+// =====================================================
+// FORMAT RUPIAH
+// =====================================================
+
+function formatRupiah(number) {
+
+  return new Intl.NumberFormat(
+    "id-ID",
+    {
+      style: "currency",
+      currency: "IDR",
+      maximumFractionDigits: 0
+    }
+  ).format(Number(number || 0));
+
+}
+
+
+// =====================================================
+// FORMAT TANGGAL
+// =====================================================
+
+function formatDate(date) {
+
+  if (!date) return "-";
+
+  return new Date(date).toLocaleString(
+    "id-ID",
+    {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit"
+    }
+  );
+
+}
+
+
+// =====================================================
+// LOAD ORDERS
+// =====================================================
+
+async function loadOrders() {
+
+  document.getElementById("loading").style.display =
+    "block";
+
+  document.getElementById("empty").style.display =
+    "none";
+
+  document.getElementById("orderList").innerHTML =
+    "";
+
+
+  try {
+
+    // ================================================
+    // AMBIL ORDERS
+    // ================================================
+
+    const {
+      data: orderData,
+      error: orderError
+    } = await supabaseClient
+      .from("orders")
+      .select("*")
+      .order("created_at", {
+        ascending: false
+      });
+
+
+    if (orderError) {
+      throw orderError;
+    }
+
+
+    orders = orderData || [];
+
+
+    // ================================================
+    // AMBIL ORDER ITEMS
+    // ================================================
+
+    if (orders.length > 0) {
+
+      const orderIds =
+        orders.map(order => order.id);
+
+
+      const {
+        data: itemData,
+        error: itemError
+      } = await supabaseClient
+        .from("order_items")
+        .select("*")
+        .in("order_id", orderIds);
+
+
+      if (itemError) {
+        throw itemError;
+      }
+
+
+      orderItems = itemData || [];
+
+    } else {
+
+      orderItems = [];
+
+    }
+
+
+    document.getElementById("loading").style.display =
+      "none";
+
+
+    renderOrders();
+
+
+  } catch (error) {
+
+    console.error(error);
+
+    document.getElementById("loading").innerHTML = `
+      <div style="color:#dc2626;">
+        Gagal memuat transaksi.
+        <br>
+        <small>${escapeHTML(error.message)}</small>
+      </div>
+    `;
+
+  }
+
+}
+
+
+// =====================================================
+// FILTER STATUS
+// =====================================================
+
+function filterStatus(status, button) {
+
+  selectedStatus = status;
+
+
+  document
+    .querySelectorAll(".filter button")
+    .forEach(btn => {
+
+      btn.classList.remove("active");
+
+    });
+
+
+  if (button) {
+    button.classList.add("active");
+  }
+
+
+  renderOrders();
+
+}
+
+
+// =====================================================
+// RENDER ORDERS
+// =====================================================
+
+function renderOrders() {
+
+  const list =
+    document.getElementById("orderList");
+
+  const empty =
+    document.getElementById("empty");
+
+  list.innerHTML = "";
+
+
+  let filtered = orders;
+
+
+  if (selectedStatus !== "SEMUA") {
+
+    filtered =
+      orders.filter(
+        order =>
+          String(order.status || "").toLowerCase() ===
+          selectedStatus
+      );
+
+  }
+
+
+  document.getElementById("orderInfo").textContent =
+    `${filtered.length} pesanan`;
+
+
+  if (filtered.length === 0) {
+
+    empty.style.display = "block";
+
+    return;
+
+  }
+
+
+  empty.style.display = "none";
+
+
+  filtered.forEach(order => {
+
+    const items =
+      orderItems.filter(
+        item =>
+          String(item.order_id) ===
+          String(order.id)
+      );
+
+
+    const status =
+      String(
+        order.status || "pending"
+      ).toLowerCase();
+
+
+    const card =
+      document.createElement("div");
+
+
+    card.className =
+      "order-card";
+
+
+    let itemsHTML = "";
+
+
+    items.forEach(item => {
+
+      itemsHTML += `
+
+        <div class="item">
+
+          <div>
+
+            <div class="item-name">
+              ${escapeHTML(item.product_name || "Produk")}
+            </div>
+
+            <div class="item-detail">
+              ${item.quantity} ×
+              ${formatRupiah(item.price)}
+            </div>
+
+          </div>
+
+          <strong>
+            ${formatRupiah(item.subtotal)}
+          </strong>
+
+        </div>
+
+      `;
+
+    });
+
+
+    if (items.length === 0) {
+
+      itemsHTML = `
+        <p style="font-size:12px;color:#9ca3af;">
+          Detail barang tidak ditemukan.
+        </p>
+      `;
+
+    }
+
+
+    card.innerHTML = `
+
+      <div class="order-head">
+
+        <div>
+
+          <div class="order-number">
+            Pesanan #${escapeHTML(String(order.id))}
+          </div>
+
+          <div class="customer">
+            ${escapeHTML(order.customer_name || "Pelanggan")}
+          </div>
+
+          <div
+            style="font-size:11px;color:#6b7280;margin-top:3px;"
+          >
+            ${formatDate(order.created_at)}
+          </div>
+
+        </div>
+
+
+        <select
+          class="status ${getStatusClass(status)}"
+          onchange="changeOrderStatus('${escapeJS(order.id)}', this.value)"
+        >
+
+          <option
+            value="pending"
+            ${status === "pending" ? "selected" : ""}
+          >
+            PENDING
+          </option>
+
+          <option
+            value="diproses"
+            ${status === "diproses" ? "selected" : ""}
+          >
+            DIPROSES
+          </option>
+
+          <option
+            value="dikirim"
+            ${status === "dikirim" ? "selected" : ""}
+          >
+            DIKIRIM
+          </option>
+
+          <option
+            value="selesai"
+            ${status === "selesai" ? "selected" : ""}
+          >
+            SELESAI
+          </option>
+
+          <option
+            value="dibatalkan"
+            ${status === "dibatalkan" ? "selected" : ""}
+          >
+            DIBATALKAN
+          </option>
+
+        </select>
+
+      </div>
+
+
+      <div class="order-body">
+
+        <div class="info-row">
+
+          <span class="info-label">
+            WhatsApp
+          </span>
+
+          <strong>
+            ${escapeHTML(order.customer_phone || "-")}
+          </strong>
+
+        </div>
+
+
+        <div class="info-row">
+
+          <span class="info-label">
+            Pembayaran
+          </span>
+
+          <strong>
+            ${escapeHTML(
+              String(order.payment_method || "-").toUpperCase()
+            )}
+          </strong>
+
+        </div>
+
+
+        <div class="info-row">
+
+          <span class="info-label">
+            Alamat
+          </span>
+
+          <span style="text-align:right;max-width:65%;">
+            ${escapeHTML(order.delivery_address || "-")}
+          </span>
+
+        </div>
+
+
+        <div class="items">
+
+          ${itemsHTML}
+
+        </div>
+
+
+        <div class="total">
+
+          <span>
+            TOTAL
+          </span>
+
+          <span class="total-price">
+            ${formatRupiah(order.total_amount)}
+          </span>
+
+        </div>
+
+      </div>
+
+
+      <div class="actions">
+
+        <button
+          class="detail-btn"
+          onclick="showDetail('${escapeJS(order.id)}')"
+        >
+          📋 Detail
+        </button>
+
+        <button
+          class="wa-btn"
+          onclick="openWhatsApp('${escapeJS(order.customer_phone || "")}', '${escapeJS(order.customer_name || "")}')"
+        >
+          💬 WhatsApp
+        </button>
+
+      </div>
+
+    `;
+
+
+    list.appendChild(card);
+
+  });
+
+}
+
+
+// =====================================================
+// STATUS CLASS
+// =====================================================
+
+function getStatusClass(status) {
+
+  if (status === "diproses")
+    return "diproses";
+
+  if (status === "dikirim")
+    return "dikirim";
+
+  if (status === "selesai")
+    return "selesai";
+
+  if (status === "dibatalkan")
+    return "dibatalkan";
+
+  return "pending";
+
+}
+
+
+// =====================================================
+// UBAH STATUS
+// =====================================================
+
+async function changeOrderStatus(
+  orderId,
+  newStatus
+) {
+
+  try {
+
+    const {
+      error
+    } = await supabaseClient
+      .from("orders")
+      .update({
+        status: newStatus
+      })
+      .eq("id", orderId);
+
+
+    if (error) {
+      throw error;
+    }
+
+
+    const order =
+      orders.find(
+        o => String(o.id) === String(orderId)
+      );
+
+
+    if (order) {
+
+      order.status =
+        newStatus;
+
+    }
+
+
+    renderOrders();
+
+
+  } catch (error) {
+
+    console.error(error);
+
+    alert(
+      "Gagal mengubah status: " +
+      error.message
+    );
+
+  }
+
+}
+
+
+// =====================================================
+// DETAIL
+// =====================================================
+
+function showDetail(orderId) {
+
+  const order =
+    orders.find(
+      o => String(o.id) === String(orderId)
+    );
+
+
+  if (!order) return;
+
+
+  const items =
+    orderItems.filter(
+      item =>
+        String(item.order_id) ===
+        String(order.id)
+    );
+
+
+  let itemsHTML = "";
+
+
+  items.forEach(item => {
+
+    itemsHTML += `
+
+      <div class="item">
+
+        <div>
+
+          <strong>
+            ${escapeHTML(item.product_name || "Produk")}
+          </strong>
+
+          <div class="item-detail">
+            ${item.quantity} ×
+            ${formatRupiah(item.price)}
+          </div>
+
+        </div>
+
+        <strong>
+          ${formatRupiah(item.subtotal)}
+        </strong>
+
+      </div>
+
+    `;
+
+  });
+
+
+  const detail =
+    document.getElementById("detailContent");
+
+
+  detail.innerHTML = `
+
+    <div class="detail-section">
+
+      <h3>
+        Nomor Pesanan
+      </h3>
+
+      <div class="detail-text">
+        ${escapeHTML(String(order.id))}
+      </div>
+
+    </div>
+
+
+    <div class="detail-section">
+
+      <h3>
+        Pelanggan
+      </h3>
+
+      <div class="detail-text">
+
+        <strong>
+          ${escapeHTML(order.customer_name || "-")}
+        </strong>
+
+        <br>
+
+        WhatsApp:
+        ${escapeHTML(order.customer_phone || "-")}
+
+        <br>
+
+        Alamat:
+        ${escapeHTML(order.delivery_address || "-")}
+
+      </div>
+
+    </div>
+
+
+    <div class="detail-section">
+
+      <h3>
+        Barang
+      </h3>
+
+      ${itemsHTML || "Tidak ada item"}
+
+    </div>
+
+
+    <div class="detail-section">
+
+      <h3>
+        Pembayaran
+      </h3>
+
+      <div class="detail-text">
+
+        Metode:
+        <strong>
+          ${escapeHTML(
+            String(order.payment_method || "-").toUpperCase()
+          )}
+        </strong>
+
+        <br>
+
+        Total:
+        <strong style="color:#2563eb;">
+          ${formatRupiah(order.total_amount)}
+        </strong>
+
+      </div>
+
+    </div>
+
+
+    <div class="detail-section">
+
+      <h3>
+        Catatan
+      </h3>
+
+      <div class="detail-text">
+        ${escapeHTML(order.note || "Tidak ada catatan.")}
+      </div>
+
+    </div>
+
+
+    <div class="detail-section">
+
+      <h3>
+        Waktu Pesanan
+      </h3>
+
+      <div class="detail-text">
+        ${formatDate(order.created_at)}
+      </div>
+
+    </div>
+
+  `;
+
+
+  document
+    .getElementById("detailModal")
+    .classList.add("show");
+
+}
+
+
+// =====================================================
+// CLOSE DETAIL
+// =====================================================
+
+function closeDetail() {
+
+  document
+    .getElementById("detailModal")
+    .classList.remove("show");
+
+}
+
+
+// =====================================================
+// WHATSAPP
+// =====================================================
+
+function openWhatsApp(
+  phone,
+  name
+) {
+
+  if (!phone) {
+
+    alert(
+      "Nomor WhatsApp pelanggan tidak tersedia."
+    );
+
+    return;
+
+  }
+
+
+  let number =
+    String(phone)
+      .replace(/\D/g, "");
+
+
+  if (number.startsWith("0")) {
+
+    number =
+      "62" +
+      number.substring(1);
+
+  }
+
+
+  const message =
+    `Halo ${name || "Pelanggan"} 👋%0A` +
+    `%0A` +
+    `Kami dari Zokent Store.%0A` +
+    `Terkait pesanan Anda, silakan hubungi kami jika ada yang ingin ditanyakan.`;
+
+
+  window.open(
+    `https://wa.me/${number}?text=${message}`,
+    "_blank"
+  );
+
+}
+
+
+// =====================================================
+// ESCAPE
+// =====================================================
+
+function escapeHTML(value) {
+
+  return String(value || "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+
+}
+
+
+function escapeJS(value) {
+
+  return String(value || "")
+    .replace(/\\/g, "\\\\")
+    .replace(/'/g, "\\'")
+    .replace(/"/g, '\\"')
+    .replace(/\n/g, "\\n")
+    .replace(/\r/g, "\\r");
+
+}
+
+
+// =====================================================
+// KLIK LUAR MODAL
+// =====================================================
+
+document
+  .getElementById("detailModal")
+  .addEventListener("click", function(e) {
+
+    if (e.target === this) {
+      closeDetail();
+    }
+
+  });
+
+
+// =====================================================
+// MULAI
+// =====================================================
+
+loadOrders();
+
+</script>
+
+</body>
+</html>
