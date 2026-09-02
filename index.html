@@ -3,1744 +3,199 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <title>Zokent Store</title>
-
+  <title>Zokent Group - Jogosimo</title>
   <script src="https://cdn.tailwindcss.com"></script>
-
+  
+  <!-- 1. SDK Supabase -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-  <style>
-    * {
-      box-sizing: border-box;
-    }
-
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: #f5f6f8;
-      color: #1f2937;
-    }
-
-    .product-card {
-      transition: transform .18s ease, box-shadow .18s ease;
-    }
-
-    .product-card:active {
-      transform: scale(.96);
-    }
-
-    .category-btn {
-      transition: .18s ease;
-      white-space: nowrap;
-    }
-
-    .category-btn:active {
-      transform: scale(.94);
-    }
-
-    .cart-button {
-      transition: .2s ease;
-    }
-
-    .cart-button:active {
-      transform: scale(.90);
-    }
-
-    .add-animation {
-      animation: pop .25s ease;
-    }
-
-    @keyframes pop {
-      0% {
-        transform: scale(.8);
-      }
-
-      70% {
-        transform: scale(1.15);
-      }
-
-      100% {
-        transform: scale(1);
-      }
-    }
-
-    .modal {
-      animation: modalIn .2s ease;
-    }
-
-    @keyframes modalIn {
-      from {
-        opacity: 0;
-        transform: translateY(20px);
-      }
-
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    .hide-scrollbar::-webkit-scrollbar {
-      display: none;
-    }
-
-    .hide-scrollbar {
-      -ms-overflow-style: none;
-      scrollbar-width: none;
-    }
-  </style>
 </head>
+<body class="bg-[#f8fafc] text-slate-800 font-sans antialiased">
 
-<body>
-
-<!-- ===================================================== -->
-<!-- HEADER -->
-<!-- ===================================================== -->
-
-<header class="bg-white sticky top-0 z-40 shadow-sm">
-
-  <div class="max-w-6xl mx-auto px-4 py-3">
-
-    <div class="flex items-center justify-between">
-
-      <div>
-        <p class="text-[10px] text-gray-500 font-semibold">
-          TOKO ONLINE
-        </p>
-
-        <h1 class="text-xl font-extrabold text-blue-700">
-          ZOKENT STORE
-        </h1>
-      </div>
-
-      <!-- KERANJANG -->
-
-      <button
-        onclick="openCart()"
-        class="cart-button relative bg-blue-600 text-white w-11 h-11 rounded-full flex items-center justify-center shadow-md"
-      >
-
-        🛒
-
-        <span
-          id="cartCount"
-          class="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center"
-        >
-          0
-        </span>
-
-      </button>
-
-    </div>
-
-
-    <!-- SEARCH -->
-
-    <div class="mt-3">
-
-      <div class="relative">
-
-        <input
-          id="searchInput"
-          type="text"
-          placeholder="Cari produk..."
-          class="w-full bg-gray-100 border border-gray-200 rounded-xl px-4 py-3 pl-11 text-sm outline-none focus:ring-2 focus:ring-blue-500"
-          oninput="searchProducts()"
-        >
-
-        <span class="absolute left-4 top-3 text-lg">
-          🔎
-        </span>
-
-      </div>
-
-    </div>
-
-  </div>
-
-</header>
-
-
-<!-- ===================================================== -->
-<!-- BANNER -->
-<!-- ===================================================== -->
-
-<section class="max-w-6xl mx-auto px-4 pt-4">
-
-  <div class="bg-gradient-to-r from-blue-700 to-blue-500 rounded-2xl p-5 text-white shadow-md">
-
-    <p class="text-xs opacity-90">
-      SELAMAT DATANG
-    </p>
-
-    <h2 class="text-2xl font-extrabold mt-1">
-      Belanja lebih mudah 🛒
-    </h2>
-
-    <p class="text-xs mt-2 opacity-90">
-      Pilih kebutuhanmu dan pesan dari rumah.
-    </p>
-
-  </div>
-
-</section>
-
-
-<!-- ===================================================== -->
-<!-- KATEGORI -->
-<!-- ===================================================== -->
-
-<section class="max-w-6xl mx-auto px-4 mt-5">
-
-  <div class="flex items-center justify-between mb-3">
-
-    <h2 class="font-extrabold text-base">
-      Kategori
-    </h2>
-
-  </div>
-
-
-  <div
-    id="categoryList"
-    class="flex gap-2 overflow-x-auto hide-scrollbar pb-2"
-  >
-
-    <button
-      onclick="filterCategory('SEMUA', this)"
-      class="category-btn bg-blue-600 text-white px-4 py-2 rounded-full text-xs font-bold"
-    >
-      Semua
-    </button>
-
-  </div>
-
-</section>
-
-
-<!-- ===================================================== -->
-<!-- PRODUK -->
-<!-- ===================================================== -->
-
-<main class="max-w-6xl mx-auto px-4 mt-5 pb-32">
-
-  <div class="flex items-center justify-between mb-3">
-
-    <div>
-
-      <h2 class="font-extrabold text-base">
-        Produk
-      </h2>
-
-      <p
-        id="productInfo"
-        class="text-[10px] text-gray-500"
-      >
-        Memuat produk...
+  <!-- HERO HEADER -->
+  <header class="bg-[#1b3a4b] text-white py-12 px-4 text-center">
+    <div class="max-w-3xl mx-auto space-y-3">
+      <h1 class="text-3xl md:text-4xl font-extrabold tracking-tight text-[#38bdf8]">
+        ZOKENT GROUP
+      </h1>
+      <p class="text-[#fbbf24] font-bold text-sm md:text-base">
+        Toko Kelontong Modern • Bengkel Motor • Servis AC & Kulkas
       </p>
-
+      <p class="text-slate-300 text-xs md:text-sm leading-relaxed max-w-xl mx-auto">
+        Solusi Belanja Kebutuhan Harian & Layanan Teknik Terpadu di Jogosimo. Kami hadir memberikan pelayanan profesional, transparan, dan terpercaya untuk Anda dan keluarga.
+      </p>
     </div>
+  </header>
 
-  </div>
+  <!-- MAIN CONTAINER -->
+  <main class="max-w-5xl mx-auto px-4 py-10 space-y-12">
 
-
-  <div
-    id="productList"
-    class="grid grid-cols-2 md:grid-cols-4 gap-3"
-  >
-
-  </div>
-
-
-  <!-- LOADING -->
-
-  <div
-    id="loading"
-    class="text-center py-10 text-sm text-gray-500"
-  >
-    Memuat produk...
-  </div>
-
-
-  <!-- KOSONG -->
-
-  <div
-    id="emptyProduct"
-    class="hidden text-center py-10"
-  >
-
-    <div class="text-4xl">
-      📦
-    </div>
-
-    <p class="font-bold mt-2">
-      Produk tidak ditemukan
-    </p>
-
-    <p class="text-xs text-gray-500 mt-1">
-      Coba pilih kategori lain atau gunakan pencarian.
-    </p>
-
-  </div>
-
-</main>
-
-
-<!-- ===================================================== -->
-<!-- CART MODAL -->
-<!-- ===================================================== -->
-
-<div
-  id="cartModal"
-  class="hidden fixed inset-0 bg-black/50 z-50 flex items-end justify-center"
->
-
-  <div
-    class="modal bg-white w-full max-w-2xl rounded-t-3xl max-h-[90vh] overflow-y-auto"
-  >
-
-    <div class="sticky top-0 bg-white border-b p-4 flex justify-between items-center">
-
-      <div>
-
-        <h2 class="font-extrabold text-lg">
-          🛒 Keranjang
-        </h2>
-
-        <p
-          id="cartTotalItems"
-          class="text-xs text-gray-500"
-        >
-          0 barang
-        </p>
-
+    <!-- BAGIAN: UNIT BISNIS KAMI -->
+    <section>
+      <div class="text-center mb-8">
+        <h2 class="text-xl md:text-2xl font-extrabold text-slate-900 tracking-tight mb-1.5">UNIT BISNIS KAMI</h2>
+        <p class="text-xs md:text-sm text-slate-500">Tiga layanan terintegrasi dalam satu lokasi ruko untuk kemudahan aktivitas harian Anda.</p>
       </div>
 
-      <button
-        onclick="closeCart()"
-        class="text-2xl text-gray-500"
-      >
-        ×
-      </button>
+      <!-- 3 KARTU UNIT BISNIS -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        
+        <!-- Kartu 1: SRC Zokent -->
+        <a href="src.html" class="block bg-white rounded-2xl border border-red-100 shadow-sm hover:shadow-md transition-all overflow-hidden flex flex-col justify-between text-left group">
+          <div class="p-6">
+            <div class="text-3xl mb-3">🏪</div>
+            <h3 class="text-lg font-bold text-[#dc2626] mb-2 group-hover:underline">SRC Zokent</h3>
+            <p class="text-slate-600 text-xs leading-relaxed mb-4">
+              Toko kelontong retail modern mitra belanja dekat dan hemat untuk kebutuhan pokok harian keluarga Anda. Menyediakan produk berkualitas dengan penataan ruangan yang rapi, bersih, dan nyaman.
+            </p>
+            <ul class="text-[11px] text-slate-500 space-y-1">
+              <li>• Sembako & Kebutuhan Rumah Tangga</li>
+              <li>• Produk Segar & Minuman Dingin</li>
+              <li>• Kemudahan Transaksi Digital / QRIS</li>
+            </ul>
+          </div>
+          <div class="p-4 bg-[#fdf2f2] border-t border-red-50 flex justify-between items-center">
+            <div>
+              <span class="text-[9px] font-bold uppercase tracking-wider text-red-600 block">RETAIL TERPERCAYA</span>
+              <p class="text-xs font-semibold text-slate-800">Belanja Dekat & Hemat</p>
+            </div>
+            <span class="text-xs font-bold text-red-600">Lihat Toko →</span>
+          </div>
+        </a>
 
-    </div>
+        <!-- Kartu 2: Zokent Motor -->
+        <a href="motor.html" class="block bg-white rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition-all overflow-hidden flex flex-col justify-between text-left group">
+          <div class="p-6">
+            <div class="text-3xl mb-3">🔧</div>
+            <h3 class="text-lg font-bold text-slate-900 mb-2 group-hover:text-blue-600 group-hover:underline">Zokent Motor</h3>
+            <p class="text-slate-600 text-xs leading-relaxed mb-4">
+              Bengkel perawatan motor andalan untuk menjaga performa kendaraan Anda tetap prima. Melayani perawatan mesin berkala, analisis gangguan sistem kelistrikan, pembersihan karburator, hingga perbaikan kaki-kaki motor.
+            </p>
+            <ul class="text-[11px] text-slate-500 space-y-1">
+              <li>• Servis Berkala & Tune-Up</li>
+              <li>• Pembersihan & Pengaturan Karburator</li>
+              <li>• Perbaikan Kelistrikan & Ganti Bearing</li>
+            </ul>
+          </div>
+          <div class="p-4 bg-[#f8fafc] border-t border-slate-100 flex justify-between items-center">
+            <div>
+              <span class="text-[9px] font-bold uppercase tracking-wider text-slate-500 block">SPESIALISASI</span>
+              <p class="text-xs font-semibold text-slate-800">Perawatan Motor Bebek & Matik</p>
+            </div>
+            <span class="text-xs font-bold text-slate-600 group-hover:text-blue-600">Lihat Layanan →</span>
+          </div>
+        </a>
 
-
-    <div
-      id="cartItems"
-      class="p-4"
-    >
-
-    </div>
-
-
-    <div class="border-t p-4">
-
-      <div class="flex justify-between mb-4">
-
-        <span class="text-sm text-gray-500">
-          Total
-        </span>
-
-        <strong
-          id="cartTotal"
-          class="text-lg text-blue-700"
-        >
-          Rp 0
-        </strong>
-
-      </div>
-
-
-      <button
-        onclick="openCheckout()"
-        id="checkoutButton"
-        class="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-xl font-bold"
-      >
-        Lanjut Checkout
-      </button>
-
-    </div>
-
-  </div>
-
-</div>
-
-
-<!-- ===================================================== -->
-<!-- CHECKOUT MODAL -->
-<!-- ===================================================== -->
-
-<div
-  id="checkoutModal"
-  class="hidden fixed inset-0 bg-black/50 z-50 flex items-end justify-center"
->
-
-  <div
-    class="modal bg-white w-full max-w-2xl rounded-t-3xl max-h-[95vh] overflow-y-auto"
-  >
-
-    <div class="sticky top-0 bg-white border-b p-4 flex justify-between items-center">
-
-      <h2 class="font-extrabold text-lg">
-        Checkout
-      </h2>
-
-      <button
-        onclick="closeCheckout()"
-        class="text-2xl text-gray-500"
-      >
-        ×
-      </button>
-
-    </div>
-
-
-    <div class="p-4 space-y-4">
-
-      <!-- NAMA -->
-
-      <div>
-
-        <label class="text-xs font-bold">
-          Nama
-        </label>
-
-        <input
-          id="customerName"
-          type="text"
-          placeholder="Nama lengkap"
-          class="w-full mt-1 border rounded-xl px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-blue-500"
-        >
+        <!-- Kartu 3: Zokent Cooling Service -->
+        <a href="cooling.html" class="block bg-white rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition-all overflow-hidden flex flex-col justify-between text-left group">
+          <div class="p-6">
+            <div class="text-3xl mb-3">❄️</div>
+            <h3 class="text-lg font-bold text-[#0284c7] mb-2 group-hover:underline">Zokent Cooling Service</h3>
+            <p class="text-slate-600 text-xs leading-relaxed mb-4">
+              Jasa teknis profesional untuk mengembalikan performa optimal sistem pendingin Anda. Menangani perawatan AC Split rutin, restorasi kebocoran sirkulasi freon, serta penggantian sparepart evaporator/kompresor kulkas.
+            </p>
+            <ul class="text-[11px] text-slate-500 space-y-1">
+              <li>• Cuci AC Berkala & Isi Ulang Freon</li>
+              <li>• Flushing Sirkuit Pipa & Vakum Sistem (SOP)</li>
+              <li>• Restorasi Kebocoran Kulkas & Showcase</li>
+            </ul>
+          </div>
+          <div class="p-4 bg-[#f0f9ff] border-t border-sky-50 flex justify-between items-center">
+            <div>
+              <span class="text-[9px] font-bold uppercase tracking-wider text-sky-600 block">TEKNIK PROFESIONAL</span>
+              <p class="text-xs font-semibold text-slate-800">Pengerjaan Transparan & Bergaransi</p>
+            </div>
+            <span class="text-xs font-bold text-sky-600">Lihat Layanan →</span>
+          </div>
+        </a>
 
       </div>
-
-
-      <!-- WHATSAPP -->
-
-      <div>
-
-        <label class="text-xs font-bold">
-          Nomor WhatsApp
-        </label>
-
-        <input
-          id="customerPhone"
-          type="tel"
-          placeholder="08xxxxxxxxxx"
-          class="w-full mt-1 border rounded-xl px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-blue-500"
-        >
-
-      </div>
-
-
-      <!-- ALAMAT -->
-
-      <div>
-
-        <label class="text-xs font-bold">
-          Alamat Pengantaran
-        </label>
-
-        <textarea
-          id="customerAddress"
-          rows="3"
-          placeholder="Masukkan alamat lengkap..."
-          class="w-full mt-1 border rounded-xl px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-blue-500"
-        ></textarea>
-
-      </div>
-
-
-      <!-- CATATAN -->
-
-      <div>
-
-        <label class="text-xs font-bold">
-          Catatan Pesanan
-        </label>
-
-        <textarea
-          id="customerNote"
-          rows="2"
-          placeholder="Catatan tambahan (opsional)"
-          class="w-full mt-1 border rounded-xl px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-blue-500"
-        ></textarea>
-
-      </div>
-
-
-      <!-- PEMBAYARAN -->
-
-      <div>
-
-        <label class="text-xs font-bold">
-          Metode Pembayaran
-        </label>
-
-        <select
-          id="paymentMethod"
-          class="w-full mt-1 border rounded-xl px-4 py-3 text-sm outline-none"
-        >
-
-          <option value="qris">
-            QRIS
-          </option>
-
-          <option value="transfer">
-            Transfer Bank
-          </option>
-
-          <option value="cod">
-            COD / Bayar Saat Barang Diantar
-          </option>
-
-        </select>
-
-      </div>
-
-
-      <!-- TOTAL -->
-
-      <div class="bg-gray-50 rounded-xl p-4">
-
-        <div class="flex justify-between">
-
-          <span class="text-sm">
-            Total Pesanan
-          </span>
-
-          <strong
-            id="checkoutTotal"
-            class="text-lg text-blue-700"
-          >
-            Rp 0
-          </strong>
-
-        </div>
-
-      </div>
-
-
-      <button
-        onclick="submitOrder()"
-        id="submitOrderButton"
-        class="w-full bg-green-600 hover:bg-green-700 text-white py-3 rounded-xl font-bold"
-      >
-        Buat Pesanan & WhatsApp
-      </button>
-
-    </div>
-
-  </div>
-
-</div>
-
-
-<!-- ===================================================== -->
-<!-- SCRIPT -->
-<!-- ===================================================== -->
-
-<script>
-
-const SUPABASE_URL =
-  "https://weuousmvkxmgmsnwiuad.supabase.co";
-
-const SUPABASE_ANON_KEY =
-  "sb_publishable_e375KDL0vuoahHO_kWMjwA_a04R4yHb";
-
-const supabaseClient =
-  window.supabase.createClient(
-    SUPABASE_URL,
-    SUPABASE_ANON_KEY
-  );
-
-
-// =====================================================
-// DATA
-// =====================================================
-
-let products = [];
-
-let filteredProducts = [];
-
-let categories = [];
-
-let selectedCategory = "SEMUA";
-
-let cart = [];
-
-
-// =====================================================
-// FORMAT RUPIAH
-// =====================================================
-
-function formatRupiah(number) {
-
-  return new Intl.NumberFormat(
-    "id-ID",
-    {
-      style: "currency",
-      currency: "IDR",
-      maximumFractionDigits: 0
-    }
-  ).format(number || 0);
-
-}
-
-
-// =====================================================
-// LOAD PRODUK
-// =====================================================
-
-async function loadProducts() {
-
-  const loading =
-    document.getElementById("loading");
-
-  const productList =
-    document.getElementById("productList");
-
-  try {
-
-    const {
-      data,
-      error
-    } = await supabaseClient
-      .from("products")
-      .select(`
-        id,
-        name,
-        catalog_name,
-        sku,
-        description,
-        selling_price,
-        image_url,
-        is_active,
-        show_in_catalog,
-        show_when_out_of_stock,
-        stock_quantity,
-        minimum_stock,
-        allow_negative_stock
-      `)
-      .eq("is_active", true)
-      .eq("show_in_catalog", true)
-      .order("created_at", {
-        ascending: false
-      });
-
-
-    if (error) {
-      throw error;
-    }
-
-
-    products = data || [];
-
-    filteredProducts = [...products];
-
-    loading.style.display = "none";
-
-    createCategories();
-
-    renderProducts();
-
-  } catch (error) {
-
-    console.error(error);
-
-    loading.innerHTML = `
-      <div class="text-red-500">
-        Gagal memuat produk.
-      </div>
-    `;
-
-  }
-
-}
-
-
-// =====================================================
-// BUAT KATEGORI DARI catalog_name
-// =====================================================
-
-function createCategories() {
-
-  const categorySet = new Set();
-
-  products.forEach(product => {
-
-    if (product.catalog_name) {
-
-      categorySet.add(
-        product.catalog_name
-      );
-
-    }
-
-  });
-
-
-  categories = [...categorySet];
-
-
-  const categoryList =
-    document.getElementById("categoryList");
-
-
-  categoryList.innerHTML = `
-
-    <button
-      onclick="filterCategory('SEMUA', this)"
-      class="category-btn bg-blue-600 text-white px-4 py-2 rounded-full text-xs font-bold"
-    >
-      Semua
-    </button>
-
-  `;
-
-
-  categories.forEach(category => {
-
-    const button =
-      document.createElement("button");
-
-    button.className =
-      "category-btn bg-white border border-gray-200 px-4 py-2 rounded-full text-xs font-bold text-gray-700";
-
-    button.textContent = category;
-
-    button.onclick = function() {
-
-      filterCategory(
-        category,
-        this
-      );
-
-    };
-
-    categoryList.appendChild(button);
-
-  });
-
-}
-
-
-// =====================================================
-// FILTER KATEGORI
-// =====================================================
-
-function filterCategory(
-  category,
-  button
-) {
-
-  selectedCategory = category;
-
-
-  document
-    .querySelectorAll(".category-btn")
-    .forEach(btn => {
-
-      btn.classList.remove(
-        "bg-blue-600",
-        "text-white"
-      );
-
-      btn.classList.add(
-        "bg-white",
-        "text-gray-700"
-      );
-
-    });
-
-
-  if (button) {
-
-    button.classList.remove(
-      "bg-white",
-      "text-gray-700"
-    );
-
-    button.classList.add(
-      "bg-blue-600",
-      "text-white"
-    );
-
-  }
-
-
-  applyFilters();
-
-}
-
-
-// =====================================================
-// SEARCH
-// =====================================================
-
-function searchProducts() {
-
-  applyFilters();
-
-}
-
-
-// =====================================================
-// APPLY FILTER
-// =====================================================
-
-function applyFilters() {
-
-  const keyword =
-    document
-      .getElementById("searchInput")
-      .value
-      .toLowerCase()
-      .trim();
-
-
-  filteredProducts =
-    products.filter(product => {
-
-      const matchCategory =
-        selectedCategory === "SEMUA" ||
-        product.catalog_name === selectedCategory;
-
-
-      const name =
-        (product.name || "")
-          .toLowerCase();
-
-      const catalogName =
-        (product.catalog_name || "")
-          .toLowerCase();
-
-
-      const matchSearch =
-        !keyword ||
-        name.includes(keyword) ||
-        catalogName.includes(keyword);
-
-
-      return (
-        matchCategory &&
-        matchSearch
-      );
-
-    });
-
-
-  renderProducts();
-
-}
-
-
-// =====================================================
-// RENDER PRODUK
-// =====================================================
-
-function renderProducts() {
-
-  const productList =
-    document.getElementById("productList");
-
-  const empty =
-    document.getElementById("emptyProduct");
-
-  const info =
-    document.getElementById("productInfo");
-
-
-  productList.innerHTML = "";
-
-
-  info.textContent =
-    `${filteredProducts.length} produk`;
-
-
-  if (
-    filteredProducts.length === 0
-  ) {
-
-    empty.classList.remove("hidden");
-
-    return;
-
-  }
-
-
-  empty.classList.add("hidden");
-
-
-  filteredProducts.forEach(product => {
-
-    const stock =
-      Number(product.stock_quantity || 0);
-
-
-    const outOfStock =
-      stock <= 0;
-
-
-    const canBuy =
-      !outOfStock ||
-      product.allow_negative_stock === true;
-
-
-    const card =
-      document.createElement("div");
-
-
-    card.className =
-      "product-card bg-white rounded-2xl border border-gray-200 overflow-hidden shadow-sm";
-
-
-    let imageHTML = "";
-
-
-    if (product.image_url) {
-
-      imageHTML = `
-
-        <img
-          src="${product.image_url}"
-          alt="${escapeHTML(product.name)}"
-          class="w-full h-36 object-cover"
-          onerror="this.style.display='none'"
-        >
-
-      `;
-
-    } else {
-
-      imageHTML = `
-
-        <div class="w-full h-36 bg-gray-100 flex items-center justify-center text-4xl">
-          📦
-        </div>
-
-      `;
-
-    }
-
-
-    let stockHTML = "";
-
-
-    if (outOfStock) {
-
-      stockHTML = `
-
-        <span class="text-[9px] text-red-600 font-bold">
-          Stok habis
-        </span>
-
-      `;
-
-    } else if (
-      stock <= Number(product.minimum_stock || 0)
-    ) {
-
-      stockHTML = `
-
-        <span class="text-[9px] text-orange-600 font-bold">
-          Stok terbatas
-        </span>
-
-      `;
-
-    } else {
-
-      stockHTML = `
-
-        <span class="text-[9px] text-green-600 font-bold">
-          Stok tersedia
-        </span>
-
-      `;
-
-    }
-
-
-    card.innerHTML = `
-
-      ${imageHTML}
-
-      <div class="p-3">
-
-        <p class="text-[9px] text-gray-400">
-          ${escapeHTML(product.catalog_name || "")}
-        </p>
-
-        <h3 class="font-bold text-sm mt-1 line-clamp-2">
-          ${escapeHTML(product.name || "Produk")}
+    </section>
+
+    <!-- BAGIAN: LOKASI JLS -->
+    <section class="bg-white rounded-2xl p-6 border border-slate-100 shadow-sm flex flex-col md:flex-row gap-6 items-center">
+      <div class="flex-1 space-y-3 text-left">
+        <h3 class="text-base font-bold text-slate-900 flex items-center gap-2">
+          📍 Lokasi JLS
         </h3>
-
-        <p class="text-blue-700 font-extrabold mt-2">
-          ${formatRupiah(product.selling_price)}
+        <p class="text-xs text-slate-600 leading-relaxed">
+          Seluruh unit layanan Zokent Group beroperasi secara terintegrasi di JLS ruko kami. Anda bisa berbelanja di <strong class="text-slate-800">SRC Zokent</strong> atau menitipkan kendaraan Anda di <strong class="text-slate-800">Zokent Motor</strong> dengan nyaman di satu area yang sama.
         </p>
-
-        <div class="mt-1">
-          ${stockHTML}
+        <div class="text-xs text-slate-600 space-y-1 pt-1">
+          <p>
+            <strong class="text-slate-800">Alamat:</strong> 
+            <a href="https://maps.app.goo.gl/qtPMoR8oVsPcKH6x7" 
+               target="_blank" 
+               class="text-blue-600 font-bold hover:underline">
+              Area JLS Jogosimo, Kec. Klirong, Kab. Kebumen, Jawa Tengah
+            </a>
+          </p>
+          <p><strong class="text-slate-800">Jam Operasional:</strong> Setiap Hari | 08.00 - 17.00 WIB</p>
         </div>
-
-        <button
-          class="w-full mt-3 py-2 rounded-xl text-xs font-bold ${
-            canBuy
-              ? "bg-blue-600 text-white hover:bg-blue-700"
-              : "bg-gray-200 text-gray-400"
-          }"
-          ${canBuy ? "" : "disabled"}
-          onclick="addToCart('${product.id}')"
-        >
-          ${canBuy ? "+ Keranjang" : "Stok Habis"}
-        </button>
-
       </div>
 
-    `;
-
-
-    productList.appendChild(card);
-
-  });
-
-}
-
-
-// =====================================================
-// ESCAPE HTML
-// =====================================================
-
-function escapeHTML(value) {
-
-  return String(value || "")
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#039;");
-
-}
-
-
-// =====================================================
-// TAMBAH KERANJANG
-// =====================================================
-
-function addToCart(productId) {
-
-  const product =
-    products.find(
-      p => String(p.id) === String(productId)
-    );
-
-
-  if (!product) return;
-
-
-  const stock =
-    Number(product.stock_quantity || 0);
-
-
-  if (
-    stock <= 0 &&
-    product.allow_negative_stock !== true
-  ) {
-
-    alert("Stok produk habis.");
-
-    return;
-
-  }
-
-
-  const existing =
-    cart.find(
-      item =>
-        String(item.product.id) ===
-        String(productId)
-    );
-
-
-  if (existing) {
-
-    existing.quantity++;
-
-  } else {
-
-    cart.push({
-
-      product: product,
-
-      quantity: 1
-
-    });
-
-  }
-
-
-  updateCart();
-
-
-  const count =
-    document.getElementById("cartCount");
-
-
-  count.classList.remove("add-animation");
-
-  void count.offsetWidth;
-
-  count.classList.add("add-animation");
-
-}
-
-
-// =====================================================
-// UPDATE CART
-// =====================================================
-
-function updateCart() {
-
-  const totalItems =
-    cart.reduce(
-      (total, item) =>
-        total + item.quantity,
-      0
-    );
-
-
-  document.getElementById(
-    "cartCount"
-  ).textContent = totalItems;
-
-}
-
-
-// =====================================================
-// BUKA CART
-// =====================================================
-
-function openCart() {
-
-  renderCart();
-
-  document
-    .getElementById("cartModal")
-    .classList.remove("hidden");
-
-}
-
-
-// =====================================================
-// TUTUP CART
-// =====================================================
-
-function closeCart() {
-
-  document
-    .getElementById("cartModal")
-    .classList.add("hidden");
-
-}
-
-
-// =====================================================
-// RENDER CART
-// =====================================================
-
-function renderCart() {
-
-  const container =
-    document.getElementById("cartItems");
-
-
-  const totalElement =
-    document.getElementById("cartTotal");
-
-
-  const itemsElement =
-    document.getElementById("cartTotalItems");
-
-
-  container.innerHTML = "";
-
-
-  if (cart.length === 0) {
-
-    container.innerHTML = `
-
-      <div class="text-center py-10">
-
-        <div class="text-5xl">
-          🛒
+      <!-- KOTAK PETA (BISA DIKLIK LANGSUNG BUKA MAPS TOKO) -->
+      <a href="https://maps.app.goo.gl/qtPMoR8oVsPcKH6x7" 
+         target="_blank" 
+         class="w-full md:w-80 h-44 bg-slate-100 rounded-xl overflow-hidden border border-slate-200 relative flex-shrink-0 block group shadow-sm hover:shadow-md transition-all">
+        
+        <!-- Peta Visual -->
+        <iframe src="https://maps.google.com/maps?q=SRC+Zokent+Jogosimo+Klirong&t=&z=16&ie=UTF8&iwloc=&output=embed" 
+                width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy" class="pointer-events-none"></iframe>
+        
+        <!-- Tombol Buka di Maps -->
+        <div class="absolute top-2.5 left-2.5 bg-white/95 backdrop-blur-sm text-blue-600 text-[11px] font-bold px-3 py-1.5 rounded-lg border border-slate-200 shadow-md group-hover:bg-blue-600 group-hover:text-white transition-all flex items-center gap-1.5">
+          📍 Buka di Maps ↗
         </div>
-
-        <p class="font-bold mt-3">
-          Keranjang masih kosong
-        </p>
-
-        <p class="text-xs text-gray-500 mt-1">
-          Tambahkan produk terlebih dahulu.
-        </p>
-
+        
+        <!-- Lapisan Klik Keseluruhan -->
+        <div class="absolute inset-0 bg-transparent"></div>
+      </a>
+    </section>
+    
+    <!-- BAGIAN: BANNER CONSULTATION / WA -->
+    <section class="bg-[#0b1329] text-white rounded-2xl p-8 text-center space-y-3">
+      <h3 class="text-lg md:text-xl font-bold">Butuh Layanan Cepat atau Konsultasi Kerusakan?</h3>
+      <p class="text-xs text-slate-400 max-w-lg mx-auto leading-relaxed">
+        Silakan hubungi kami untuk menjadwalkan servis AC rumah, perbaikan motor, atau menanyakan ketersediaan produk di toko.
+      </p>
+      <div class="pt-2">
+        <a href="https://wa.me/6283863000922?text=Halo%20Zokent%20Group,%20saya%20mau%20tanya/konsultasi" target="_blank" class="inline-block bg-[#00a884] hover:bg-[#008f70] text-white font-semibold text-xs px-5 py-2.5 rounded-lg transition-all">
+          Hubungi Zokent via WhatsApp
+        </a>
       </div>
+    </section>
 
-    `;
+  </main>
 
+  <!-- FOOTER -->
+  <footer class="py-6 text-center text-[11px] text-slate-400 border-t border-slate-100 mt-12">
+    <p>© 2026 Zokent Group. All Rights Reserved. Hosted on GitHub Pages.</p>
+  </footer>
 
-    totalElement.textContent =
-      "Rp 0";
+  <!-- 2. KONFIGURASI DAN KONEKSI SUPABASE -->
+  <script>
+    // Salin SUPABASE_URL & SUPABASE_KEY dari file kasir.html / kategori.html Anda
+    const SUPABASE_URL = 'https://weuousmvkxmgmsnwiuad.supabase.co';
+    const SUPABASE_KEY = 'sb_publishable_e375KDL0vuoahHO_kWMjwA_a04R4yHb';
 
-    itemsElement.textContent =
-      "0 barang";
+    const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-    return;
-
-  }
-
-
-  let total = 0;
-
-  let totalItems = 0;
-
-
-  cart.forEach((item, index) => {
-
-    const product =
-      item.product;
-
-
-    const subtotal =
-      Number(product.selling_price || 0) *
-      item.quantity;
-
-
-    total += subtotal;
-
-    totalItems += item.quantity;
-
-
-    const div =
-      document.createElement("div");
-
-
-    div.className =
-      "flex gap-3 py-3 border-b";
-
-
-    div.innerHTML = `
-
-      <div class="w-16 h-16 bg-gray-100 rounded-xl overflow-hidden flex-shrink-0">
-
-        ${
-          product.image_url
-            ? `<img src="${product.image_url}" class="w-full h-full object-cover">`
-            : `<div class="w-full h-full flex items-center justify-center text-2xl">📦</div>`
+    // Fungsi cek koneksi Supabase
+    async function initSupabase() {
+      try {
+        const { data, error } = await supabase.from('produk').select('*').limit(1);
+        if (error) {
+          console.error('Koneksi Supabase error:', error.message);
+        } else {
+          console.log('Supabase berhasil terhubung! Data sampel:', data);
         }
-
-      </div>
-
-
-      <div class="flex-1">
-
-        <h3 class="font-bold text-sm">
-          ${escapeHTML(product.name)}
-        </h3>
-
-        <p class="text-xs text-blue-700 font-bold mt-1">
-          ${formatRupiah(product.selling_price)}
-        </p>
-
-
-        <div class="flex items-center gap-2 mt-2">
-
-          <button
-            onclick="changeQuantity(${index}, -1)"
-            class="w-7 h-7 rounded-full bg-gray-200 font-bold"
-          >
-            −
-          </button>
-
-          <span class="text-sm font-bold">
-            ${item.quantity}
-          </span>
-
-          <button
-            onclick="changeQuantity(${index}, 1)"
-            class="w-7 h-7 rounded-full bg-blue-600 text-white font-bold"
-          >
-            +
-          </button>
-
-        </div>
-
-      </div>
-
-
-      <div class="text-right">
-
-        <p class="text-sm font-extrabold">
-          ${formatRupiah(subtotal)}
-        </p>
-
-        <button
-          onclick="removeFromCart(${index})"
-          class="text-[10px] text-red-500 mt-2"
-        >
-          Hapus
-        </button>
-
-      </div>
-
-    `;
-
-
-    container.appendChild(div);
-
-  });
-
-
-  totalElement.textContent =
-    formatRupiah(total);
-
-
-  itemsElement.textContent =
-    `${totalItems} barang`;
-
-}
-
-
-// =====================================================
-// UBAH JUMLAH
-// =====================================================
-
-function changeQuantity(index, amount) {
-
-  const item =
-    cart[index];
-
-
-  if (!item) return;
-
-
-  const newQuantity =
-    item.quantity + amount;
-
-
-  const stock =
-    Number(
-      item.product.stock_quantity || 0
-    );
-
-
-  if (
-    amount > 0 &&
-    stock > 0 &&
-    newQuantity > stock &&
-    item.product.allow_negative_stock !== true
-  ) {
-
-    alert("Jumlah melebihi stok.");
-
-    return;
-
-  }
-
-
-  if (newQuantity <= 0) {
-
-    cart.splice(index, 1);
-
-  } else {
-
-    item.quantity = newQuantity;
-
-  }
-
-
-  updateCart();
-
-  renderCart();
-
-}
-
-
-// =====================================================
-// HAPUS CART
-// =====================================================
-
-function removeFromCart(index) {
-
-  cart.splice(index, 1);
-
-  updateCart();
-
-  renderCart();
-
-}
-
-
-// =====================================================
-// CHECKOUT
-// =====================================================
-
-function openCheckout() {
-
-  if (cart.length === 0) {
-
-    alert("Keranjang masih kosong.");
-
-    return;
-
-  }
-
-
-  const total =
-    cart.reduce(
-      (sum, item) =>
-        sum +
-        Number(item.product.selling_price || 0) *
-        item.quantity,
-      0
-    );
-
-
-  document.getElementById(
-    "checkoutTotal"
-  ).textContent =
-    formatRupiah(total);
-
-
-  closeCart();
-
-
-  document
-    .getElementById("checkoutModal")
-    .classList.remove("hidden");
-
-}
-
-
-// =====================================================
-// CLOSE CHECKOUT
-// =====================================================
-
-function closeCheckout() {
-
-  document
-    .getElementById("checkoutModal")
-    .classList.add("hidden");
-
-}
-
-
-// =====================================================
-// SUBMIT ORDER
-// =====================================================
-
-async function submitOrder() {
-
-  const name =
-    document
-      .getElementById("customerName")
-      .value
-      .trim();
-
-
-  const phone =
-    document
-      .getElementById("customerPhone")
-      .value
-      .trim();
-
-
-  const address =
-    document
-      .getElementById("customerAddress")
-      .value
-      .trim();
-
-
-  const note =
-    document
-      .getElementById("customerNote")
-      .value
-      .trim();
-
-
-  const payment =
-    document
-      .getElementById("paymentMethod")
-      .value;
-
-
-  if (!name || !phone || !address) {
-
-    alert(
-      "Nama, nomor WhatsApp, dan alamat wajib diisi."
-    );
-
-    return;
-
-  }
-
-
-  if (cart.length === 0) {
-
-    alert("Keranjang kosong.");
-
-    return;
-
-  }
-
-
-  const button =
-    document.getElementById(
-      "submitOrderButton"
-    );
-
-
-  button.disabled = true;
-
-  button.textContent =
-    "Menyimpan pesanan...";
-
-
-  try {
-
-    const total =
-      cart.reduce(
-        (sum, item) =>
-          sum +
-          Number(item.product.selling_price || 0) *
-          item.quantity,
-        0
-      );
-
-
-    // =================================================
-    // DATA PESANAN
-    // =================================================
-
-    const orderItems =
-      cart.map(item => ({
-
-        product_id:
-          item.product.id,
-
-        product_name:
-          item.product.name,
-
-        sku:
-          item.product.sku,
-
-        quantity:
-          item.quantity,
-
-        price:
-          Number(
-            item.product.selling_price || 0
-          ),
-
-        subtotal:
-          Number(
-            item.product.selling_price || 0
-          ) *
-          item.quantity
-
-      }));
-
-
-    // =================================================
-    // SIMPAN KE TABEL orders
-    // =================================================
-
-    const {
-      data: order,
-      error
-    } = await supabaseClient
-      .from("orders")
-      .insert({
-
-        customer_name: name,
-
-        customer_phone: phone,
-
-        delivery_address: address,
-
-        note: note,
-
-        payment_method: payment,
-
-        total_amount: total,
-
-        status: "pending"
-
-      })
-      .select()
-      .single();
-
-
-    if (error) {
-
-      throw error;
-
+      } catch (err) {
+        console.error('Gagal terhubung ke Supabase:', err);
+      }
     }
 
-
-    // =================================================
-    // SIMPAN ITEM PESANAN
-    // =================================================
-
-    const itemsToInsert =
-      orderItems.map(item => ({
-
-        order_id:
-          order.id,
-
-        product_id:
-          item.product_id,
-
-        product_name:
-          item.product_name,
-
-        sku:
-          item.sku,
-
-        quantity:
-          item.quantity,
-
-        price:
-          item.price,
-
-        subtotal:
-          item.subtotal
-
-      }));
-
-
-    const {
-      error: itemError
-    } = await supabaseClient
-      .from("order_items")
-      .insert(itemsToInsert);
-
-
-    if (itemError) {
-
-      throw itemError;
-
-    }
-
-
-    // =================================================
-    // WHATSAPP
-    // =================================================
-
-    const whatsappNumber =
-      "6283863000922";
-
-
-    let message =
-      `Halo Zokent Store 👋%0A%0A`;
-
-    message +=
-      `Saya ingin memesan:%0A%0A`;
-
-
-    cart.forEach((item, index) => {
-
-      const subtotal =
-        Number(item.product.selling_price || 0) *
-        item.quantity;
-
-
-      message +=
-        `${index + 1}. ${item.product.name}%0A`;
-
-      message +=
-        `   ${item.quantity} x ${formatRupiah(item.product.selling_price)}%0A`;
-
-      message +=
-        `   Subtotal: ${formatRupiah(subtotal)}%0A%0A`;
-
-    });
-
-
-    message +=
-      `Total: ${formatRupiah(total)}%0A`;
-
-    message +=
-      `Pembayaran: ${payment.toUpperCase()}%0A%0A`;
-
-    message +=
-      `Nama: ${name}%0A`;
-
-    message +=
-      `WhatsApp: ${phone}%0A`;
-
-    message +=
-      `Alamat: ${address}%0A`;
-
-
-    if (note) {
-
-      message +=
-        `Catatan: ${note}%0A`;
-
-    }
-
-
-    message +=
-      `%0ANomor Pesanan: ${order.id}`;
-
-
-    // =================================================
-    // KOSONGKAN KERANJANG
-    // =================================================
-
-    cart = [];
-
-    updateCart();
-
-
-    // =================================================
-    // BUKA WHATSAPP
-    // =================================================
-
-    window.location.href =
-      `https://wa.me/${whatsappNumber}?text=${message}`;
-
-
-  } catch (error) {
-
-    console.error(error);
-
-    alert(
-      "Pesanan gagal disimpan: " +
-      error.message
-    );
-
-    button.disabled = false;
-
-    button.textContent =
-      "Buat Pesanan & WhatsApp";
-
-  }
-
-}
-
-
-// =====================================================
-// MULAI
-// =====================================================
-
-loadProducts();
-
-</script>
+    initSupabase();
+  </script>
 
 </body>
 </html>
