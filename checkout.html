@@ -11,7 +11,7 @@
   <!-- HEADER -->
   <header class="bg-red-600 text-white py-4 px-6 shadow-md sticky top-0 z-50 flex justify-between items-center">
     <div class="flex items-center gap-3">
-      <button onclick="window.history.back()" class="bg-red-700 hover:bg-red-800 text-white text-xs px-2.5 py-1.5 rounded-lg font-semibold flex items-center gap-1 transition-all border border-red-500">
+      <button onclick="window.location.href='src.html'" class="bg-red-700 hover:bg-red-800 text-white text-xs px-2.5 py-1.5 rounded-lg font-semibold flex items-center gap-1 transition-all border border-red-500">
         ← Kembali Belanja
       </button>
       <h1 class="text-lg font-bold">🛒 Detail Pesanan Anda</h1>
@@ -40,7 +40,7 @@
     <!-- FORM DATA PEMBELI & PEMBAYARAN -->
     <div class="bg-white rounded-2xl p-4 md:p-6 shadow-sm border border-slate-200">
       <h2 class="text-base font-bold text-slate-900 mb-4 pb-2 border-b border-slate-100">
-        📝 Form Pengiriman Pesanan
+        📝 Form Pengiriman & Pembayaran
       </h2>
 
       <form id="form-checkout" class="space-y-4">
@@ -54,6 +54,35 @@
           <textarea id="alamat-pembeli" rows="2" required placeholder="Masukkan alamat lengkap atau no. meja/catatan..." class="w-full text-xs px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-red-500"></textarea>
         </div>
 
+        <!-- PILIHAN METODE PEMBAYARAN -->
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-2">Pilih Metode Pembayaran</label>
+          <div class="grid grid-cols-2 gap-3">
+            <label class="border border-slate-200 rounded-xl p-3 flex items-center gap-2 cursor-pointer hover:border-red-500 transition-all bg-slate-50">
+              <input type="radio" name="metode-bayar" value="COD / Bayar di Tempat" checked class="text-red-600 focus:ring-red-500" onchange="toggleQris(false)">
+              <div>
+                <p class="text-xs font-bold text-slate-800">💵 COD / Manual</p>
+                <p class="text-[10px] text-slate-500">Bayar langsung / konfirmasi via WA</p>
+              </div>
+            </label>
+
+            <label class="border border-slate-200 rounded-xl p-3 flex items-center gap-2 cursor-pointer hover:border-red-500 transition-all bg-slate-50">
+              <input type="radio" name="metode-bayar" value="QRIS" class="text-red-600 focus:ring-red-500" onchange="toggleQris(true)">
+              <div>
+                <p class="text-xs font-bold text-slate-800">📱 QRIS (Scan)</p>
+                <p class="text-[10px] text-slate-500">Scan pakai GoPay, OVO, BCA, dll</p>
+              </div>
+            </label>
+          </div>
+        </div>
+
+        <!-- CONTAINER GAMBAR QRIS (Muncul Otomatis jika QRIS dipilih) -->
+        <div id="qris-box" class="hidden p-4 bg-slate-50 border border-dashed border-red-300 rounded-xl text-center space-y-2">
+          <p class="text-xs font-bold text-red-600">Scan QRIS di bawah ini untuk membayar:</p>
+          <img src="qris.jpg" alt="QRIS Toko" class="w-48 h-48 mx-auto object-contain rounded-lg border border-slate-200 bg-white p-2 shadow-sm">
+          <p class="text-[11px] text-slate-500">Setelah scan dan berhasil, klik tombol kirim pesanan di bawah dan lampirkan buktinya.</p>
+        </div>
+
         <button type="submit" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold text-sm py-3 rounded-xl transition-all shadow-md flex items-center justify-center gap-2">
           📲 Kirim Pesanan via WhatsApp
         </button>
@@ -63,7 +92,8 @@
   </main>
 
   <script>
-    const NOMOR_WA_TOKO = "628xxxxxxxxxx"; // Ganti dengan nomor WhatsApp Toko Anda (Gunakan format 62)
+    // ⚠️ GANTI DENGAN NOMOR WHATSAPP TOKO ANDA (Awali 62)
+    const NOMOR_WA_TOKO = "628xxxxxxxxxx"; 
 
     // 1. TAMPILKAN DAFTAR KERANJANG
     function renderKeranjang() {
@@ -94,12 +124,12 @@
 
             <div class="flex items-center gap-3">
               <div class="flex items-center border border-slate-200 rounded-lg">
-                <button onclick="ubahJumlah(${index}, -1)" class="px-2 py-0.5 text-xs font-bold text-slate-600 hover:bg-slate-100">-</button>
+                <button type="button" onclick="ubahJumlah(${index}, -1)" class="px-2 py-0.5 text-xs font-bold text-slate-600 hover:bg-slate-100">-</button>
                 <span class="px-2 text-xs font-semibold">${item.jumlah}</span>
-                <button onclick="ubahJumlah(${index}, 1)" class="px-2 py-0.5 text-xs font-bold text-slate-600 hover:bg-slate-100">+</button>
+                <button type="button" onclick="ubahJumlah(${index}, 1)" class="px-2 py-0.5 text-xs font-bold text-slate-600 hover:bg-slate-100">+</button>
               </div>
               <span class="text-xs font-bold text-slate-800">Rp ${Number(subtotal).toLocaleString('id-ID')}</span>
-              <button onclick="hapusItem(${index})" class="text-red-500 hover:text-red-700 text-xs font-bold">🗑</button>
+              <button type="button" onclick="hapusItem(${index})" class="text-red-500 hover:text-red-700 text-xs font-bold">🗑</button>
             </div>
           </div>
         `;
@@ -108,7 +138,17 @@
       totalEl.innerText = `Rp ${Number(grandTotal).toLocaleString('id-ID')}`;
     }
 
-    // 2. UBAH JUMLAH ITEM (+ / -)
+    // 2. TOGGLE TAMPILAN QRIS
+    function toggleQris(tampilkan) {
+      const qrisBox = document.getElementById('qris-box');
+      if (tampilkan) {
+        qrisBox.classList.remove('hidden');
+      } else {
+        qrisBox.classList.add('hidden');
+      }
+    }
+
+    // 3. UBAH JUMLAH ITEM (+ / -)
     function ubahJumlah(index, delta) {
       let keranjang = JSON.parse(localStorage.getItem('keranjang_zokent')) || [];
       keranjang[index].jumlah += delta;
@@ -121,7 +161,7 @@
       renderKeranjang();
     }
 
-    // 3. HAPUS ITEM
+    // 4. HAPUS ITEM
     function hapusItem(index) {
       let keranjang = JSON.parse(localStorage.getItem('keranjang_zokent')) || [];
       keranjang.splice(index, 1);
@@ -129,7 +169,7 @@
       renderKeranjang();
     }
 
-    // 4. KIRIM PESANAN KE WHATSAPP
+    // 5. KIRIM PESANAN KE WHATSAPP
     document.getElementById('form-checkout').addEventListener('submit', (e) => {
       e.preventDefault();
       const keranjang = JSON.parse(localStorage.getItem('keranjang_zokent')) || [];
@@ -141,6 +181,7 @@
 
       const nama = document.getElementById('nama-pembeli').value.trim();
       const alamat = document.getElementById('alamat-pembeli').value.trim();
+      const metodeBayar = document.querySelector('input[name="metode-bayar"]:checked').value;
 
       let rincianPesanan = "";
       let grandTotal = 0;
@@ -153,7 +194,8 @@
 
       const pesanWA = `Halo SRC Zokent, saya mau pesan:\n\n` +
         `*Nama:* ${nama}\n` +
-        `*Alamat/Catatan:* ${alamat}\n\n` +
+        `*Alamat/Catatan:* ${alamat}\n` +
+        `*Metode Pembayaran:* ${metodeBayar}\n\n` +
         `*Detail Pesanan:*\n${rincianPesanan}\n` +
         `*Total Pembayaran:* Rp ${Number(grandTotal).toLocaleString('id-ID')}\n\n` +
         `Mohon diproses ya, terima kasih!`;
@@ -161,7 +203,7 @@
       // Buka Whatsapp
       window.open(`https://wa.me/${NOMOR_WA_TOKO}?text=${encodeURIComponent(pesanWA)}`, '_blank');
       
-      // Kosongkan keranjang setelah order
+      // Kosongkan keranjang setelah order terkirim
       localStorage.removeItem('keranjang_zokent');
       renderKeranjang();
     });
