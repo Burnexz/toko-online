@@ -174,16 +174,15 @@
 
   <!-- 2. KONFIGURASI DAN KONEKSI SUPABASE -->
   <script>
-    // Salin SUPABASE_URL & SUPABASE_KEY dari file kasir.html / kategori.html Anda
     const SUPABASE_URL = 'https://weuousmvkxmgmsnwiuad.supabase.co';
     const SUPABASE_KEY = 'sb_publishable_e375KDL0vuoahHO_kWMjwA_a04R4yHb';
 
-    const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    // Perbaikan: gunakan nama variabel 'supabaseClient'
+    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-    // Fungsi cek koneksi Supabase
     async function initSupabase() {
       try {
-        const { data, error } = await supabase.from('produk').select('*').limit(1);
+        const { data, error } = await supabaseClient.from('produk').select('*').limit(1);
         if (error) {
           console.error('Koneksi Supabase error:', error.message);
         } else {
