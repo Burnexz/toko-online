@@ -136,7 +136,7 @@
           document.getElementById('barcode').value = decodedText;
           tutupScanner();
 
-          // 1. Cek dulu apakah barang sudah ada di Supabase toko
+          // Cek database toko
           const { data: produkLama } = await supabaseClient
             .from('products')
             .select('*')
@@ -151,7 +151,7 @@
             document.getElementById('description').value = produkLama.description || '';
             alert('Barang ditemukan di database toko Anda!');
           } else {
-            // 2. Jika barang baru, cari ke Database Barcode Publik (Open Food Facts API)
+            // Cari ke database publik jika barang baru
             try {
               const res = await fetch(`https://world.openfoodfacts.org/api/v0/product/${decodedText}.json`);
               const data = await res.json();
@@ -161,11 +161,9 @@
                   document.getElementById('image_url').value = data.product.image_front_url;
                 }
                 alert('Nama & Foto barang terdeteksi otomatis dari database barcode!');
-              } else {
-                console.log('Tidak terdeteksi di database publik, silakan ketik nama manual.');
               }
             } catch (e) {
-              console.log('Gagal koneksi database publik, isi nama manual.');
+              console.log('Ketik nama manual.');
             }
           }
         },
@@ -231,21 +229,32 @@
       btn.innerText = 'Menyimpan...';
       btn.disabled = true;
 
+      const name = document.getElementById('name').value.trim();
+      const barcode = document.getElementById('barcode').value.trim() || null;
+      const selling_price = parseFloat(document.getElementById('selling_price').value);
+      const stock_quantity = parseInt(document.getElementById('stock_quantity').value);
+      const image_url = document.getElementById('image_url').value.trim() || null;
+      const description = document.getElementById('description').value.trim() || null;
+
       const newProduct = {
-        name: document.getElementById('name').value,
-        barcode: document.getElementById('barcode').value || null,
-        selling_price: parseFloat(document.getElementById('selling_price').value),
-        stock_quantity: parseInt(document.getElementById('stock_quantity').value),
-        image_url: document.getElementById('image_url').value || null,
-        description: document.getElementById('description').value || null
+        name,
+        barcode,
+        selling_price,
+        stock_quantity,
+        image_url,
+        description
       };
 
-      const { error } = await supabaseClient.from('products').insert([newProduct]);
+      const { data, error } = await supabaseClient
+        .from('products')
+        .insert([newProduct])
+        .select();
 
       if (error) {
-        alert('Gagal menyimpan produk: ' + error.message);
+        console.error('Error Supabase:', error);
+        alert('❌ Gagal menyimpan produk!\nDetail Error: ' + error.message);
       } else {
-        alert('Berhasil menambah produk! Produk ini sekarang otomatis muncul di katalog pembeli.');
+        alert('✅ Berhasil menambah produk! Produk ini sekarang otomatis muncul di katalog pembeli.');
         document.getElementById('form-produk').reset();
         loadProdukAdmin();
       }
