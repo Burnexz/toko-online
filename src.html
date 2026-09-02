@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Katalog Toko - SRC Zokent</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- SDK Supabase -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body class="bg-slate-100 text-slate-800 font-sans antialiased min-h-screen">
+
+  <!-- HEADER TOKO -->
+  <header class="bg-red-600 text-white py-4 px-6 shadow-md sticky top-0 z-50 flex justify-between items-center">
+    <div>
+      <h1 class="text-xl font-bold">🛒 SRC Zokent</h1>
+      <p class="text-xs text-red-100">Katalog Produk Online</p>
+    </div>
+    <a href="checkout.html" class="bg-white text-red-600 font-bold px-3 py-1.5 rounded-lg text-xs shadow-sm hover:bg-red-50 transition-all">
+      🛍️ Keranjang / Checkout
+    </a>
+  </header>
+
+  <main class="max-w-6xl mx-auto p-4 md:p-6">
+    <!-- JUDUL KATALOG -->
+    <div class="flex justify-between items-center mb-6">
+      <h2 class="text-lg font-bold text-slate-900">📦 Daftar Produk Tersedia</h2>
+      <button onclick="loadKatalogProduk()" class="text-xs text-red-600 font-semibold hover:underline">🔄 Refresh Katalog</button>
+    </div>
+
+    <!-- CONTAINER GRID PRODUK -->
+    <div id="grid-produk" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+      <div class="col-span-full text-center py-12 text-slate-400">
+        Memuat produk dari toko...
+      </div>
+    </div>
+  </main>
+
+  <!-- SKRIP UNTUK MENGAMBIL DATA DARI SUPABASE -->
+  <script>
+    // 1. Inisialisasi Kunci Supabase
+    const SUPABASE_URL = "https://weuousmvkxmgmsnwiuad.supabase.co";
+    const SUPABASE_ANON_KEY = "sb_publishable_e375KDL0vuoahHO_kWMjwA_a04R4yHb";
+    const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    // 2. Fungsi Ambil Data dari Tabel 'products'
+    async function loadKatalogProduk() {
+      const container = document.getElementById('grid-produk');
+
+      // Meminta data dari tabel products di Supabase
+      const { data: products, error } = await supabaseClient
+        .from('products')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (error) {
+        console.error('Error Supabase:', error);
+        container.innerHTML = `
+          <div class="col-span-full text-center py-8 text-red-500 font-semibold">
+            ❌ Gagal memuat produk. Terjadi kendala koneksi ke database.
+          </div>`;
+        return;
+      }
+
+      if (!products || products.length === 0) {
+        container.innerHTML = `
+          <div class="col-span-full text-center py-12 text-slate-400">
+            Belum ada produk yang dijual di katalog saat ini.
+          </div>`;
+        return;
+      }
+
+      // 3. Menampilkan Setiap Produk ke Dalam Card HTML
+      container.innerHTML = products.map(item => `
+        <div class="bg-white rounded-2xl p-4 border border-slate-200 shadow-sm hover:shadow-md transition-all flex flex-col justify-between">
+          <div>
+            <!-- FOTO PRODUK -->
+            <div class="w-full h-36 bg-slate-100 rounded-xl mb-3 overflow-hidden flex items-center justify-center">
+              ${item.image_url 
+                ? `<img src="${item.image_url}" class="w-full h-full object-cover">` 
+                : `<span class="text-4xl">📦</span>`}
+            </div>
+            
+            <!-- INFORMASI PRODUK -->
+            <h3 class="font-bold text-sm text-slate-800 line-clamp-2">${item.name}</h3>
+            <p class="text-xs text-slate-400 mt-1">${item.description || 'Tidak ada deskripsi'}</p>
+          </div>
+
+          <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between">
+            <div>
+              <span class="text-[10px] text-slate-400 block">Harga</span>
+              <span class="text-sm font-extrabold text-red-600">
+                Rp ${Number(item.selling_price || 0).toLocaleString('id-ID')}
+              </span>
+            </div>
+            <button onclick="tambahKeKeranjang('${item.id}', '${item.name}', ${item.selling_price})" class="bg-red-600 hover:bg-red-700 text-white text-xs px-3 py-1.5 rounded-lg font-bold transition-all">
+              + Beli
+            </button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // Fungsi sederhana untuk menambahkan barang ke keranjang
+    function tambahKeKeranjang(id, nama, harga) {
+      alert(`Berhasil menambahkan ${nama} ke keranjang!`);
+    }
+
+    // Jalankan fungsi saat halaman selesai dimuat
+    loadKatalogProduk();
+  </script>
+
+</body>
+</html>
