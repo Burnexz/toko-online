@@ -132,7 +132,6 @@
 
     let html5QrcodeScanner = null;
 
-    // 1. SCANNER BARCODE DENGAN AUTO-DETECT NAMA BARANG
     function bukaScanner() {
       const container = document.getElementById('scanner-container');
       container.classList.remove('hidden');
@@ -197,7 +196,6 @@
       }
     }
 
-    // 2. MEMUAT DAFTAR PRODUK
     async function loadProdukAdmin() {
       const tabel = document.getElementById('tabel-produk');
       const { data: products, error } = await supabaseClient
@@ -233,7 +231,6 @@
       `).join('');
     }
 
-    // 3. MENAMBAHKAN PRODUK BARU TERMASUK KATEGORI
     document.getElementById('form-produk').addEventListener('submit', async (e) => {
       e.preventDefault();
       const btn = document.getElementById('btn-submit');
@@ -267,7 +264,7 @@
         console.error('Error Supabase:', error);
         alert('❌ Gagal menyimpan produk!\nDetail Error: ' + error.message);
       } else {
-        alert('✅ Berhasil menambah produk! Produk ini sekarang otomatis muncul di katalog pembeli sesuai kategorinya.');
+        alert('✅ Berhasil menambah produk! Produk ini sekarang otomatis muncul di katalog pembeli.');
         document.getElementById('form-produk').reset();
         loadProdukAdmin();
       }
@@ -276,7 +273,6 @@
       btn.disabled = false;
     });
 
-    // 4. MENGHAPUS PRODUK
     async function hapusProduk(id) {
       if (confirm('Apakah Anda yakin ingin menghapus produk ini?')) {
         const { error } = await supabaseClient.from('products').delete().eq('id', id);
