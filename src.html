@@ -13,7 +13,6 @@
   <!-- HEADER TOKO DENGAN TOMBOL KEMBALI & KERANJANG -->
   <header class="bg-red-600 text-white py-4 px-6 shadow-md sticky top-0 z-50 flex justify-between items-center">
     <div class="flex items-center gap-3">
-      <!-- TOMBOL KEMBALI KE HALAMAN SEBELUMNYA -->
       <button onclick="window.history.back()" class="bg-red-700 hover:bg-red-800 text-white text-xs px-2.5 py-1.5 rounded-lg font-semibold flex items-center gap-1 transition-all border border-red-500">
         ← Kembali
       </button>
@@ -70,7 +69,6 @@
 
     let semuaProduk = [];
 
-    // 1. FUNGSI AMBIL DATA DARI SUPABASE
     async function loadProduk() {
       const grid = document.getElementById('produk-grid');
       const { data: products, error } = await supabaseClient
@@ -89,7 +87,6 @@
       updateBadgeKeranjang();
     }
 
-    // 2. FUNGSI TAMPILKAN PRODUK KE GRID
     function tampilkanProduk(daftarProduk) {
       const grid = document.getElementById('produk-grid');
 
@@ -122,7 +119,8 @@
                 <p class="font-extrabold text-red-600 text-xs md:text-sm">Rp ${Number(item.selling_price || 0).toLocaleString('id-ID')}</p>
               </div>
 
-              <button onclick="tambahKeKeranjang('${item.id}', '${item.name.replace(/'/g, "\\'")}', ${item.selling_price}, '${item.image_url || ''}')" class="bg-red-600 hover:bg-red-700 text-white font-bold text-xs px-2.5 py-1.5 rounded-lg shadow-sm active:scale-95 transition-all flex items-center gap-1">
+              <!-- TOMBOL BELI TANPA POPUP -->
+              <button type="button" onclick="tambahKeKeranjang('${item.id}', '${item.name.replace(/'/g, "\\'")}', ${item.selling_price}, '${item.image_url || ''}')" class="bg-red-600 hover:bg-red-700 text-white font-bold text-xs px-2.5 py-1.5 rounded-lg shadow-sm active:scale-95 transition-all flex items-center gap-1">
                 + Beli
               </button>
             </div>
@@ -131,7 +129,6 @@
       `).join('');
     }
 
-    // 3. FUNGSI FILTER KATEGORI
     function filterKategori(kategori) {
       const buttons = document.querySelectorAll('.btn-kategori');
       buttons.forEach(btn => {
@@ -150,7 +147,7 @@
       }
     }
 
-    // 4. FUNGSI MASUKKAN KE KERANJANG (localStorage)
+    // Fungsi Masuk Keranjang Secara Otomatis (Tanpa Alert)
     function tambahKeKeranjang(id, nama, harga, gambar) {
       let keranjang = JSON.parse(localStorage.getItem('keranjang_zokent')) || [];
       const indexLama = keranjang.findIndex(item => item.id === id);
@@ -169,10 +166,8 @@
 
       localStorage.setItem('keranjang_zokent', JSON.stringify(keranjang));
       updateBadgeKeranjang();
-      alert(`✅ ${nama} berhasil ditambahkan ke keranjang!`);
     }
 
-    // 5. UPDATE BADGE JUMLAH BARANG DI TOMBOL CHECKOUT
     function updateBadgeKeranjang() {
       const keranjang = JSON.parse(localStorage.getItem('keranjang_zokent')) || [];
       const totalItem = keranjang.reduce((sum, item) => sum + item.jumlah, 0);
@@ -182,7 +177,6 @@
       }
     }
 
-    // Jalankan saat halaman terbuka
     loadProduk();
   </script>
 
