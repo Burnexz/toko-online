@@ -138,7 +138,7 @@
       if (!barcodeVal || barcodeVal.trim().length < 3) return;
       const cleanBarcode = barcodeVal.trim();
 
-      // 1. Cek database Supabase lokal toko (Nama, Kategori, Harga, Stok, Gambar, Deskripsi)
+      // 1. Cek database Supabase lokal toko
       const { data: produkLama, error } = await supabaseClient
         .from('products')
         .select('*')
@@ -152,7 +152,7 @@
         document.getElementById('stock_quantity').value = produkLama.stock_quantity || '';
         document.getElementById('image_url').value = produkLama.image_url || '';
         document.getElementById('description').value = produkLama.description || '';
-        alert('✅ Barang ditemukan di database toko Anda! Data terisi otomatis.');
+        alert('✅ Barang sudah terdaftar di toko! Stok saat ini dimuat. Jika Anda menyimpan ulang dengan jumlah baru, stok akan otomatis diakumulasikan.');
         return;
       }
 
@@ -162,24 +162,18 @@
         const data = await res.json();
         
         if (data.status === 1 && data.product) {
-          // Nama produk
           const namaGlobal = data.product.product_name || data.product.product_name_en || '';
           if (namaGlobal) {
             document.getElementById('name').value = namaGlobal;
           }
-
-          // Gambar produk
           if (data.product.image_front_url) {
             document.getElementById('image_url').value = data.product.image_front_url;
           }
-
-          // Deskripsi ringkas dari bahan/keterangan global
           const ingredients = data.product.ingredients_text_en || data.product.ingredients_text || '';
           if (ingredients) {
             document.getElementById('description').value = ingredients.substring(0, 150) + '...';
           }
 
-          // Mencoba menyesuaikan kategori otomatis jika teks global cocok dengan pilihan toko
           const kategoriGlobal = (data.product.categories || '').toLowerCase();
           const selectKategori = document.getElementById('category');
           if (kategoriGlobal.includes('drink') || kategoriGlobal.includes('beverage') || kategoriGlobal.includes('minuman')) {
@@ -190,9 +184,9 @@
             selectKategori.value = 'Sembako';
           }
 
-          alert('✨ Nama, Kategori, & Data barang terdeteksi otomatis dari database global!');
+          alert('✨ Data barang terdeteksi otomatis dari database global!');
         } else {
-          alert('⚠️ Barcode terbaca, namun produk belum terdaftar. Silakan lengkapi data secara manual.');
+          alert('⚠️ Barcode baru, silakan lengkapi data secara manual.');
         }
       } catch (e) {
         console.log('Gagal terhubung ke database global:', e);
@@ -286,42 +280,81 @@
       `).join('');
     }
 
+    // PENANGANAN SIMPAN PRODUK DENGAN AKUMULASI STOK OTOMATIS
     document.getElementById('form-produk').addEventListener('submit', async (e) => {
       e.preventDefault();
       const btn = document.getElementById('btn-submit');
       btn.innerText = 'Menyimpan...';
       btn.disabled = true;
 
+      const barcode = document.getElementById('barcode').value.trim() || null;
       const name = document.getElementById('name').value.trim();
       const category = document.getElementById('category').value;
-      const barcode = document.getElementById('barcode').value.trim() || null;
       const selling_price = parseFloat(document.getElementById('selling_price').value);
-      const stock_quantity = parseInt(document.getElementById('stock_quantity').value);
+      const inputStokBaru = parseInt(document.getElementById('stock_quantity').value) || 0;
       const image_url = document.getElementById('image_url').value.trim() || null;
       const description = document.getElementById('description').value.trim() || null;
 
-      const newProduct = {
-        name,
-        category,
-        barcode,
-        selling_price,
-        stock_quantity,
-        image_url,
-        description
-      };
+      try {
+        if (barcode) {
+          // Cek apakah produk dengan barcode ini sudah ada di database toko
+          const { data: produkEksis } = await supabaseClient
+            .from('products')
+            .select('*')
+            .eq('barcode', barcode)
+            .maybeSingle();
 
-      const { data, error } = await supabaseClient
-        .from('products')
-        .insert([newProduct])
-        .select();
+          if (produkEksis) {
+            // Jika sudah ada, akumulasikan stok lama + stok baru yang diinput
+            const totalStokAkumulasi = (produkEksis.stock_quantity || 0) + inputStokBaru;
 
-      if (error) {
-        console.error('Error Supabase:', error);
-        alert('❌ Gagal menyimpan produk!\nDetail Error: ' + error.message);
-      } else {
-        alert('✅ Berhasil menambah produk! Produk ini sekarang otomatis muncul di katalog pembeli.');
+            const { error: updateError } = await supabaseClient
+              .from('products')
+              .update({
+                name: name,
+                category: category,
+                selling_price: selling_price,
+                stock_quantity: totalStokAkumulasi,
+                image_url: image_url || produkEksis.image_url,
+                description: description || produkEksis.description
+              })
+              .eq('id', produkEksis.id);
+
+            if (updateError) throw updateError;
+
+            alert(`✅ Stok berhasil diakumulasikan!\nStok sebelumnya (${produkEksis.stock_quantity}) + Ditambahkan (${inputStokBaru}) = Total Stok Baru: ${totalStokAkumulasi}`);
+            document.getElementById('form-produk').reset();
+            loadProdukAdmin();
+            btn.innerText = 'Simpan Produk Ke Katalog Pembeli';
+            btn.disabled = false;
+            return;
+          }
+        }
+
+        // Jika barcode belum ada, lakukan insert seperti biasa (produk baru)
+        const newProduct = {
+          name,
+          category,
+          barcode,
+          selling_price,
+          stock_quantity: inputStokBaru,
+          image_url,
+          description
+        };
+
+        const { error: insertError } = await supabaseClient
+          .from('products')
+          .insert([newProduct]);
+
+        if (insertError) throw insertError;
+
+        alert('✅ Berhasil menambah produk baru ke katalog pembeli!');
         document.getElementById('form-produk').reset();
         loadProdukAdmin();
+
+      } catch (err) {
+        console.error('Error Supabase:', err);
+        alert('❌ Gagal menyimpan produk!\nDetail Error: ' + err.message);
       }
 
       btn.innerText = 'Simpan Produk Ke Katalog Pembeli';
