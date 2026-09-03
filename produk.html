@@ -132,6 +132,48 @@
 
     let html5QrcodeScanner = null;
 
+    // Fungsi universal untuk cek barcode ke database Supabase / Open Food Facts
+    async function prosesBarcode(barcodeVal) {
+      if (!barcodeVal) return;
+
+      const { data: produkLama } = await supabaseClient
+        .from('products')
+        .select('*')
+        .eq('barcode', barcodeVal)
+        .maybeSingle();
+
+      if (produkLama) {
+        document.getElementById('name').value = produkLama.name || '';
+        document.getElementById('category').value = produkLama.category || '';
+        document.getElementById('selling_price').value = produkLama.selling_price || '';
+        document.getElementById('stock_quantity').value = produkLama.stock_quantity || '';
+        document.getElementById('image_url').value = produkLama.image_url || '';
+        document.getElementById('description').value = produkLama.description || '';
+        alert('✅ Barang ditemukan di database toko Anda! Form terisi otomatis.');
+      } else {
+        try {
+          const res = await fetch(`https://world.openfoodfacts.org/api/v0/product/${barcodeVal}.json`);
+          const data = await res.json();
+          if (data.status === 1 && data.product) {
+            document.getElementById('name').value = data.product.product_name || data.product.product_name_en || '';
+            if (data.product.image_front_url) {
+              document.getElementById('image_url').value = data.product.image_front_url;
+            }
+            alert('✨ Nama & Foto barang terdeteksi otomatis dari database global!');
+          } else {
+            alert('ℹ️ Barcode terbaca, tapi produk belum terdaftar. Silakan lengkapi data produk baru.');
+          }
+        } catch (e) {
+          console.log('Produk baru, silakan isi manual.');
+        }
+      }
+    }
+
+    // Event listener jika user mengetik atau menggunakan scanner barcode fisik (yang otomatis menekan enter/change)
+    document.getElementById('barcode').addEventListener('change', async (e) => {
+      await prosesBarcode(e.target.value.trim());
+    });
+
     function bukaScanner() {
       const container = document.getElementById('scanner-container');
       container.classList.remove('hidden');
@@ -146,36 +188,7 @@
         async (decodedText) => {
           document.getElementById('barcode').value = decodedText;
           tutupScanner();
-
-          const { data: produkLama } = await supabaseClient
-            .from('products')
-            .select('*')
-            .eq('barcode', decodedText)
-            .maybeSingle();
-
-          if (produkLama) {
-            document.getElementById('name').value = produkLama.name || '';
-            document.getElementById('category').value = produkLama.category || '';
-            document.getElementById('selling_price').value = produkLama.selling_price || '';
-            document.getElementById('stock_quantity').value = produkLama.stock_quantity || '';
-            document.getElementById('image_url').value = produkLama.image_url || '';
-            document.getElementById('description').value = produkLama.description || '';
-            alert('Barang ditemukan di database toko Anda!');
-          } else {
-            try {
-              const res = await fetch(`https://world.openfoodfacts.org/api/v0/product/${decodedText}.json`);
-              const data = await res.json();
-              if (data.status === 1 && data.product) {
-                document.getElementById('name').value = data.product.product_name || data.product.product_name_en || '';
-                if (data.product.image_front_url) {
-                  document.getElementById('image_url').value = data.product.image_front_url;
-                }
-                alert('Nama & Foto barang terdeteksi otomatis dari database barcode!');
-              }
-            } catch (e) {
-              console.log('Ketik nama manual.');
-            }
-          }
+          await prosesBarcode(decodedText);
         },
         (err) => {}
       ).catch(err => {
