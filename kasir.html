@@ -3,689 +3,251 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <title>Kelola Kasir - Zokent Store</title>
-
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-  <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    body {
-      font-family: Arial, sans-serif;
-      background: #f3f4f6;
-      color: #111827;
-    }
-
-    header {
-      background: #111827;
-      color: white;
-      padding: 18px 20px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    header h1 {
-      font-size: 20px;
-    }
-
-    .back {
-      color: white;
-      text-decoration: none;
-      font-size: 14px;
-    }
-
-    .container {
-      max-width: 1000px;
-      margin: auto;
-      padding: 25px 20px;
-    }
-
-    .top {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 15px;
-      margin-bottom: 20px;
-    }
-
-    .top h2 {
-      font-size: 24px;
-    }
-
-    .add-button {
-      border: none;
-      background: #111827;
-      color: white;
-      padding: 12px 16px;
-      border-radius: 9px;
-      cursor: pointer;
-      font-weight: bold;
-    }
-
-    .form-box {
-      display: none;
-      background: white;
-      padding: 22px;
-      border-radius: 14px;
-      margin-bottom: 20px;
-      box-shadow: 0 5px 18px rgba(0,0,0,0.07);
-    }
-
-    .form-box.active {
-      display: block;
-    }
-
-    .form-box h3 {
-      margin-bottom: 18px;
-    }
-
-    label {
-      display: block;
-      margin-bottom: 7px;
-      font-weight: bold;
-      font-size: 14px;
-    }
-
-    input {
-      width: 100%;
-      padding: 12px;
-      border: 1px solid #d1d5db;
-      border-radius: 8px;
-      margin-bottom: 15px;
-      font-size: 15px;
-    }
-
-    .form-actions {
-      display: flex;
-      gap: 10px;
-    }
-
-    .save-button,
-    .cancel-button {
-      border: none;
-      padding: 12px 16px;
-      border-radius: 8px;
-      cursor: pointer;
-      font-weight: bold;
-    }
-
-    .save-button {
-      background: #111827;
-      color: white;
-    }
-
-    .cancel-button {
-      background: #e5e7eb;
-      color: #111827;
-    }
-
-    .cashier-list {
-      display: grid;
-      gap: 12px;
-    }
-
-    .cashier-card {
-      background: white;
-      padding: 18px;
-      border-radius: 12px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.06);
-    }
-
-    .cashier-name {
-      font-size: 18px;
-      font-weight: bold;
-      margin-bottom: 5px;
-    }
-
-    .username {
-      color: #6b7280;
-      margin-bottom: 10px;
-    }
-
-    .status {
-      display: inline-block;
-      padding: 5px 9px;
-      border-radius: 20px;
-      font-size: 12px;
-      font-weight: bold;
-    }
-
-    .active {
-      background: #dcfce7;
-      color: #166534;
-    }
-
-    .inactive {
-      background: #fee2e2;
-      color: #991b1b;
-    }
-
-    .message {
-      margin-bottom: 15px;
-      min-height: 20px;
-      font-size: 14px;
-    }
-
-    .empty {
-      text-align: center;
-      padding: 35px;
-      color: #6b7280;
-      background: white;
-      border-radius: 12px;
-    }
-
-    .loading {
-      text-align: center;
-      padding: 30px;
-      color: #6b7280;
-    }
-
-    .toggle-button {
-      margin-top: 12px;
-      border: none;
-      padding: 9px 12px;
-      border-radius: 8px;
-      cursor: pointer;
-      background: #e5e7eb;
-    }
-  </style>
+  <title>Kasir POS - Zokent Group</title>
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
+<body class="bg-slate-100 font-sans min-h-screen flex flex-col">
 
-<body>
+  <!-- HEADER NAVBAR -->
+  <header class="bg-white border-b border-slate-200 px-6 py-3 flex items-center justify-between shadow-sm">
+    <div class="flex items-center gap-3">
+      <span class="text-3xl">🏪</span>
+      <div>
+        <h1 class="font-extrabold text-slate-800 text-lg leading-tight">ZOKENT GROUP</h1>
+        <p class="text-xs text-slate-500">Sistem Kasir POS</p>
+      </div>
+    </div>
+    <div class="flex items-center gap-4">
+      <div class="text-right">
+        <p id="kasir-email" class="text-xs font-bold text-slate-700">Memuat...</p>
+        <span class="inline-block bg-emerald-100 text-emerald-700 text-[10px] font-extrabold px-2 py-0.5 rounded-full">Petugas Kasir</span>
+      </div>
+      <button id="btn-logout" class="bg-slate-100 hover:bg-red-50 text-slate-600 hover:text-red-600 px-3 py-2 rounded-xl text-xs font-bold transition-all border border-slate-200">
+        🚪 Keluar
+      </button>
+    </div>
+  </header>
 
-<header>
-  <h1>ZOKENT STORE</h1>
-  <a class="back" href="dashboard.html">← Dashboard</a>
-</header>
-
-<main class="container">
-
-  <div class="top">
-    <h2>Kelola Kasir</h2>
-
-    <button
-      class="add-button"
-      onclick="showForm()">
-      + Tambah Kasir
-    </button>
-  </div>
-
-  <div id="message" class="message"></div>
-
-  <section id="formBox" class="form-box">
-
-    <h3>Tambah Kasir</h3>
-
-    <form id="cashierForm">
-
-      <label for="fullName">
-        Nama Kasir
-      </label>
-
-      <input
-        type="text"
-        id="fullName"
-        placeholder="Contoh: Budi"
-        required
-      >
-
-      <label for="username">
-        Username
-      </label>
-
-      <input
-        type="text"
-        id="username"
-        placeholder="Contoh: budi"
-        autocomplete="off"
-        required
-      >
-
-      <label for="password">
-        Password
-      </label>
-
-      <input
-        type="password"
-        id="password"
-        placeholder="Minimal 6 karakter"
-        minlength="6"
-        autocomplete="new-password"
-        required
-      >
-
-      <div class="form-actions">
-
-        <button
-          type="submit"
-          class="save-button"
-          id="saveButton">
-          Simpan Kasir
-        </button>
-
-        <button
-          type="button"
-          class="cancel-button"
-          onclick="hideForm()">
-          Batal
-        </button>
-
+  <!-- MAIN CONTAINER (LAYOUT 2 KOLOM) -->
+  <main class="flex-1 p-4 md:p-6 grid grid-cols-1 lg:grid-cols-12 gap-6 max-w-7xl mx-auto w-full">
+    
+    <!-- KOLOM KIRI: KATALOG PRODUK (LG: 7 KOLOM) -->
+    <section class="lg:col-span-7 flex flex-col gap-4">
+      <!-- PENCARIAN & FILTER -->
+      <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex gap-3">
+        <input 
+          type="text" 
+          id="search-input" 
+          placeholder="🔍 Cari nama barang atau kode SKU..." 
+          class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-red-500"
+        >
       </div>
 
-    </form>
+      <!-- GRID DAFTAR PRODUK -->
+      <div id="product-grid" class="grid grid-cols-2 sm:grid-cols-3 gap-3 overflow-y-auto max-h-[calc(100vh-220px)] p-1">
+        <!-- Produk dinamis diisi oleh JavaScript -->
+      </div>
+    </section>
 
-  </section>
+    <!-- KOLOM KANAN: KERANJANG & PEMBAYARAN (LG: 5 KOLOM) -->
+    <section class="lg:col-span-5 bg-white rounded-3xl border border-slate-200 shadow-xl p-5 flex flex-col justify-between">
+      <div>
+        <div class="flex justify-between items-center pb-4 border-b border-slate-100 mb-4">
+          <h2 class="font-extrabold text-slate-800 text-base">🛒 Keranjang Belanja</h2>
+          <button id="btn-clear-cart" class="text-xs text-red-500 font-bold hover:underline">Kosongkan</button>
+        </div>
 
+        <!-- LIST ITEM KERANJANG -->
+        <div id="cart-list" class="space-y-3 max-h-[260px] overflow-y-auto pr-1">
+          <p class="text-xs text-slate-400 text-center py-8">Keranjang masih kosong.</p>
+        </div>
+      </div>
 
-  <section id="cashierList">
+      <!-- RINGKASAN & KALKULATOR PEMBAYARAN -->
+      <div class="border-t border-slate-100 pt-4 mt-4 space-y-3">
+        <div class="flex justify-between text-sm">
+          <span class="text-slate-500 font-medium">Total Harga</span>
+          <span id="total-price" class="font-extrabold text-slate-900 text-lg">Rp 0</span>
+        </div>
 
-    <div class="loading">
-      Memuat data kasir...
-    </div>
+        <!-- INPUT UANG BAYAR -->
+        <div>
+          <label class="block text-xs font-bold text-slate-600 mb-1">Nominal Bayar (Rp)</label>
+          <input 
+            type="number" 
+            id="cash-input" 
+            placeholder="0" 
+            class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+          >
+        </div>
 
-  </section>
+        <div class="flex justify-between text-sm py-1">
+          <span class="text-slate-500 font-medium">Kembalian</span>
+          <span id="change-price" class="font-bold text-emerald-600">Rp 0</span>
+        </div>
 
-</main>
+        <button 
+          id="btn-checkout" 
+          disabled
+          class="w-full bg-slate-300 text-white font-extrabold py-3.5 rounded-xl text-sm transition-all shadow-md disabled:cursor-not-allowed"
+        >
+          💳 Selesaikan Transaksi
+        </button>
+      </div>
+    </section>
+  </main>
 
+  <!-- SUPABASE INTERACTION SCRIPT -->
+  <script type="module">
+    import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
 
-<script>
+    const SUPABASE_URL = "https://weuousmvkxmgmsnwiuad.supabase.co";
+    const SUPABASE_ANON_KEY = "sb_publishable_e375KDL0vuoahHO_kWMjwA_a04R4yHb";
+    const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-  // ==========================================
-  // SUPABASE
-  // ==========================================
+    // DUMMY DATA PRODUK (Dapat diganti dengan fetch dari Supabase 'products')
+    const products = [
+      { id: 1, name: "Kopi Hitam Zokent", price: 12000, icon: "☕" },
+      { id: 2, name: "Roti Bakar Cokelat", price: 18000, icon: "🍞" },
+      { id: 3, name: "Air Mineral 600ml", price: 5000, icon: "🥤" },
+      { id: 4, name: "Snack Keripik Pedas", price: 10000, icon: "🍿" },
+      { id: 5, name: "Es Teh Manis", price: 8000, icon: "🍹" }
+    ];
 
-  const SUPABASE_URL = "https://weuousmvkxmgmsnwiuad.supabase.co";
-  const SUPABASE_ANON_KEY = "sb_publishable_e375KDL0vuoahHO_kWMjwA_a04R4yHb";
+    let cart = [];
 
-  const supabaseClient = window.supabase.createClient(
-    SUPABASE_URL,
-    SUPABASE_ANON_KEY
-  );
+    // ELEMEN DOM
+    const productGrid = document.getElementById("product-grid");
+    const cartList = document.getElementById("cart-list");
+    const totalPriceEl = document.getElementById("total-price");
+    const cashInput = document.getElementById("cash-input");
+    const changePriceEl = document.getElementById("change-price");
+    const btnCheckout = document.getElementById("btn-checkout");
+    const kasirEmail = document.getElementById("kasir-email");
 
+    // FORMAT RUPIAH
+    const formatRupiah = (number) => "Rp " + number.toLocaleString("id-ID");
 
-  // ==========================================
-  // CEK PEMILIK
-  // ==========================================
-
-  async function checkOwner() {
-
-    const {
-      data: { user }
-    } = await supabaseClient.auth.getUser();
-
-    if (!user) {
-      window.location.href = "admin.html";
-      return false;
+    // RENDER KATALOG PRODUK
+    function renderProducts(items) {
+      productGrid.innerHTML = items.map(p => `
+        <div onclick="addToCart(${p.id})" class="bg-white p-4 rounded-2xl border border-slate-200 hover:border-red-500 cursor-pointer transition-all shadow-sm flex flex-col items-center text-center group">
+          <div class="text-4xl mb-2 group-hover:scale-110 transition-transform">${p.icon}</div>
+          <h3 class="text-xs font-bold text-slate-800 line-clamp-1">${p.name}</h3>
+          <p class="text-xs text-red-600 font-extrabold mt-1">${formatRupiah(p.price)}</p>
+        </div>
+      `).join("");
     }
 
-    const { data: profile, error } =
-      await supabaseClient
-        .from("profiles")
-        .select("role, is_active")
-        .eq("id", user.id)
-        .single();
+    // TAMBAH KE KERANJANG
+    window.addToCart = (id) => {
+      const item = products.find(p => p.id === id);
+      const cartItem = cart.find(c => c.id === id);
 
-    if (
-      error ||
-      !profile ||
-      profile.role !== "owner" ||
-      profile.is_active !== true
-    ) {
+      if (cartItem) {
+        cartItem.qty += 1;
+      } else {
+        cart.push({ ...item, qty: 1 });
+      }
+      updateCartUI();
+    };
 
-      await supabaseClient.auth.signOut();
-
-      window.location.href = "admin.html";
-
-      return false;
-    }
-
-    return true;
-  }
-
-
-  // ==========================================
-  // TAMPILKAN FORM
-  // ==========================================
-
-  function showForm() {
-
-    document
-      .getElementById("formBox")
-      .classList.add("active");
-
-    document
-      .getElementById("fullName")
-      .focus();
-  }
-
-
-  function hideForm() {
-
-    document
-      .getElementById("formBox")
-      .classList.remove("active");
-
-    document
-      .getElementById("cashierForm")
-      .reset();
-
-  }
-
-
-  // ==========================================
-  // PESAN
-  // ==========================================
-
-  function showMessage(text, success = false) {
-
-    const element =
-      document.getElementById("message");
-
-    element.textContent = text;
-
-    element.style.color =
-      success ? "green" : "red";
-
-  }
-
-
-  // ==========================================
-  // BUAT KASIR
-  // ==========================================
-
-  document
-    .getElementById("cashierForm")
-    .addEventListener("submit", async function(event) {
-
-      event.preventDefault();
-
-      const fullName =
-        document
-          .getElementById("fullName")
-          .value
-          .trim();
-
-      const username =
-        document
-          .getElementById("username")
-          .value
-          .trim();
-
-      const password =
-        document
-          .getElementById("password")
-          .value;
-
-
-      const saveButton =
-        document.getElementById("saveButton");
-
-      saveButton.disabled = true;
-      saveButton.textContent = "Membuat...";
-
-      showMessage("");
-
-
-      try {
-
-        const {
-          data: { session }
-        } = await supabaseClient.auth.getSession();
-
-
-        if (!session) {
-
-          window.location.href = "admin.html";
-          return;
-
-        }
-
-
-        // Panggil Edge Function
-        const { data, error } =
-          await supabaseClient.functions.invoke(
-            "rapid-function",
-            {
-              body: {
-                full_name: fullName,
-                username: username,
-                password: password
-              }
-            }
-          );
-
-
-        if (error) {
-          throw error;
-        }
-
-
-        if (!data || !data.success) {
-
-          throw new Error(
-            data?.error ||
-            "Gagal membuat akun kasir"
-          );
-
-        }
-
-
-        showMessage(
-          "Akun kasir berhasil dibuat.",
-          true
-        );
-
-
-        hideForm();
-
-        loadCashiers();
-
-      } catch (error) {
-
-        console.error(error);
-
-        showMessage(
-          error.message ||
-          "Terjadi kesalahan saat membuat kasir."
-        );
-
-      } finally {
-
-        saveButton.disabled = false;
-        saveButton.textContent = "Simpan Kasir";
-
+    // UPDATE TAMPILAN KERANJANG & KALKULASI
+    function updateCartUI() {
+      if (cart.length === 0) {
+        cartList.innerHTML = `<p class="text-xs text-slate-400 text-center py-8">Keranjang masih kosong.</p>`;
+        totalPriceEl.textContent = "Rp 0";
+        btnCheckout.disabled = true;
+        btnCheckout.className = "w-full bg-slate-300 text-white font-extrabold py-3.5 rounded-xl text-sm transition-all shadow-md disabled:cursor-not-allowed";
+        return;
       }
 
+      cartList.innerHTML = cart.map(item => `
+        <div class="flex items-center justify-between bg-slate-50 p-3 rounded-xl border border-slate-100 text-xs">
+          <div>
+            <p class="font-bold text-slate-800">${item.name}</p>
+            <p class="text-slate-500">${formatRupiah(item.price)} x ${item.qty}</p>
+          </div>
+          <div class="flex items-center gap-2">
+            <button onclick="changeQty(${item.id}, -1)" class="w-6 h-6 bg-white border rounded-lg text-slate-600 font-bold">-</button>
+            <span class="font-bold text-slate-800">${item.qty}</span>
+            <button onclick="changeQty(${item.id}, 1)" class="w-6 h-6 bg-white border rounded-lg text-slate-600 font-bold">+</button>
+          </div>
+        </div>
+      `).join("");
+
+      const total = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+      totalPriceEl.textContent = formatRupiah(total);
+      
+      calculateChange(total);
+    }
+
+    // UBAH QUANTITY
+    window.changeQty = (id, delta) => {
+      const cartItem = cart.find(c => c.id === id);
+      if (cartItem) {
+        cartItem.qty += delta;
+        if (cartItem.qty <= 0) {
+          cart = cart.filter(c => c.id !== id);
+        }
+      }
+      updateCartUI();
+    };
+
+    // HITUNG KEMBALIAN
+    function calculateChange(total) {
+      const cash = parseFloat(cashInput.value) || 0;
+      const change = cash - total;
+
+      if (cash >= total && total > 0) {
+        changePriceEl.textContent = formatRupiah(change);
+        btnCheckout.disabled = false;
+        btnCheckout.className = "w-full bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold py-3.5 rounded-xl text-sm transition-all shadow-md cursor-pointer";
+      } else {
+        changePriceEl.textContent = "Rp 0";
+        btnCheckout.disabled = true;
+        btnCheckout.className = "w-full bg-slate-300 text-white font-extrabold py-3.5 rounded-xl text-sm transition-all shadow-md disabled:cursor-not-allowed";
+      }
+    }
+
+    cashInput.addEventListener("input", () => {
+      const total = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+      calculateChange(total);
     });
 
+    // KOSONGKAN KERANJANG
+    document.getElementById("btn-clear-cart").addEventListener("click", () => {
+      cart = [];
+      cashInput.value = "";
+      updateCartUI();
+    });
 
-  // ==========================================
-  // TAMPILKAN DAFTAR KASIR
-  // ==========================================
+    // SELESAIKAN TRANSAKSI
+    btnCheckout.addEventListener("click", () => {
+      alert("✅ Transaksi Berhasil Disimpan!");
+      cart = [];
+      cashInput.value = "";
+      updateCartUI();
+    });
 
-  async function loadCashiers() {
-
-    const list =
-      document.getElementById("cashierList");
-
-    list.innerHTML =
-      '<div class="loading">Memuat data kasir...</div>';
-
-
-    const { data, error } =
-      await supabaseClient
-        .from("cashier_settings")
-        .select(`
-          id,
-          username,
-          is_active,
-          created_at,
-          user_id
-        `)
-        .order("created_at", {
-          ascending: false
-        });
-
-
-    if (error) {
-
-      list.innerHTML =
-        '<div class="empty">Gagal memuat data kasir.</div>';
-
-      console.error(error);
-
-      return;
+    // VERIFIKASI SESI SUPABASE & LOGOUT
+    async function checkAuth() {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        window.location.href = "login.html";
+      } else {
+        kasirEmail.textContent = session.user.email;
+      }
     }
 
+    document.getElementById("btn-logout").addEventListener("click", async () => {
+      await supabase.auth.signOut();
+      window.location.href = "login.html";
+    });
 
-    if (!data || data.length === 0) {
-
-      list.innerHTML =
-        '<div class="empty">Belum ada kasir.</div>';
-
-      return;
-    }
-
-
-    list.innerHTML = "";
-
-
-    for (const cashier of data) {
-
-      const card =
-        document.createElement("div");
-
-      card.className = "cashier-card";
-
-      card.innerHTML = `
-        <div class="cashier-name">
-          Kasir
-        </div>
-
-        <div class="username">
-          Username: ${escapeHtml(cashier.username)}
-        </div>
-
-        <span class="status ${
-          cashier.is_active
-            ? "active"
-            : "inactive"
-        }">
-          ${
-            cashier.is_active
-              ? "Aktif"
-              : "Nonaktif"
-          }
-        </span>
-
-        <br>
-
-        <button
-          class="toggle-button"
-          onclick="toggleCashier(
-            '${cashier.id}',
-            ${cashier.is_active}
-          )">
-          ${
-            cashier.is_active
-              ? "Nonaktifkan"
-              : "Aktifkan"
-          }
-        </button>
-      `;
-
-      list.appendChild(card);
-
-    }
-
-  }
-
-
-  // ==========================================
-  // AKTIF / NONAKTIF
-  // ==========================================
-
-  async function toggleCashier(
-    cashierId,
-    currentStatus
-  ) {
-
-    const newStatus = !currentStatus;
-
-
-    const { error } =
-      await supabaseClient
-        .from("cashier_settings")
-        .update({
-          is_active: newStatus,
-          updated_at: new Date().toISOString()
-        })
-        .eq("id", cashierId);
-
-
-    if (error) {
-
-      showMessage(
-        "Gagal mengubah status kasir."
-      );
-
-      console.error(error);
-
-      return;
-    }
-
-
-    showMessage(
-      newStatus
-        ? "Kasir diaktifkan."
-        : "Kasir dinonaktifkan.",
-      true
-    );
-
-
-    loadCashiers();
-
-  }
-
-
-  // ==========================================
-  // ESCAPE HTML
-  // ==========================================
-
-  function escapeHtml(value) {
-
-    const div =
-      document.createElement("div");
-
-    div.textContent = value;
-
-    return div.innerHTML;
-
-  }
-
-
-  // ==========================================
-  // MULAI
-  // ==========================================
-
-  (async function() {
-
-    const isOwner =
-      await checkOwner();
-
-    if (isOwner) {
-      loadCashiers();
-    }
-
-  })();
-
-</script>
-
+    // INITIALIZATION
+    checkAuth();
+    renderProducts(products);
+  </script>
 </body>
 </html>
