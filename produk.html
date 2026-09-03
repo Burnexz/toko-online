@@ -138,9 +138,7 @@
       if (!barcodeVal || barcodeVal.trim().length < 3) return;
       const cleanBarcode = barcodeVal.trim();
 
-      console.log('Mencari barcode:', cleanBarcode);
-
-      // 1. Cek database Supabase lokal toko
+      // 1. Cek database Supabase lokal toko (Nama, Kategori, Harga, Stok, Gambar, Deskripsi)
       const { data: produkLama, error } = await supabaseClient
         .from('products')
         .select('*')
@@ -158,22 +156,43 @@
         return;
       }
 
-      // 2. Jika tidak ada di lokal, cari dari API Global (Open Food Facts untuk barcode pabrik)
+      // 2. Jika tidak ada di lokal, cari dari API Global (Open Food Facts)
       try {
         const res = await fetch(`https://world.openfoodfacts.org/api/v0/product/${cleanBarcode}.json`);
         const data = await res.json();
         
         if (data.status === 1 && data.product) {
+          // Nama produk
           const namaGlobal = data.product.product_name || data.product.product_name_en || '';
           if (namaGlobal) {
             document.getElementById('name').value = namaGlobal;
-            alert('✨ Nama barang pabrik terdeteksi otomatis dari database global!');
           }
+
+          // Gambar produk
           if (data.product.image_front_url) {
             document.getElementById('image_url').value = data.product.image_front_url;
           }
+
+          // Deskripsi ringkas dari bahan/keterangan global
+          const ingredients = data.product.ingredients_text_en || data.product.ingredients_text || '';
+          if (ingredients) {
+            document.getElementById('description').value = ingredients.substring(0, 150) + '...';
+          }
+
+          // Mencoba menyesuaikan kategori otomatis jika teks global cocok dengan pilihan toko
+          const kategoriGlobal = (data.product.categories || '').toLowerCase();
+          const selectKategori = document.getElementById('category');
+          if (kategoriGlobal.includes('drink') || kategoriGlobal.includes('beverage') || kategoriGlobal.includes('minuman')) {
+            selectKategori.value = 'Minuman';
+          } else if (kategoriGlobal.includes('snack') || kategoriGlobal.includes('food') || kategoriGlobal.includes('makanan')) {
+            selectKategori.value = 'Makanan';
+          } else if (kategoriGlobal.includes('sembako') || kategoriGlobal.includes('oil') || kategoriGlobal.includes('rice') || kategoriGlobal.includes('sugar')) {
+            selectKategori.value = 'Sembako';
+          }
+
+          alert('✨ Nama, Kategori, & Data barang terdeteksi otomatis dari database global!');
         } else {
-          alert('⚠️ Barcode terbaca, namun produk belum terdaftar di database toko maupun global. Silakan isi nama secara manual.');
+          alert('⚠️ Barcode terbaca, namun produk belum terdaftar. Silakan lengkapi data secara manual.');
         }
       } catch (e) {
         console.log('Gagal terhubung ke database global:', e);
