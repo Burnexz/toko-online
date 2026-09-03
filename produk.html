@@ -38,8 +38,10 @@
       
       <form id="form-produk" class="space-y-4">
         
-        <!-- INPUT TERSEMBUNYI UNTUK MENYIMPAN ID PRODUK -->
+        <!-- INPUT TERSEMBUNYI -->
         <input type="hidden" id="edit-id" value="">
+        <!-- PENANDA MODE: 'akumulasi' (default/scan) atau 'edit_murni' (dari tombol edit) -->
+        <input type="hidden" id="mode-aksi" value="akumulasi">
 
         <!-- INPUT BARCODE + TOMBOL SCAN -->
         <div>
@@ -140,7 +142,7 @@
     const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
     let html5QrcodeScanner = null;
-    let daftarSemuaProduk = []; // Menyimpan cache data produk
+    let daftarSemuaProduk = [];
 
     // Fungsi pencarian saat barcode di-scan/diketik
     async function prosesCariBarcode(barcodeVal) {
@@ -148,8 +150,8 @@
       const cleanBarcode = barcodeVal.trim();
       document.getElementById('barcode').value = cleanBarcode;
       
-      // Jika sedang mode edit, abaikan pencarian barcode otomatis agar tidak menimpa form edit
-      if (document.getElementById('edit-id').value) return;
+      // Jika sedang dalam mode edit murni (dari tombol edit), jangan ganggu form
+      if (document.getElementById('mode-aksi').value === 'edit_murni') return;
 
       const { data: produkLama } = await supabaseClient
         .from('products')
@@ -164,7 +166,7 @@
         document.getElementById('selling_price').value = produkLama.selling_price || '';
         document.getElementById('image_url').value = produkLama.image_url || '';
         document.getElementById('description').value = produkLama.description || '';
-        document.getElementById('stock_quantity').value = ''; 
+        document.getElementById('stock_quantity').value = ''; // Kosongkan agar diisi stok tambahan
         
         alert(`✅ Barang Ditemukan di Toko: "${produkLama.name}".\nStok saat ini: ${produkLama.stock_quantity}.\nSilakan masukkan jumlah stok baru yang ingin ditambahkan.`);
         return;
@@ -311,21 +313,22 @@
       `).join('');
     }
 
-    // FUNGSI UNTUK MEMUAT DATA PRODUK KE FORM KIRI (MODE EDIT)
+    // FUNGSI KETIKA TOMBOL EDIT DI TABEL DIKLIK
     function mulaiEditProduk(id) {
       const produk = daftarSemuaProduk.find(p => p.id === id);
       if (!produk) return;
 
       document.getElementById('edit-id').value = produk.id;
+      document.getElementById('mode-aksi').value = 'edit_murni'; // Tandai ini edit murni
       document.getElementById('barcode').value = produk.barcode || '';
       document.getElementById('name').value = produk.name || '';
       document.getElementById('category').value = produk.category || '';
       document.getElementById('selling_price').value = produk.selling_price || '';
-      document.getElementById('stock_quantity').value = produk.stock_quantity || ''; // Masukkan total stok saat ini agar langsung bisa diubah
+      document.getElementById('stock_quantity').value = produk.stock_quantity || '';
       document.getElementById('image_url').value = produk.image_url || '';
       document.getElementById('description').value = produk.description || '';
 
-      // Ubah tampilan UI Form menjadi Mode Edit
+      // Ubah UI Form
       document.getElementById('form-title').innerText = '✏️ Edit / Perbarui Produk';
       document.getElementById('label-stok-keterangan').innerText = '(Total Stok Langsung)';
       document.getElementById('btn-submit').innerText = 'Simpan Perubahan';
@@ -334,21 +337,22 @@
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    // FUNGSI MEMBATALKAN MODE EDIT
     function resetFormManual() {
       document.getElementById('form-produk').reset();
       document.getElementById('edit-id').value = '';
+      document.getElementById('mode-aksi').value = 'akumulasi'; // Kembalikan ke mode akumulasi
       document.getElementById('form-title').innerText = '➕ Input Produk / Tambah Stok';
       document.getElementById('label-stok-keterangan').innerText = '(Jumlah Ditambahkan)';
       document.getElementById('btn-submit').innerText = 'Simpan & Akumulasi Stok';
       document.getElementById('btn-cancel-edit').classList.add('hidden');
     }
 
-    // PENYIMPANAN DATA (BISA AKUMULASI STOK ATAU EDIT LANGSUNG)
+    // PENYIMPANAN DATA
     document.getElementById('form-produk').addEventListener('submit', async (e) => {
       e.preventDefault();
       const btn = document.getElementById('btn-submit');
       const editId = document.getElementById('edit-id').value;
+      const modeAksi = document.getElementById('mode-aksi').value;
       
       btn.innerText = 'Menyimpan...';
       btn.disabled = true;
@@ -362,15 +366,15 @@
       const description = document.getElementById('description').value.trim() || null;
 
       try {
-        // Jika sedang dalam mode EDIT (Tombol Edit diklik sebelumnya)
-        if (editId) {
+        // 1. JIKA MODE EDIT MURNI (Admin klik tombol Edit di tabel)
+        if (editId && modeAksi === 'edit_murni') {
           const { error: updateError } = await supabaseClient
             .from('products')
             .update({
               name: name,
               category: category,
               selling_price: selling_price,
-              stock_quantity: inputNilaiStok, // Mengubah stok secara langsung sesuai input
+              stock_quantity: inputNilaiStok, // Ubah langsung
               barcode: barcode,
               image_url: image_url,
               description: description
@@ -387,10 +391,21 @@
           return;
         }
 
-        // Jika mode INPUT / SCAN BARCODE (Melakukan Akumulasi Stok)
+        // 2. JIKA MODE AKUMULASI (Scan barcode / input produk biasa)
         let produkEksis = null;
 
-        if (barcode) {
+        // Cek berdasarkan ID jika tersimpan saat scan barcode
+        if (editId) {
+          const { data: byId } = await supabaseClient
+            .from('products')
+            .select('*')
+            .eq('id', editId)
+            .maybeSingle();
+          if (byId) produkEksis = byId;
+        }
+
+        // Cek berdasarkan barcode
+        if (!produkEksis && barcode) {
           const { data: byBar } = await supabaseClient
             .from('products')
             .select('*')
@@ -399,6 +414,7 @@
           if (byBar) produkEksis = byBar;
         }
 
+        // Cek berdasarkan nama
         if (!produkEksis && name) {
           const { data: byName } = await supabaseClient
             .from('products')
@@ -409,6 +425,7 @@
         }
 
         if (produkEksis) {
+          // AKUMULASI STOK: Stok lama + Stok input baru
           const stokLama = parseInt(produkEksis.stock_quantity) || 0;
           const totalStokAkumulasi = stokLama + inputNilaiStok;
 
@@ -436,7 +453,7 @@
           return;
         }
 
-        // Jika benar-benar produk baru
+        // 3. JIKA PRODUK BENAR-BENAR BARU
         const newProduct = {
           name,
           category,
