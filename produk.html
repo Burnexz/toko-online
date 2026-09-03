@@ -141,8 +141,6 @@
       if (!barcodeVal || barcodeVal.trim().length < 3) return;
       const cleanBarcode = barcodeVal.trim();
       document.getElementById('barcode').value = cleanBarcode;
-
-      // Reset ID edit terlebih dahulu
       document.getElementById('edit-id').value = '';
 
       // 1. Cek apakah barcode sudah ada di database lokal toko
@@ -153,13 +151,13 @@
         .maybeSingle();
 
       if (produkLama) {
-        document.getElementById('edit-id').value = produkLama.id; // Simpan ID produk lama
+        document.getElementById('edit-id').value = produkLama.id;
         document.getElementById('name').value = produkLama.name || '';
         document.getElementById('category').value = produkLama.category || '';
         document.getElementById('selling_price').value = produkLama.selling_price || '';
         document.getElementById('image_url').value = produkLama.image_url || '';
         document.getElementById('description').value = produkLama.description || '';
-        document.getElementById('stock_quantity').value = ''; // Kosongkan agar diisi stok masuk
+        document.getElementById('stock_quantity').value = ''; 
         
         alert(`✅ Barang Ditemukan di Toko: "${produkLama.name}".\nStok saat ini: ${produkLama.stock_quantity}.\nSilakan masukkan jumlah stok baru yang ingin ditambahkan.`);
         return;
@@ -175,7 +173,6 @@
           if (namaGlobal) {
             document.getElementById('name').value = namaGlobal;
             
-            // Cek cadangan berdasarkan nama mirip di database lokal
             const { data: produkByName } = await supabaseClient
               .from('products')
               .select('*')
@@ -183,7 +180,7 @@
               .maybeSingle();
 
             if (produkByName) {
-              document.getElementById('edit-id').value = produkByName.id; // Simpan ID produk lama
+              document.getElementById('edit-id').value = produkByName.id;
               document.getElementById('category').value = produkByName.category || '';
               document.getElementById('selling_price').value = produkByName.selling_price || '';
               document.getElementById('image_url').value = produkByName.image_url || '';
@@ -218,7 +215,6 @@
       }
     }
 
-    // Event listener untuk input barcode fisik
     const inputBarcode = document.getElementById('barcode');
     inputBarcode.addEventListener('keydown', async (e) => {
       if (e.key === 'Enter') {
@@ -233,7 +229,6 @@
       }
     });
 
-    // Fungsi Kamera Scanner
     function bukaScanner() {
       const container = document.getElementById('scanner-container');
       container.classList.remove('hidden');
@@ -304,7 +299,7 @@
       `).join('');
     }
 
-    // PENYIMPANAN DENGAN AKUMULASI STOK YANG AMAN
+    // PENYIMPANAN DENGAN AKUMULASI STOK
     document.getElementById('form-produk').addEventListener('submit', async (e) => {
       e.preventDefault();
       const btn = document.getElementById('btn-submit');
@@ -323,7 +318,6 @@
       try {
         let produkEksis = null;
 
-        // Jika ada ID edit tersimpan, ambil langsung data aslinya berdasarkan ID
         if (editId) {
           const { data: byId } = await supabaseClient
             .from('products')
@@ -333,7 +327,6 @@
           if (byId) produkEksis = byId;
         }
 
-        // Jika tidak ada ID, cek ulang berdasarkan Barcode
         if (!produkEksis && barcode) {
           const { data: byBar } = await supabaseClient
             .from('products')
@@ -343,7 +336,6 @@
           if (byBar) produkEksis = byBar;
         }
 
-        // Jika masih belum ada, cek berdasarkan Nama Produk
         if (!produkEksis && name) {
           const { data: byName } = await supabaseClient
             .from('products')
@@ -354,7 +346,6 @@
         }
 
         if (produkEksis) {
-          // JIKA PRODUK ADA: Lakukan Penjumlahan (Akumulasi) Stok Lama + Stok Baru
           const stokLama = parseInt(produkEksis.stock_quantity) || 0;
           const totalStokAkumulasi = stokLama + inputStokBaru;
 
@@ -383,7 +374,6 @@
           return;
         }
 
-        // JIKA PRODUK BENAR-BENAR BARU: Masukkan data baru
         const newProduct = {
           name,
           category,
