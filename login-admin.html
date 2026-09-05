@@ -1,19 +1,24 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="id" class="h-full overflow-hidden">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>ZOKENT GROUP SYSTEMS | TERMINAL PORTAL AMAN</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    /* Global Styling Cyber */
-    body {
+    /* Kunci Layar Pas 1 Screen Tanpa Scroll */
+    html, body {
+      height: 100%;
+      width: 100%;
+      overflow: hidden !important;
+      position: fixed;
+      touch-action: none;
       background-color: #030712;
       font-family: 'ui-monospace', SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
       color: #38bdf8;
     }
 
-    /* Canvas Matrix Background (Latar Belakang Berjalan Fullscreen) */
+    /* Canvas Matrix Background (Fullscreen) */
     #matrix-bg {
       position: fixed;
       inset: 0;
@@ -23,179 +28,176 @@
       pointer-events: none;
     }
 
-    /* Teks & Glow Cyber */
+    /* Teks Glow Cyber */
     .glow-green-text {
       color: #34d399;
       text-shadow: 0 0 15px rgba(52, 211, 153, 0.7);
     }
 
     .glow-box {
-      box-shadow: 0 0 35px rgba(34, 197, 94, 0.25), inset 0 0 20px rgba(34, 197, 94, 0.1);
+      box-shadow: 0 0 35px rgba(34, 197, 94, 0.2);
     }
 
-    /* Card Utama Kaca Sangat Transparan */
-    .glass-card-fullscreen {
-      background-color: rgba(0, 0, 0, 0.25);
-      backdrop-filter: blur(6px);
-      -webkit-backdrop-filter: blur(6px);
-      border: 1px solid rgba(52, 211, 153, 0.4);
+    /* Card Kaca Transparan Tanpa Garis Kaku */
+    .glass-card-clean {
+      background-color: rgba(0, 0, 0, 0.35);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
     }
 
-    /* KOLOM INPUT TRANSPARAN (TULISAN MATRIX TEMBUS KETIKAN) */
+    /* Input Transparan dengan Padding Lega */
     .hacker-input {
-      background-color: rgba(0, 0, 0, 0.2); /* Sangat transparan */
-      backdrop-filter: blur(3px);
-      -webkit-backdrop-filter: blur(3px);
-      border: 1px solid rgba(52, 211, 153, 0.4);
+      background-color: rgba(0, 0, 0, 0.3);
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+      border: 1px solid rgba(52, 211, 153, 0.3);
       color: #4ade80;
       text-shadow: 0 0 5px rgba(74, 222, 128, 0.5);
       transition: all 0.25s ease-in-out;
     }
 
     .hacker-input::placeholder {
-      color: rgba(52, 211, 153, 0.5);
+      color: rgba(52, 211, 153, 0.45);
     }
 
     .hacker-input:focus {
       outline: none;
       border-color: #34d399;
-      box-shadow: 0 0 20px rgba(52, 211, 153, 0.6);
-      background-color: rgba(0, 0, 0, 0.4);
+      box-shadow: 0 0 20px rgba(52, 211, 153, 0.5);
+      background-color: rgba(0, 0, 0, 0.5);
     }
 
-    /* Tombol Tab Transparan */
+    /* Tombol Tab Seamless (Tanpa Garis Pembatas) */
     .tab-btn {
       transition: all 0.25s ease;
       color: #9ca3af;
-      background-color: rgba(0, 0, 0, 0.25);
+      background-color: rgba(0, 0, 0, 0.2);
     }
 
     .tab-btn.active {
-      background-color: rgba(0, 0, 0, 0.65);
+      background-color: rgba(0, 0, 0, 0.75);
       color: #34d399;
-      border: 1px solid rgba(52, 211, 153, 0.6);
       box-shadow: 0 0 15px rgba(52, 211, 153, 0.3);
     }
-
-    /* Scrollbar */
-    ::-webkit-scrollbar { width: 6px; }
-    ::-webkit-scrollbar-track { background: #030712; }
-    ::-webkit-scrollbar-thumb { background: #15803d; border-radius: 3px; }
   </style>
 </head>
-<body class="min-h-screen relative flex items-center justify-center p-3 sm:p-6 lg:p-8 overflow-y-auto">
+<body class="h-full w-full flex items-center justify-center p-4">
 
+  <!-- Matrix Rain Canvas Background -->
   <canvas id="matrix-bg"></canvas>
 
-  <div class="relative z-10 w-full max-w-4xl min-h-[92vh] flex flex-col justify-between my-auto">
+  <!-- Container Utama (Fit Pas 1 Layar) -->
+  <div class="relative z-10 w-full max-w-xl my-auto">
     
-    <div class="glass-card-fullscreen rounded-3xl p-6 sm:p-10 md:p-12 glow-box flex flex-col justify-between flex-1 w-full my-auto">
+    <!-- CARD TRANSPARAN UTAMA (SEAMLESS / TANPA PEMBATAS KAKU) -->
+    <div class="glass-card-clean rounded-3xl p-6 sm:p-9 glow-box w-full">
       
-      <div>
-        <div class="text-center mb-8 sm:mb-10">
-          <div class="inline-block p-3.5 mb-3 rounded-2xl bg-black/40 border border-emerald-500/40 text-4xl sm:text-5xl shadow-lg">
-            🏪
-          </div>
-          <h1 class="text-3xl sm:text-4xl md:text-5xl font-extrabold glow-green-text tracking-wider">
-            <span class="text-white">&gt;_</span> ZOKENT GROUP
-          </h1>
-          <p class="text-xs sm:text-sm md:text-base text-cyan-400 font-bold mt-2 tracking-widest uppercase">
-            PORTAL MASUK SISTEM TOKO
-          </p>
-          <p class="text-[10px] sm:text-xs text-emerald-500/80 font-mono mt-1 tracking-widest uppercase">
-            [ MODE: BURNEXZ_TERMINAL_AUTH_V3.4 - TRANSPARENT_COLUMNS ]
-          </p>
+      <!-- HEADER BRANDING -->
+      <div class="text-center mb-6 sm:mb-8">
+        <div class="inline-block p-3 mb-2 rounded-2xl bg-black/40 text-4xl sm:text-5xl">
+          🏪
+        </div>
+        <h1 class="text-3xl sm:text-4xl font-extrabold glow-green-text tracking-wider">
+          <span class="text-white">&gt;_</span> ZOKENT GROUP
+        </h1>
+        <p class="text-xs sm:text-sm text-cyan-400 font-bold mt-1.5 tracking-widest uppercase">
+          PORTAL MASUK SISTEM TOKO
+        </p>
+      </div>
+
+      <!-- TAB PILIHAN PERAN (PEMILIK / KASIR) -->
+      <div class="grid grid-cols-2 gap-2 bg-black/30 p-1.5 rounded-2xl mb-6">
+        <button 
+          type="button" 
+          id="tab-pemilik" 
+          class="tab-btn active py-3 text-xs sm:text-sm font-extrabold rounded-xl flex items-center justify-center gap-2 active:scale-95"
+        >
+          <span>👑</span> Login Pemilik
+        </button>
+        <button 
+          type="button" 
+          id="tab-kasir" 
+          class="tab-btn py-3 text-xs sm:text-sm font-extrabold rounded-xl flex items-center justify-center gap-2 active:scale-95"
+        >
+          <span>🛒</span> Login Kasir
+        </button>
+      </div>
+
+      <!-- JUDUL FORM -->
+      <div class="mb-5 text-center sm:text-left">
+        <h2 id="login-title" class="text-xl sm:text-2xl font-extrabold glow-green-text">Login Pemilik</h2>
+        <p id="login-subtitle" class="text-xs sm:text-sm text-gray-300 mt-1">
+          Masuk untuk mengatur dan mengontrol seluruh toko online.
+        </p>
+      </div>
+
+      <!-- FORM LOGIN -->
+      <form id="login-form" class="space-y-4 sm:space-y-5">
+        <!-- EMAIL (DENGAN PADDING LEGA) -->
+        <div>
+          <label for="email" class="block text-xs font-bold text-gray-200 mb-2 uppercase tracking-wider pl-1">Email Akses</label>
+          <input
+            type="email"
+            id="email"
+            placeholder="Masukkan email pengguna"
+            autocomplete="email"
+            required
+            class="hacker-input w-full px-6 py-3.5 sm:py-4 rounded-xl text-sm"
+          >
         </div>
 
-        <div class="max-w-xl mx-auto w-full">
-          
-          <div class="grid grid-cols-2 gap-2 bg-black/30 p-1.5 rounded-2xl mb-6 sm:mb-8 border border-emerald-500/30">
-            <button 
-              type="button" 
-              id="tab-pemilik" 
-              class="tab-btn active py-3.5 sm:py-4 text-xs sm:text-sm md:text-base font-extrabold rounded-xl flex items-center justify-center gap-2 active:scale-95"
+        <!-- PASSWORD (DENGAN PADDING LEGA) -->
+        <div>
+          <label for="password" class="block text-xs font-bold text-gray-200 mb-2 uppercase tracking-wider pl-1">Password</label>
+          <div class="relative">
+            <input
+              type="password"
+              id="password"
+              placeholder="Masukkan password"
+              autocomplete="current-password"
+              required
+              class="hacker-input w-full px-6 py-3.5 sm:py-4 pr-14 rounded-xl text-sm"
             >
-              <span>👑</span> Login Pemilik
-            </button>
-            <button 
-              type="button" 
-              id="tab-kasir" 
-              class="tab-btn py-3.5 sm:py-4 text-xs sm:text-sm md:text-base font-extrabold rounded-xl flex items-center justify-center gap-2 active:scale-95"
-            >
-              <span>🛒</span> Login Kasir
-            </button>
-          </div>
-
-          <div class="mb-6 text-center sm:text-left">
-            <h2 id="login-title" class="text-xl sm:text-2xl md:text-3xl font-extrabold glow-green-text">Login Pemilik</h2>
-            <p id="login-subtitle" class="text-xs sm:text-sm text-gray-300 mt-1.5 leading-relaxed">
-              Masuk untuk mengatur dan mengontrol seluruh toko online.
-            </p>
-          </div>
-
-          <form id="login-form" class="space-y-5 sm:space-y-6">
-            <div>
-              <label for="email" class="block text-xs sm:text-sm font-bold text-gray-200 mb-2 uppercase tracking-wider">Email Akses</label>
-              <input
-                type="email"
-                id="email"
-                placeholder="Masukkan email pengguna"
-                autocomplete="email"
-                required
-                class="hacker-input w-full px-4.5 py-3.5 sm:py-4 rounded-xl text-sm sm:text-base"
-              >
-            </div>
-
-            <div>
-              <label for="password" class="block text-xs sm:text-sm font-bold text-gray-200 mb-2 uppercase tracking-wider">Password</label>
-              <div class="relative">
-                <input
-                  type="password"
-                  id="password"
-                  placeholder="Masukkan password"
-                  autocomplete="current-password"
-                  required
-                  class="hacker-input w-full px-4.5 py-3.5 sm:py-4 pr-12 sm:pr-14 rounded-xl text-sm sm:text-base"
-                >
-                <button
-                  type="button"
-                  id="btn-show-password"
-                  class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-emerald-400 p-1 text-base sm:text-lg transition-colors"
-                  title="Lihat Password"
-                >
-                  👁
-                </button>
-              </div>
-            </div>
-
-            <div id="error-message" class="hidden bg-red-950/80 border border-red-500 text-red-200 text-xs sm:text-sm rounded-xl p-4 leading-relaxed shadow-lg backdrop-blur-md"></div>
-
-            <div id="success-message" class="hidden bg-emerald-950/80 border border-emerald-500 text-emerald-200 text-xs sm:text-sm rounded-xl p-4 leading-relaxed shadow-lg backdrop-blur-md"></div>
-
             <button
-              type="submit"
-              id="btn-login"
-              class="w-full bg-emerald-500 hover:bg-emerald-400 text-black font-extrabold text-sm sm:text-base py-4 sm:py-4.5 rounded-xl transition-all shadow-[0_0_25px_rgba(34,197,94,0.5)] active:scale-[0.98] uppercase tracking-wider mt-3"
+              type="button"
+              id="btn-show-password"
+              class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-emerald-400 p-1 text-base transition-colors"
+              title="Lihat Password"
             >
-              🔐 Login Pemilik
+              👁
             </button>
-          </form>
-
-          <p id="access-note" class="text-xs sm:text-sm text-center text-gray-400 mt-6 sm:mt-8 leading-relaxed">
-            Akses khusus pemilik / administrator toko.
-          </p>
+          </div>
         </div>
 
-      </div>
+        <!-- PESAN ERROR -->
+        <div id="error-message" class="hidden bg-red-950/80 border border-red-500/50 text-red-200 text-xs rounded-xl p-3.5 backdrop-blur-md"></div>
 
-      <div class="mt-8 pt-4 border-t border-emerald-500/20 text-center text-[10px] sm:text-xs text-gray-500 font-mono tracking-widest uppercase">
-        © 2026 ZOKENT GROUP SYSTEMS - ALL RIGHTS RESERVED
-      </div>
+        <!-- PESAN BERHASIL -->
+        <div id="success-message" class="hidden bg-emerald-950/80 border border-emerald-500/50 text-emerald-200 text-xs rounded-xl p-3.5 backdrop-blur-md"></div>
 
+        <!-- TOMBOL LOGIN -->
+        <button
+          type="submit"
+          id="btn-login"
+          class="w-full bg-emerald-500 hover:bg-emerald-400 text-black font-extrabold text-sm py-4 rounded-xl transition-all shadow-[0_0_25px_rgba(34,197,94,0.4)] active:scale-[0.98] uppercase tracking-wider mt-2"
+        >
+          🔐 Login Pemilik
+        </button>
+      </form>
+
+      <p id="access-note" class="text-xs text-center text-gray-400 mt-5">
+        Akses khusus pemilik / administrator toko.
+      </p>
+
+      <!-- FOOTER -->
+      <p class="text-center text-[10px] text-gray-500 mt-5 font-mono tracking-widest uppercase">
+        © 2026 ZOKENT GROUP SYSTEMS
+      </p>
     </div>
 
   </div>
 
+  <!-- JAVASCRIPT & SUPABASE INTEGRATION -->
   <script type="module">
     import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
 
@@ -221,7 +223,7 @@
     const successMessage = document.getElementById("success-message");
 
     // =====================================================
-    // EFEK MATRIX DIGITAL RAIN (FULLSCREEN BACKGROUND)
+    // EFEK MATRIX DIGITAL RAIN (FULLSCREEN)
     // =====================================================
     const canvas = document.getElementById('matrix-bg');
     const ctx = canvas.getContext('2d');
