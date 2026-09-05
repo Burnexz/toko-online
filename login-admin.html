@@ -1,24 +1,23 @@
 <!DOCTYPE html>
-<html lang="id" class="h-full overflow-hidden">
+<html lang="id">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ZOKENT GROUP SYSTEMS | TERMINAL PORTAL AMAN</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    /* Kunci Layar Pas 1 Screen */
-    html, body {
-      height: 100%;
+    /* Styling Global */
+    body {
+      min-height: 100vh;
       width: 100%;
-      overflow: hidden !important;
-      position: fixed;
-      touch-action: none;
       background-color: #030712;
       font-family: 'ui-monospace', SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
       color: #38bdf8;
+      margin: 0;
+      overflow-y: auto; /* Memungkinkan scroll secara bebas */
     }
 
-    /* Canvas Matrix Background (Fullscreen) */
+    /* Canvas Matrix Background (Tetap Diam di Latar Belakang) */
     #matrix-bg {
       position: fixed;
       inset: 0;
@@ -80,19 +79,24 @@
       color: #34d399;
       box-shadow: 0 0 15px rgba(52, 211, 153, 0.3);
     }
+
+    /* Scrollbar Styling Rapi */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: #030712; }
+    ::-webkit-scrollbar-thumb { background: #15803d; border-radius: 3px; }
   </style>
 </head>
-<body class="h-full w-full flex items-center justify-center p-3 sm:p-6 lg:p-10">
+<body class="min-h-screen w-full flex items-center justify-center p-3 sm:p-6 lg:p-10 py-8">
 
   <!-- Matrix Rain Canvas Background -->
   <canvas id="matrix-bg"></canvas>
 
-  <!-- Container Utama Layout Samping di Desktop (Melebar Horisontal, Pas 1 Screen) -->
-  <div class="relative z-10 w-full max-w-6xl max-h-[92vh] my-auto">
+  <!-- Container Utama (Melebar Horisontal di Desktop, Responsif di HP) -->
+  <div class="relative z-10 w-full max-w-6xl my-auto py-4">
     
     <div class="glass-card-wide rounded-3xl p-6 sm:p-8 lg:p-10 glow-box w-full flex flex-col lg:flex-row items-center gap-6 lg:gap-10">
       
-      <!-- SISI KIRI (BRANDING & DESKRIPSI - MELEBAR DI DESKTOP) -->
+      <!-- SISI KIRI (BRANDING & DESKRIPSI) -->
       <div class="w-full lg:w-5/12 flex flex-col justify-between text-center lg:text-left space-y-4 lg:space-y-6 lg:pr-6 lg:border-r lg:border-emerald-500/20">
         <div>
           <div class="inline-block p-3.5 mb-3 rounded-2xl bg-black/40 text-4xl lg:text-5xl">
@@ -105,11 +109,11 @@
             PORTAL MASUK SISTEM TOKO
           </p>
           <p class="text-[10px] text-emerald-500/80 font-mono mt-1 tracking-widest uppercase">
-            [ MODE: BURNEXZ_TERMINAL_AUTH_V3.5 ]
+            [ MODE : BURNEXZ_TERMINAL_V3.5 ]
           </p>
         </div>
 
-        <!-- Deskripsi Tambahan Hanya Muncul di Desktop -->
+        <!-- Deskripsi Tambahan Muncul di Desktop -->
         <div class="hidden lg:block space-y-3 bg-black/30 p-4 rounded-2xl border border-emerald-500/20 text-xs font-mono">
           <p class="text-gray-300 leading-relaxed">
             Selamat datang di sistem manajemen toko terpadu Zokent Group. Silakan pilih akses otentikasi di sisi kanan.
@@ -127,7 +131,7 @@
         </p>
       </div>
 
-      <!-- SISI KANAN (FORM LOGIN - WIDE LANDSCAPE) -->
+      <!-- SISI KANAN (FORM LOGIN) -->
       <div class="w-full lg:w-7/12 flex flex-col justify-center">
         
         <!-- TAB PILIHAN PERAN (PEMILIK / KASIR) -->
@@ -250,7 +254,7 @@
     const successMessage = document.getElementById("success-message");
 
     // =====================================================
-    // EFEK MATRIX DIGITAL RAIN (FULLSCREEN)
+    // EFEK MATRIX DIGITAL RAIN (FULLSCREEN BACKGROUND)
     // =====================================================
     const canvas = document.getElementById('matrix-bg');
     const ctx = canvas.getContext('2d');
@@ -259,8 +263,8 @@
     let columns = 0;
     let rainDrops = [];
 
-    const katakana = 'ZOKENTアァカサタナハマヤャラワガザダバパイィキシチニヒミリヰギジヂビピウゥクスツヌフムユュルグズブヅプエェケセテネヘメレヱゲゼデベペオォコソトノホモヨョロヲゴゾドボポヴッン';
-    const latin = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789BurNexz';
+    const katakana = 'アァカサタナハマヤャラワガザダバパイィキシチニヒミリヰギジヂビピウゥクスツヌフムユュルグズブヅプエェケセテネヘメレヱゲゼデベペオォコソトノホモヨョロヲゴゾドボポヴッン';
+    const latin = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
     const alphabet = katakana + latin;
 
     function initMatrix() {
