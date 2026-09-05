@@ -39,35 +39,35 @@
 
     /* Card Kaca Transparan */
     .glass-card-wide {
-      background-color: rgba(0, 0, 0, 0.35);
-      backdrop-filter: blur(8px);
-      -webkit-backdrop-filter: blur(8px);
-      border: 1px solid rgba(52, 211, 153, 0.3);
+      background-color: rgba(0, 0, 0, 0.25);
+      backdrop-filter: blur(5px);
+      -webkit-backdrop-filter: blur(5px);
+      border: 1px solid rgba(52, 211, 153, 0.35);
     }
 
-    /* Input Transparan dengan Padding Lega */
+    /* INPUT EKSTRA TRANSPARAN (TULISAN MATRIX TEMBUS JELAS) */
     .hacker-input {
-      background-color: rgba(0, 0, 0, 0.3);
-      backdrop-filter: blur(4px);
-      -webkit-backdrop-filter: blur(4px);
-      border: 1px solid rgba(52, 211, 153, 0.35);
+      background-color: rgba(0, 0, 0, 0.15); /* Transparan tinggi */
+      backdrop-filter: blur(2px);
+      -webkit-backdrop-filter: blur(2px);
+      border: 1px solid rgba(52, 211, 153, 0.4);
       color: #4ade80;
-      text-shadow: 0 0 5px rgba(74, 222, 128, 0.5);
+      text-shadow: 0 0 5px rgba(74, 222, 128, 0.6);
       transition: all 0.25s ease-in-out;
     }
 
     .hacker-input::placeholder {
-      color: rgba(52, 211, 153, 0.45);
+      color: rgba(52, 211, 153, 0.5);
     }
 
     .hacker-input:focus {
       outline: none;
       border-color: #34d399;
-      box-shadow: 0 0 20px rgba(52, 211, 153, 0.5);
-      background-color: rgba(0, 0, 0, 0.5);
+      box-shadow: 0 0 20px rgba(52, 211, 153, 0.6);
+      background-color: rgba(0, 0, 0, 0.35);
     }
 
-    /* Tombol Tab */
+    /* Tombol Tab Transparan */
     .tab-btn {
       transition: all 0.25s ease;
       color: #9ca3af;
@@ -75,7 +75,7 @@
     }
 
     .tab-btn.active {
-      background-color: rgba(0, 0, 0, 0.75);
+      background-color: rgba(0, 0, 0, 0.65);
       color: #34d399;
       box-shadow: 0 0 15px rgba(52, 211, 153, 0.3);
     }
@@ -91,7 +91,7 @@
   <!-- Matrix Rain Canvas Background -->
   <canvas id="matrix-bg"></canvas>
 
-  <!-- Container Utama (Melebar Horisontal di Desktop, Responsif di HP) -->
+  <!-- Container Utama -->
   <div class="relative z-10 w-full max-w-6xl my-auto py-4">
     
     <div class="glass-card-wide rounded-3xl p-6 sm:p-8 lg:p-10 glow-box w-full flex flex-col lg:flex-row items-center gap-6 lg:gap-10">
@@ -99,7 +99,7 @@
       <!-- SISI KIRI (BRANDING & DESKRIPSI) -->
       <div class="w-full lg:w-5/12 flex flex-col justify-between text-center lg:text-left space-y-4 lg:space-y-6 lg:pr-6 lg:border-r lg:border-emerald-500/20">
         <div>
-          <div class="inline-block p-3.5 mb-3 rounded-2xl bg-black/40 text-4xl lg:text-5xl">
+          <div class="inline-block p-3.5 mb-3 rounded-2xl bg-black/30 text-4xl lg:text-5xl">
             🏪
           </div>
           <h1 class="text-3xl lg:text-4xl font-extrabold glow-green-text tracking-wider">
@@ -114,7 +114,7 @@
         </div>
 
         <!-- Deskripsi Tambahan Muncul di Desktop -->
-        <div class="hidden lg:block space-y-3 bg-black/30 p-4 rounded-2xl border border-emerald-500/20 text-xs font-mono">
+        <div class="hidden lg:block space-y-3 bg-black/25 p-4 rounded-2xl border border-emerald-500/20 text-xs font-mono">
           <p class="text-gray-300 leading-relaxed">
             Selamat datang di sistem manajemen toko terpadu Zokent Group. Silakan pilih akses otentikasi di sisi kanan.
           </p>
@@ -162,9 +162,9 @@
 
         <!-- FORM LOGIN -->
         <form id="login-form" class="space-y-4">
-          <!-- EMAIL -->
+          <!-- EMAIL / USER AKSES (KOLOM TRANSPARAN) -->
           <div>
-            <label for="email" class="block text-xs font-bold text-gray-200 mb-1.5 uppercase tracking-wider pl-1">Email Akses</label>
+            <label id="email-label" for="email" class="block text-xs font-bold text-gray-200 mb-1.5 uppercase tracking-wider pl-1">EMAIL AKSES</label>
             <input
               type="email"
               id="email"
@@ -175,9 +175,9 @@
             >
           </div>
 
-          <!-- PASSWORD -->
+          <!-- PASSWORD (KOLOM TRANSPARAN) -->
           <div>
-            <label for="password" class="block text-xs font-bold text-gray-200 mb-1.5 uppercase tracking-wider pl-1">Password</label>
+            <label for="password" class="block text-xs font-bold text-gray-200 mb-1.5 uppercase tracking-wider pl-1">PASSWORD</label>
             <div class="relative">
               <input
                 type="password"
@@ -243,6 +243,7 @@
     const tabKasir = document.getElementById("tab-kasir");
     const loginTitle = document.getElementById("login-title");
     const loginSubtitle = document.getElementById("login-subtitle");
+    const emailLabel = document.getElementById("email-label");
     const accessNote = document.getElementById("access-note");
 
     const loginForm = document.getElementById("login-form");
@@ -313,6 +314,8 @@
       
       loginTitle.textContent = "Login Pemilik";
       loginSubtitle.textContent = "Masuk untuk mengatur dan mengontrol seluruh toko online.";
+      emailLabel.textContent = "EMAIL AKSES";
+      emailInput.placeholder = "Masukkan email pengguna";
       btnLogin.textContent = "🔐 Login Pemilik";
       accessNote.textContent = "Akses khusus pemilik / administrator toko.";
       
@@ -327,6 +330,8 @@
       
       loginTitle.textContent = "Login Kasir Toko";
       loginSubtitle.textContent = "Masuk untuk membuka mesin kasir POS dan melayani transaksi.";
+      emailLabel.textContent = "USER AKSES";
+      emailInput.placeholder = "Masukkan user / email kasir";
       btnLogin.textContent = "🛒 Login Kasir";
       accessNote.textContent = "Akses khusus petugas kasir toko.";
 
