@@ -3,115 +3,238 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Login Petugas - Zokent Group</title>
+  <title>ZOKENT GROUP SYSTEMS | AKSES PORTAL AMAN</title>
   <script src="https://cdn.tailwindcss.com"></script>
-</head>
+  <style>
+    /* Styling Dasar Kustom */
+    body {
+      background-color: black;
+      font-family: 'ui-monospace', 'SFMono-Regular', Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      color: #38bdf8; /* Cyan */
+      margin: 0;
+      overflow: hidden; /* Mencegah scrollbar */
+    }
 
-<body class="min-h-screen bg-slate-100 flex items-center justify-center px-4">
-  <div class="w-full max-w-md">
+    /* Efek Tulisan Berjalan Matrix (Canvas) */
+    #matrix-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1; /* Latar belakang */
+    }
+
+    /* Penyesuaian Card Login */
+    #login-container {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 100%;
+      max-width: 440px;
+      z-index: 10; /* Di atas canvas */
+    }
+
+    /* Styling Teks Hacker Hijau Menyala */
+    .glow-green {
+      color: #34d399; /* Emerald */
+      text-shadow: 0 0 10px rgba(34, 197, 94, 0.7);
+    }
+
+    /* Input Hacker */
+    .hacker-input {
+      background-color: rgba(38, 38, 38, 0.8);
+      border: 1px solid #737373; /* Neutral 700 */
+      color: #4ade80; /* Green 400 */
+      transition: all 0.3s ease;
+    }
     
-    <!-- LOGO / JUDUL -->
-    <div class="text-center mb-6">
-      <div class="text-5xl mb-3">🏪</div>
-      <h1 class="text-2xl font-extrabold text-slate-900">ZOKENT GROUP</h1>
-      <p class="text-sm text-slate-500 mt-1">Portal Masuk Sistem Toko</p>
+    .hacker-input:focus {
+      outline: none;
+      border-color: #34d399; /* Emerald */
+      box-shadow: 0 0 15px rgba(34, 197, 94, 0.5);
+    }
+    
+    /* Tombol Peran (Tabs) */
+    .peran-btn {
+      color: #a3a3a3; /* Neutral 400 */
+      transition: all 0.3s;
+    }
+    
+    .peran-btn.active {
+      color: #4ade80; /* Green 400 */
+      box-shadow: 0 0 20px rgba(34, 197, 94, 0.5);
+    }
+    
+    .peran-btn:hover:not(.active) {
+      color: #d4d4d4; /* Neutral 300 */
+    }
+
+  </style>
+</head>
+<body class="min-h-screen">
+
+  <canvas id="matrix-bg"></canvas>
+
+  <div id="login-container" class="px-4">
+    
+    <div class="text-center mb-8">
+      <div class="text-3xl font-extrabold glow-green mb-1">
+        <span class="text-white">&gt;_ </span>ZOKENT GRP
+      </div>
+      <p class="text-base text-cyan-400 font-bold">AKSES SISTEM TOKO</p>
+      <p class="text-[10px] text-neutral-500 mt-1 uppercase tracking-wider">[ MODE: TERMINAL_AUTH_V3 ]</p>
     </div>
 
-    <!-- LOGIN CARD -->
-    <div class="bg-white rounded-3xl shadow-xl border border-slate-200 p-6">
+    <div class="bg-black/80 rounded-3xl p-6 border-2 border-emerald-500/50 shadow-[0_0_20px_rgba(34,197,94,0.5)]">
       
-      <!-- TAB PILIHAN PERAN (PEMILIK / KASIR) -->
-      <div class="flex bg-slate-100 p-1.5 rounded-2xl mb-6">
+      <div class="flex bg-neutral-900 p-1.5 rounded-2xl mb-7 border border-emerald-500/30">
         <button 
           type="button" 
           id="tab-pemilik" 
-          class="flex-1 py-2.5 text-xs font-extrabold rounded-xl bg-white text-red-600 shadow-sm transition-all"
+          class="peran-btn flex-1 py-2.5 text-xs font-extrabold rounded-xl bg-black border- emerald-500/50 peran-btn active shadow-sm"
         >
-          👑 Login Pemilik
+          &gt;_ PEMILIK [ADMIN]
         </button>
         <button 
           type="button" 
           id="tab-kasir" 
-          class="flex-1 py-2.5 text-xs font-extrabold rounded-xl text-slate-500 hover:text-slate-800 transition-all"
+          class="peran-btn flex-1 py-2.5 text-xs font-extrabold rounded-xl"
         >
-          🛒 Login Kasir
+          # KASIR [POS]
         </button>
       </div>
 
-      <div class="mb-6">
-        <h2 id="login-title" class="text-lg font-extrabold text-slate-900">Login Pemilik</h2>
-        <p id="login-subtitle" class="text-xs text-slate-500 mt-1">Masuk untuk mengatur dan mengontrol seluruh toko online.</p>
+      <div class="mb-7">
+        <h2 id="login-title" class="text-xl font-extrabold glow-green">Otentikasi Akun</h2>
+        <p id="login-subtitle" class="text-xs text-neutral-400 mt-1.5">Sistem memverifikasi otentikasi peran.</p>
       </div>
 
-      <!-- FORM LOGIN -->
-      <form id="login-form">
-        <!-- EMAIL -->
-        <div class="mb-4">
-          <label for="email" class="block text-xs font-bold text-slate-700 mb-1.5">Email Akses</label>
+      <form id="login-form" class="space-y-5">
+        <div class="space-y-1.5">
+          <label for="email" class="block text-xs font-bold text-neutral-300">USER_ID (EMAIL):</label>
           <input
             type="email"
             id="email"
-            placeholder="Masukkan email pengguna"
+            placeholder="Masukkan ID pengguna..."
             autocomplete="email"
             required
-            class="w-full px-4 py-3 rounded-xl border border-red-500 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 text-sm transition-all"
+            class="hacker-input w-full px-4 py-3 rounded-xl border border-neutral-700 text-sm"
           >
         </div>
 
-        <!-- PASSWORD -->
-        <div class="mb-5">
-          <label for="password" class="block text-xs font-bold text-slate-700 mb-1.5">Password</label>
+        <div class="space-y-1.5">
+          <label for="password" class="block text-xs font-bold text-neutral-300">AKSES_KEY (PASSWORD):</label>
           <div class="relative">
             <input
               type="password"
               id="password"
-              placeholder="Masukkan password"
+              placeholder="Masukkan kunci akses..."
               autocomplete="current-password"
               required
-              class="w-full px-4 py-3 pr-12 rounded-xl border border-red-500 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 text-sm transition-all"
+              class="hacker-input w-full px-4 py-3 pr-12 rounded-xl border border-neutral-700 text-sm"
             >
             <button
               type="button"
               id="btn-show-password"
-              class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs font-bold"
+              class="absolute right-3.5 top-1/2 -translate-y-1/2 text-neutral-500 text-xs font-bold hover:text-cyan-400"
             >
               👁
             </button>
           </div>
         </div>
 
-        <!-- PESAN ERROR -->
-        <div id="error-message" class="hidden mb-4 bg-red-50 border border-red-200 text-red-700 text-xs rounded-xl px-4 py-3"></div>
+        <div id="error-message" class="hidden mb-4 bg-red-900/50 border border-red-500 text-red-200 text-xs rounded-xl px-4 py-3.5 shadow-[0_0_10px_rgba(239,68,68,0.3)]"></div>
 
-        <!-- PESAN BERHASIL -->
-        <div id="success-message" class="hidden mb-4 bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs rounded-xl px-4 py-3"></div>
+        <div id="success-message" class="hidden mb-4 bg-emerald-900/50 border border-emerald-500 text-emerald-200 text-xs rounded-xl px-4 py-3.5 shadow-[0_0_10px_rgba(34,197,94,0.3)]"></div>
 
-        <!-- TOMBOL LOGIN -->
         <button
           type="submit"
           id="btn-login"
-          class="w-full bg-red-600 hover:bg-red-700 text-white font-extrabold text-sm py-3.5 rounded-xl transition-all shadow-md"
+          class="w-full bg-emerald-600 hover:bg-emerald-700 text-black font-extrabold text-sm py-4 rounded-xl transition-all shadow-[0_0_15px_rgba(34,197,94,0.5)] active:scale-[0.99] uppercase tracking-wider"
         >
-          🔐 Login Pemilik
+          [ LOGIN SEBAGAI PEMILIK ]
         </button>
       </form>
 
-      <p id="access-note" class="text-[10px] text-center text-slate-400 mt-5">Akses khusus pemilik / administrator toko.</p>
+      <p id="access-note" class="text-[10px] text-center text-neutral-400 mt-6 uppercase tracking-wider">Hanya untuk personel berwenang. Semua aktivitas dipantau.</p>
     </div>
 
-    <!-- FOOTER -->
-    <p class="text-center text-[10px] text-slate-400 mt-6">© 2026 Zokent Group</p>
+    <p class="text-center text-[11px] text-neutral-500 mt-8 font-extrabold uppercase">© 2026 ZOKENT_GRP - KEAMANAN SISTEM DIPERCEPAT</p>
   </div>
 
-  <!-- SUPABASE INTERACTION -->
   <script type="module">
     import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
 
+    // --- SETUP SUPABASE ---
     const SUPABASE_URL = "https://weuousmvkxmgmsnwiuad.supabase.co";
     const SUPABASE_ANON_KEY = "sb_publishable_e375KDL0vuoahHO_kWMjwA_a04R4yHb";
     const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    // MODE STATUS: 'pemilik' atau 'kasir'
+    // --- SETUP CANVAS MATRIX EFFECT ---
+    const canvas = document.getElementById('matrix-bg');
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    // Set Karakter
+    const katakana = 'アァカサタナハマヤャラワガザダバパイィキシチニヒミリヰギジヂビピウゥクスツヌフムユュルグズブヅプエェケセテネヘメレヱゲゼデベペオォコソトノホモヨョロヲゴゾドボポヴッン';
+    const latin = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    const numbers = '0123456789';
+    const numsPlus = '24567'; // Angka favorit
+    const special = '!@#$%^&*()_+-=[]{}|;:,.<>?';
+    const alphabet = katakana + latin + numbers + special + numsPlus;
+    
+    // Konfigurasi Hujan
+    const fontSize = 14;
+    const columns = canvas.width / fontSize;
+    const rainDrops = [];
+
+    // Inisialisasi Posisi Awal Hujan
+    for ( let i = 0; i < columns; i++ ) {
+      rainDrops[ i ] = 1;
+    }
+
+    // Fungsi Render Hujan
+    const drawMatrix = () => {
+      // Background Semi-Transparent (untuk efek jejak)
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      // Teks Hijau
+      ctx.fillStyle = '#15803d'; /* Green 700 */
+      ctx.font = fontSize + 'px monospace';
+
+      for ( let i = 0; i < rainDrops.length; i++ ) {
+        // Ambil karakter acak
+        const text = alphabet.charAt(Math.floor(Math.random() * alphabet.length));
+        
+        // Tampilkan teks di koordinat
+        ctx.fillText(text, i * fontSize, rainDrops[ i ] * fontSize);
+
+        // Reset hujan jika sudah sampai bawah
+        if ( rainDrops[ i ] * fontSize > canvas.height && Math.random() > 0.98 ) {
+          rainDrops[ i ] = 0;
+        }
+        rainDrops[ i ]++;
+      }
+    };
+
+    // Jalankan Animasi
+    setInterval(drawMatrix, 45); // Kecepatan hujan
+
+    // Sesuaikan Canvas saat Window di-resize
+    window.addEventListener('resize', () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      rainDrops.length = 0; // Hapus data lama
+      for ( let i = 0; i < canvas.width / fontSize; i++ ) {
+        rainDrops[ i ] = 1;
+      }
+    });
+
+    // --- AKSES VARIABEL UI ---
     let currentRole = "pemilik";
 
     const tabPemilik = document.getElementById("tab-pemilik");
@@ -129,47 +252,45 @@
     const successMessage = document.getElementById("success-message");
 
     // =====================================================
-    // SWITCH TAB (PEMILIK / KASIR)
+    // SWITCH TAB PERAN (PEMILIK / KASIR)
     // =====================================================
     tabPemilik.addEventListener("click", () => {
       currentRole = "pemilik";
-      tabPemilik.className = "flex-1 py-2.5 text-xs font-extrabold rounded-xl bg-white text-red-600 shadow-sm transition-all";
-      tabKasir.className = "flex-1 py-2.5 text-xs font-extrabold rounded-xl text-slate-500 hover:text-slate-800 transition-all";
+      tabPemilik.className = "peran-btn flex-1 py-2.5 text-xs font-extrabold rounded-xl bg-black border-emerald-500/50 active shadow-sm";
+      tabKasir.className = "peran-btn flex-1 py-2.5 text-xs font-extrabold rounded-xl";
       
-      loginTitle.textContent = "Login Pemilik";
-      loginSubtitle.textContent = "Masuk untuk mengatur dan mengontrol seluruh toko online.";
-      btnLogin.textContent = "🔐 Login Pemilik";
-      accessNote.textContent = "Akses khusus pemilik / administrator toko.";
+      loginTitle.textContent = "Otentikasi Akun";
+      loginSubtitle.textContent = "Sistem memverifikasi otentikasi peran.";
+      btnLogin.textContent = "[ LOGIN SEBAGAI PEMILIK ]";
     });
 
     tabKasir.addEventListener("click", () => {
       currentRole = "kasir";
-      tabKasir.className = "flex-1 py-2.5 text-xs font-extrabold rounded-xl bg-white text-red-600 shadow-sm transition-all";
-      tabPemilik.className = "flex-1 py-2.5 text-xs font-extrabold rounded-xl text-slate-500 hover:text-slate-800 transition-all";
+      tabKasir.className = "peran-btn flex-1 py-2.5 text-xs font-extrabold rounded-xl bg-black border-emerald-500/50 active shadow-sm";
+      tabPemilik.className = "peran-btn flex-1 py-2.5 text-xs font-extrabold rounded-xl";
       
-      loginTitle.textContent = "Login Kasir Toko";
-      loginSubtitle.textContent = "Masuk untuk membuka mesin kasir POS dan melayani transaksi.";
-      btnLogin.textContent = "🛒 Login Kasir";
-      accessNote.textContent = "Akses khusus petugas kasir toko.";
+      loginTitle.textContent = "Akses Kasir Toko";
+      loginSubtitle.textContent = "Sistem membuka gerbang POS transaksi.";
+      btnLogin.textContent = "[ MASUK SEBAGAI KASIR ]";
     });
 
     // =====================================================
-    // WARNA BORDER DINAMIS (KOSONG = MERAH, ISI = HIJAU)
+    // WARNA BORDER DINAMIS
     // =====================================================
     function updateInputStyle(input) {
       if (input.value.trim().length > 0) {
-        input.classList.remove("border-red-500", "focus:ring-red-500", "focus:border-red-500");
-        input.classList.add("border-emerald-500", "focus:ring-emerald-500", "focus:border-emerald-500");
+        input.classList.remove("border-neutral-700", "border-red-500");
+        input.classList.add("border-emerald-500");
       } else {
-        input.classList.remove("border-emerald-500", "focus:ring-emerald-500", "focus:border-emerald-500");
-        input.classList.add("border-red-500", "focus:ring-red-500", "focus:border-red-500");
+        input.classList.remove("border-emerald-500");
+        input.classList.add("border-neutral-700");
       }
     }
 
     emailInput.addEventListener("input", () => updateInputStyle(emailInput));
     passwordInput.addEventListener("input", () => updateInputStyle(passwordInput));
 
-    // Show/Hide Password Toggle
+    // Toggle Tampilkan Password
     btnShowPassword.addEventListener("click", () => {
       const isPassword = passwordInput.type === "password";
       passwordInput.type = isPassword ? "text" : "password";
@@ -177,19 +298,19 @@
     });
 
     function tampilkanError(pesan) {
-      errorMessage.textContent = pesan;
+      errorMessage.textContent = `[! ERROR]: ${pesan}`;
       errorMessage.classList.remove("hidden");
       successMessage.classList.add("hidden");
     }
 
     function tampilkanSukses(pesan) {
-      successMessage.textContent = pesan;
+      successMessage.textContent = `[✔ SUCCESS]: ${pesan}`;
       successMessage.classList.remove("hidden");
       errorMessage.classList.add("hidden");
     }
 
     // =====================================================
-    // SUBMIT LOGIN HANDLER
+    // SUBMIT LOGIN HANDLER (WITH ROLE VALIDATION)
     // =====================================================
     loginForm.addEventListener("submit", async (e) => {
       e.preventDefault();
@@ -198,38 +319,59 @@
       const password = passwordInput.value;
 
       btnLogin.disabled = true;
-      btnLogin.textContent = "⏳ Memeriksa akun...";
+      btnLogin.textContent = "⏳ Memeriksa integritas akun...";
       errorMessage.classList.add("hidden");
 
       try {
         const { data, error } = await supabase.auth.signInWithPassword({ email, password });
 
         if (error) {
-          tampilkanError("Email atau password salah.");
-          btnLogin.disabled = false;
-          btnLogin.textContent = currentRole === "pemilik" ? "🔐 Login Pemilik" : "🛒 Login Kasir";
+          tampilkanError("ID pengguna atau kunci akses salah.");
+          resetButtonState();
+          return;
+        }
+
+        // AMBIL ROLE USER (Pastikan diatur via Supabase Metadata / User Data)
+        // Contoh: 'role' disimpan di data.user.user_metadata.role
+        const userRole = data.user?.user_metadata?.role || "kasir";
+
+        // VALIDASI HAK AKSES PERAN
+        if (userRole !== currentRole) {
+          // Akses ditolak karena peran tidak sesuai dengan tab yang dipilih
+          await supabase.auth.signOut(); // Wajib logout untuk mencegah akses tak sah
+          tampilkanError(`Akses ditolak! Akun ini bukan akun ${currentRole.toUpperCase()}.`);
+          resetButtonState();
           return;
         }
 
         const targetPage = currentRole === "pemilik" ? "admin.html" : "kasir.html";
-        tampilkanSukses(`Login ${currentRole} berhasil! Membuka halaman...`);
+        tampilkanSukses(`Login ${currentRole.toUpperCase()} berhasil! Membuka gerbang...`);
         
         setTimeout(() => {
           window.location.href = targetPage;
-        }, 800);
+        }, 1200);
 
       } catch (err) {
-        tampilkanError("Terjadi kesalahan saat menghubungkan ke server.");
-        btnLogin.disabled = false;
-        btnLogin.textContent = currentRole === "pemilik" ? "🔐 Login Pemilik" : "🛒 Login Kasir";
+        tampilkanError("Terjadi kesalahan sistem saat menghubungkan ke server.");
+        resetButtonState();
       }
     });
 
-    // Auto Check Session Existing
+    function resetButtonState() {
+      btnLogin.disabled = false;
+      btnLogin.textContent = currentRole === "pemilik" ? "[ LOGIN SEBAGAI PEMILIK ]" : "[ MASUK SEBAGAI KASIR ]";
+    }
+
+    // =====================================================
+    // CEK SESI LOGIN AKTIF SAAT LOAD
+    // =====================================================
     async function cekLogin() {
       const { data: { session } } = await supabase.auth.getSession();
       if (session) {
-        window.location.href = currentRole === "pemilik" ? "admin.html" : "kasir.html";
+        // Ambil role user dari metadata sesi
+        const role = session.user?.user_metadata?.role || "kasir";
+        // Arahkan otomatis ke halaman yang sesuai
+        window.location.href = role === "pemilik" ? "admin.html" : "kasir.html";
       }
     }
 
