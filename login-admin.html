@@ -2,133 +2,146 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>ZOKENT GROUP SYSTEMS | LOGIN PORTAL</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    /* Styling Dasar Hacker Theme */
+    /* Global Styles */
     body {
-      background-color: black;
-      font-family: 'ui-monospace', 'SFMono-Regular', Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      background-color: #030712; /* Tailwind gray-950 */
+      font-family: 'ui-monospace', SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
       color: #38bdf8;
-      margin: 0;
-      overflow: hidden;
     }
 
-    /* Efek Tulisan Berjalan Matrix (Canvas) */
+    /* Canvas Matrix Background */
     #matrix-bg {
       position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: -1;
+      inset: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 0;
+      pointer-events: none;
     }
 
-    #login-container {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      width: 100%;
-      max-width: 440px;
-      z-index: 10;
-    }
-
-    .glow-green {
+    /* Glow Effects */
+    .glow-green-text {
       color: #34d399;
-      text-shadow: 0 0 10px rgba(34, 197, 94, 0.7);
+      text-shadow: 0 0 12px rgba(52, 211, 153, 0.6);
     }
 
-    /* Input Style */
-    .hacker-input {
-      background-color: rgba(38, 38, 38, 0.8);
-      border: 1px solid #737373;
-      color: #4ade80;
-      transition: all 0.3s ease;
+    .glow-box {
+      box-shadow: 0 0 25px rgba(34, 197, 94, 0.25), inset 0 0 15px rgba(34, 197, 94, 0.1);
     }
-    
+
+    /* Hacker Input Custom Styling */
+    .hacker-input {
+      background-color: rgba(17, 24, 39, 0.85);
+      border: 1px solid rgba(55, 65, 81, 0.8);
+      color: #4ade80;
+      transition: all 0.2s ease-in-out;
+    }
+
     .hacker-input:focus {
       outline: none;
       border-color: #34d399;
-      box-shadow: 0 0 15px rgba(34, 197, 94, 0.5);
+      box-shadow: 0 0 12px rgba(52, 211, 153, 0.4);
     }
-    
-    .peran-btn {
-      color: #a3a3a3;
-      transition: all 0.3s;
+
+    /* Tab Buttons Styling */
+    .tab-btn {
+      transition: all 0.25s ease;
+      color: #9ca3af;
     }
-    
-    .peran-btn.active {
-      color: #4ade80;
-      box-shadow: 0 0 20px rgba(34, 197, 94, 0.5);
+
+    .tab-btn.active {
+      background-color: #000000;
+      color: #34d399;
+      border: 1px solid rgba(52, 211, 153, 0.5);
+      box-shadow: 0 0 12px rgba(52, 211, 153, 0.3);
     }
-    
-    .peran-btn:hover:not(.active) {
-      color: #d4d4d4;
+
+    /* Scrollbar Rapi */
+    ::-webkit-scrollbar {
+      width: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #030712;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #15803d;
+      border-radius: 3px;
     }
   </style>
 </head>
-<body class="min-h-screen">
+<body class="min-h-screen relative flex items-center justify-center p-4 sm:p-6 md:p-8 overflow-y-auto">
 
-  <!-- Latar Belakang Teks Berjalan (Matrix) -->
+  <!-- Matrix Rain Canvas Background -->
   <canvas id="matrix-bg"></canvas>
 
-  <div id="login-container" class="px-4">
+  <!-- Main Container (Responsif di HP & Desktop) -->
+  <div class="relative z-10 w-full max-w-md my-auto">
     
     <!-- HEADER SISTEM -->
-    <div class="text-center mb-8">
-      <div class="text-3xl font-extrabold glow-green mb-1">
-        <span class="text-white">&gt;_ </span>ZOKENT GRP
+    <div class="text-center mb-5 sm:mb-7">
+      <div class="inline-block p-2 mb-2 rounded-2xl bg-black/60 border border-emerald-500/30 glow-box">
+        <span class="text-3xl sm:text-4xl">🏪</span>
       </div>
-      <p class="text-base text-cyan-400 font-bold">AKSES SISTEM TOKO</p>
-      <p class="text-[10px] text-neutral-500 mt-1 uppercase tracking-wider">[ MODE: TERMINAL_AUTH_V3 ]</p>
+      <h1 class="text-2xl sm:text-3xl font-extrabold glow-green-text tracking-wide">
+        <span class="text-white">&gt;_</span> ZOKENT GRP
+      </h1>
+      <p class="text-xs sm:text-sm text-cyan-400 font-bold mt-1 tracking-wider uppercase">
+        PORTAL MASUK SISTEM TOKO
+      </p>
+      <p class="text-[10px] text-emerald-500/70 font-mono mt-1 tracking-widest uppercase">
+        [ MODE: TERMINAL_AUTH_V3.2 ]
+      </p>
     </div>
 
     <!-- LOGIN CARD -->
-    <div class="bg-black/80 rounded-3xl p-6 border-2 border-emerald-500/50 shadow-[0_0_20px_rgba(34,197,94,0.5)]">
+    <div class="bg-black/85 backdrop-blur-md rounded-2xl sm:rounded-3xl p-5 sm:p-7 border border-emerald-500/40 glow-box transition-all">
       
       <!-- TAB PILIHAN PERAN (PEMILIK / KASIR) -->
-      <div class="flex bg-neutral-900 p-1.5 rounded-2xl mb-7 border border-emerald-500/30">
+      <div class="grid grid-cols-2 gap-1.5 bg-gray-950 p-1.5 rounded-xl sm:rounded-2xl mb-5 sm:mb-6 border border-emerald-500/20">
         <button 
           type="button" 
           id="tab-pemilik" 
-          class="peran-btn flex-1 py-2.5 text-xs font-extrabold rounded-xl bg-black border border-emerald-500/50 active shadow-sm"
+          class="tab-btn active py-2.5 sm:py-3 text-xs sm:text-sm font-extrabold rounded-lg sm:rounded-xl flex items-center justify-center gap-1.5 active:scale-95"
         >
-          👑 Login Pemilik
+          <span>👑</span> Login Pemilik
         </button>
         <button 
           type="button" 
           id="tab-kasir" 
-          class="peran-btn flex-1 py-2.5 text-xs font-extrabold rounded-xl"
+          class="tab-btn py-2.5 sm:py-3 text-xs sm:text-sm font-extrabold rounded-lg sm:rounded-xl flex items-center justify-center gap-1.5 active:scale-95"
         >
-          🛒 Login Kasir
+          <span>🛒</span> Login Kasir
         </button>
       </div>
 
-      <div class="mb-7">
-        <h2 id="login-title" class="text-xl font-extrabold glow-green">Login Pemilik</h2>
-        <p id="login-subtitle" class="text-xs text-neutral-400 mt-1.5">Masuk untuk mengatur dan mengontrol seluruh toko online.</p>
+      <!-- TITLE & SUBTITLE -->
+      <div class="mb-5 sm:mb-6">
+        <h2 id="login-title" class="text-lg sm:text-xl font-extrabold glow-green-text">Login Pemilik</h2>
+        <p id="login-subtitle" class="text-xs text-gray-400 mt-1 leading-relaxed">Masuk untuk mengatur dan mengontrol seluruh toko online.</p>
       </div>
 
       <!-- FORM LOGIN -->
-      <form id="login-form" class="space-y-5">
+      <form id="login-form" class="space-y-4 sm:space-y-5">
         <!-- EMAIL -->
-        <div class="space-y-1.5">
-          <label for="email" class="block text-xs font-bold text-neutral-300">Email Akses</label>
+        <div>
+          <label for="email" class="block text-xs font-bold text-gray-300 mb-1.5 tracking-wide">Email Akses</label>
           <input
             type="email"
             id="email"
             placeholder="Masukkan email pengguna"
             autocomplete="email"
             required
-            class="hacker-input w-full px-4 py-3 rounded-xl border border-neutral-700 text-sm"
+            class="hacker-input w-full px-3.5 sm:px-4 py-2.5 sm:py-3 rounded-xl text-xs sm:text-sm"
           >
         </div>
 
         <!-- PASSWORD -->
-        <div class="space-y-1.5">
-          <label for="password" class="block text-xs font-bold text-neutral-300">Password</label>
+        <div>
+          <label for="password" class="block text-xs font-bold text-gray-300 mb-1.5 tracking-wide">Password</label>
           <div class="relative">
             <input
               type="password"
@@ -136,12 +149,13 @@
               placeholder="Masukkan password"
               autocomplete="current-password"
               required
-              class="hacker-input w-full px-4 py-3 pr-12 rounded-xl border border-neutral-700 text-sm"
+              class="hacker-input w-full px-3.5 sm:px-4 py-2.5 sm:py-3 pr-10 sm:pr-12 rounded-xl text-xs sm:text-sm"
             >
             <button
               type="button"
               id="btn-show-password"
-              class="absolute right-3.5 top-1/2 -translate-y-1/2 text-neutral-500 text-xs font-bold hover:text-cyan-400"
+              class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-emerald-400 p-1 text-sm sm:text-base transition-colors"
+              title="Lihat Password"
             >
               👁
             </button>
@@ -149,29 +163,31 @@
         </div>
 
         <!-- PESAN ERROR -->
-        <div id="error-message" class="hidden mb-4 bg-red-900/50 border border-red-500 text-red-200 text-xs rounded-xl px-4 py-3.5 shadow-[0_0_10px_rgba(239,68,68,0.3)]"></div>
+        <div id="error-message" class="hidden bg-red-950/80 border border-red-500/80 text-red-300 text-xs rounded-xl p-3 sm:p-3.5 leading-relaxed shadow-lg"></div>
 
         <!-- PESAN BERHASIL -->
-        <div id="success-message" class="hidden mb-4 bg-emerald-900/50 border border-emerald-500 text-emerald-200 text-xs rounded-xl px-4 py-3.5 shadow-[0_0_10px_rgba(34,197,94,0.3)]"></div>
+        <div id="success-message" class="hidden bg-emerald-950/80 border border-emerald-500/80 text-emerald-300 text-xs rounded-xl p-3 sm:p-3.5 leading-relaxed shadow-lg"></div>
 
         <!-- TOMBOL LOGIN -->
         <button
           type="submit"
           id="btn-login"
-          class="w-full bg-emerald-600 hover:bg-emerald-700 text-black font-extrabold text-sm py-4 rounded-xl transition-all shadow-[0_0_15px_rgba(34,197,94,0.5)] active:scale-[0.99] uppercase tracking-wider"
+          class="w-full bg-emerald-500 hover:bg-emerald-400 text-black font-extrabold text-xs sm:text-sm py-3.5 sm:py-4 rounded-xl transition-all shadow-[0_0_20px_rgba(34,197,94,0.4)] active:scale-[0.98] uppercase tracking-wider mt-2"
         >
           🔐 Login Pemilik
         </button>
       </form>
 
-      <p id="access-note" class="text-[10px] text-center text-neutral-400 mt-6 uppercase tracking-wider">Akses khusus pemilik / administrator toko.</p>
+      <p id="access-note" class="text-[10px] sm:text-xs text-center text-gray-400 mt-5 leading-relaxed">Akses khusus pemilik / administrator toko.</p>
     </div>
 
     <!-- FOOTER -->
-    <p class="text-center text-[11px] text-neutral-500 mt-8 font-extrabold uppercase">© 2026 ZOKENT GROUP SYSTEMS</p>
+    <p class="text-center text-[10px] sm:text-xs text-gray-500 mt-6 font-mono tracking-widest uppercase">
+      © 2026 ZOKENT GROUP SYSTEMS
+    </p>
   </div>
 
-  <!-- JAVASCRIPT -->
+  <!-- JAVASCRIPT & SUPABASE INTEGRATION -->
   <script type="module">
     import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
 
@@ -197,27 +213,34 @@
     const successMessage = document.getElementById("success-message");
 
     // =====================================================
-    // ANIMASI BACKGROUND MATRIX (EFEK TULISAN BERJALAN HACKER)
+    // EFEK MATRIX DIGITAL RAIN (OPTIMAL DI HP & DESKTOP)
     // =====================================================
     const canvas = document.getElementById('matrix-bg');
     const ctx = canvas.getContext('2d');
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
+
+    let fontSize = window.innerWidth < 640 ? 12 : 14;
+    let columns = 0;
+    let rainDrops = [];
 
     const katakana = 'アァカサタナハマヤャラワガザダバパイィキシチニヒミリヰギジヂビピウゥクスツヌフムユュルグズブヅプエェケセテネヘメレヱゲゼデベペオォコソトノホモヨョロヲゴゾドボポヴッン';
-    const latin = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-    const numbers = '0123456789';
-    const alphabet = katakana + latin + numbers;
-    
-    const fontSize = 14;
-    const columns = canvas.width / fontSize;
-    const rainDrops = Array.from({ length: columns }, () => 1);
+    const latin = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    const alphabet = katakana + latin;
 
-    const drawMatrix = () => {
-      ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+    function initMatrix() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      fontSize = window.innerWidth < 640 ? 12 : 14;
+      columns = Math.floor(canvas.width / fontSize);
+      rainDrops = Array.from({ length: columns }, () => Math.floor(Math.random() * -50));
+    }
+
+    initMatrix();
+
+    function drawMatrix() {
+      ctx.fillStyle = 'rgba(3, 7, 18, 0.08)'; // Trail halus
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-      ctx.fillStyle = '#15803d';
+      ctx.fillStyle = '#10b981'; // Emerald 500
       ctx.font = fontSize + 'px monospace';
 
       for (let i = 0; i < rainDrops.length; i++) {
@@ -229,57 +252,62 @@
         }
         rainDrops[i]++;
       }
-    };
+    }
 
     setInterval(drawMatrix, 45);
 
+    // Dynamic Window Resize Handler
+    let resizeTimeout;
     window.addEventListener('resize', () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
+      clearTimeout(resizeTimeout);
+      resizeTimeout = setTimeout(initMatrix, 150);
     });
 
     // =====================================================
-    // SWITCH TAB (PEMILIK / KASIR) - LOGIKA ASLI ANDA
+    // SWITCH TAB (PEMILIK / KASIR)
     // =====================================================
     tabPemilik.addEventListener("click", () => {
       currentRole = "pemilik";
-      tabPemilik.className = "peran-btn flex-1 py-2.5 text-xs font-extrabold rounded-xl bg-black border border-emerald-500/50 active shadow-sm";
-      tabKasir.className = "peran-btn flex-1 py-2.5 text-xs font-extrabold rounded-xl";
+      tabPemilik.classList.add("active");
+      tabKasir.classList.remove("active");
       
       loginTitle.textContent = "Login Pemilik";
       loginSubtitle.textContent = "Masuk untuk mengatur dan mengontrol seluruh toko online.";
       btnLogin.textContent = "🔐 Login Pemilik";
       accessNote.textContent = "Akses khusus pemilik / administrator toko.";
+      
+      errorMessage.classList.add("hidden");
+      successMessage.classList.add("hidden");
     });
 
     tabKasir.addEventListener("click", () => {
       currentRole = "kasir";
-      tabKasir.className = "peran-btn flex-1 py-2.5 text-xs font-extrabold rounded-xl bg-black border border-emerald-500/50 active shadow-sm";
-      tabPemilik.className = "peran-btn flex-1 py-2.5 text-xs font-extrabold rounded-xl";
+      tabKasir.classList.add("active");
+      tabPemilik.classList.remove("active");
       
       loginTitle.textContent = "Login Kasir Toko";
       loginSubtitle.textContent = "Masuk untuk membuka mesin kasir POS dan melayani transaksi.";
       btnLogin.textContent = "🛒 Login Kasir";
       accessNote.textContent = "Akses khusus petugas kasir toko.";
+
+      errorMessage.classList.add("hidden");
+      successMessage.classList.add("hidden");
     });
 
     // =====================================================
-    // WARNA BORDER DINAMIS
+    // INPUT HIGHLIGHT & TOGGLE PASSWORD
     // =====================================================
     function updateInputStyle(input) {
       if (input.value.trim().length > 0) {
-        input.classList.remove("border-neutral-700", "border-red-500");
         input.classList.add("border-emerald-500");
       } else {
         input.classList.remove("border-emerald-500");
-        input.classList.add("border-neutral-700");
       }
     }
 
     emailInput.addEventListener("input", () => updateInputStyle(emailInput));
     passwordInput.addEventListener("input", () => updateInputStyle(passwordInput));
 
-    // Show/Hide Password Toggle
     btnShowPassword.addEventListener("click", () => {
       const isPassword = passwordInput.type === "password";
       passwordInput.type = isPassword ? "text" : "password";
@@ -287,19 +315,19 @@
     });
 
     function tampilkanError(pesan) {
-      errorMessage.textContent = pesan;
+      errorMessage.textContent = `⚠️ ${pesan}`;
       errorMessage.classList.remove("hidden");
       successMessage.classList.add("hidden");
     }
 
     function tampilkanSukses(pesan) {
-      successMessage.textContent = pesan;
+      successMessage.textContent = `✅ ${pesan}`;
       successMessage.classList.remove("hidden");
       errorMessage.classList.add("hidden");
     }
 
     // =====================================================
-    // SUBMIT LOGIN HANDLER - SAMA PERSIS DENGAN KODE ASLI ANDA
+    // SUBMIT LOGIN HANDLER
     // =====================================================
     loginForm.addEventListener("submit", async (e) => {
       e.preventDefault();
@@ -308,7 +336,7 @@
       const password = passwordInput.value;
 
       btnLogin.disabled = true;
-      btnLogin.textContent = "⏳ Memeriksa akun...";
+      btnLogin.textContent = "⏳ Memeriksa Akun...";
       errorMessage.classList.add("hidden");
 
       try {
@@ -321,22 +349,21 @@
           return;
         }
 
-        // DENGAN LOGIKA ASLI ANDA: Arahkan langsung sesuai tab yang sedang dipilih
         const targetPage = currentRole === "pemilik" ? "admin.html" : "kasir.html";
-        tampilkanSukses(`Login ${currentRole} berhasil! Membuka halaman...`);
+        tampilkanSukses(`Login ${currentRole} berhasil! Mengalihkan...`);
         
         setTimeout(() => {
           window.location.href = targetPage;
         }, 800);
 
       } catch (err) {
-        tampilkanError("Terjadi kesalahan saat menghubungkan ke server.");
+        tampilkanError("Terjadi kesalahan koneksi ke server.");
         btnLogin.disabled = false;
         btnLogin.textContent = currentRole === "pemilik" ? "🔐 Login Pemilik" : "🛒 Login Kasir";
       }
     });
 
-    // Auto Check Session Existing (Sama Persis Kode Asli Anda)
+    // Auto Check Session Existing
     async function cekLogin() {
       const { data: { session } } = await supabase.auth.getSession();
       if (session) {
