@@ -60,11 +60,9 @@
 </head>
 <body class="min-h-screen w-full p-4 md:p-8 relative">
 
-  <!-- ANIMASI BACKGROUND MATRIX RAIN -->
   <canvas id="matrix-bg"></canvas>
 
   <div class="relative z-10 max-w-6xl mx-auto space-y-6">
-    <!-- HEADER ADMIN -->
     <header class="glass-card p-6 rounded-2xl glow-box flex justify-between items-center">
       <div>
         <h1 class="text-xl font-black glow-green-text flex items-center gap-2">
@@ -78,13 +76,12 @@
     </header>
 
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-      <!-- FORM BUAT AKUN KASIR -->
       <div class="glass-card p-6 rounded-2xl glow-box space-y-4">
         <div>
           <h2 class="text-base font-black text-emerald-300 tracking-wider uppercase flex items-center gap-2">
             <span>👤</span> REGISTRASI AKUN KASIR
           </h2>
-          <p class="text-xs text-emerald-500/70 mt-1">Buat kredensial kasir baru. Kasir terdaftar dapat login via Portal Terminal.</p>
+          <p class="text-xs text-emerald-500/70 mt-1">Buat kredensial kasir baru untuk akses portal terminal.</p>
         </div>
 
         <form id="form-create-kasir" class="space-y-4">
@@ -102,19 +99,18 @@
           </div>
 
           <button type="submit" id="btn-save-kasir" class="w-full bg-emerald-500 hover:bg-emerald-400 text-black font-extrabold py-3 rounded-xl text-xs transition-all shadow-[0_0_20px_rgba(52,211,153,0.5)] uppercase tracking-wider mt-2">
-            ➕ BUAT & OLEH HAK AKSES KASIR
+            ➕ BUAT AKUN KASIR
           </button>
         </form>
       </div>
 
-      <!-- KARTU NAVIGASI KASIR -->
       <div class="glass-card p-6 rounded-2xl glow-box flex flex-col justify-between">
         <div>
           <h2 class="text-base font-black text-emerald-300 tracking-wider uppercase flex items-center gap-2 mb-2">
             <span>🛒</span> PINTU MASUK TERMINAL POS
           </h2>
           <p class="text-xs text-emerald-500/70 leading-relaxed">
-            Admin/Pemilik dapat memantau, menguji, atau mengoperasikan mesin kasir POS secara langsung dari link di bawah ini.
+            Admin/Pemilik dapat memantau atau menguji mesin kasir POS langsung melalui terminal di bawah ini.
           </p>
         </div>
 
@@ -135,36 +131,16 @@
 
     const SUPABASE_URL = "https://weuousmvkxmgmsnwiuad.supabase.co";
     const SUPABASE_ANON_KEY = "sb_publishable_e375KDL0vuoahHO_kWMjwA_a04R4yHb";
-
-    // Client Admin Sesi Aktif
     const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    const tempSupabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, { auth: { persistSession: false } });
 
-    // Client Tanpa Persist Sesi (Agar Admin Tidak Ter-logout saat Buat Akun Kasir)
-    const tempSupabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
-      auth: { persistSession: false }
-    });
-
-    // =====================================================
-    // EFEK MATRIX DIGITAL RAIN
-    // =====================================================
+    // MATRIX EFFECT
     const canvas = document.getElementById('matrix-bg');
     const ctx = canvas.getContext('2d');
-    let fontSize = window.innerWidth < 640 ? 12 : 14;
-    let columns = 0;
-    let rainDrops = [];
-
-    const katakana = 'アァカサタナハマヤャラワガザダバパイィキシチニヒミリヰギジヂビピウゥクスツヌフムユュルグズブヅプエェケセテネヘメレヱゲゼデベペオォコソトノホモヨョロヲゴゾドボポヴッン';
-    const latin = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-    const alphabet = katakana + latin;
-
-    function initMatrix() {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-      fontSize = window.innerWidth < 640 ? 12 : 14;
-      columns = Math.floor(canvas.width / fontSize);
-      rainDrops = Array.from({ length: columns }, () => Math.floor(Math.random() * -50));
-    }
-    initMatrix();
+    let fontSize = 14;
+    let columns = Math.floor(window.innerWidth / fontSize);
+    let rainDrops = Array.from({ length: columns }, () => Math.floor(Math.random() * -50));
+    const alphabet = 'アァカサタナハマヤャラワガザダバパイィキシチニヒミリヰギジヂビピウゥクスツヌフムユュルグズブヅプエェケセテネヘメレヱゲゼデベペオォコソトノホモヨョロヲゴゾドボポヴッンABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
 
     function drawMatrix() {
       ctx.fillStyle = 'rgba(3, 7, 18, 0.08)';
@@ -174,27 +150,27 @@
       for (let i = 0; i < rainDrops.length; i++) {
         const text = alphabet.charAt(Math.floor(Math.random() * alphabet.length));
         ctx.fillText(text, i * fontSize, rainDrops[i] * fontSize);
-        if (rainDrops[i] * fontSize > canvas.height && Math.random() > 0.975) {
-          rainDrops[i] = 0;
-        }
+        if (rainDrops[i] * fontSize > canvas.height && Math.random() > 0.975) rainDrops[i] = 0;
         rainDrops[i]++;
       }
     }
+    function initMatrix() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      columns = Math.floor(canvas.width / fontSize);
+    }
+    initMatrix();
+    window.addEventListener('resize', initMatrix);
     setInterval(drawMatrix, 45);
 
-    let resizeTimeout;
-    window.addEventListener('resize', () => {
-      clearTimeout(resizeTimeout);
-      resizeTimeout = setTimeout(initMatrix, 150);
-    });
-
-    // =====================================================
-    // VERIFIKASI DERAJAT HAK AKSES ADMIN
-    // =====================================================
     async function verifyAdmin() {
       const { data: { session } } = await supabase.auth.getSession();
-      const role = session?.user?.user_metadata?.role;
-      if (!session || (role !== 'admin' && role !== 'pemilik')) {
+      if (!session) {
+        window.location.href = "login-admin.html";
+        return;
+      }
+      const role = session.user.user_metadata?.role;
+      if (role !== 'admin' && role !== 'pemilik') {
         alert("⚠️ Akses ditolak! Halaman ini khusus Admin / Pemilik.");
         window.location.href = "login-admin.html";
       }
@@ -212,26 +188,21 @@
       const email = document.getElementById("kasir-email-input").value.trim();
       const password = document.getElementById("kasir-password-input").value.trim();
 
-      const { data, error } = await tempSupabase.auth.signUp({
+      const { error } = await tempSupabase.auth.signUp({
         email: email,
         password: password,
-        options: {
-          data: {
-            username: username,
-            role: 'kasir'
-          }
-        }
+        options: { data: { username: username, role: 'kasir' } }
       });
 
       if (error) {
         alert("❌ Gagal membuat akun: " + error.message);
       } else {
-        alert(`✅ Akun Kasir '${username}' berhasil didaftarkan! Kasir dapat langsung login via portal utama.`);
+        alert(`✅ Akun Kasir '${username}' berhasil didaftarkan!`);
         formCreateKasir.reset();
       }
 
       btnSaveKasir.disabled = false;
-      btnSaveKasir.textContent = "➕ BUAT & OLEH HAK AKSES KASIR";
+      btnSaveKasir.textContent = "➕ BUAT AKUN KASIR";
     });
 
     document.getElementById("btn-logout").addEventListener("click", async () => {
