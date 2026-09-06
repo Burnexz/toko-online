@@ -1,253 +1,395 @@
-<script type="module">
-  import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
-
-  const SUPABASE_URL = "https://weuousmvkxmgmsnwiuad.supabase.co";
-  const SUPABASE_ANON_KEY = "sb_publishable_e375KDL0vuoahHO_kWMjwA_a04R4yHb";
-  const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
-  // EFEK SUARA BEEP SCANNER
-  function playBeepSound() {
-    try {
-      const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-      const oscillator = audioCtx.createOscillator();
-      const gainNode = audioCtx.createGain();
-      oscillator.type = "sine";
-      oscillator.frequency.value = 1400;
-      gainNode.gain.value = 0.15;
-      oscillator.connect(gainNode);
-      gainNode.connect(audioCtx.destination);
-      oscillator.start();
-      oscillator.stop(audioCtx.currentTime + 0.08);
-    } catch (e) {}
-  }
-
-  let products = [];
-  let cart = [];
-  let html5QrcodeScanner = null;
-
-  const barcodeInput = document.getElementById("barcode-input");
-  const productGrid = document.getElementById("product-grid");
-  const cartTableBody = document.getElementById("cart-table-body");
-  const displayTotal = document.getElementById("display-total");
-  const displayChange = document.getElementById("display-change");
-  const cashInput = document.getElementById("cash-input");
-  const btnCheckout = document.getElementById("btn-checkout");
-  const kasirNameEl = document.getElementById("kasir-name");
-
-  const formatRupiah = (num) => "Rp " + Number(num).toLocaleString("id-ID");
-
-  // JAM REALTIME
-  setInterval(() => {
-    const clockEl = document.getElementById("realtime-clock");
-    if (clockEl) clockEl.textContent = new Date().toLocaleTimeString("id-ID");
-  }, 1000);
-
-  // 1. VERIFIKASI KEAMANAN & AKUN KASIR (PENTING)
-  async function checkAuth() {
-    const { data: { session } } = await supabase.auth.getSession();
-
-    // Jika belum login sama sekali -> lempar ke login-admin.html
-    if (!session) {
-      window.location.href = "login-admin.html";
-      return;
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kasir POS Terminal - Zokent Mart Matrix Edition</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      min-height: 100vh;
+      width: 100%;
+      background-color: #030712;
+      font-family: 'ui-monospace', SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      color: #34d399;
+      margin: 0;
+      overflow-x: hidden;
     }
-
-    const userRole = session.user.user_metadata?.role;
-
-    // Jika yang login BUKAN role kasir (misal belum dibuatkan akun oleh admin) -> tolak
-    if (userRole !== "kasir" && userRole !== "admin") {
-      alert("⚠️ Akses ditolak! Anda harus login menggunakan akun Kasir yang dibuat oleh Admin.");
-      await supabase.auth.signOut();
-      window.location.href = "login-admin.html";
-      return;
+    #matrix-bg {
+      position: fixed;
+      inset: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 0;
+      pointer-events: none;
     }
-
-    // Tampilkan Nama Kasir yang dibuat oleh Admin
-    if (kasirNameEl) {
-      const kasirUsername = session.user.user_metadata?.username || session.user.email.split('@')[0];
-      kasirNameEl.textContent = kasirUsername;
+    .glow-green-text {
+      color: #34d399;
+      text-shadow: 0 0 12px rgba(52, 211, 153, 0.7);
     }
-  }
-
-  // 2. FETCH DATA BARANG DARI SUPABASE
-  async function loadProducts() {
-    const { data, error } = await supabase.from('products').select('*');
-    if (data && data.length > 0) {
-      products = data;
+    .glow-box {
+      box-shadow: 0 0 25px rgba(34, 197, 94, 0.2);
     }
-    const countEl = document.getElementById("product-count");
-    if (countEl) countEl.textContent = `${products.length} Item`;
-    renderProducts(products);
-  }
+    .glass-card {
+      background-color: rgba(0, 0, 0, 0.55);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border: 1px solid rgba(52, 211, 153, 0.35);
+    }
+    .hacker-input {
+      background-color: rgba(0, 0, 0, 0.4);
+      backdrop-filter: blur(4px);
+      border: 1px solid rgba(52, 211, 153, 0.4);
+      color: #4ade80;
+      text-shadow: 0 0 5px rgba(74, 222, 128, 0.6);
+      transition: all 0.25s ease-in-out;
+    }
+    .hacker-input::placeholder {
+      color: rgba(52, 211, 153, 0.4);
+    }
+    .hacker-input:focus {
+      outline: none;
+      border-color: #34d399;
+      box-shadow: 0 0 15px rgba(52, 211, 153, 0.6);
+      background-color: rgba(0, 0, 0, 0.6);
+    }
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: #030712; }
+    ::-webkit-scrollbar-thumb { background: #15803d; border-radius: 3px; }
+  </style>
+</head>
+<body class="min-h-screen w-full p-3 md:p-6 relative">
 
-  // 3. RENDER KATALOG
-  function renderProducts(items) {
-    if (!productGrid) return;
-    productGrid.innerHTML = items.map(p => `
-      <div onclick="addToCartById(${p.id})" class="bg-white p-2.5 rounded-xl border border-slate-200 hover:border-[#005697] hover:shadow-md cursor-pointer transition-all flex flex-col justify-between group">
+  <!-- ANIMASI BACKGROUND MATRIX RAIN -->
+  <canvas id="matrix-bg"></canvas>
+
+  <div class="relative z-10 max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-4">
+    <!-- KANAN / DASHBOARD KATALOG (8 COLS) -->
+    <div class="lg:col-span-8 space-y-4">
+      <!-- HEADER TERMINAL -->
+      <div class="glass-card p-4 rounded-2xl glow-box flex justify-between items-center">
         <div>
-          <div class="text-2xl text-center mb-1 group-hover:scale-110 transition-transform">${p.icon || '📦'}</div>
-          <p class="text-[11px] font-bold text-slate-800 line-clamp-2 leading-tight">${p.name}</p>
+          <h1 class="text-lg font-black glow-green-text flex items-center gap-2">
+            <span>&gt;_</span> TERMINAL KASIR POS
+          </h1>
+          <p class="text-xs text-emerald-400/80 mt-0.5">
+            OPERATOR: <span id="kasir-name" class="font-bold text-white uppercase tracking-wider">-</span>
+          </p>
         </div>
-        <div class="mt-2 pt-1 border-t border-slate-100 flex justify-between items-center">
-          <span class="text-[9px] font-mono text-slate-400">Stok: ${p.stock ?? 0}</span>
-          <span class="text-xs font-black text-[#e31e24]">${formatRupiah(p.price)}</span>
+        <div class="flex items-center gap-3">
+          <span id="realtime-clock" class="font-mono font-bold text-xs bg-black/60 border border-emerald-500/40 text-emerald-400 px-3 py-1.5 rounded-xl glow-box">00:00:00</span>
+          <button id="btn-logout" class="bg-red-950/80 hover:bg-red-900 text-red-400 border border-red-500/40 px-3 py-1.5 rounded-xl text-xs font-bold transition-all hover:shadow-[0_0_15px_rgba(239,68,68,0.4)]">
+            🚪 LOGOUT
+          </button>
         </div>
       </div>
-    `).join("");
-  }
 
-  window.addToCartById = (id) => {
-    const product = products.find(p => p.id === id);
-    if (product) addItemToOrder(product);
-  };
+      <!-- SCANNER INPUT -->
+      <div class="glass-card p-3 rounded-2xl glow-box flex items-center gap-2">
+        <span class="text-emerald-400 text-sm pl-2">🔍</span>
+        <input type="text" id="barcode-input" placeholder="Scan Barcode / Cari nama barang [Enter]..." autofocus class="hacker-input w-full px-4 py-2.5 rounded-xl text-xs font-mono">
+      </div>
 
-  // 4. TAMBAH BARANG KE KERANJANG (DENGAN CEK STOK)
-  function addItemToOrder(product) {
-    const existingItem = cart.find(c => c.id === product.id);
-    const currentQtyInCart = existingItem ? existingItem.qty : 0;
+      <!-- SUB HEADER KATALOG -->
+      <div class="flex justify-between items-center px-1">
+        <span class="text-xs font-bold text-emerald-400 uppercase tracking-widest">&gt; KATALOG BARANG</span>
+        <span id="product-count" class="text-xs font-bold text-emerald-500/70 font-mono">0 Item</span>
+      </div>
 
-    if (product.stock !== undefined && (currentQtyInCart + 1) > product.stock) {
-      alert(`⚠️ Stok ${product.name} tidak mencukupi! Sisa stok: ${product.stock}`);
-      return;
+      <!-- GRID KATALOG PRODUK -->
+      <div id="product-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 max-h-[60vh] overflow-y-auto pr-1"></div>
+    </div>
+
+    <!-- KIRI / KERANJANG & CHECKOUT (4 COLS) -->
+    <div class="lg:col-span-4 glass-card p-4 rounded-2xl glow-box flex flex-col justify-between h-[88vh]">
+      <div>
+        <div class="flex justify-between items-center border-b border-emerald-500/30 pb-3 mb-3">
+          <h2 class="font-black text-emerald-300 text-sm tracking-wider uppercase">&gt; PESANAN KASIR</h2>
+          <button id="btn-clear-cart" class="text-xs font-bold text-red-400 hover:text-red-300 transition-colors uppercase">Clear</button>
+        </div>
+
+        <div class="max-h-[38vh] overflow-y-auto pr-1">
+          <table class="w-full text-left text-xs font-mono">
+            <tbody id="cart-table-body">
+              <tr><td colspan="4" class="text-center py-12 text-emerald-600/70">Terminal kosong. Scan barcode untuk menambah barang.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- FOOTER TRANSAKSI -->
+      <div class="border-t border-emerald-500/30 pt-3 space-y-3 font-mono">
+        <div class="flex justify-between items-center">
+          <span class="text-xs font-bold text-emerald-400/80">TOTAL PAYMENT:</span>
+          <span id="display-total" class="text-xl font-black text-emerald-300 glow-green-text">Rp 0</span>
+        </div>
+
+        <div>
+          <label class="block text-[10px] font-bold text-emerald-400 uppercase mb-1">TUNAI / BAYAR (RP)</label>
+          <input type="number" id="cash-input" placeholder="0" class="hacker-input w-full px-3 py-2 rounded-xl text-sm font-black text-right">
+        </div>
+
+        <div class="flex justify-between items-center text-xs font-bold">
+          <span class="text-emerald-400/80">KEMBALIAN:</span>
+          <span id="display-change" class="px-3 py-1.5 rounded-xl bg-black/60 border border-emerald-500/30 text-emerald-400 font-mono">Rp 0</span>
+        </div>
+
+        <button id="btn-checkout" disabled class="w-full bg-emerald-950/40 text-emerald-700 border border-emerald-900 font-black py-3 rounded-xl text-xs transition-all disabled:cursor-not-allowed uppercase tracking-wider">
+          💳 PROSES & CETAK STRUK
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL STRUK (HACKER TERMINAL STYLE) -->
+  <div id="modal-struk" class="hidden fixed inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center p-4 z-50">
+    <div class="glass-card p-6 rounded-2xl max-w-xs w-full glow-box font-mono text-xs text-emerald-300 space-y-3 border-emerald-500/50">
+      <div class="text-center border-b border-emerald-500/30 pb-3">
+        <h3 class="font-black text-base glow-green-text">ZOKENT MART</h3>
+        <p class="text-[10px] text-emerald-500/80 tracking-widest uppercase">[ STRUK TRANSAKSI POS ]</p>
+      </div>
+      <div class="space-y-1 text-[11px] text-emerald-400/90">
+        <div class="flex justify-between"><span>Nota:</span><span id="struk-nota" class="text-white">-</span></div>
+        <div class="flex justify-between"><span>Kasir:</span><span id="struk-kasir" class="text-white">-</span></div>
+        <div class="flex justify-between"><span>Waktu:</span><span id="struk-date" class="text-white">-</span></div>
+      </div>
+      <div id="struk-items" class="border-t border-b border-emerald-500/30 py-2 space-y-1 my-2 text-white"></div>
+      <div class="space-y-1 font-bold">
+        <div class="flex justify-between text-emerald-400"><span>Total:</span><span id="struk-total" class="text-emerald-300 glow-green-text">Rp 0</span></div>
+        <div class="flex justify-between text-emerald-400"><span>Bayar:</span><span id="struk-bayar" class="text-white">Rp 0</span></div>
+        <div class="flex justify-between text-emerald-400"><span>Kembali:</span><span id="struk-kembali" class="text-emerald-300">Rp 0</span></div>
+      </div>
+      <button onclick="closeStrukModal()" class="w-full mt-3 bg-emerald-500 hover:bg-emerald-400 text-black font-extrabold py-2.5 rounded-xl text-xs transition-all shadow-[0_0_15px_rgba(52,211,153,0.4)] uppercase">
+        ✓ Selesai & Transaksi Baru
+      </button>
+    </div>
+  </div>
+
+  <script type="module">
+    import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
+
+    const SUPABASE_URL = "https://weuousmvkxmgmsnwiuad.supabase.co";
+    const SUPABASE_ANON_KEY = "sb_publishable_e375KDL0vuoahHO_kWMjwA_a04R4yHb";
+    const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    let products = [];
+    let cart = [];
+
+    const barcodeInput = document.getElementById("barcode-input");
+    const productGrid = document.getElementById("product-grid");
+    const cartTableBody = document.getElementById("cart-table-body");
+    const displayTotal = document.getElementById("display-total");
+    const displayChange = document.getElementById("display-change");
+    const cashInput = document.getElementById("cash-input");
+    const btnCheckout = document.getElementById("btn-checkout");
+    const btnClearCart = document.getElementById("btn-clear-cart");
+    const kasirNameEl = document.getElementById("kasir-name");
+
+    const formatRupiah = (num) => "Rp " + Number(num).toLocaleString("id-ID");
+
+    // =====================================================
+    // EFEK MATRIX DIGITAL RAIN
+    // =====================================================
+    const canvas = document.getElementById('matrix-bg');
+    const ctx = canvas.getContext('2d');
+    let fontSize = window.innerWidth < 640 ? 12 : 14;
+    let columns = 0;
+    let rainDrops = [];
+
+    const katakana = 'アァカサタナハマヤャラワガザダバパイィキシチニヒミリヰギジヂビピウゥクスツヌフムユュルグズブヅプエェケセテネヘメレヱゲゼデベペオォコソトノホモヨョロヲゴゾドボポヴッン';
+    const latin = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    const alphabet = katakana + latin;
+
+    function initMatrix() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      fontSize = window.innerWidth < 640 ? 12 : 14;
+      columns = Math.floor(canvas.width / fontSize);
+      rainDrops = Array.from({ length: columns }, () => Math.floor(Math.random() * -50));
+    }
+    initMatrix();
+
+    function drawMatrix() {
+      ctx.fillStyle = 'rgba(3, 7, 18, 0.08)';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = '#10b981';
+      ctx.font = fontSize + 'px monospace';
+      for (let i = 0; i < rainDrops.length; i++) {
+        const text = alphabet.charAt(Math.floor(Math.random() * alphabet.length));
+        ctx.fillText(text, i * fontSize, rainDrops[i] * fontSize);
+        if (rainDrops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+          rainDrops[i] = 0;
+        }
+        rainDrops[i]++;
+      }
+    }
+    setInterval(drawMatrix, 45);
+
+    let resizeTimeout;
+    window.addEventListener('resize', () => {
+      clearTimeout(resizeTimeout);
+      resizeTimeout = setTimeout(initMatrix, 150);
+    });
+
+    // JAM REALTIME
+    setInterval(() => {
+      const clockEl = document.getElementById("realtime-clock");
+      if (clockEl) clockEl.textContent = new Date().toLocaleTimeString("id-ID");
+    }, 1000);
+
+    // =====================================================
+    // VERIFIKASI AKSES AKUN KASIR
+    // =====================================================
+    async function checkAuth() {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        window.location.href = "login-admin.html";
+        return;
+      }
+
+      const userRole = session.user.user_metadata?.role;
+      if (userRole !== "kasir" && userRole !== "admin" && userRole !== "pemilik") {
+        alert("⚠️ Akses ditolak! Gunakan akun Kasir yang dibuat oleh Admin.");
+        await supabase.auth.signOut();
+        window.location.href = "login-admin.html";
+        return;
+      }
+
+      kasirNameEl.textContent = session.user.user_metadata?.username || session.user.email.split('@')[0];
     }
 
-    playBeepSound();
-
-    if (existingItem) {
-      existingItem.qty += 1;
-    } else {
-      cart.push({ ...product, qty: 1 });
+    // LOAD PRODUK SUPABASE
+    async function loadProducts() {
+      const { data } = await supabase.from('products').select('*');
+      if (data) products = data;
+      document.getElementById("product-count").textContent = `${products.length} Item`;
+      renderProducts(products);
     }
 
-    updateOrderUI();
-    if (barcodeInput) {
+    // RENDER PRODUK HACKER CARDS
+    function renderProducts(items) {
+      productGrid.innerHTML = items.map(p => `
+        <div onclick="addToCartById(${p.id})" class="glass-card p-3 rounded-xl hover:border-emerald-400 hover:shadow-[0_0_15px_rgba(52,211,153,0.3)] cursor-pointer transition-all flex flex-col justify-between group">
+          <div>
+            <div class="text-2xl text-center mb-1 group-hover:scale-110 transition-transform">${p.icon || '📦'}</div>
+            <p class="text-[11px] font-bold text-white line-clamp-2 leading-tight font-mono">${p.name}</p>
+          </div>
+          <div class="mt-2 pt-2 border-t border-emerald-500/20 flex justify-between items-center font-mono">
+            <span class="text-[9px] text-emerald-400/70">Stok: ${p.stock ?? 0}</span>
+            <span class="text-xs font-black text-emerald-300 glow-green-text">${formatRupiah(p.price)}</span>
+          </div>
+        </div>
+      `).join("");
+    }
+
+    window.addToCartById = (id) => {
+      const product = products.find(p => p.id === id);
+      if (product) addItemToOrder(product);
+    };
+
+    function addItemToOrder(product) {
+      const existingItem = cart.find(c => c.id === product.id);
+      const currentQty = existingItem ? existingItem.qty : 0;
+
+      if (product.stock !== undefined && (currentQty + 1) > product.stock) {
+        alert(`⚠️ Stok ${product.name} tidak mencukupi!`);
+        return;
+      }
+
+      if (existingItem) existingItem.qty += 1;
+      else cart.push({ ...product, qty: 1 });
+
+      updateOrderUI();
       barcodeInput.value = "";
       barcodeInput.focus();
     }
-  }
 
-  // 5. SCANNER BARCODE INPUT
-  if (barcodeInput) {
+    // BARCODE SCANNER ENTER KEY
     barcodeInput.addEventListener("keydown", (e) => {
       if (e.key === "Enter") {
         e.preventDefault();
         const query = barcodeInput.value.trim().toLowerCase();
         if (!query) return;
 
-        const matchedProduct = products.find(p => 
-          (p.barcode && p.barcode.toLowerCase() === query) || 
-          p.name.toLowerCase().includes(query)
-        );
-
-        if (matchedProduct) {
-          addItemToOrder(matchedProduct);
-        } else {
+        const matched = products.find(p => (p.barcode && p.barcode.toLowerCase() === query) || p.name.toLowerCase().includes(query));
+        if (matched) addItemToOrder(matched);
+        else {
           alert("❌ Barang tidak ditemukan!");
           barcodeInput.value = "";
         }
       }
     });
-  }
 
-  // 6. UPDATE UI KERANJANG
-  function updateOrderUI() {
-    if (!cartTableBody) return;
-
-    if (cart.length === 0) {
-      cartTableBody.innerHTML = `<tr><td colspan="4" class="text-center py-12 text-slate-400 text-xs">Pesanan masih kosong. Scan barcode untuk menambah barang.</td></tr>`;
-      if (displayTotal) displayTotal.textContent = "Rp 0";
-      if (displayChange) displayChange.textContent = "Rp 0";
-      if (btnCheckout) {
+    // UPDATE UI KERANJANG
+    function updateOrderUI() {
+      if (cart.length === 0) {
+        cartTableBody.innerHTML = `<tr><td colspan="4" class="text-center py-12 text-emerald-600/70">Terminal kosong. Scan barcode untuk menambah barang.</td></tr>`;
+        displayTotal.textContent = "Rp 0";
+        displayChange.textContent = "Rp 0";
         btnCheckout.disabled = true;
-        btnCheckout.className = "w-full bg-slate-300 text-slate-500 font-black py-3 rounded-xl text-sm transition-all shadow-md disabled:cursor-not-allowed flex items-center justify-center gap-2";
-      }
-      return;
-    }
-
-    cartTableBody.innerHTML = cart.map(item => `
-      <tr class="hover:bg-slate-50">
-        <td class="py-2.5 font-bold text-slate-800">
-          <p class="leading-tight">${item.name}</p>
-          <p class="text-[9px] text-slate-400 font-normal">@ ${formatRupiah(item.price)}</p>
-        </td>
-        <td class="py-2.5 text-center">
-          <div class="inline-flex items-center gap-1 bg-slate-100 rounded-lg p-0.5">
-            <button onclick="changeQty(${item.id}, -1)" class="w-5 h-5 bg-white rounded font-bold border shadow-sm text-slate-600">-</button>
-            <span class="px-1 font-bold text-slate-800">${item.qty}</span>
-            <button onclick="changeQty(${item.id}, 1)" class="w-5 h-5 bg-white rounded font-bold border shadow-sm text-slate-600">+</button>
-          </div>
-        </td>
-        <td class="py-2.5 text-right font-black text-slate-800">${formatRupiah(item.price * item.qty)}</td>
-        <td class="py-2.5 text-center">
-          <button onclick="removeItem(${item.id})" class="text-red-500 hover:text-red-700 font-bold px-1">✕</button>
-        </td>
-      </tr>
-    `).join("");
-
-    const totalNominal = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
-    if (displayTotal) displayTotal.textContent = formatRupiah(totalNominal);
-    calculateChange(totalNominal);
-  }
-
-  window.changeQty = (id, delta) => {
-    const item = cart.find(c => c.id === id);
-    if (item) {
-      const product = products.find(p => p.id === id);
-      if (delta > 0 && product && (item.qty + delta) > product.stock) {
-        alert(`Stok maksimal ${product.name} hanya ${product.stock}`);
+        btnCheckout.className = "w-full bg-emerald-950/40 text-emerald-700 border border-emerald-900 font-black py-3 rounded-xl text-xs transition-all disabled:cursor-not-allowed uppercase tracking-wider";
         return;
       }
-      item.qty += delta;
-      if (item.qty <= 0) cart = cart.filter(c => c.id !== id);
-    }
-    updateOrderUI();
-  };
 
-  window.removeItem = (id) => {
-    cart = cart.filter(c => c.id !== id);
-    updateOrderUI();
-  };
+      cartTableBody.innerHTML = cart.map(item => `
+        <tr class="hover:bg-emerald-950/30 border-b border-emerald-500/10">
+          <td class="py-2.5 font-bold text-white"><p class="leading-tight">${item.name}</p></td>
+          <td class="py-2.5 text-center text-emerald-400 font-bold">${item.qty}</td>
+          <td class="py-2.5 text-right font-black text-emerald-300">${formatRupiah(item.price * item.qty)}</td>
+          <td class="py-2.5 text-center"><button onclick="removeItem(${item.id})" class="text-red-400 hover:text-red-300 font-bold">✕</button></td>
+        </tr>
+      `).join("");
 
-  function calculateChange(total) {
-    if (!cashInput || !displayChange || !btnCheckout) return;
-    const cash = parseFloat(cashInput.value) || 0;
-    const change = cash - total;
-
-    if (cash >= total && total > 0) {
-      displayChange.textContent = formatRupiah(change);
-      displayChange.className = "px-3 py-2 rounded-lg bg-emerald-100 font-extrabold text-emerald-700 text-sm font-mono";
-      btnCheckout.disabled = false;
-      btnCheckout.className = "w-full bg-[#005697] hover:bg-blue-800 text-white font-black py-3 rounded-xl text-sm transition-all shadow-md cursor-pointer flex items-center justify-center gap-2";
-    } else {
-      displayChange.textContent = "Rp 0";
-      displayChange.className = "px-3 py-2 rounded-lg bg-slate-200 font-bold text-slate-700 text-sm font-mono";
-      btnCheckout.disabled = true;
-      btnCheckout.className = "w-full bg-slate-300 text-slate-500 font-black py-3 rounded-xl text-sm transition-all shadow-md disabled:cursor-not-allowed flex items-center justify-center gap-2";
-    }
-  }
-
-  if (cashInput) {
-    cashInput.addEventListener("input", () => {
       const total = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+      displayTotal.textContent = formatRupiah(total);
       calculateChange(total);
-    });
-  }
+    }
 
-  // 7. PROSES TRANSAKSI & POTONG STOK
-  if (btnCheckout) {
+    window.removeItem = (id) => {
+      cart = cart.filter(c => c.id !== id);
+      updateOrderUI();
+    };
+
+    if (btnClearCart) {
+      btnClearCart.addEventListener("click", () => {
+        cart = [];
+        updateOrderUI();
+      });
+    }
+
+    function calculateChange(total) {
+      const cash = parseFloat(cashInput.value) || 0;
+      const change = cash - total;
+
+      if (cash >= total && total > 0) {
+        displayChange.textContent = formatRupiah(change);
+        displayChange.className = "px-3 py-1.5 rounded-xl bg-emerald-950/80 border border-emerald-500/50 text-emerald-300 font-mono glow-green-text";
+        btnCheckout.disabled = false;
+        btnCheckout.className = "w-full bg-emerald-500 hover:bg-emerald-400 text-black font-extrabold py-3 rounded-xl text-xs transition-all shadow-[0_0_20px_rgba(52,211,153,0.5)] cursor-pointer uppercase tracking-wider";
+      } else {
+        displayChange.textContent = "Rp 0";
+        displayChange.className = "px-3 py-1.5 rounded-xl bg-black/60 border border-emerald-500/30 text-emerald-500/60 font-mono";
+        btnCheckout.disabled = true;
+        btnCheckout.className = "w-full bg-emerald-950/40 text-emerald-700 border border-emerald-900 font-black py-3 rounded-xl text-xs transition-all disabled:cursor-not-allowed uppercase tracking-wider";
+      }
+    }
+
+    cashInput.addEventListener("input", () => {
+      calculateChange(cart.reduce((sum, item) => sum + (item.price * item.qty), 0));
+    });
+
+    // PROSES CHECKOUT DENGAN UPDATE STOK SUPABASE
     btnCheckout.addEventListener("click", async () => {
       btnCheckout.disabled = true;
-      btnCheckout.textContent = "⏳ Memproses Transaksi...";
+      btnCheckout.textContent = "⏳ PROCESSING TRANSACTIONS...";
 
       const total = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
       const cash = parseFloat(cashInput.value) || 0;
       const change = cash - total;
       const notaNo = "#TRX-" + Math.floor(100000 + Math.random() * 900000);
-      const cashierName = kasirNameEl ? kasirNameEl.textContent : "Kasir";
+      const cashierName = kasirNameEl.textContent;
 
       try {
-        // Catat Transaksi
         await supabase.from('transactions').insert([{
           total_price: total,
           cash_paid: cash,
@@ -255,66 +397,54 @@
           cashier_email: cashierName
         }]);
 
-        // Potong Stok
         for (const item of cart) {
           const productInDb = products.find(p => p.id === item.id);
           if (productInDb) {
-            const updatedStock = Math.max(0, (productInDb.stock || 0) - item.qty);
-            await supabase
-              .from('products')
-              .update({ stock: updatedStock })
-              .eq('id', item.id);
+            await supabase.from('products').update({
+              stock: Math.max(0, (productInDb.stock || 0) - item.qty)
+            }).eq('id', item.id);
           }
         }
 
         await loadProducts();
 
-        // Cetak / Tampil Struk
-        const strukNota = document.getElementById("struk-nota");
-        const strukKasir = document.getElementById("struk-kasir");
-        const strukDate = document.getElementById("struk-date");
-        const strukTotal = document.getElementById("struk-total");
-        const strukBayar = document.getElementById("struk-bayar");
-        const strukKembali = document.getElementById("struk-kembali");
-        const strukItems = document.getElementById("struk-items");
-        const modalStruk = document.getElementById("modal-struk");
+        document.getElementById("struk-nota").textContent = notaNo;
+        document.getElementById("struk-kasir").textContent = cashierName;
+        document.getElementById("struk-date").textContent = new Date().toLocaleString("id-ID");
+        document.getElementById("struk-total").textContent = formatRupiah(total);
+        document.getElementById("struk-bayar").textContent = formatRupiah(cash);
+        document.getElementById("struk-kembali").textContent = formatRupiah(change);
+        document.getElementById("struk-items").innerHTML = cart.map(i => `
+          <div class="flex justify-between">
+            <span>${i.name} x${i.qty}</span>
+            <span>${formatRupiah(i.price * i.qty)}</span>
+          </div>
+        `).join("");
 
-        if (strukNota) strukNota.textContent = notaNo;
-        if (strukKasir) strukKasir.textContent = cashierName;
-        if (strukDate) strukDate.textContent = new Date().toLocaleString("id-ID");
-        if (strukTotal) strukTotal.textContent = formatRupiah(total);
-        if (strukBayar) strukBayar.textContent = formatRupiah(cash);
-        if (strukKembali) strukKembali.textContent = formatRupiah(change);
-
-        if (strukItems) {
-          strukItems.innerHTML = cart.map(item => `
-            <div class="flex justify-between">
-              <span>${item.name} x${item.qty}</span>
-              <span>${formatRupiah(item.price * item.qty)}</span>
-            </div>
-          `).join("");
-        }
-
-        if (modalStruk) modalStruk.classList.remove("hidden");
+        document.getElementById("modal-struk").classList.remove("hidden");
 
       } catch (err) {
-        alert("Terjadi kesalahan transaksi: " + err.message);
+        alert("Terjadi kesalahan sistem: " + err.message);
       } finally {
         btnCheckout.textContent = "💳 PROSES & CETAK STRUK";
       }
     });
-  }
 
-  // LOGOUT KASIR
-  const btnLogout = document.getElementById("btn-logout");
-  if (btnLogout) {
-    btnLogout.addEventListener("click", async () => {
+    window.closeStrukModal = () => {
+      document.getElementById("modal-struk").classList.add("hidden");
+      cart = [];
+      cashInput.value = "";
+      updateOrderUI();
+      barcodeInput.focus();
+    };
+
+    document.getElementById("btn-logout").addEventListener("click", async () => {
       await supabase.auth.signOut();
       window.location.href = "login-admin.html";
     });
-  }
 
-  // INISIALISASI
-  await checkAuth();
-  await loadProducts();
-</script>
+    await checkAuth();
+    await loadProducts();
+  </script>
+</body>
+</html>
