@@ -1,342 +1,140 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>POS Kasir - Indomaret / SRC Style</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Library Scanner Barcode Kamera -->
-  <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
-  <style>
-    @media print {
-      body * { visibility: hidden; }
-      #modal-struk-content, #modal-struk-content * { visibility: visible; }
-      #modal-struk-content { position: absolute; left: 0; top: 0; width: 100%; }
-      .no-print { display: none !important; }
+<script type="module">
+  import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
+
+  const SUPABASE_URL = "https://weuousmvkxmgmsnwiuad.supabase.co";
+  const SUPABASE_ANON_KEY = "sb_publishable_e375KDL0vuoahHO_kWMjwA_a04R4yHb";
+  const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+  // EFEK SUARA BEEP SCANNER
+  function playBeepSound() {
+    try {
+      const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      const oscillator = audioCtx.createOscillator();
+      const gainNode = audioCtx.createGain();
+      oscillator.type = "sine";
+      oscillator.frequency.value = 1400;
+      gainNode.gain.value = 0.15;
+      oscillator.connect(gainNode);
+      gainNode.connect(audioCtx.destination);
+      oscillator.start();
+      oscillator.stop(audioCtx.currentTime + 0.08);
+    } catch (e) {}
+  }
+
+  let products = [];
+  let cart = [];
+  let html5QrcodeScanner = null;
+
+  const barcodeInput = document.getElementById("barcode-input");
+  const productGrid = document.getElementById("product-grid");
+  const cartTableBody = document.getElementById("cart-table-body");
+  const displayTotal = document.getElementById("display-total");
+  const displayChange = document.getElementById("display-change");
+  const cashInput = document.getElementById("cash-input");
+  const btnCheckout = document.getElementById("btn-checkout");
+  const kasirNameEl = document.getElementById("kasir-name");
+
+  const formatRupiah = (num) => "Rp " + Number(num).toLocaleString("id-ID");
+
+  // JAM REALTIME
+  setInterval(() => {
+    const clockEl = document.getElementById("realtime-clock");
+    if (clockEl) clockEl.textContent = new Date().toLocaleTimeString("id-ID");
+  }, 1000);
+
+  // 1. VERIFIKASI KEAMANAN & AKUN KASIR (PENTING)
+  async function checkAuth() {
+    const { data: { session } } = await supabase.auth.getSession();
+
+    // Jika belum login sama sekali -> lempar ke login-admin.html
+    if (!session) {
+      window.location.href = "login-admin.html";
+      return;
     }
-  </style>
-</head>
-<body class="bg-slate-100 font-sans min-h-screen flex flex-col select-none">
 
-  <!-- HEADER INDOMARET / SRC STYLE -->
-  <header class="bg-[#005697] text-white border-b-4 border-[#e31e24] px-4 py-2.5 flex items-center justify-between shadow-md no-print">
-    <div class="flex items-center gap-3">
-      <div class="bg-white text-[#005697] p-1.5 rounded-xl font-black text-xl shadow-inner">
-        🛒
-      </div>
-      <div>
-        <h1 class="font-black text-base tracking-wide flex items-center gap-2">
-          ZOKENT POS <span class="bg-[#fff000] text-slate-900 text-[10px] px-2 py-0.5 rounded font-extrabold">RETAIL</span>
-        </h1>
-        <p class="text-[11px] text-blue-100 flex items-center gap-2">
-          <span>Kasir: <strong id="kasir-name" class="text-white">Memuat...</strong></span>
-          <span>•</span>
-          <span id="realtime-clock" class="font-mono text-yellow-300">00:00:00</span>
-        </p>
-      </div>
-    </div>
+    const userRole = session.user.user_metadata?.role;
 
-    <!-- TOMBOL LOGOUT UTAMA -->
-    <button id="btn-logout" class="bg-[#e31e24] hover:bg-red-700 text-white px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all shadow">
-      🚪 Keluar
-    </button>
-  </header>
+    // Jika yang login BUKAN role kasir (misal belum dibuatkan akun oleh admin) -> tolak
+    if (userRole !== "kasir" && userRole !== "admin") {
+      alert("⚠️ Akses ditolak! Anda harus login menggunakan akun Kasir yang dibuat oleh Admin.");
+      await supabase.auth.signOut();
+      window.location.href = "login-admin.html";
+      return;
+    }
 
-  <!-- MAIN CONTAINER (2 KOLOM LAYOUT) -->
-  <main class="flex-1 p-3 md:p-4 grid grid-cols-1 lg:grid-cols-12 gap-4 max-w-[1600px] mx-auto w-full no-print">
-    
-    <!-- KOLOM KIRI: SCANNER BARCODE & KATALOG (7 KOLOM) -->
-    <section class="lg:col-span-7 flex flex-col gap-3">
-      
-      <!-- AREA SCANNER BARCODE DI BAWAH HEADER -->
-      <div class="bg-white p-3.5 rounded-2xl border border-slate-200 shadow-sm flex flex-col gap-3">
-        <div class="flex items-center justify-between">
-          <span class="text-xs font-black text-[#005697] uppercase flex items-center gap-1.5">
-            <span>⚡ Pemindai Barcode / Alat Scan</span>
-          </span>
-          <!-- TOMBOL SCANNER KAMERA SEKARANG TERLETAK DI SINI -->
-          <button id="btn-toggle-camera" class="bg-slate-100 hover:bg-blue-50 text-[#005697] border border-blue-200 px-3 py-1.5 rounded-xl text-xs font-extrabold flex items-center gap-1.5 transition">
-            📷 <span>Aktifkan Kamera Scan</span>
-          </button>
-        </div>
+    // Tampilkan Nama Kasir yang dibuat oleh Admin
+    if (kasirNameEl) {
+      const kasirUsername = session.user.user_metadata?.username || session.user.email.split('@')[0];
+      kasirNameEl.textContent = kasirUsername;
+    }
+  }
 
-        <!-- INPUT BARCODE SCANNER UTAMA -->
-        <div class="relative">
-          <input 
-            type="text" 
-            id="barcode-input" 
-            placeholder="Arahkan Scanner / Ketik Barcode/Nama Produk lalu Enter..." 
-            autofocus
-            class="w-full pl-10 pr-4 py-3 rounded-xl border-2 border-[#005697] text-sm font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-yellow-400 bg-blue-50/30"
-          >
-          <span class="absolute left-3 top-1/2 -translate-y-1/2 text-lg">🏷️</span>
-        </div>
+  // 2. FETCH DATA BARANG DARI SUPABASE
+  async function loadProducts() {
+    const { data, error } = await supabase.from('products').select('*');
+    if (data && data.length > 0) {
+      products = data;
+    }
+    const countEl = document.getElementById("product-count");
+    if (countEl) countEl.textContent = `${products.length} Item`;
+    renderProducts(products);
+  }
 
-        <!-- WADAH KAMERA (TERLIPAT SECARA DEFAULT) -->
-        <div id="camera-reader" class="hidden rounded-xl overflow-hidden border-2 border-dashed border-blue-400 bg-slate-50"></div>
-      </div>
-
-      <!-- KATALOG PRODUK -->
-      <div class="bg-white p-3.5 rounded-2xl border border-slate-200 shadow-sm flex-1 flex flex-col">
-        <div class="flex justify-between items-center mb-2.5 px-1">
-          <span class="text-xs font-extrabold text-slate-700 uppercase tracking-wider">Katalog Barang</span>
-          <span id="product-count" class="text-[10px] bg-slate-100 text-slate-600 px-2 py-0.5 rounded-full font-bold">0 Item</span>
-        </div>
-
-        <div id="product-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2.5 overflow-y-auto max-h-[calc(100vh-340px)] p-1">
-          <!-- Item produk diisi dinamis via JavaScript -->
-        </div>
-      </div>
-    </section>
-
-    <!-- KOLOM KANAN: PESANAN & PEMBAYARAN (5 KOLOM) -->
-    <section class="lg:col-span-5 bg-white rounded-2xl border border-slate-200 shadow-lg p-4 flex flex-col justify-between">
-      
-      <div>
-        <!-- HEADER DAFTAR PESANAN -->
-        <div class="flex justify-between items-center pb-3 border-b border-slate-100">
-          <div>
-            <h2 class="font-black text-slate-800 text-sm flex items-center gap-1.5">
-              <span>🧾 DAFTAR PESANAN</span>
-              <span id="nota-number" class="text-xs font-mono font-normal text-blue-600">#TRX-0000</span>
-            </h2>
-          </div>
-          <button id="btn-clear-cart" class="text-[11px] bg-red-50 text-red-600 hover:bg-red-100 font-bold px-2.5 py-1 rounded-lg transition">
-            Kosongkan
-          </button>
-        </div>
-
-        <!-- TABEL PESANAN & NOMINAL HARGA -->
-        <div class="mt-2 overflow-y-auto max-h-[calc(100vh-420px)] min-h-[200px] pr-1">
-          <table class="w-full text-left border-collapse">
-            <thead>
-              <tr class="text-[10px] text-slate-400 border-b border-slate-100">
-                <th class="py-1">BARANG</th>
-                <th class="py-1 text-center">QTY</th>
-                <th class="py-1 text-right">HARGA (RP)</th>
-                <th class="py-1 text-center"></th>
-              </tr>
-            </thead>
-            <tbody id="cart-table-body" class="text-xs divide-y divide-slate-50">
-              <tr>
-                <td colspan="4" class="text-center py-12 text-slate-400 text-xs">Pesanan masih kosong. Scan barcode untuk menambah barang.</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      <!-- RINGKASAN NOMINAL & OPERASI BAYAR -->
-      <div class="border-t-2 border-slate-100 pt-3 space-y-2.5 bg-slate-50/60 -mx-4 -mb-4 p-4 rounded-b-2xl">
-        
-        <!-- DISPLAY TOTAL NOMINAL BESAR -->
-        <div class="bg-[#005697] text-white p-3 rounded-xl flex justify-between items-center shadow-inner">
-          <span class="text-xs font-bold text-blue-200">TOTAL PESANAN</span>
-          <span id="display-total" class="text-2xl font-black text-[#fff000] font-mono">Rp 0</span>
-        </div>
-
-        <!-- NOMINAL UANG PAS / PECAHAN CEPAT -->
+  // 3. RENDER KATALOG
+  function renderProducts(items) {
+    if (!productGrid) return;
+    productGrid.innerHTML = items.map(p => `
+      <div onclick="addToCartById(${p.id})" class="bg-white p-2.5 rounded-xl border border-slate-200 hover:border-[#005697] hover:shadow-md cursor-pointer transition-all flex flex-col justify-between group">
         <div>
-          <label class="block text-[10px] font-bold text-slate-500 mb-1 uppercase">Uang Tunai Cepat</label>
-          <div class="grid grid-cols-5 gap-1">
-            <button onclick="setQuickCash('pas')" class="bg-white border border-slate-300 hover:bg-blue-50 text-slate-700 font-bold py-1.5 rounded text-[10px]">UANG PAS</button>
-            <button onclick="setQuickCash(10000)" class="bg-white border border-slate-300 hover:bg-blue-50 text-slate-700 font-bold py-1.5 rounded text-[10px]">10rb</button>
-            <button onclick="setQuickCash(20000)" class="bg-white border border-slate-300 hover:bg-blue-50 text-slate-700 font-bold py-1.5 rounded text-[10px]">20rb</button>
-            <button onclick="setQuickCash(50000)" class="bg-white border border-slate-300 hover:bg-blue-50 text-slate-700 font-bold py-1.5 rounded text-[10px]">50rb</button>
-            <button onclick="setQuickCash(100000)" class="bg-white border border-slate-300 hover:bg-blue-50 text-slate-700 font-bold py-1.5 rounded text-[10px]">100rb</button>
-          </div>
+          <div class="text-2xl text-center mb-1 group-hover:scale-110 transition-transform">${p.icon || '📦'}</div>
+          <p class="text-[11px] font-bold text-slate-800 line-clamp-2 leading-tight">${p.name}</p>
         </div>
-
-        <!-- INPUT CASH & KEMBALIAN -->
-        <div class="grid grid-cols-2 gap-2">
-          <div>
-            <label class="block text-[10px] font-bold text-slate-600 mb-0.5">Diterima (Rp)</label>
-            <input 
-              type="number" 
-              id="cash-input" 
-              placeholder="0" 
-              class="w-full px-3 py-2 rounded-lg border border-slate-300 font-bold text-slate-800 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
-            >
-          </div>
-          <div>
-            <label class="block text-[10px] font-bold text-slate-600 mb-0.5">Kembalian</label>
-            <div id="display-change" class="px-3 py-2 rounded-lg bg-slate-200 font-bold text-slate-700 text-sm font-mono">
-              Rp 0
-            </div>
-          </div>
-        </div>
-
-        <!-- TOMBOL PROSES TRANSAKSI -->
-        <button 
-          id="btn-checkout" 
-          disabled
-          class="w-full bg-slate-300 text-slate-500 font-black py-3 rounded-xl text-sm transition-all shadow-md disabled:cursor-not-allowed flex items-center justify-center gap-2"
-        >
-          💳 PROSES & CETAK STRUK
-        </button>
-      </div>
-
-    </section>
-  </main>
-
-  <!-- MODAL STRUK CETAK -->
-  <div id="modal-struk" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center hidden">
-    <div class="bg-white p-6 rounded-2xl w-full max-w-xs shadow-2xl border border-slate-200">
-      
-      <div id="modal-struk-content" class="text-slate-800 font-mono text-xs">
-        <div class="text-center pb-3 border-b border-dashed border-slate-400">
-          <h3 class="font-black text-sm">ZOKENT MART</h3>
-          <p class="text-[10px] text-slate-500">Struk Pembayaran Toko Retail</p>
-          <p class="text-[10px] text-slate-500" id="struk-date">00/00/0000 00:00</p>
-        </div>
-
-        <div class="py-2 border-b border-dashed border-slate-400 text-[10px]">
-          <p>No Nota : <span id="struk-nota">#TRX-0000</span></p>
-          <p>Kasir   : <span id="struk-kasir">Admin</span></p>
-        </div>
-
-        <div id="struk-items" class="py-2 border-b border-dashed border-slate-400 space-y-1 text-[11px]">
-          <!-- Items Struk -->
-        </div>
-
-        <div class="py-2 space-y-1 text-[11px]">
-          <div class="flex justify-between">
-            <span>Total :</span>
-            <span id="struk-total" class="font-bold">Rp 0</span>
-          </div>
-          <div class="flex justify-between">
-            <span>Bayar :</span>
-            <span id="struk-bayar">Rp 0</span>
-          </div>
-          <div class="flex justify-between font-bold">
-            <span>Kembali :</span>
-            <span id="struk-kembali">Rp 0</span>
-          </div>
-        </div>
-
-        <div class="text-center pt-3 border-t border-dashed border-slate-400 text-[9px] text-slate-500">
-          <p>*** TERIMA KASIH ***</p>
-          <p>Barang yang sudah dibeli tidak dapat dikembalikan</p>
+        <div class="mt-2 pt-1 border-t border-slate-100 flex justify-between items-center">
+          <span class="text-[9px] font-mono text-slate-400">Stok: ${p.stock ?? 0}</span>
+          <span class="text-xs font-black text-[#e31e24]">${formatRupiah(p.price)}</span>
         </div>
       </div>
+    `).join("");
+  }
 
-      <div class="mt-4 flex gap-2 no-print">
-        <button onclick="window.print()" class="w-1/2 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 rounded-xl text-xs">🖨️ Cetak Struk</button>
-        <button onclick="closeStrukModal()" class="w-1/2 bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold py-2 rounded-xl text-xs">Tutup</button>
-      </div>
+  window.addToCartById = (id) => {
+    const product = products.find(p => p.id === id);
+    if (product) addItemToOrder(product);
+  };
 
-    </div>
-  </div>
+  // 4. TAMBAH BARANG KE KERANJANG (DENGAN CEK STOK)
+  function addItemToOrder(product) {
+    const existingItem = cart.find(c => c.id === product.id);
+    const currentQtyInCart = existingItem ? existingItem.qty : 0;
 
-  <!-- SCRIPT INTEGRASI POS & SCANNER -->
-  <script type="module">
-    import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
-
-    const SUPABASE_URL = "https://weuousmvkxmgmsnwiuad.supabase.co";
-    const SUPABASE_ANON_KEY = "sb_publishable_e375KDL0vuoahHO_kWMjwA_a04R4yHb";
-    const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
-    // EFEK SUARA BEEP SCANNER
-    function playBeepSound() {
-      try {
-        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        const oscillator = audioCtx.createOscillator();
-        const gainNode = audioCtx.createGain();
-        oscillator.type = "sine";
-        oscillator.frequency.value = 1400; // Frekuensi suara scanner kasir
-        gainNode.gain.value = 0.15;
-        oscillator.connect(gainNode);
-        gainNode.connect(audioCtx.destination);
-        oscillator.start();
-        oscillator.stop(audioCtx.currentTime + 0.08);
-      } catch (e) {}
+    if (product.stock !== undefined && (currentQtyInCart + 1) > product.stock) {
+      alert(`⚠️ Stok ${product.name} tidak mencukupi! Sisa stok: ${product.stock}`);
+      return;
     }
 
-    let products = [];
-    let cart = [];
-    let html5QrcodeScanner = null;
+    playBeepSound();
 
-    const barcodeInput = document.getElementById("barcode-input");
-    const productGrid = document.getElementById("product-grid");
-    const cartTableBody = document.getElementById("cart-table-body");
-    const displayTotal = document.getElementById("display-total");
-    const displayChange = document.getElementById("display-change");
-    const cashInput = document.getElementById("cash-input");
-    const btnCheckout = document.getElementById("btn-checkout");
-    const kasirNameEl = document.getElementById("kasir-name");
-
-    const formatRupiah = (num) => "Rp " + Number(num).toLocaleString("id-ID");
-
-    // JAM REALTIME
-    setInterval(() => {
-      document.getElementById("realtime-clock").textContent = new Date().toLocaleTimeString("id-ID");
-    }, 1000);
-
-    // FETCH DATA BARANG DARI SUPABASE
-    async function loadProducts() {
-      const { data } = await supabase.from('products').select('*');
-      if (data && data.length > 0) {
-        products = data;
-      } else {
-        // Data Fallback jika database masih kosong
-        products = [
-          { id: 1, name: "Indomie Goreng Special", price: 3500, icon: "🍜", barcode: "8998888111" },
-          { id: 2, name: "Air Mineral Le Minerale 600ml", price: 4000, icon: "🥤", barcode: "8998888222" },
-          { id: 3, name: "Kopi Kapal Api Mix 10s", price: 13500, icon: "☕", barcode: "8998888333" },
-          { id: 4, name: "Roti Tawar Sari Roti", price: 16000, icon: "🍞", barcode: "8998888444" },
-          { id: 5, name: "Chitato Sapi Panggang 68g", price: 11500, icon: "🍿", barcode: "8998888555" },
-          { id: 6, name: "Susu Ultra Milk Cokelat 250ml", price: 7000, icon: "🧃", barcode: "8998888666" }
-        ];
-      }
-      document.getElementById("product-count").textContent = `${products.length} Item`;
-      renderProducts(products);
+    if (existingItem) {
+      existingItem.qty += 1;
+    } else {
+      cart.push({ ...product, qty: 1 });
     }
 
-    // RENDER PRODUK DI KATALOG
-    function renderProducts(items) {
-      productGrid.innerHTML = items.map(p => `
-        <div onclick="addToCartById(${p.id})" class="bg-white p-2.5 rounded-xl border border-slate-200 hover:border-[#005697] hover:shadow-md cursor-pointer transition-all flex flex-col justify-between group">
-          <div>
-            <div class="text-2xl text-center mb-1 group-hover:scale-110 transition-transform">${p.icon || '📦'}</div>
-            <p class="text-[11px] font-bold text-slate-800 line-clamp-2 leading-tight">${p.name}</p>
-          </div>
-          <div class="mt-2 pt-1 border-t border-slate-100 flex justify-between items-center">
-            <span class="text-[9px] font-mono text-slate-400">${p.barcode || 'NO-BC'}</span>
-            <span class="text-xs font-black text-[#e31e24]">${formatRupiah(p.price)}</span>
-          </div>
-        </div>
-      `).join("");
-    }
-
-    window.addToCartById = (id) => {
-      const product = products.find(p => p.id === id);
-      if (product) addItemToOrder(product);
-    };
-
-    // FUNGSI UTAMA: TAMPUNG BARANG KE PESANAN & HITUNG NOMINAL
-    function addItemToOrder(product) {
-      playBeepSound();
-      const existingItem = cart.find(c => c.id === product.id);
-
-      if (existingItem) {
-        existingItem.qty += 1;
-      } else {
-        cart.push({ ...product, qty: 1 });
-      }
-
-      updateOrderUI();
+    updateOrderUI();
+    if (barcodeInput) {
       barcodeInput.value = "";
       barcodeInput.focus();
     }
+  }
 
-    // EVENT SCANNER BARCODE (TEKAN ENTER OTOMATIS)
+  // 5. SCANNER BARCODE INPUT
+  if (barcodeInput) {
     barcodeInput.addEventListener("keydown", (e) => {
       if (e.key === "Enter") {
         e.preventDefault();
         const query = barcodeInput.value.trim().toLowerCase();
         if (!query) return;
 
-        // Pencarian via Kode Barcode Persis atau Nama Item
         const matchedProduct = products.find(p => 
           (p.barcode && p.barcode.toLowerCase() === query) || 
           p.name.toLowerCase().includes(query)
@@ -345,181 +143,178 @@
         if (matchedProduct) {
           addItemToOrder(matchedProduct);
         } else {
-          alert("Barang dengan Barcode/Nama tersebut tidak ditemukan!");
+          alert("❌ Barang tidak ditemukan!");
           barcodeInput.value = "";
         }
       }
     });
+  }
 
-    // REFRESH UI PESANAN & KALKULASI TOTAL
-    function updateOrderUI() {
-      if (cart.length === 0) {
-        cartTableBody.innerHTML = `<tr><td colspan="4" class="text-center py-12 text-slate-400 text-xs">Pesanan masih kosong. Scan barcode untuk menambah barang.</td></tr>`;
-        displayTotal.textContent = "Rp 0";
-        displayChange.textContent = "Rp 0";
+  // 6. UPDATE UI KERANJANG
+  function updateOrderUI() {
+    if (!cartTableBody) return;
+
+    if (cart.length === 0) {
+      cartTableBody.innerHTML = `<tr><td colspan="4" class="text-center py-12 text-slate-400 text-xs">Pesanan masih kosong. Scan barcode untuk menambah barang.</td></tr>`;
+      if (displayTotal) displayTotal.textContent = "Rp 0";
+      if (displayChange) displayChange.textContent = "Rp 0";
+      if (btnCheckout) {
         btnCheckout.disabled = true;
         btnCheckout.className = "w-full bg-slate-300 text-slate-500 font-black py-3 rounded-xl text-sm transition-all shadow-md disabled:cursor-not-allowed flex items-center justify-center gap-2";
+      }
+      return;
+    }
+
+    cartTableBody.innerHTML = cart.map(item => `
+      <tr class="hover:bg-slate-50">
+        <td class="py-2.5 font-bold text-slate-800">
+          <p class="leading-tight">${item.name}</p>
+          <p class="text-[9px] text-slate-400 font-normal">@ ${formatRupiah(item.price)}</p>
+        </td>
+        <td class="py-2.5 text-center">
+          <div class="inline-flex items-center gap-1 bg-slate-100 rounded-lg p-0.5">
+            <button onclick="changeQty(${item.id}, -1)" class="w-5 h-5 bg-white rounded font-bold border shadow-sm text-slate-600">-</button>
+            <span class="px-1 font-bold text-slate-800">${item.qty}</span>
+            <button onclick="changeQty(${item.id}, 1)" class="w-5 h-5 bg-white rounded font-bold border shadow-sm text-slate-600">+</button>
+          </div>
+        </td>
+        <td class="py-2.5 text-right font-black text-slate-800">${formatRupiah(item.price * item.qty)}</td>
+        <td class="py-2.5 text-center">
+          <button onclick="removeItem(${item.id})" class="text-red-500 hover:text-red-700 font-bold px-1">✕</button>
+        </td>
+      </tr>
+    `).join("");
+
+    const totalNominal = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+    if (displayTotal) displayTotal.textContent = formatRupiah(totalNominal);
+    calculateChange(totalNominal);
+  }
+
+  window.changeQty = (id, delta) => {
+    const item = cart.find(c => c.id === id);
+    if (item) {
+      const product = products.find(p => p.id === id);
+      if (delta > 0 && product && (item.qty + delta) > product.stock) {
+        alert(`Stok maksimal ${product.name} hanya ${product.stock}`);
         return;
       }
-
-      cartTableBody.innerHTML = cart.map(item => `
-        <tr class="hover:bg-slate-50">
-          <td class="py-2.5 font-bold text-slate-800">
-            <p class="leading-tight">${item.name}</p>
-            <p class="text-[9px] text-slate-400 font-normal">@ ${formatRupiah(item.price)}</p>
-          </td>
-          <td class="py-2.5 text-center">
-            <div class="inline-flex items-center gap-1 bg-slate-100 rounded-lg p-0.5">
-              <button onclick="changeQty(${item.id}, -1)" class="w-5 h-5 bg-white rounded font-bold border shadow-sm text-slate-600">-</button>
-              <span class="px-1 font-bold text-slate-800">${item.qty}</span>
-              <button onclick="changeQty(${item.id}, 1)" class="w-5 h-5 bg-white rounded font-bold border shadow-sm text-slate-600">+</button>
-            </div>
-          </td>
-          <td class="py-2.5 text-right font-black text-slate-800">${formatRupiah(item.price * item.qty)}</td>
-          <td class="py-2.5 text-center">
-            <button onclick="removeItem(${item.id})" class="text-red-500 hover:text-red-700 font-bold px-1">✕</button>
-          </td>
-        </tr>
-      `).join("");
-
-      const totalNominal = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
-      displayTotal.textContent = formatRupiah(totalNominal);
-      calculateChange(totalNominal);
+      item.qty += delta;
+      if (item.qty <= 0) cart = cart.filter(c => c.id !== id);
     }
+    updateOrderUI();
+  };
 
-    window.changeQty = (id, delta) => {
-      const item = cart.find(c => c.id === id);
-      if (item) {
-        item.qty += delta;
-        if (item.qty <= 0) cart = cart.filter(c => c.id !== id);
-      }
-      updateOrderUI();
-    };
+  window.removeItem = (id) => {
+    cart = cart.filter(c => c.id !== id);
+    updateOrderUI();
+  };
 
-    window.removeItem = (id) => {
-      cart = cart.filter(c => c.id !== id);
-      updateOrderUI();
-    };
+  function calculateChange(total) {
+    if (!cashInput || !displayChange || !btnCheckout) return;
+    const cash = parseFloat(cashInput.value) || 0;
+    const change = cash - total;
 
-    // UANG PECAHAN CEPAT
-    window.setQuickCash = (val) => {
-      const totalNominal = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
-      if (val === 'pas') {
-        cashInput.value = totalNominal;
-      } else {
-        cashInput.value = val;
-      }
-      calculateChange(totalNominal);
-    };
-
-    // HITUNG KEMBALIAN OTOMATIS
-    function calculateChange(total) {
-      const cash = parseFloat(cashInput.value) || 0;
-      const change = cash - total;
-
-      if (cash >= total && total > 0) {
-        displayChange.textContent = formatRupiah(change);
-        displayChange.className = "px-3 py-2 rounded-lg bg-emerald-100 font-extrabold text-emerald-700 text-sm font-mono";
-        btnCheckout.disabled = false;
-        btnCheckout.className = "w-full bg-[#005697] hover:bg-blue-800 text-white font-black py-3 rounded-xl text-sm transition-all shadow-md cursor-pointer flex items-center justify-center gap-2";
-      } else {
-        displayChange.textContent = "Rp 0";
-        displayChange.className = "px-3 py-2 rounded-lg bg-slate-200 font-bold text-slate-700 text-sm font-mono";
-        btnCheckout.disabled = true;
-        btnCheckout.className = "w-full bg-slate-300 text-slate-500 font-black py-3 rounded-xl text-sm transition-all shadow-md disabled:cursor-not-allowed flex items-center justify-center gap-2";
-      }
+    if (cash >= total && total > 0) {
+      displayChange.textContent = formatRupiah(change);
+      displayChange.className = "px-3 py-2 rounded-lg bg-emerald-100 font-extrabold text-emerald-700 text-sm font-mono";
+      btnCheckout.disabled = false;
+      btnCheckout.className = "w-full bg-[#005697] hover:bg-blue-800 text-white font-black py-3 rounded-xl text-sm transition-all shadow-md cursor-pointer flex items-center justify-center gap-2";
+    } else {
+      displayChange.textContent = "Rp 0";
+      displayChange.className = "px-3 py-2 rounded-lg bg-slate-200 font-bold text-slate-700 text-sm font-mono";
+      btnCheckout.disabled = true;
+      btnCheckout.className = "w-full bg-slate-300 text-slate-500 font-black py-3 rounded-xl text-sm transition-all shadow-md disabled:cursor-not-allowed flex items-center justify-center gap-2";
     }
+  }
 
+  if (cashInput) {
     cashInput.addEventListener("input", () => {
       const total = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
       calculateChange(total);
     });
+  }
 
-    document.getElementById("btn-clear-cart").addEventListener("click", () => {
-      cart = [];
-      cashInput.value = "";
-      updateOrderUI();
-      barcodeInput.focus();
-    });
-
-    // PROSES TRANSAKSI & TAMPILKAN STRUK
+  // 7. PROSES TRANSAKSI & POTONG STOK
+  if (btnCheckout) {
     btnCheckout.addEventListener("click", async () => {
+      btnCheckout.disabled = true;
+      btnCheckout.textContent = "⏳ Memproses Transaksi...";
+
       const total = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
       const cash = parseFloat(cashInput.value) || 0;
       const change = cash - total;
       const notaNo = "#TRX-" + Math.floor(100000 + Math.random() * 900000);
+      const cashierName = kasirNameEl ? kasirNameEl.textContent : "Kasir";
 
       try {
+        // Catat Transaksi
         await supabase.from('transactions').insert([{
           total_price: total,
           cash_paid: cash,
           change_returned: change,
-          cashier_email: kasirNameEl.textContent
+          cashier_email: cashierName
         }]);
+
+        // Potong Stok
+        for (const item of cart) {
+          const productInDb = products.find(p => p.id === item.id);
+          if (productInDb) {
+            const updatedStock = Math.max(0, (productInDb.stock || 0) - item.qty);
+            await supabase
+              .from('products')
+              .update({ stock: updatedStock })
+              .eq('id', item.id);
+          }
+        }
+
+        await loadProducts();
+
+        // Cetak / Tampil Struk
+        const strukNota = document.getElementById("struk-nota");
+        const strukKasir = document.getElementById("struk-kasir");
+        const strukDate = document.getElementById("struk-date");
+        const strukTotal = document.getElementById("struk-total");
+        const strukBayar = document.getElementById("struk-bayar");
+        const strukKembali = document.getElementById("struk-kembali");
+        const strukItems = document.getElementById("struk-items");
+        const modalStruk = document.getElementById("modal-struk");
+
+        if (strukNota) strukNota.textContent = notaNo;
+        if (strukKasir) strukKasir.textContent = cashierName;
+        if (strukDate) strukDate.textContent = new Date().toLocaleString("id-ID");
+        if (strukTotal) strukTotal.textContent = formatRupiah(total);
+        if (strukBayar) strukBayar.textContent = formatRupiah(cash);
+        if (strukKembali) strukKembali.textContent = formatRupiah(change);
+
+        if (strukItems) {
+          strukItems.innerHTML = cart.map(item => `
+            <div class="flex justify-between">
+              <span>${item.name} x${item.qty}</span>
+              <span>${formatRupiah(item.price * item.qty)}</span>
+            </div>
+          `).join("");
+        }
+
+        if (modalStruk) modalStruk.classList.remove("hidden");
+
       } catch (err) {
-        console.log("Database simpan transaksi offline/skip.");
-      }
-
-      document.getElementById("struk-nota").textContent = notaNo;
-      document.getElementById("struk-kasir").textContent = kasirNameEl.textContent;
-      document.getElementById("struk-date").textContent = new Date().toLocaleString("id-ID");
-      document.getElementById("struk-total").textContent = formatRupiah(total);
-      document.getElementById("struk-bayar").textContent = formatRupiah(cash);
-      document.getElementById("struk-kembali").textContent = formatRupiah(change);
-
-      document.getElementById("struk-items").innerHTML = cart.map(item => `
-        <div class="flex justify-between">
-          <span>${item.name} x${item.qty}</span>
-          <span>${formatRupiah(item.price * item.qty)}</span>
-        </div>
-      `).join("");
-
-      document.getElementById("modal-struk").classList.remove("hidden");
-    });
-
-    window.closeStrukModal = () => {
-      document.getElementById("modal-struk").classList.add("hidden");
-      cart = [];
-      cashInput.value = "";
-      updateOrderUI();
-      barcodeInput.focus();
-    };
-
-    // TOGGLE PEMINDAI KAMERA DARI BAWAH HEADER
-    document.getElementById("btn-toggle-camera").addEventListener("click", () => {
-      const camReader = document.getElementById("camera-reader");
-      if (camReader.classList.contains("hidden")) {
-        camReader.classList.remove("hidden");
-        html5QrcodeScanner = new Html5QrcodeScanner("camera-reader", { fps: 10, qrbox: 250 });
-        html5QrcodeScanner.render((decodedText) => {
-          barcodeInput.value = decodedText;
-          const match = products.find(p => p.barcode === decodedText);
-          if (match) addItemToOrder(match);
-        });
-      } else {
-        camReader.classList.add("hidden");
-        if (html5QrcodeScanner) html5QrcodeScanner.clear();
+        alert("Terjadi kesalahan transaksi: " + err.message);
+      } finally {
+        btnCheckout.textContent = "💳 PROSES & CETAK STRUK";
       }
     });
+  }
 
-    // AUTENTIKASI KASIR
-    async function checkAuth() {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session) {
-        window.location.href = "login.html";
-      } else {
-        kasirNameEl.textContent = session.user.user_metadata?.username || session.user.email.split('@')[0];
-      }
-    }
-
-    document.getElementById("btn-logout").addEventListener("click", async () => {
+  // LOGOUT KASIR
+  const btnLogout = document.getElementById("btn-logout");
+  if (btnLogout) {
+    btnLogout.addEventListener("click", async () => {
       await supabase.auth.signOut();
-      window.location.href = "login.html";
+      window.location.href = "login-admin.html";
     });
+  }
 
-    // INISIALISASI
-    checkAuth();
-    loadProducts();
-  </script>
-</body>
-</html>
+  // INISIALISASI
+  await checkAuth();
+  await loadProducts();
+</script>
