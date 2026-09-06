@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Kasir POS Terminal - Zokent Mart Matrix Edition</title>
+  <title>Kasir POS Terminal - Matrix Edition</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     body {
@@ -60,13 +60,10 @@
 </head>
 <body class="min-h-screen w-full p-3 md:p-6 relative">
 
-  <!-- ANIMASI BACKGROUND MATRIX RAIN -->
   <canvas id="matrix-bg"></canvas>
 
   <div class="relative z-10 max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-4">
-    <!-- KANAN / DASHBOARD KATALOG (8 COLS) -->
     <div class="lg:col-span-8 space-y-4">
-      <!-- HEADER TERMINAL -->
       <div class="glass-card p-4 rounded-2xl glow-box flex justify-between items-center">
         <div>
           <h1 class="text-lg font-black glow-green-text flex items-center gap-2">
@@ -84,23 +81,19 @@
         </div>
       </div>
 
-      <!-- SCANNER INPUT -->
       <div class="glass-card p-3 rounded-2xl glow-box flex items-center gap-2">
         <span class="text-emerald-400 text-sm pl-2">🔍</span>
         <input type="text" id="barcode-input" placeholder="Scan Barcode / Cari nama barang [Enter]..." autofocus class="hacker-input w-full px-4 py-2.5 rounded-xl text-xs font-mono">
       </div>
 
-      <!-- SUB HEADER KATALOG -->
       <div class="flex justify-between items-center px-1">
         <span class="text-xs font-bold text-emerald-400 uppercase tracking-widest">&gt; KATALOG BARANG</span>
         <span id="product-count" class="text-xs font-bold text-emerald-500/70 font-mono">0 Item</span>
       </div>
 
-      <!-- GRID KATALOG PRODUK -->
       <div id="product-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 max-h-[60vh] overflow-y-auto pr-1"></div>
     </div>
 
-    <!-- KIRI / KERANJANG & CHECKOUT (4 COLS) -->
     <div class="lg:col-span-4 glass-card p-4 rounded-2xl glow-box flex flex-col justify-between h-[88vh]">
       <div>
         <div class="flex justify-between items-center border-b border-emerald-500/30 pb-3 mb-3">
@@ -117,7 +110,6 @@
         </div>
       </div>
 
-      <!-- FOOTER TRANSAKSI -->
       <div class="border-t border-emerald-500/30 pt-3 space-y-3 font-mono">
         <div class="flex justify-between items-center">
           <span class="text-xs font-bold text-emerald-400/80">TOTAL PAYMENT:</span>
@@ -141,7 +133,6 @@
     </div>
   </div>
 
-  <!-- MODAL STRUK (HACKER TERMINAL STYLE) -->
   <div id="modal-struk" class="hidden fixed inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center p-4 z-50">
     <div class="glass-card p-6 rounded-2xl max-w-xs w-full glow-box font-mono text-xs text-emerald-300 space-y-3 border-emerald-500/50">
       <div class="text-center border-b border-emerald-500/30 pb-3">
@@ -187,27 +178,12 @@
 
     const formatRupiah = (num) => "Rp " + Number(num).toLocaleString("id-ID");
 
-    // =====================================================
-    // EFEK MATRIX DIGITAL RAIN
-    // =====================================================
     const canvas = document.getElementById('matrix-bg');
     const ctx = canvas.getContext('2d');
-    let fontSize = window.innerWidth < 640 ? 12 : 14;
-    let columns = 0;
-    let rainDrops = [];
-
-    const katakana = 'アァカサタナハマヤャラワガザダバパイィキシチニヒミリヰギジヂビピウゥクスツヌフムユュルグズブヅプエェケセテネヘメレヱゲゼデベペオォコソトノホモヨョロヲゴゾドボポヴッン';
-    const latin = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-    const alphabet = katakana + latin;
-
-    function initMatrix() {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-      fontSize = window.innerWidth < 640 ? 12 : 14;
-      columns = Math.floor(canvas.width / fontSize);
-      rainDrops = Array.from({ length: columns }, () => Math.floor(Math.random() * -50));
-    }
-    initMatrix();
+    let fontSize = 14;
+    let columns = Math.floor(window.innerWidth / fontSize);
+    let rainDrops = Array.from({ length: columns }, () => Math.floor(Math.random() * -50));
+    const alphabet = 'アァカサタナハマヤャラワガザダバパイィキシチニヒミリヰギジヂビピウゥクスツヌフムユュルグズブヅプエェケセテネヘメレヱゲゼデベペオォコソトノホモヨョロヲゴゾドボポヴッンABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
 
     function drawMatrix() {
       ctx.fillStyle = 'rgba(3, 7, 18, 0.08)';
@@ -217,48 +193,40 @@
       for (let i = 0; i < rainDrops.length; i++) {
         const text = alphabet.charAt(Math.floor(Math.random() * alphabet.length));
         ctx.fillText(text, i * fontSize, rainDrops[i] * fontSize);
-        if (rainDrops[i] * fontSize > canvas.height && Math.random() > 0.975) {
-          rainDrops[i] = 0;
-        }
+        if (rainDrops[i] * fontSize > canvas.height && Math.random() > 0.975) rainDrops[i] = 0;
         rainDrops[i]++;
       }
     }
+    function initMatrix() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      columns = Math.floor(canvas.width / fontSize);
+    }
+    initMatrix();
+    window.addEventListener('resize', initMatrix);
     setInterval(drawMatrix, 45);
 
-    let resizeTimeout;
-    window.addEventListener('resize', () => {
-      clearTimeout(resizeTimeout);
-      resizeTimeout = setTimeout(initMatrix, 150);
-    });
-
-    // JAM REALTIME
     setInterval(() => {
       const clockEl = document.getElementById("realtime-clock");
       if (clockEl) clockEl.textContent = new Date().toLocaleTimeString("id-ID");
     }, 1000);
 
-    // =====================================================
-    // VERIFIKASI AKSES AKUN KASIR
-    // =====================================================
     async function checkAuth() {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) {
         window.location.href = "login-admin.html";
         return;
       }
-
       const userRole = session.user.user_metadata?.role;
       if (userRole !== "kasir" && userRole !== "admin" && userRole !== "pemilik") {
-        alert("⚠️ Akses ditolak! Gunakan akun Kasir yang dibuat oleh Admin.");
+        alert("⚠️ Akses ditolak! Role tidak dikenali.");
         await supabase.auth.signOut();
         window.location.href = "login-admin.html";
         return;
       }
-
       kasirNameEl.textContent = session.user.user_metadata?.username || session.user.email.split('@')[0];
     }
 
-    // LOAD PRODUK SUPABASE
     async function loadProducts() {
       const { data } = await supabase.from('products').select('*');
       if (data) products = data;
@@ -266,7 +234,6 @@
       renderProducts(products);
     }
 
-    // RENDER PRODUK HACKER CARDS
     function renderProducts(items) {
       productGrid.innerHTML = items.map(p => `
         <div onclick="addToCartById(${p.id})" class="glass-card p-3 rounded-xl hover:border-emerald-400 hover:shadow-[0_0_15px_rgba(52,211,153,0.3)] cursor-pointer transition-all flex flex-col justify-between group">
@@ -304,7 +271,6 @@
       barcodeInput.focus();
     }
 
-    // BARCODE SCANNER ENTER KEY
     barcodeInput.addEventListener("keydown", (e) => {
       if (e.key === "Enter") {
         e.preventDefault();
@@ -320,7 +286,6 @@
       }
     });
 
-    // UPDATE UI KERANJANG
     function updateOrderUI() {
       if (cart.length === 0) {
         cartTableBody.innerHTML = `<tr><td colspan="4" class="text-center py-12 text-emerald-600/70">Terminal kosong. Scan barcode untuk menambah barang.</td></tr>`;
@@ -378,7 +343,6 @@
       calculateChange(cart.reduce((sum, item) => sum + (item.price * item.qty), 0));
     });
 
-    // PROSES CHECKOUT DENGAN UPDATE STOK SUPABASE
     btnCheckout.addEventListener("click", async () => {
       btnCheckout.disabled = true;
       btnCheckout.textContent = "⏳ PROCESSING TRANSACTIONS...";
