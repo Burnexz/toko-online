@@ -1,10 +1,245 @@
-await tempSupabase.auth.signUp({
-  email: emailKasir,
-  password: passwordKasir,
-  options: {
-    data: {
-      username: namaKasir,
-      role: 'kasir' // <-- Kunci utama verifikasi akses kasir
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard Admin - Matrix Terminal Zokent Group</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      min-height: 100vh;
+      width: 100%;
+      background-color: #030712;
+      font-family: 'ui-monospace', SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      color: #34d399;
+      margin: 0;
+      overflow-x: hidden;
     }
-  }
-});
+    #matrix-bg {
+      position: fixed;
+      inset: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 0;
+      pointer-events: none;
+    }
+    .glow-green-text {
+      color: #34d399;
+      text-shadow: 0 0 12px rgba(52, 211, 153, 0.7);
+    }
+    .glow-box {
+      box-shadow: 0 0 25px rgba(34, 197, 94, 0.2);
+    }
+    .glass-card {
+      background-color: rgba(0, 0, 0, 0.55);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border: 1px solid rgba(52, 211, 153, 0.35);
+    }
+    .hacker-input {
+      background-color: rgba(0, 0, 0, 0.4);
+      backdrop-filter: blur(4px);
+      border: 1px solid rgba(52, 211, 153, 0.4);
+      color: #4ade80;
+      text-shadow: 0 0 5px rgba(74, 222, 128, 0.6);
+      transition: all 0.25s ease-in-out;
+    }
+    .hacker-input::placeholder {
+      color: rgba(52, 211, 153, 0.4);
+    }
+    .hacker-input:focus {
+      outline: none;
+      border-color: #34d399;
+      box-shadow: 0 0 15px rgba(52, 211, 153, 0.6);
+      background-color: rgba(0, 0, 0, 0.6);
+    }
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: #030712; }
+    ::-webkit-scrollbar-thumb { background: #15803d; border-radius: 3px; }
+  </style>
+</head>
+<body class="min-h-screen w-full p-4 md:p-8 relative">
+
+  <!-- ANIMASI BACKGROUND MATRIX RAIN -->
+  <canvas id="matrix-bg"></canvas>
+
+  <div class="relative z-10 max-w-6xl mx-auto space-y-6">
+    <!-- HEADER ADMIN -->
+    <header class="glass-card p-6 rounded-2xl glow-box flex justify-between items-center">
+      <div>
+        <h1 class="text-xl font-black glow-green-text flex items-center gap-2">
+          <span>&gt;_</span> DASHBOARD ADMIN / PEMILIK
+        </h1>
+        <p class="text-xs text-emerald-400/80 mt-1">[ SYSTEM ACCESS LEVEL : ADMINISTRATOR ROOT ]</p>
+      </div>
+      <button id="btn-logout" class="bg-red-950/80 hover:bg-red-900 text-red-400 border border-red-500/40 px-4 py-2 rounded-xl text-xs font-bold transition-all hover:shadow-[0_0_15px_rgba(239,68,68,0.4)]">
+        🚪 LOGOUT ADMIN
+      </button>
+    </header>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <!-- FORM BUAT AKUN KASIR -->
+      <div class="glass-card p-6 rounded-2xl glow-box space-y-4">
+        <div>
+          <h2 class="text-base font-black text-emerald-300 tracking-wider uppercase flex items-center gap-2">
+            <span>👤</span> REGISTRASI AKUN KASIR
+          </h2>
+          <p class="text-xs text-emerald-500/70 mt-1">Buat kredensial kasir baru. Kasir terdaftar dapat login via Portal Terminal.</p>
+        </div>
+
+        <form id="form-create-kasir" class="space-y-4">
+          <div>
+            <label class="block text-[11px] font-bold text-emerald-400 uppercase mb-1.5 tracking-wider">NAMA OPERATOR KASIR</label>
+            <input type="text" id="kasir-name-input" required placeholder="Contoh: Budi Santoso" class="hacker-input w-full px-4 py-2.5 rounded-xl text-xs font-mono">
+          </div>
+          <div>
+            <label class="block text-[11px] font-bold text-emerald-400 uppercase mb-1.5 tracking-wider">EMAIL AKSES KASIR</label>
+            <input type="email" id="kasir-email-input" required placeholder="kasir1@toko.com" class="hacker-input w-full px-4 py-2.5 rounded-xl text-xs font-mono">
+          </div>
+          <div>
+            <label class="block text-[11px] font-bold text-emerald-400 uppercase mb-1.5 tracking-wider">PASSWORD AKSES</label>
+            <input type="password" id="kasir-password-input" required minlength="6" placeholder="Minimal 6 karakter" class="hacker-input w-full px-4 py-2.5 rounded-xl text-xs font-mono">
+          </div>
+
+          <button type="submit" id="btn-save-kasir" class="w-full bg-emerald-500 hover:bg-emerald-400 text-black font-extrabold py-3 rounded-xl text-xs transition-all shadow-[0_0_20px_rgba(52,211,153,0.5)] uppercase tracking-wider mt-2">
+            ➕ BUAT & OLEH HAK AKSES KASIR
+          </button>
+        </form>
+      </div>
+
+      <!-- KARTU NAVIGASI KASIR -->
+      <div class="glass-card p-6 rounded-2xl glow-box flex flex-col justify-between">
+        <div>
+          <h2 class="text-base font-black text-emerald-300 tracking-wider uppercase flex items-center gap-2 mb-2">
+            <span>🛒</span> PINTU MASUK TERMINAL POS
+          </h2>
+          <p class="text-xs text-emerald-500/70 leading-relaxed">
+            Admin/Pemilik dapat memantau, menguji, atau mengoperasikan mesin kasir POS secara langsung dari link di bawah ini.
+          </p>
+        </div>
+
+        <div class="space-y-3 mt-6">
+          <div class="p-3 bg-black/40 rounded-xl border border-emerald-500/20 text-[11px] font-mono text-emerald-400/80">
+            STATUS MODUL POS: <span class="text-emerald-300 font-bold">READY / SIAP OPERASIONAL</span>
+          </div>
+          <a href="kasir.html" class="block text-center bg-emerald-950/80 hover:bg-emerald-900 border border-emerald-500/40 text-emerald-300 font-black py-3 rounded-xl text-xs transition-all hover:shadow-[0_0_20px_rgba(52,211,153,0.4)] uppercase tracking-wider">
+            🖥️ BUKA TERMINAL KASIR (POS)
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
+
+    const SUPABASE_URL = "https://weuousmvkxmgmsnwiuad.supabase.co";
+    const SUPABASE_ANON_KEY = "sb_publishable_e375KDL0vuoahHO_kWMjwA_a04R4yHb";
+
+    // Client Admin Sesi Aktif
+    const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    // Client Tanpa Persist Sesi (Agar Admin Tidak Ter-logout saat Buat Akun Kasir)
+    const tempSupabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+      auth: { persistSession: false }
+    });
+
+    // =====================================================
+    // EFEK MATRIX DIGITAL RAIN
+    // =====================================================
+    const canvas = document.getElementById('matrix-bg');
+    const ctx = canvas.getContext('2d');
+    let fontSize = window.innerWidth < 640 ? 12 : 14;
+    let columns = 0;
+    let rainDrops = [];
+
+    const katakana = 'アァカサタナハマヤャラワガザダバパイィキシチニヒミリヰギジヂビピウゥクスツヌフムユュルグズブヅプエェケセテネヘメレヱゲゼデベペオォコソトノホモヨョロヲゴゾドボポヴッン';
+    const latin = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    const alphabet = katakana + latin;
+
+    function initMatrix() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      fontSize = window.innerWidth < 640 ? 12 : 14;
+      columns = Math.floor(canvas.width / fontSize);
+      rainDrops = Array.from({ length: columns }, () => Math.floor(Math.random() * -50));
+    }
+    initMatrix();
+
+    function drawMatrix() {
+      ctx.fillStyle = 'rgba(3, 7, 18, 0.08)';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = '#10b981';
+      ctx.font = fontSize + 'px monospace';
+      for (let i = 0; i < rainDrops.length; i++) {
+        const text = alphabet.charAt(Math.floor(Math.random() * alphabet.length));
+        ctx.fillText(text, i * fontSize, rainDrops[i] * fontSize);
+        if (rainDrops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+          rainDrops[i] = 0;
+        }
+        rainDrops[i]++;
+      }
+    }
+    setInterval(drawMatrix, 45);
+
+    let resizeTimeout;
+    window.addEventListener('resize', () => {
+      clearTimeout(resizeTimeout);
+      resizeTimeout = setTimeout(initMatrix, 150);
+    });
+
+    // =====================================================
+    // VERIFIKASI DERAJAT HAK AKSES ADMIN
+    // =====================================================
+    async function verifyAdmin() {
+      const { data: { session } } = await supabase.auth.getSession();
+      const role = session?.user?.user_metadata?.role;
+      if (!session || (role !== 'admin' && role !== 'pemilik')) {
+        alert("⚠️ Akses ditolak! Halaman ini khusus Admin / Pemilik.");
+        window.location.href = "login-admin.html";
+      }
+    }
+
+    const formCreateKasir = document.getElementById("form-create-kasir");
+    const btnSaveKasir = document.getElementById("btn-save-kasir");
+
+    formCreateKasir.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      btnSaveKasir.disabled = true;
+      btnSaveKasir.textContent = "⏳ MEMPROSES AKUN...";
+
+      const username = document.getElementById("kasir-name-input").value.trim();
+      const email = document.getElementById("kasir-email-input").value.trim();
+      const password = document.getElementById("kasir-password-input").value.trim();
+
+      const { data, error } = await tempSupabase.auth.signUp({
+        email: email,
+        password: password,
+        options: {
+          data: {
+            username: username,
+            role: 'kasir'
+          }
+        }
+      });
+
+      if (error) {
+        alert("❌ Gagal membuat akun: " + error.message);
+      } else {
+        alert(`✅ Akun Kasir '${username}' berhasil didaftarkan! Kasir dapat langsung login via portal utama.`);
+        formCreateKasir.reset();
+      }
+
+      btnSaveKasir.disabled = false;
+      btnSaveKasir.textContent = "➕ BUAT & OLEH HAK AKSES KASIR";
+    });
+
+    document.getElementById("btn-logout").addEventListener("click", async () => {
+      await supabase.auth.signOut();
+      window.location.href = "login-admin.html";
+    });
+
+    verifyAdmin();
+  </script>
+</body>
+</html>
