@@ -203,6 +203,49 @@
             box-shadow: 0 0 10px rgba(0, 255, 102, 0.3);
         }
 
+        /* Table List Kasir */
+        .table-container {
+            overflow-x: auto;
+            margin-top: 15px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.8rem;
+        }
+
+        th, td {
+            border: 1px solid var(--border-color);
+            padding: 10px;
+            text-align: left;
+        }
+
+        th {
+            background: #050a08;
+            color: var(--neon-green);
+            letter-spacing: 0.5px;
+        }
+
+        td {
+            color: var(--text-main);
+        }
+
+        .btn-delete {
+            background: rgba(255, 77, 77, 0.1);
+            color: #ff4d4d;
+            border: 1px solid #ff4d4d;
+            padding: 4px 8px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 0.75rem;
+        }
+
+        .btn-delete:hover {
+            background: #ff4d4d;
+            color: #fff;
+        }
+
         /* Status & Alert */
         .status-badge {
             font-size: 0.8rem;
@@ -213,15 +256,16 @@
         }
 
         .alert {
-            padding: 10px 15px;
+            padding: 12px 15px;
             border-radius: 4px;
-            font-size: 0.8rem;
+            font-size: 0.85rem;
             margin-bottom: 15px;
             display: none;
+            font-weight: bold;
         }
         
         .alert-success {
-            background: rgba(0, 255, 102, 0.1);
+            background: rgba(0, 255, 102, 0.15);
             border: 1px solid var(--neon-green);
             color: var(--neon-green);
         }
@@ -267,6 +311,25 @@
 
                 <button type="submit" class="btn-primary">➕ BUAT AKUN KASIR</button>
             </form>
+
+            <!-- Tabel Daftar Akun Kasir Yang Aktif -->
+            <div style="margin-top: 30px;">
+                <h3 style="font-size: 0.85rem; margin-bottom: 10px; color: var(--neon-green);">📋 DAFTAR AKUN KASIR TERDAFTAR</h3>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Nama Operator</th>
+                                <th>Email / Login</th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabelKasirBody">
+                            <!-- Data akan dimuat otomatis via JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
 
         <!-- Pintu Masuk Terminal POS -->
@@ -283,6 +346,9 @@
     </div>
 
     <script>
+        // Tampilkan daftar kasir saat halaman dimuat
+        document.addEventListener("DOMContentLoaded", muatDaftarKasir);
+
         function registerKasir(event) {
             event.preventDefault();
             const nama = document.getElementById('namaKasir').value;
@@ -290,39 +356,63 @@
             const password = document.getElementById('passKasir').value;
             const alertBox = document.getElementById('alertBox');
 
-            // Simpan akun kasir ke localStorage agar bisa dipakai login di login-admin.html
+            // Simpan akun kasir ke localStorage
             const dataKasirBaru = { nama, email, password };
             let daftarKasir = JSON.parse(localStorage.getItem('daftarKasir')) || [];
             daftarKasir.push(dataKasirBaru);
             localStorage.setItem('daftarKasir', JSON.stringify(daftarKasir));
 
-            // Tampilkan notifikasi sukses ala terminal
+            // Tampilkan notifikasi pop-up (alert bawaan browser) dan kotak sukses di halaman
+            alert(`>_ SUCCESS: Akun kasir untuk "${nama}" (${email}) berhasil dibuat!`);
+
             alertBox.style.display = 'block';
             alertBox.className = 'alert alert-success';
-            alertBox.innerHTML = `>_ SUCCESS: Akun kasir untuk <strong>${nama}</strong> (${email}) berhasil didaftarkan ke sistem!`;
+            alertBox.innerHTML = `>_ SUCCESS: Akun kasir untuk <strong>${nama}</strong> (${email}) berhasil dibuat dan disimpan ke sistem!`;
 
-            // Reset form input
+            // Reset form input & Perbarui tampilan tabel
             document.getElementById('formKasir').reset();
+            muatDaftarKasir();
 
-            // Sembunyikan alert otomatis setelah 5 detik
+            // Sembunyikan alert kotak hijau otomatis setelah 5 detik
             setTimeout(() => {
                 alertBox.style.display = 'none';
             }, 5000);
         }
-            // Reset form input
-            document.getElementById('formKasir').reset();
 
-            // Sembunyikan alert otomatis setelah 5 detik
-            setTimeout(() => {
-                alertBox.style.display = 'none';
-            }, 5000);
+        function muatDaftarKasir() {
+            const tbody = document.getElementById('tabelKasirBody');
+            let daftarKasir = JSON.parse(localStorage.getItem('daftarKasir')) || [];
+            
+            tbody.innerHTML = '';
+
+            if (daftarKasir.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="3" style="text-align: center; color: var::text-muted;">Belum ada akun kasir yang terdaftar.</td></tr>`;
+                return;
+            }
+
+            daftarKasir.forEach((kasir, index) => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${kasir.nama}</td>
+                    <td>${kasir.email}</td>
+                    <td><button class="btn-delete" onclick="hapusKasir(${index})">Hapus</button></td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function hapusKasir(index) {
+            if (confirm("Apakah Anda yakin ingin menghapus akun kasir ini?")) {
+                let daftarKasir = JSON.parse(localStorage.getItem('daftarKasir')) || [];
+                daftarKasir.splice(index, 1);
+                localStorage.setItem('daftarKasir', JSON.stringify(daftarKasir));
+                muatDaftarKasir();
+            }
         }
 
         function handleLogout() {
             if(confirm("Apakah Anda yakin ingin keluar dari sesi Administrator?")) {
-                // Hapus token login dari localStorage
                 localStorage.removeItem("adminLoggedIn");
-                // Arahkan kembali ke halaman portal login
                 window.location.href = "login-admin.html"; 
             }
         }
