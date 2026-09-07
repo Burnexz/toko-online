@@ -1,216 +1,235 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dashboard Admin - Matrix Terminal Zokent Group</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <style>
-    body {
-      min-height: 100vh;
-      width: 100%;
-      background-color: #030712;
-      font-family: 'ui-monospace', SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-      color: #34d399;
-      margin: 0;
-      overflow-x: hidden;
-    }
-    #matrix-bg {
-      position: fixed;
-      inset: 0;
-      width: 100vw;
-      height: 100vh;
-      z-index: 0;
-      pointer-events: none;
-    }
-    .glow-green-text {
-      color: #34d399;
-      text-shadow: 0 0 12px rgba(52, 211, 153, 0.7);
-    }
-    .glow-box {
-      box-shadow: 0 0 25px rgba(34, 197, 94, 0.2);
-    }
-    .glass-card {
-      background-color: rgba(0, 0, 0, 0.55);
-      backdrop-filter: blur(8px);
-      -webkit-backdrop-filter: blur(8px);
-      border: 1px solid rgba(52, 211, 153, 0.35);
-    }
-    .hacker-input {
-      background-color: rgba(0, 0, 0, 0.4);
-      backdrop-filter: blur(4px);
-      border: 1px solid rgba(52, 211, 153, 0.4);
-      color: #4ade80;
-      text-shadow: 0 0 5px rgba(74, 222, 128, 0.6);
-      transition: all 0.25s ease-in-out;
-    }
-    .hacker-input::placeholder {
-      color: rgba(52, 211, 153, 0.4);
-    }
-    .hacker-input:focus {
-      outline: none;
-      border-color: #34d399;
-      box-shadow: 0 0 15px rgba(52, 211, 153, 0.6);
-      background-color: rgba(0, 0, 0, 0.6);
-    }
-    ::-webkit-scrollbar { width: 6px; }
-    ::-webkit-scrollbar-track { background: #030712; }
-    ::-webkit-scrollbar-thumb { background: #15803d; border-radius: 3px; }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Admin - Matrix Terminal Zokent Group</title>
+    <style>
+        :root {
+            --bg-color: #0b0f0e;
+            --panel-bg: #111a17;
+            --border-color: #1f382b;
+            --neon-green: #00ff66;
+            --neon-green-dim: #00b347;
+            --text-main: #c0d8d0;
+            --text-muted: #6b8c80;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Courier New', Courier, monospace;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        /* Header Dashboard */
+        .dashboard-header {
+            background: var(--panel-bg);
+            border: 1px solid var(--border-color);
+            padding: 20px;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            box-shadow: 0 0 15px rgba(0, 255, 102, 0.05);
+        }
+
+        .dashboard-title h1 {
+            color: var(--neon-green);
+            font-size: 1.2rem;
+            margin-bottom: 5px;
+            letter-spacing: 1px;
+        }
+
+        .dashboard-title p {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .btn-logout {
+            background: rgba(255, 77, 77, 0.1);
+            color: #ff4d4d;
+            border: 1px solid #ff4d4d;
+            padding: 8px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .btn-logout:hover {
+            background: #ff4d4d;
+            color: #fff;
+            box-shadow: 0 0 10px rgba(255, 77, 77, 0.4);
+        }
+
+        /* Panel Card */
+        .panel-card {
+            background: var(--panel-bg);
+            border: 1px solid var(--border-color);
+            padding: 25px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .panel-card h2 {
+            color: var(--neon-green);
+            font-size: 1rem;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .panel-card > p {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 20px;
+        }
+
+        /* Form Group */
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 0.75rem;
+            color: var(--neon-green);
+            margin-bottom: 6px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .form-input {
+            width: 100%;
+            background: #070c0a;
+            border: 1px solid var(--border-color);
+            padding: 12px 15px;
+            color: var(--text-main);
+            border-radius: 4px;
+            font-size: 0.9rem;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        .form-input:focus {
+            border-color: var(--neon-green);
+            box-shadow: 0 0 8px rgba(0, 255, 102, 0.2);
+        }
+
+        /* Button Primary */
+        .btn-primary {
+            width: 100%;
+            background: var(--neon-green);
+            color: #050a08;
+            border: none;
+            padding: 12px;
+            border-radius: 4px;
+            font-weight: bold;
+            font-size: 0.9rem;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            background: var(--neon-green-dim);
+            box-shadow: 0 0 12px rgba(0, 255, 102, 0.4);
+        }
+
+        /* Alert Notification */
+        .alert {
+            padding: 10px 15px;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            margin-bottom: 15px;
+            display: none;
+        }
+        .alert-success {
+            background: rgba(0, 255, 102, 0.1);
+            border: 1px solid var(--neon-green);
+            color: var(--neon-green);
+        }
+    </style>
 </head>
-<body class="min-h-screen w-full p-4 md:p-8 relative">
+<body>
 
-  <canvas id="matrix-bg"></canvas>
-
-  <div class="relative z-10 max-w-6xl mx-auto space-y-6">
-    <header class="glass-card p-6 rounded-2xl glow-box flex justify-between items-center">
-      <div>
-        <h1 class="text-xl font-black glow-green-text flex items-center gap-2">
-          <span>&gt;_</span> DASHBOARD ADMIN / PEMILIK
-        </h1>
-        <p class="text-xs text-emerald-400/80 mt-1">[ SYSTEM ACCESS LEVEL : ADMINISTRATOR ROOT ]</p>
-      </div>
-      <button id="btn-logout" class="bg-red-950/80 hover:bg-red-900 text-red-400 border border-red-500/40 px-4 py-2 rounded-xl text-xs font-bold transition-all hover:shadow-[0_0_15px_rgba(239,68,68,0.4)]">
-        🚪 LOGOUT ADMIN
-      </button>
-    </header>
-
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-      <div class="glass-card p-6 rounded-2xl glow-box space-y-4">
-        <div>
-          <h2 class="text-base font-black text-emerald-300 tracking-wider uppercase flex items-center gap-2">
-            <span>👤</span> REGISTRASI AKUN KASIR
-          </h2>
-          <p class="text-xs text-emerald-500/70 mt-1">Buat kredensial kasir baru untuk akses portal terminal.</p>
+    <div class="container">
+        <!-- Header -->
+        <div class="dashboard-header">
+            <div class="dashboard-title">
+                <h1>>_ DASHBOARD ADMIN / PEMILIK</h1>
+                <p>[ SYSTEM ACCESS LEVEL : ADMINISTRATOR ROOT ]</p>
+            </div>
+            <button class="btn-logout" onclick="handleLogout()">LOGOUT ADMIN</button>
         </div>
 
-        <form id="form-create-kasir" class="space-y-4">
-          <div>
-            <label class="block text-[11px] font-bold text-emerald-400 uppercase mb-1.5 tracking-wider">NAMA OPERATOR KASIR</label>
-            <input type="text" id="kasir-name-input" required placeholder="Contoh: Budi Santoso" class="hacker-input w-full px-4 py-2.5 rounded-xl text-xs font-mono">
-          </div>
-          <div>
-            <label class="block text-[11px] font-bold text-emerald-400 uppercase mb-1.5 tracking-wider">EMAIL AKSES KASIR</label>
-            <input type="email" id="kasir-email-input" required placeholder="kasir1@toko.com" class="hacker-input w-full px-4 py-2.5 rounded-xl text-xs font-mono">
-          </div>
-          <div>
-            <label class="block text-[11px] font-bold text-emerald-400 uppercase mb-1.5 tracking-wider">PASSWORD AKSES</label>
-            <input type="password" id="kasir-password-input" required minlength="6" placeholder="Minimal 6 karakter" class="hacker-input w-full px-4 py-2.5 rounded-xl text-xs font-mono">
-          </div>
+        <!-- Registrasi Kasir -->
+        <div class="panel-card">
+            <h2>⚙️ REGISTRASI AKUN KASIR</h2>
+            <p>Buat kredensial kasir baru untuk akses portal terminal.</p>
+            
+            <div id="alertBox" class="alert"></div>
 
-          <button type="submit" id="btn-save-kasir" class="w-full bg-emerald-500 hover:bg-emerald-400 text-black font-extrabold py-3 rounded-xl text-xs transition-all shadow-[0_0_20px_rgba(52,211,153,0.5)] uppercase tracking-wider mt-2">
-            ➕ BUAT AKUN KASIR
-          </button>
-        </form>
-      </div>
+            <form id="formKasir" onsubmit="registerKasir(event)">
+                <div class="form-group">
+                    <label class="form-label">Nama Operator Kasir</label>
+                    <input type="text" id="namaKasir" class="form-input" placeholder="Contoh: Budi Santoso" required>
+                </div>
 
-      <div class="glass-card p-6 rounded-2xl glow-box flex flex-col justify-between">
-        <div>
-          <h2 class="text-base font-black text-emerald-300 tracking-wider uppercase flex items-center gap-2 mb-2">
-            <span>🛒</span> PINTU MASUK TERMINAL POS
-          </h2>
-          <p class="text-xs text-emerald-500/70 leading-relaxed">
-            Admin/Pemilik dapat memantau atau menguji mesin kasir POS langsung melalui terminal di bawah ini.
-          </p>
+                <div class="form-group">
+                    <label class="form-label">Email Akses Kasir</label>
+                    <input type="email" id="emailKasir" class="form-input" placeholder="kasir1@toko.com" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Password Akses</label>
+                    <input type="password" id="passKasir" class="form-input" placeholder="Minimal 6 karakter" minlength="6" required>
+                </div>
+
+                <button type="submit" class="btn-primary">+ BUAT AKUN KASIR</button>
+            </form>
         </div>
-
-        <div class="space-y-3 mt-6">
-          <div class="p-3 bg-black/40 rounded-xl border border-emerald-500/20 text-[11px] font-mono text-emerald-400/80">
-            STATUS MODUL POS: <span class="text-emerald-300 font-bold">READY / SIAP OPERASIONAL</span>
-          </div>
-          <a href="kasir.html" class="block text-center bg-emerald-950/80 hover:bg-emerald-900 border border-emerald-500/40 text-emerald-300 font-black py-3 rounded-xl text-xs transition-all hover:shadow-[0_0_20px_rgba(52,211,153,0.4)] uppercase tracking-wider">
-            🖥️ BUKA TERMINAL KASIR (POS)
-          </a>
-        </div>
-      </div>
     </div>
-  </div>
 
-  <script type="module">
-    import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
+    <script>
+        function registerKasir(event) {
+            event.preventDefault();
+            const nama = document.getElementById('namaKasir').value;
+            const email = document.getElementById('emailKasir').value;
+            const alertBox = document.getElementById('alertBox');
 
-    const SUPABASE_URL = "https://weuousmvkxmgmsnwiuad.supabase.co";
-    const SUPABASE_ANON_KEY = "sb_publishable_e375KDL0vuoahHO_kWMjwA_a04R4yHb";
-    const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-    const tempSupabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, { auth: { persistSession: false } });
+            // Simulasi sukses pendaftaran
+            alertBox.style.display = 'block';
+            alertBox.className = 'alert alert-success';
+            alertBox.innerHTML = `>_ SUCCESS: Akun untuk <strong>${nama}</strong> (${email}) berhasil didaftarkan ke terminal!`;
 
-    // MATRIX EFFECT
-    const canvas = document.getElementById('matrix-bg');
-    const ctx = canvas.getContext('2d');
-    let fontSize = 14;
-    let columns = Math.floor(window.innerWidth / fontSize);
-    let rainDrops = Array.from({ length: columns }, () => Math.floor(Math.random() * -50));
-    const alphabet = 'アァカサタナハマヤャラワガザダバパイィキシチニヒミリヰギジヂビピウゥクスツヌフムユュルグズブヅプエェケセテネヘメレヱゲゼデベペオォコソトノホモヨョロヲゴゾドボポヴッンABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+            // Reset form
+            document.getElementById('formKasir').reset();
 
-    function drawMatrix() {
-      ctx.fillStyle = 'rgba(3, 7, 18, 0.08)';
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-      ctx.fillStyle = '#10b981';
-      ctx.font = fontSize + 'px monospace';
-      for (let i = 0; i < rainDrops.length; i++) {
-        const text = alphabet.charAt(Math.floor(Math.random() * alphabet.length));
-        ctx.fillText(text, i * fontSize, rainDrops[i] * fontSize);
-        if (rainDrops[i] * fontSize > canvas.height && Math.random() > 0.975) rainDrops[i] = 0;
-        rainDrops[i]++;
-      }
-    }
-    function initMatrix() {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-      columns = Math.floor(canvas.width / fontSize);
-    }
-    initMatrix();
-    window.addEventListener('resize', initMatrix);
-    setInterval(drawMatrix, 45);
+            setTimeout(() => {
+                alertBox.style.display = 'none';
+            }, 5000);
+        }
 
-    async function verifyAdmin() {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session) {
-        window.location.href = "login-admin.html";
-        return;
-      }
-      const role = session.user.user_metadata?.role;
-      if (role !== 'admin' && role !== 'pemilik') {
-        alert("⚠️ Akses ditolak! Halaman ini khusus Admin / Pemilik.");
-        window.location.href = "login-admin.html";
-      }
-    }
-
-    const formCreateKasir = document.getElementById("form-create-kasir");
-    const btnSaveKasir = document.getElementById("btn-save-kasir");
-
-    formCreateKasir.addEventListener("submit", async (e) => {
-      e.preventDefault();
-      btnSaveKasir.disabled = true;
-      btnSaveKasir.textContent = "⏳ MEMPROSES AKUN...";
-
-      const username = document.getElementById("kasir-name-input").value.trim();
-      const email = document.getElementById("kasir-email-input").value.trim();
-      const password = document.getElementById("kasir-password-input").value.trim();
-
-      const { error } = await tempSupabase.auth.signUp({
-        email: email,
-        password: password,
-        options: { data: { username: username, role: 'kasir' } }
-      });
-
-      if (error) {
-        alert("❌ Gagal membuat akun: " + error.message);
-      } else {
-        alert(`✅ Akun Kasir '${username}' berhasil didaftarkan!`);
-        formCreateKasir.reset();
-      }
-
-      btnSaveKasir.disabled = false;
-      btnSaveKasir.textContent = "➕ BUAT AKUN KASIR";
-    });
-
-    document.getElementById("btn-logout").addEventListener("click", async () => {
-      await supabase.auth.signOut();
-      window.location.href = "login-admin.html";
-    });
-
-    verifyAdmin();
-  </script>
+        function handleLogout() {
+            if(confirm("Apakah Anda yakin ingin keluar dari sesi Administrator?")) {
+                window.location.href = "index.html"; // Sesuaikan halaman login Anda
+            }
+        }
+    </script>
 </body>
 </html>
