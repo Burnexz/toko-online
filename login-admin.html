@@ -369,9 +369,9 @@
         }
 
         // Simpan juga flag session lokal untuk keamanan ganda ke admin.html
-        if (currentRole === "pemilik") {
-          localStorage.setItem('isAdminLoggedIn', 'true');
-        }
+if (currentRole === "pemilik") {
+    localStorage.setItem('adminLoggedIn', 'true');
+}
 
         const targetPage = currentRole === "pemilik" ? "admin.html" : "kasir.html";
         tampilkanSukses(`Login ${currentRole} berhasil! Mengalihkan...`);
