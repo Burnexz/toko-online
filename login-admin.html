@@ -17,7 +17,7 @@
       overflow-y: auto;
     }
 
-    /* Canvas Matrix Background (Tetap Diam di Latar Belakang) */
+    /* Canvas Matrix Background */
     #matrix-bg {
       position: fixed;
       inset: 0;
@@ -164,7 +164,7 @@
           <div>
             <label id="email-label" for="email" class="block text-xs font-bold text-gray-200 mb-1.5 uppercase tracking-wider pl-1">EMAIL AKSES</label>
             <input
-              type="email"
+              type="text"
               id="email"
               placeholder="Masukkan email pengguna"
               autocomplete="email"
@@ -319,8 +319,8 @@
       
       loginTitle.textContent = "Login Kasir Toko";
       loginSubtitle.textContent = "Masuk untuk membuka mesin kasir POS dan melayani transaksi.";
-      emailLabel.textContent = "USER AKSES";
-      emailInput.placeholder = "Masukkan user / email kasir";
+      emailLabel.textContent = "EMAIL / USER KASIR";
+      emailInput.placeholder = "Masukkan email / user kasir";
       btnLogin.textContent = "🛒 Login Kasir";
       accessNote.textContent = "Akses khusus petugas kasir toko.";
 
@@ -347,7 +347,7 @@
       errorMessage.classList.add("hidden");
     }
 
-    // SUBMIT LOGIN KE SUPABASE
+    // SUBMIT LOGIN
     loginForm.addEventListener("submit", async (e) => {
       e.preventDefault();
 
@@ -359,26 +359,44 @@
       errorMessage.classList.add("hidden");
 
       try {
-        const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+        if (currentRole === "kasir") {
+          // CEK LOGIN KASIR DARI LOCALSTORAGE
+          let daftarKasir = JSON.parse(localStorage.getItem('daftarKasir')) || [];
+          const kasirDitemukan = daftarKasir.find(k => k.email.toLowerCase() === email.toLowerCase() && k.password === password);
 
-        if (error) {
-          tampilkanError("Email atau password salah.");
-          btnLogin.disabled = false;
-          btnLogin.textContent = currentRole === "pemilik" ? "🔐 Login Pemilik" : "🛒 Login Kasir";
-          return;
+          if (kasirDitemukan) {
+            localStorage.setItem("kasirLoggedIn", "true");
+            localStorage.setItem("activeKasirName", kasirDitemukan.nama);
+            localStorage.setItem("activeKasirEmail", kasirDitemukan.email);
+            
+            tampilkanSukses(`Login kasir ${kasirDitemukan.nama} berhasil! Mengalihkan...`);
+            setTimeout(() => {
+              window.location.href = "kasir.html";
+            }, 800);
+          } else {
+            tampilkanError("Email atau password kasir salah / belum didaftarkan oleh admin.");
+            btnLogin.disabled = false;
+            btnLogin.textContent = "🛒 Login Kasir";
+          }
+
+        } else {
+          // CEK LOGIN PEMILIK MENGGUNAKAN SUPABASE
+          const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+
+          if (error) {
+            tampilkanError("Email atau password pemilik salah.");
+            btnLogin.disabled = false;
+            btnLogin.textContent = "🔐 Login Pemilik";
+            return;
+          }
+
+          localStorage.setItem('adminLoggedIn', 'true');
+          tampilkanSukses("Login pemilik berhasil! Mengalihkan...");
+          
+          setTimeout(() => {
+            window.location.href = "admin.html";
+          }, 800);
         }
-
-        // Simpan juga flag session lokal untuk keamanan ganda ke admin.html
-if (currentRole === "pemilik") {
-    localStorage.setItem('adminLoggedIn', 'true');
-}
-
-        const targetPage = currentRole === "pemilik" ? "admin.html" : "kasir.html";
-        tampilkanSukses(`Login ${currentRole} berhasil! Mengalihkan...`);
-        
-        setTimeout(() => {
-          window.location.href = targetPage;
-        }, 800);
 
       } catch (err) {
         tampilkanError("Terjadi kesalahan koneksi ke server.");
@@ -386,13 +404,13 @@ if (currentRole === "pemilik") {
         btnLogin.textContent = currentRole === "pemilik" ? "🔐 Login Pemilik" : "🛒 Login Kasir";
       }
     });
-  // Mengosongkan input password saat kembali dari admin.html
-window.addEventListener("pageshow", function (event) {
-    const passwordInput = document.getElementById("password");
-    if (passwordInput) {
+
+    // Bersihkan password saat kembali ke halaman
+    window.addEventListener("pageshow", function () {
+      if (passwordInput) {
         passwordInput.value = "";
-    }
-});
+      }
+    });
   </script>
 </body>
 </html>
