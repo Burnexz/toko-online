@@ -14,7 +14,7 @@
       font-family: 'ui-monospace', SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
       color: #38bdf8;
       margin: 0;
-      overflow-y: auto; /* Memungkinkan scroll secara bebas */
+      overflow-y: auto;
     }
 
     /* Canvas Matrix Background (Tetap Diam di Latar Belakang) */
@@ -45,9 +45,9 @@
       border: 1px solid rgba(52, 211, 153, 0.35);
     }
 
-    /* INPUT EKSTRA TRANSPARAN (TULISAN MATRIX TEMBUS JELAS) */
+    /* INPUT EKSTRA TRANSPARAN */
     .hacker-input {
-      background-color: rgba(0, 0, 0, 0.15); /* Transparan tinggi */
+      background-color: rgba(0, 0, 0, 0.15);
       backdrop-filter: blur(2px);
       -webkit-backdrop-filter: blur(2px);
       border: 1px solid rgba(52, 211, 153, 0.4);
@@ -113,7 +113,6 @@
           </p>
         </div>
 
-        <!-- Deskripsi Tambahan Muncul di Desktop -->
         <div class="hidden lg:block space-y-3 bg-black/25 p-4 rounded-2xl border border-emerald-500/20 text-xs font-mono">
           <p class="text-gray-300 leading-relaxed">
             Selamat datang di sistem manajemen toko terpadu Zokent Group. Silakan pilih akses otentikasi di sisi kanan.
@@ -162,7 +161,6 @@
 
         <!-- FORM LOGIN -->
         <form id="login-form" class="space-y-4">
-          <!-- EMAIL / USER AKSES (KOLOM TRANSPARAN) -->
           <div>
             <label id="email-label" for="email" class="block text-xs font-bold text-gray-200 mb-1.5 uppercase tracking-wider pl-1">EMAIL AKSES</label>
             <input
@@ -175,7 +173,6 @@
             >
           </div>
 
-          <!-- PASSWORD (KOLOM TRANSPARAN) -->
           <div>
             <label for="password" class="block text-xs font-bold text-gray-200 mb-1.5 uppercase tracking-wider pl-1">PASSWORD</label>
             <div class="relative">
@@ -218,7 +215,6 @@
           Akses khusus pemilik / administrator toko.
         </p>
 
-        <!-- FOOTER MOBILE ONLY -->
         <p class="text-center text-[10px] text-gray-500 mt-4 font-mono tracking-widest uppercase lg:hidden">
           © 2026 ZOKENT GROUP SYSTEMS
         </p>
@@ -236,7 +232,6 @@
     const SUPABASE_ANON_KEY = "sb_publishable_e375KDL0vuoahHO_kWMjwA_a04R4yHb";
     const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    // MODE STATUS: 'pemilik' atau 'kasir'
     let currentRole = "pemilik";
 
     const tabPemilik = document.getElementById("tab-pemilik");
@@ -254,9 +249,7 @@
     const errorMessage = document.getElementById("error-message");
     const successMessage = document.getElementById("success-message");
 
-    // =====================================================
-    // EFEK MATRIX DIGITAL RAIN (FULLSCREEN BACKGROUND)
-    // =====================================================
+    // EFEK MATRIX DIGITAL RAIN
     const canvas = document.getElementById('matrix-bg');
     const ctx = canvas.getContext('2d');
 
@@ -298,15 +291,11 @@
 
     setInterval(drawMatrix, 45);
 
-    let resizeTimeout;
     window.addEventListener('resize', () => {
-      clearTimeout(resizeTimeout);
-      resizeTimeout = setTimeout(initMatrix, 150);
+      initMatrix();
     });
 
-    // =====================================================
-    // SWITCH TAB (PEMILIK / KASIR)
-    // =====================================================
+    // SWITCH TAB
     tabPemilik.addEventListener("click", () => {
       currentRole = "pemilik";
       tabPemilik.classList.add("active");
@@ -339,20 +328,7 @@
       successMessage.classList.add("hidden");
     });
 
-    // =====================================================
-    // INPUT HIGHLIGHT & TOGGLE PASSWORD
-    // =====================================================
-    function updateInputStyle(input) {
-      if (input.value.trim().length > 0) {
-        input.classList.add("border-emerald-500");
-      } else {
-        input.classList.remove("border-emerald-500");
-      }
-    }
-
-    emailInput.addEventListener("input", () => updateInputStyle(emailInput));
-    passwordInput.addEventListener("input", () => updateInputStyle(passwordInput));
-
+    // TOGGLE PASSWORD
     btnShowPassword.addEventListener("click", () => {
       const isPassword = passwordInput.type === "password";
       passwordInput.type = isPassword ? "text" : "password";
@@ -371,9 +347,7 @@
       errorMessage.classList.add("hidden");
     }
 
-    // =====================================================
-    // SUBMIT LOGIN HANDLER
-    // =====================================================
+    // SUBMIT LOGIN KE SUPABASE
     loginForm.addEventListener("submit", async (e) => {
       e.preventDefault();
 
@@ -394,6 +368,11 @@
           return;
         }
 
+        // Simpan juga flag session lokal untuk keamanan ganda ke admin.html
+        if (currentRole === "pemilik") {
+          localStorage.setItem('isAdminLoggedIn', 'true');
+        }
+
         const targetPage = currentRole === "pemilik" ? "admin.html" : "kasir.html";
         tampilkanSukses(`Login ${currentRole} berhasil! Mengalihkan...`);
         
@@ -407,16 +386,6 @@
         btnLogin.textContent = currentRole === "pemilik" ? "🔐 Login Pemilik" : "🛒 Login Kasir";
       }
     });
-
-    // Auto Check Session Existing
-    async function cekLogin() {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (session) {
-        window.location.href = currentRole === "pemilik" ? "admin.html" : "kasir.html";
-      }
-    }
-
-    cekLogin();
   </script>
 </body>
 </html>
