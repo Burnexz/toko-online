@@ -287,13 +287,28 @@
             event.preventDefault();
             const nama = document.getElementById('namaKasir').value;
             const email = document.getElementById('emailKasir').value;
+            const password = document.getElementById('passKasir').value;
             const alertBox = document.getElementById('alertBox');
+
+            // Simpan akun kasir ke localStorage agar bisa dipakai login di login-admin.html
+            const dataKasirBaru = { nama, email, password };
+            let daftarKasir = JSON.parse(localStorage.getItem('daftarKasir')) || [];
+            daftarKasir.push(dataKasirBaru);
+            localStorage.setItem('daftarKasir', JSON.stringify(daftarKasir));
 
             // Tampilkan notifikasi sukses ala terminal
             alertBox.style.display = 'block';
             alertBox.className = 'alert alert-success';
             alertBox.innerHTML = `>_ SUCCESS: Akun kasir untuk <strong>${nama}</strong> (${email}) berhasil didaftarkan ke sistem!`;
 
+            // Reset form input
+            document.getElementById('formKasir').reset();
+
+            // Sembunyikan alert otomatis setelah 5 detik
+            setTimeout(() => {
+                alertBox.style.display = 'none';
+            }, 5000);
+        }
             // Reset form input
             document.getElementById('formKasir').reset();
 
