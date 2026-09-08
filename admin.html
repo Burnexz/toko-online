@@ -5,11 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard Admin - Matrix Terminal Zokent Group</title>
     <script>
-        // PROTEKSI HALAMAN: Cek apakah admin sudah login melalui login-admin.html
-        if (localStorage.getItem("adminLoggedIn") !== "true") {
-            alert("AKSES DITOLAK! Silakan login melalui portal terlebih dahulu.");
-            window.location.href = "login-admin.html";
-        }
+        <script>
+  // PROTEKSI HALAMAN: Cek apakah admin sudah login melalui login-admin.html
+  if (localStorage.getItem("adminLoggedIn") !== "true") {
+    alert("AKSES DITOLAK! Silakan login melalui portal terlebih dahulu.");
+    window.location.href = "login-admin.html";
+  }
     </script>
     <style>
         :root {
