@@ -9,2318 +9,2857 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
+
 /* =========================================================
    ZOKENT STORE
-   CUSTOMER CATALOG
+   CUSTOMER SHOP
 ========================================================= */
 
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
 }
 
-:root {
-  --blue: #087cf0;
-  --blue-dark: #004da8;
-  --blue-light: #eaf4ff;
-  --text: #10294d;
-  --muted: #718096;
-  --bg: #f5f8fc;
-  --white: #ffffff;
-  --green: #18a957;
-  --red: #ef3e3e;
+:root{
+    --blue:#0788f5;
+    --blue2:#006fe8;
+    --dark:#102b50;
+    --text:#18365d;
+    --muted:#8292a8;
+    --bg:#f6f9fd;
+    --white:#fff;
+    --green:#16ad68;
+    --red:#ef3030;
+    --shadow:0 5px 18px rgba(31,74,120,.08);
 }
 
-html {
-  scroll-behavior: smooth;
+html{
+    scroll-behavior:smooth;
 }
 
-body {
-  font-family: Arial, Helvetica, sans-serif;
-  background: var(--bg);
-  color: var(--text);
-  padding-bottom: 95px;
+body{
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+    background:var(--bg);
+    color:var(--text);
+    padding-bottom:90px;
 }
+
 
 /* =========================================================
    HEADER
 ========================================================= */
 
-.header {
-  position: sticky;
-  top: 0;
-  z-index: 1000;
-  background: rgba(255,255,255,.96);
-  backdrop-filter: blur(15px);
-  border-bottom: 1px solid #e8edf4;
+.header{
+    position:sticky;
+    top:0;
+    z-index:1000;
+    background:rgba(255,255,255,.96);
+    backdrop-filter:blur(15px);
+    border-bottom:1px solid #e8eef6;
 }
 
-.header-inner {
-  max-width: 1500px;
-  margin: auto;
-  padding: 10px 18px;
+.header-inner{
+    max-width:1500px;
+    margin:auto;
+    padding:12px 28px;
 }
 
-.header-top {
-  display: flex;
-  align-items: center;
-  gap: 22px;
+.header-row{
+    display:flex;
+    align-items:center;
+    gap:25px;
 }
 
-/* LOGO */
 
-.logo {
-  min-width: 255px;
-  display: flex;
-  align-items: center;
-  gap: 14px;
+/* =========================================================
+   LOGO
+========================================================= */
+
+.logo{
+    display:flex;
+    align-items:center;
+    gap:16px;
+    min-width:520px;
 }
 
-.logo-mark {
-  width: 78px;
-  height: 65px;
-  position: relative;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+.logo-image{
+    width:175px;
+    height:75px;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    position:relative;
 }
 
-.logo-z {
-  font-size: 52px;
-  font-weight: 1000;
-  font-style: italic;
-  line-height: 1;
-  color: #0794ed;
-  -webkit-text-stroke: 2px #07141e;
-  text-shadow:
-    4px 4px 0 #07141e,
-    7px 7px 0 rgba(0,0,0,.18);
-  transform: skew(-8deg);
+
+/*
+   Gaya ZOKENT graffiti.
+   Nanti kalau kamu punya file logo asli,
+   cukup ganti isi .logo-image dengan <img>.
+*/
+
+.logo-zokent{
+    font-size:42px;
+    font-weight:1000;
+    font-style:italic;
+    letter-spacing:-4px;
+    color:#079cf1;
+
+    -webkit-text-stroke:2px #071923;
+
+    text-shadow:
+        4px 4px 0 #071923,
+        7px 7px 0 rgba(0,0,0,.18);
+
+    transform:skew(-8deg) rotate(-2deg);
 }
 
-.logo-z::after {
-  content: "";
-  position: absolute;
-  width: 68px;
-  height: 5px;
-  background: #07141e;
-  bottom: 4px;
-  left: 5px;
-  transform: rotate(-7deg);
-  border-radius: 50%;
+.logo-store{
+    position:absolute;
+
+    left:55px;
+    bottom:1px;
+
+    font-size:22px;
+    font-weight:1000;
+    font-style:italic;
+
+    color:white;
+
+    -webkit-text-stroke:1.5px #071923;
+
+    text-shadow:
+        3px 3px 0 #071923;
+
+    transform:rotate(-3deg);
 }
 
-.logo-divider {
-  width: 3px;
-  height: 48px;
-  background: #142638;
-  border-radius: 3px;
+.logo-divider{
+    width:3px;
+    height:50px;
+    background:#152c48;
+    border-radius:5px;
 }
 
-.logo-name {
-  line-height: 1;
+.logo-text{
+    line-height:1.1;
 }
 
-.logo-name-main {
-  font-size: 25px;
-  font-weight: 1000;
-  font-style: italic;
-  letter-spacing: -1px;
-  color: #12253d;
+.logo-title{
+    font-size:27px;
+    font-weight:1000;
+    font-style:italic;
+    letter-spacing:-1px;
 }
 
-.logo-name-store {
-  margin-top: 4px;
-  font-size: 18px;
-  font-weight: 900;
-  letter-spacing: 5px;
-  color: var(--blue);
-  text-align: center;
+.logo-tagline{
+    margin-top:5px;
+    color:#8391a5;
+    font-size:12px;
+    font-weight:600;
 }
 
-.logo-tagline {
-  margin-top: 3px;
-  color: #8090a4;
-  font-size: 9px;
-  letter-spacing: .7px;
+
+/* =========================================================
+   SEARCH
+========================================================= */
+
+.search-box{
+    flex:1;
+    position:relative;
 }
 
-/* SEARCH */
+.search-box input{
+    width:100%;
+    height:52px;
 
-.search-area {
-  flex: 1;
-  position: relative;
+    border:none;
+    outline:none;
+
+    border-radius:28px;
+
+    background:#f0f4f9;
+
+    padding:
+        0 25px
+        0 57px;
+
+    font-size:14px;
+    color:var(--text);
+
+    box-shadow:
+        inset 0 1px 3px rgba(0,0,0,.03);
 }
 
-.search-input {
-  width: 100%;
-  height: 48px;
-  border: 1px solid #dfe7f0;
-  border-radius: 25px;
-  background: #f3f6fa;
-  padding: 0 20px 0 50px;
-  outline: none;
-  font-size: 14px;
-  color: #1d3554;
+.search-box input:focus{
+    background:#fff;
+
+    box-shadow:
+        0 0 0 3px rgba(7,136,245,.12);
 }
 
-.search-input:focus {
-  background: #fff;
-  border-color: var(--blue);
-  box-shadow: 0 0 0 4px rgba(8,124,240,.08);
+.search-icon{
+    position:absolute;
+    left:21px;
+    top:13px;
+
+    font-size:25px;
+    color:#70829a;
 }
 
-.search-icon {
-  position: absolute;
-  left: 19px;
-  top: 13px;
-  font-size: 20px;
-  color: #728096;
+
+/* =========================================================
+   HEADER ACTION
+========================================================= */
+
+.header-actions{
+    display:flex;
+    gap:10px;
 }
 
-/* HEADER BUTTONS */
+.header-action{
+    width:52px;
+    height:52px;
 
-.header-actions {
-  display: flex;
-  gap: 10px;
+    border:none;
+    border-radius:16px;
+
+    background:var(--blue);
+    color:white;
+
+    font-size:23px;
+
+    cursor:pointer;
+
+    position:relative;
+
+    box-shadow:
+        0 5px 14px rgba(7,136,245,.20);
 }
 
-.header-button {
-  width: 48px;
-  height: 48px;
-  border: none;
-  border-radius: 15px;
-  background: var(--blue);
-  color: white;
-  font-size: 21px;
-  cursor: pointer;
-  position: relative;
-  box-shadow: 0 5px 14px rgba(8,124,240,.2);
+.cart-badge{
+    position:absolute;
+
+    right:-5px;
+    top:-6px;
+
+    min-width:22px;
+    height:22px;
+
+    padding:0 5px;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    background:#f02727;
+    color:white;
+
+    border:2px solid white;
+    border-radius:50%;
+
+    font-size:11px;
+    font-weight:900;
 }
 
-.header-button:hover {
-  transform: translateY(-1px);
-}
-
-.cart-badge {
-  position: absolute;
-  right: -4px;
-  top: -5px;
-  min-width: 21px;
-  height: 21px;
-  border-radius: 50%;
-  padding: 0 5px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background: #ff3030;
-  color: white;
-  font-size: 11px;
-  font-weight: bold;
-  border: 2px solid white;
-}
 
 /* =========================================================
    MAIN
 ========================================================= */
 
-.main {
-  max-width: 1500px;
-  margin: auto;
-  padding: 15px 18px;
+.main{
+    max-width:1500px;
+    margin:auto;
+    padding:14px 28px;
 }
+
 
 /* =========================================================
-   BANNER
+   HERO
 ========================================================= */
 
-.banner {
-  min-height: 235px;
-  border-radius: 20px;
-  overflow: hidden;
-  position: relative;
-  background:
-    radial-gradient(circle at 80% 45%, rgba(80,205,255,.5), transparent 25%),
-    linear-gradient(120deg, #003b91, #087cf0 60%, #13a9f5);
-  color: white;
-  display: flex;
-  align-items: center;
-  padding: 35px 55px;
-  margin-bottom: 25px;
-  box-shadow: 0 8px 25px rgba(0,70,150,.15);
+.hero{
+    position:relative;
+
+    min-height:238px;
+
+    overflow:hidden;
+
+    border-radius:18px;
+
+    background:
+        linear-gradient(
+            115deg,
+            #0069db 0%,
+            #058df4 53%,
+            #11b5f5 100%
+        );
+
+    box-shadow:
+        0 10px 30px rgba(0,91,180,.16);
+
+    margin-bottom:18px;
 }
 
-.banner::before {
-  content: "";
-  position: absolute;
-  width: 430px;
-  height: 430px;
-  right: 8%;
-  top: -180px;
-  border: 80px solid rgba(255,255,255,.06);
-  border-radius: 50%;
+.hero::before{
+    content:"";
+
+    position:absolute;
+
+    width:500px;
+    height:500px;
+
+    right:30%;
+    top:-360px;
+
+    border-radius:50%;
+
+    border:100px solid rgba(255,255,255,.07);
 }
 
-.banner::after {
-  content: "";
-  position: absolute;
-  width: 280px;
-  height: 280px;
-  right: -70px;
-  bottom: -160px;
-  border-radius: 50%;
-  background: rgba(255,255,255,.08);
+.hero::after{
+    content:"";
+
+    position:absolute;
+
+    width:400px;
+    height:400px;
+
+    right:-100px;
+    bottom:-300px;
+
+    border-radius:50%;
+
+    background:rgba(255,255,255,.08);
 }
 
-.banner-content {
-  position: relative;
-  z-index: 3;
-  max-width: 650px;
+.hero-content{
+    position:relative;
+    z-index:5;
+
+    padding:29px 68px;
+
+    color:white;
 }
 
-.banner-small {
-  font-size: 21px;
-  font-weight: bold;
-  font-style: italic;
-  margin-bottom: 4px;
+.hero-small{
+    font-size:22px;
+    font-weight:800;
+    font-style:italic;
 }
 
-.banner-title {
-  font-size: clamp(38px, 5vw, 70px);
-  line-height: .95;
-  font-weight: 1000;
-  font-style: italic;
-  letter-spacing: -2px;
-  text-shadow: 3px 4px 0 rgba(0,0,0,.18);
+.hero-title{
+    margin-top:2px;
+
+    font-size:60px;
+    line-height:1;
+
+    font-weight:1000;
+    font-style:italic;
+
+    letter-spacing:-3px;
+
+    text-shadow:
+        3px 4px 0 rgba(0,0,0,.18);
 }
 
-.banner-description {
-  margin-top: 14px;
-  font-size: 15px;
-  line-height: 1.6;
-  opacity: .94;
+.hero-description{
+    margin-top:10px;
+
+    font-size:15px;
+    line-height:1.5;
 }
 
-.banner-button {
-  display: inline-flex;
-  align-items: center;
-  gap: 9px;
-  margin-top: 18px;
-  padding: 12px 20px;
-  border: none;
-  border-radius: 25px;
-  background: white;
-  color: #0757b4;
-  font-weight: bold;
-  cursor: pointer;
+.hero-button{
+    margin-top:14px;
+
+    height:43px;
+
+    padding:0 25px;
+
+    border:none;
+    border-radius:24px;
+
+    background:white;
+    color:#0865c6;
+
+    font-weight:900;
+    font-size:13px;
+
+    cursor:pointer;
 }
 
-.banner-logo {
-  position: absolute;
-  right: 7%;
-  z-index: 2;
-  text-align: center;
-  transform: rotate(-5deg);
+.hero-products{
+    position:absolute;
+
+    z-index:4;
+
+    right:24%;
+    bottom:-12px;
+
+    font-size:80px;
+
+    letter-spacing:-12px;
+
+    filter:
+        drop-shadow(0 15px 10px rgba(0,0,0,.18));
 }
 
-.banner-logo-z {
-  font-size: 100px;
-  font-weight: 1000;
-  font-style: italic;
-  color: #0da8f5;
-  -webkit-text-stroke: 4px #06131d;
-  text-shadow: 8px 9px 0 #06131d;
+.hero-logo{
+    position:absolute;
+
+    z-index:4;
+
+    right:5%;
+    top:31px;
+
+    transform:rotate(-4deg);
+
+    text-align:center;
 }
 
-.banner-logo-store {
-  margin-top: -15px;
-  font-size: 30px;
-  font-weight: 1000;
-  color: white;
-  -webkit-text-stroke: 1px #06131d;
-  text-shadow: 3px 3px 0 #06131d;
+.hero-logo-z{
+    font-size:61px;
+
+    font-weight:1000;
+    font-style:italic;
+
+    color:#08a5f4;
+
+    -webkit-text-stroke:3px #061b26;
+
+    text-shadow:
+        6px 6px 0 #061b26;
 }
+
+.hero-logo-store{
+    margin-top:-7px;
+
+    font-size:28px;
+
+    font-weight:1000;
+    font-style:italic;
+
+    color:white;
+
+    -webkit-text-stroke:1px #061b26;
+
+    text-shadow:
+        3px 3px 0 #061b26;
+}
+
 
 /* =========================================================
    SECTION HEADER
 ========================================================= */
 
-.section {
-  margin-bottom: 25px;
+.section{
+    margin-bottom:18px;
 }
 
-.section-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 13px;
+.section-header{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+
+    margin-bottom:10px;
 }
 
-.section-title {
-  display: flex;
-  align-items: center;
-  gap: 9px;
-  font-size: 23px;
-  font-weight: 900;
+.section-title{
+    display:flex;
+    align-items:center;
+    gap:10px;
+
+    font-size:23px;
+    font-weight:1000;
 }
 
-.section-title-icon {
-  color: var(--blue);
-  font-size: 25px;
+.section-icon{
+    color:var(--blue);
+    font-size:28px;
 }
 
-.section-more {
-  border: none;
-  background: none;
-  color: var(--blue);
-  font-weight: bold;
-  cursor: pointer;
+.section-count{
+    color:#8392a6;
+    font-size:13px;
 }
+
+.section-more{
+    border:none;
+    background:none;
+
+    color:var(--blue);
+
+    font-weight:800;
+
+    cursor:pointer;
+}
+
 
 /* =========================================================
    CATEGORY
 ========================================================= */
 
-.category-list {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: 12px;
+.category-list{
+    display:grid;
+
+    grid-template-columns:
+        repeat(7,1fr);
+
+    gap:11px;
 }
 
-.category-card {
-  min-height: 105px;
-  background: white;
-  border: 2px solid transparent;
-  border-radius: 15px;
-  box-shadow: 0 4px 13px rgba(25,55,90,.06);
-  cursor: pointer;
-  padding: 12px 8px;
-  transition: .2s;
+.category-card{
+    height:98px;
+
+    border:none;
+    border-radius:13px;
+
+    background:white;
+
+    box-shadow:var(--shadow);
+
+    cursor:pointer;
+
+    transition:.2s;
+
+    display:flex;
+    flex-direction:column;
+
+    align-items:center;
+    justify-content:center;
+
+    gap:7px;
 }
 
-.category-card:hover {
-  transform: translateY(-2px);
+.category-card:hover{
+    transform:translateY(-2px);
 }
 
-.category-card.active {
-  background: linear-gradient(135deg,#087cf0,#0070e4);
-  color: white;
-  box-shadow: 0 7px 18px rgba(8,124,240,.2);
+.category-card.active{
+    background:
+        linear-gradient(
+            135deg,
+            #0b92f8,
+            #0878e9
+        );
+
+    color:white;
+
+    box-shadow:
+        0 8px 20px rgba(7,136,245,.23);
 }
 
-.category-icon {
-  width: 52px;
-  height: 52px;
-  border-radius: 50%;
-  background: #eaf4ff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin: auto auto 7px;
-  font-size: 25px;
+.category-icon{
+    width:47px;
+    height:47px;
+
+    border-radius:50%;
+
+    background:#edf6ff;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    font-size:23px;
 }
 
-.category-card.active .category-icon {
-  background: rgba(255,255,255,.18);
+.category-card.active
+.category-icon{
+    background:rgba(255,255,255,.22);
 }
 
-.category-name {
-  text-align: center;
-  font-size: 12px;
-  font-weight: 800;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+.category-name{
+    font-size:13px;
+    font-weight:900;
 }
+
 
 /* =========================================================
-   PRODUCTS
+   PRODUCT GRID
 ========================================================= */
 
-.product-grid {
-  display: grid;
-  grid-template-columns: repeat(6, 1fr);
-  gap: 13px;
+.product-grid{
+    display:grid;
+
+    grid-template-columns:
+        repeat(6,1fr);
+
+    gap:12px;
 }
 
-.product-card {
-  background: white;
-  border-radius: 16px;
-  overflow: hidden;
-  box-shadow: 0 4px 14px rgba(25,55,90,.07);
-  transition: .2s;
-  min-width: 0;
+.product-card{
+    background:white;
+
+    border-radius:13px;
+
+    overflow:hidden;
+
+    box-shadow:var(--shadow);
+
+    transition:.2s;
+
+    min-width:0;
 }
 
-.product-card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 8px 20px rgba(25,55,90,.11);
+.product-card:hover{
+    transform:translateY(-2px);
+
+    box-shadow:
+        0 9px 22px rgba(31,74,120,.12);
 }
 
-.product-image-wrap {
-  width: 100%;
-  aspect-ratio: 1 / 1;
-  background: #fbfcfe;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
+.product-image{
+    width:100%;
+
+    aspect-ratio:1 / .83;
+
+    object-fit:contain;
+
+    padding:12px;
+
+    background:white;
 }
 
-.product-image {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  padding: 12px;
-  transition: .25s;
+.product-info{
+    padding:8px 13px 13px;
 }
 
-.product-card:hover .product-image {
-  transform: scale(1.04);
+.product-name{
+    height:35px;
+
+    font-size:13px;
+    font-weight:800;
+
+    line-height:1.35;
+
+    overflow:hidden;
+
+    display:
+        -webkit-box;
+
+    -webkit-line-clamp:2;
+    -webkit-box-orient:vertical;
 }
 
-.product-info {
-  padding: 10px;
+.product-price{
+    margin-top:3px;
+
+    color:#087cf0;
+
+    font-size:16px;
+    font-weight:1000;
 }
 
-.product-name {
-  min-height: 37px;
-  font-size: 13px;
-  font-weight: 700;
-  line-height: 1.35;
-  color: #172e4e;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
+.product-stock{
+    margin-top:5px;
+
+    color:#14a969;
+
+    font-size:12px;
+    font-weight:800;
 }
 
-.product-price {
-  margin-top: 7px;
-  color: var(--blue);
-  font-size: 16px;
-  font-weight: 900;
+.product-stock.out{
+    color:#ef3636;
 }
 
-.product-stock {
-  margin-top: 5px;
-  color: var(--green);
-  font-size: 11px;
-  font-weight: bold;
+.add-button{
+    width:100%;
+    height:34px;
+
+    margin-top:8px;
+
+    border:none;
+    border-radius:10px;
+
+    background:
+        linear-gradient(
+            90deg,
+            #087cf0,
+            #078ff5
+        );
+
+    color:white;
+
+    font-size:12px;
+    font-weight:900;
+
+    cursor:pointer;
 }
 
-.product-stock.empty {
-  color: var(--red);
+.add-button:hover{
+    filter:brightness(.95);
 }
 
-.add-cart {
-  width: 100%;
-  height: 35px;
-  margin-top: 9px;
-  border: none;
-  border-radius: 10px;
-  background: var(--blue);
-  color: white;
-  font-weight: bold;
-  cursor: pointer;
+.add-button:disabled{
+    background:#dce3eb;
+    color:#7c8998;
+    cursor:not-allowed;
 }
 
-.add-cart:hover {
-  background: #006de0;
-}
-
-.add-cart:disabled {
-  background: #d9dee5;
-  color: #7d8794;
-  cursor: not-allowed;
-}
 
 /* =========================================================
-   LOADING / EMPTY
+   LOADING
 ========================================================= */
 
-.loading,
-.empty {
-  grid-column: 1 / -1;
-  text-align: center;
-  padding: 60px 15px;
-  color: var(--muted);
+.loading{
+    grid-column:1/-1;
+
+    text-align:center;
+
+    padding:70px;
+
+    color:#8291a5;
 }
 
-.spinner {
-  width: 35px;
-  height: 35px;
-  margin: auto auto 13px;
-  border: 4px solid #dfe8f2;
-  border-top-color: var(--blue);
-  border-radius: 50%;
-  animation: spin .8s linear infinite;
+.spinner{
+    width:35px;
+    height:35px;
+
+    margin:0 auto 12px;
+
+    border:4px solid #dce8f5;
+    border-top-color:var(--blue);
+
+    border-radius:50%;
+
+    animation:spin .8s linear infinite;
 }
 
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
+@keyframes spin{
+    to{
+        transform:rotate(360deg);
+    }
 }
 
-.empty-icon {
-  font-size: 45px;
-  margin-bottom: 10px;
-}
 
 /* =========================================================
-   CART POPUP
+   EMPTY
 ========================================================= */
 
-.cart-popup {
-  position: fixed;
-  z-index: 1500;
-  left: 50%;
-  bottom: 72px;
-  transform: translate(-50%, 130px);
-  width: min(430px, calc(100% - 25px));
-  background: rgba(255,255,255,.97);
-  border: 1px solid #e4ebf4;
-  border-radius: 22px;
-  padding: 10px;
-  box-shadow: 0 12px 40px rgba(12,43,77,.18);
-  opacity: 0;
-  pointer-events: none;
-  transition: .3s ease;
+.empty{
+    grid-column:1/-1;
+
+    text-align:center;
+
+    padding:60px 20px;
+
+    color:#8291a5;
 }
 
-.cart-popup.show {
-  transform: translate(-50%, 0);
-  opacity: 1;
-  pointer-events: auto;
+.empty-icon{
+    font-size:45px;
+    margin-bottom:8px;
 }
 
-.cart-popup-inner {
-  display: flex;
-  align-items: center;
-  gap: 11px;
-}
-
-.cart-popup-icon {
-  flex: 0 0 55px;
-  width: 55px;
-  height: 55px;
-  border-radius: 50%;
-  background: var(--blue);
-  color: white;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 25px;
-}
-
-.cart-popup-info {
-  flex: 1;
-  min-width: 0;
-}
-
-.cart-popup-items {
-  font-size: 15px;
-  font-weight: 900;
-}
-
-.cart-popup-total {
-  margin-top: 3px;
-  color: #75849a;
-  font-size: 12px;
-}
-
-.cart-popup-button {
-  border: none;
-  background: var(--blue);
-  color: white;
-  padding: 12px 15px;
-  border-radius: 22px;
-  font-weight: bold;
-  cursor: pointer;
-  white-space: nowrap;
-}
 
 /* =========================================================
-   BOTTOM NAV
+   FLOATING CART
 ========================================================= */
 
-.bottom-nav {
-  position: fixed;
-  z-index: 1400;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  height: 62px;
-  background: rgba(255,255,255,.97);
-  backdrop-filter: blur(15px);
-  border-top: 1px solid #e3e9f1;
+.cart-floating{
+    position:fixed;
+
+    z-index:2000;
+
+    left:50%;
+    bottom:70px;
+
+    transform:
+        translate(-50%,20px);
+
+    width:min(385px,calc(100% - 25px));
+
+    min-height:70px;
+
+    background:rgba(255,255,255,.98);
+
+    border-radius:25px;
+
+    box-shadow:
+        0 10px 35px rgba(16,67,116,.19);
+
+    padding:9px;
+
+    display:flex;
+    align-items:center;
+
+    gap:10px;
+
+    opacity:0;
+    pointer-events:none;
+
+    transition:.3s;
 }
 
-.bottom-nav-inner {
-  max-width: 600px;
-  height: 100%;
-  margin: auto;
-  display: flex;
-  justify-content: space-around;
+.cart-floating.show{
+    opacity:1;
+
+    pointer-events:auto;
+
+    transform:
+        translate(-50%,0);
 }
 
-.nav-button {
-  width: 25%;
-  border: none;
-  background: transparent;
-  color: #8190a3;
-  font-size: 10px;
-  cursor: pointer;
+.cart-round{
+    flex:0 0 52px;
+
+    width:52px;
+    height:52px;
+
+    border-radius:50%;
+
+    background:
+        linear-gradient(
+            135deg,
+            #0b92f8,
+            #0575e6
+        );
+
+    color:white;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    font-size:23px;
 }
 
-.nav-icon {
-  display: block;
-  font-size: 21px;
-  margin-bottom: 3px;
+.cart-summary{
+    flex:1;
 }
 
-.nav-button.active {
-  color: var(--blue);
-  font-weight: bold;
+.cart-items{
+    font-size:15px;
+    font-weight:1000;
 }
+
+.cart-total{
+    margin-top:3px;
+
+    color:#8291a5;
+
+    font-size:11px;
+}
+
+.cart-checkout{
+    height:42px;
+
+    padding:0 16px;
+
+    border:none;
+
+    border-radius:22px;
+
+    background:var(--blue);
+
+    color:white;
+
+    font-weight:900;
+
+    cursor:pointer;
+}
+
+
+/* =========================================================
+   BOTTOM NAVIGATION
+========================================================= */
+
+.bottom-nav{
+    position:fixed;
+
+    z-index:1800;
+
+    left:0;
+    right:0;
+    bottom:0;
+
+    height:65px;
+
+    background:
+        rgba(255,255,255,.97);
+
+    backdrop-filter:blur(15px);
+
+    border-top:1px solid #e5ebf3;
+}
+
+.bottom-nav-inner{
+    max-width:650px;
+
+    height:100%;
+
+    margin:auto;
+
+    display:flex;
+}
+
+.nav-item{
+    flex:1;
+
+    border:none;
+
+    background:none;
+
+    color:#8795a8;
+
+    cursor:pointer;
+
+    font-size:10px;
+}
+
+.nav-icon{
+    display:block;
+
+    font-size:22px;
+
+    margin-bottom:3px;
+}
+
+.nav-item.active{
+    color:var(--blue);
+
+    font-weight:900;
+}
+
 
 /* =========================================================
    TOAST
 ========================================================= */
 
-.toast {
-  position: fixed;
-  z-index: 3000;
-  left: 50%;
-  bottom: 145px;
-  transform: translate(-50%, 20px);
-  padding: 11px 18px;
-  border-radius: 12px;
-  background: #152538;
-  color: white;
-  font-size: 12px;
-  opacity: 0;
-  pointer-events: none;
-  transition: .25s;
-  white-space: nowrap;
+.toast{
+    position:fixed;
+
+    z-index:3000;
+
+    left:50%;
+    bottom:145px;
+
+    transform:
+        translate(-50%,20px);
+
+    background:#172b45;
+
+    color:white;
+
+    padding:11px 17px;
+
+    border-radius:12px;
+
+    font-size:12px;
+
+    opacity:0;
+
+    pointer-events:none;
+
+    transition:.25s;
 }
 
-.toast.show {
-  opacity: 1;
-  transform: translate(-50%, 0);
+.toast.show{
+    opacity:1;
+
+    transform:
+        translate(-50%,0);
 }
+
 
 /* =========================================================
-   RESPONSIVE
+   RESPONSIVE TABLET
 ========================================================= */
 
-@media (max-width: 1200px) {
+@media(max-width:1200px){
 
-  .product-grid {
-    grid-template-columns: repeat(5, 1fr);
-  }
+    .logo{
+        min-width:410px;
+    }
 
-  .category-list {
-    grid-template-columns: repeat(7, 1fr);
-  }
+    .product-grid{
+        grid-template-columns:
+            repeat(5,1fr);
+    }
 
-  .banner-logo {
-    right: 4%;
-  }
+    .hero-logo{
+        right:3%;
+        opacity:.7;
+    }
+
+    .hero-products{
+        right:24%;
+    }
 }
 
-@media (max-width: 900px) {
 
-  .logo {
-    min-width: auto;
-  }
+/* =========================================================
+   RESPONSIVE MOBILE
+========================================================= */
 
-  .logo-divider,
-  .logo-tagline {
-    display: none;
-  }
+@media(max-width:700px){
 
-  .logo-name-store {
-    letter-spacing: 3px;
-  }
+    body{
+        padding-bottom:75px;
+    }
 
-  .product-grid {
-    grid-template-columns: repeat(4, 1fr);
-  }
+    .header-inner{
+        padding:8px 10px;
+    }
 
-  .banner {
-    padding: 28px;
-  }
+    .header-row{
+        flex-wrap:wrap;
 
-  .banner-logo {
-    opacity: .25;
-  }
+        gap:8px;
+    }
+
+    .logo{
+        min-width:0;
+        flex:1;
+
+        gap:7px;
+    }
+
+    .logo-image{
+        width:65px;
+        height:45px;
+    }
+
+    .logo-zokent{
+        font-size:29px;
+
+        -webkit-text-stroke:1.5px #071923;
+
+        text-shadow:
+            3px 3px 0 #071923;
+    }
+
+    .logo-store{
+        left:20px;
+        bottom:0;
+
+        font-size:13px;
+
+        -webkit-text-stroke:1px #071923;
+
+        text-shadow:
+            2px 2px 0 #071923;
+    }
+
+    .logo-divider{
+        height:35px;
+        width:2px;
+    }
+
+    .logo-title{
+        font-size:16px;
+    }
+
+    .logo-tagline{
+        display:none;
+    }
+
+    .header-actions{
+        gap:5px;
+    }
+
+    .header-action{
+        width:42px;
+        height:42px;
+
+        border-radius:12px;
+
+        font-size:18px;
+    }
+
+    .search-box{
+        order:5;
+
+        flex-basis:100%;
+    }
+
+    .search-box input{
+        height:43px;
+
+        padding-left:48px;
+    }
+
+    .search-icon{
+        left:17px;
+        top:9px;
+
+        font-size:22px;
+    }
+
+    .main{
+        padding:9px 10px;
+    }
+
+
+    /* HERO */
+
+    .hero{
+        min-height:195px;
+
+        border-radius:14px;
+    }
+
+    .hero-content{
+        padding:24px 19px;
+    }
+
+    .hero-small{
+        font-size:15px;
+    }
+
+    .hero-title{
+        font-size:34px;
+
+        letter-spacing:-2px;
+    }
+
+    .hero-description{
+        max-width:275px;
+
+        font-size:11px;
+    }
+
+    .hero-button{
+        height:38px;
+
+        padding:0 16px;
+
+        font-size:11px;
+    }
+
+    .hero-logo{
+        right:-13px;
+        top:54px;
+
+        opacity:.35;
+    }
+
+    .hero-logo-z{
+        font-size:55px;
+    }
+
+    .hero-logo-store{
+        font-size:23px;
+    }
+
+    .hero-products{
+        display:none;
+    }
+
+
+    /* CATEGORY */
+
+    .section-title{
+        font-size:18px;
+    }
+
+    .section-icon{
+        font-size:22px;
+    }
+
+    .category-list{
+        display:flex;
+
+        overflow-x:auto;
+
+        gap:8px;
+
+        scrollbar-width:none;
+    }
+
+    .category-list::-webkit-scrollbar{
+        display:none;
+    }
+
+    .category-card{
+        flex:0 0 82px;
+
+        height:90px;
+
+        border-radius:12px;
+    }
+
+    .category-icon{
+        width:42px;
+        height:42px;
+
+        font-size:20px;
+    }
+
+    .category-name{
+        font-size:10px;
+    }
+
+
+    /* PRODUCTS */
+
+    .product-grid{
+        grid-template-columns:
+            repeat(2,1fr);
+
+        gap:9px;
+    }
+
+    .product-image{
+        aspect-ratio:1/.88;
+
+        padding:9px;
+    }
+
+    .product-info{
+        padding:8px 9px 10px;
+    }
+
+    .product-name{
+        font-size:11px;
+    }
+
+    .product-price{
+        font-size:14px;
+    }
+
+    .product-stock{
+        font-size:10px;
+    }
+
+    .add-button{
+        height:34px;
+
+        font-size:11px;
+    }
+
+
+    /* CART */
+
+    .cart-floating{
+        bottom:70px;
+
+        width:
+            calc(100% - 20px);
+
+        border-radius:22px;
+    }
+
+    .cart-round{
+        width:48px;
+        height:48px;
+        flex-basis:48px;
+    }
+
+    .cart-checkout{
+        padding:0 13px;
+
+        font-size:11px;
+    }
+
 }
 
-@media (max-width: 650px) {
-
-  body {
-    padding-bottom: 90px;
-  }
-
-  .header-inner {
-    padding: 8px 12px;
-  }
-
-  .header-top {
-    flex-wrap: wrap;
-    gap: 8px;
-  }
-
-  .logo {
-    flex: 1;
-    min-width: 0;
-  }
-
-  .logo-mark {
-    width: 48px;
-    height: 45px;
-  }
-
-  .logo-z {
-    font-size: 39px;
-  }
-
-  .logo-z::after {
-    width: 45px;
-  }
-
-  .logo-name-main {
-    font-size: 18px;
-  }
-
-  .logo-name-store {
-    font-size: 12px;
-    letter-spacing: 3px;
-  }
-
-  .header-actions {
-    gap: 5px;
-  }
-
-  .header-button {
-    width: 42px;
-    height: 42px;
-    border-radius: 12px;
-  }
-
-  .search-area {
-    order: 3;
-    flex-basis: 100%;
-  }
-
-  .search-input {
-    height: 43px;
-  }
-
-  .main {
-    padding: 10px 10px;
-  }
-
-  .banner {
-    min-height: 205px;
-    padding: 25px 20px;
-    border-radius: 17px;
-  }
-
-  .banner-small {
-    font-size: 16px;
-  }
-
-  .banner-title {
-    font-size: 37px;
-  }
-
-  .banner-description {
-    font-size: 12px;
-    max-width: 280px;
-  }
-
-  .banner-logo {
-    right: -10px;
-    opacity: .25;
-  }
-
-  .banner-logo-z {
-    font-size: 90px;
-  }
-
-  .section-title {
-    font-size: 18px;
-  }
-
-  .category-list {
-    display: flex;
-    overflow-x: auto;
-    gap: 9px;
-    padding-bottom: 5px;
-    scrollbar-width: none;
-  }
-
-  .category-list::-webkit-scrollbar {
-    display: none;
-  }
-
-  .category-card {
-    flex: 0 0 78px;
-    min-height: 91px;
-    padding: 9px 5px;
-  }
-
-  .category-icon {
-    width: 43px;
-    height: 43px;
-    font-size: 20px;
-  }
-
-  .category-name {
-    font-size: 10px;
-  }
-
-  .product-grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 9px;
-  }
-
-  .product-info {
-    padding: 9px;
-  }
-
-  .product-name {
-    font-size: 12px;
-  }
-
-  .product-price {
-    font-size: 15px;
-  }
-
-  .product-stock {
-    font-size: 10px;
-  }
-
-  .cart-popup {
-    bottom: 70px;
-  }
-
-  .cart-popup-button {
-    padding: 11px 12px;
-    font-size: 11px;
-  }
-}
 </style>
 </head>
 
+
 <body>
 
-<!-- =======================================================
+
+<!-- =====================================================
      HEADER
-======================================================= -->
+===================================================== -->
 
 <header class="header">
 
-  <div class="header-inner">
+    <div class="header-inner">
 
-    <div class="header-top">
+        <div class="header-row">
 
-      <!-- LOGO -->
-      <div class="logo">
 
-        <div class="logo-mark">
-          <div class="logo-z">Z</div>
+            <!-- LOGO -->
+
+            <div class="logo">
+
+                <div class="logo-image">
+
+                    <div class="logo-zokent">
+                        ZOKENT
+                    </div>
+
+                    <div class="logo-store">
+                        STORE
+                    </div>
+
+                </div>
+
+
+                <div class="logo-divider"></div>
+
+
+                <div class="logo-text">
+
+                    <div class="logo-title">
+                        ZOKENT STORE
+                    </div>
+
+                    <div class="logo-tagline">
+                        Belanja Mudah • Cepat • Terpercaya
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- SEARCH -->
+
+            <div class="search-box">
+
+                <span class="search-icon">
+                    🔍
+                </span>
+
+                <input
+                    id="searchInput"
+                    type="search"
+                    placeholder="Cari produk di ZOKENT STORE..."
+                    autocomplete="off"
+                >
+
+            </div>
+
+
+            <!-- ACTION -->
+
+            <div class="header-actions">
+
+                <button
+                    class="header-action"
+                    onclick="showToast('Pelanggan tidak perlu login')"
+                >
+                    👤
+                </button>
+
+
+                <button
+                    class="header-action"
+                    onclick="goCheckout()"
+                >
+
+                    🛒
+
+                    <span
+                        id="cartBadge"
+                        class="cart-badge"
+                    >
+                        0
+                    </span>
+
+                </button>
+
+            </div>
+
         </div>
-
-        <div class="logo-divider"></div>
-
-        <div class="logo-name">
-
-          <div class="logo-name-main">
-            ZOKENT
-          </div>
-
-          <div class="logo-name-store">
-            STORE
-          </div>
-
-          <div class="logo-tagline">
-            BELANJA MUDAH • CEPAT • TERPERCAYA
-          </div>
-
-        </div>
-
-      </div>
-
-
-      <!-- SEARCH -->
-      <div class="search-area">
-
-        <span class="search-icon">⌕</span>
-
-        <input
-          id="searchInput"
-          class="search-input"
-          type="search"
-          placeholder="Cari produk di ZOKENT STORE..."
-          autocomplete="off"
-        >
-
-      </div>
-
-
-      <!-- ACTION -->
-      <div class="header-actions">
-
-        <button
-          class="header-button"
-          onclick="showToast('Fitur akun pelanggan belum diperlukan')"
-          title="Akun"
-        >
-          👤
-        </button>
-
-        <button
-          class="header-button"
-          onclick="goToCheckout()"
-          title="Keranjang"
-        >
-
-          🛒
-
-          <span
-            id="cartBadge"
-            class="cart-badge"
-          >
-            0
-          </span>
-
-        </button>
-
-      </div>
 
     </div>
-
-  </div>
 
 </header>
 
 
-<!-- =======================================================
+
+<!-- =====================================================
      MAIN
-======================================================= -->
+===================================================== -->
 
 <main class="main">
 
 
-  <!-- BANNER -->
+    <!-- =================================================
+         HERO
+    ================================================== -->
 
-  <section class="banner">
-
-    <div class="banner-content">
-
-      <div class="banner-small">
-        Belanja Lebih Mudah
-      </div>
-
-      <div class="banner-title">
-        ZOKENT STORE
-      </div>
-
-      <div class="banner-description">
-        Temukan kebutuhan sehari-hari kamu di ZOKENT STORE.
-        Pilih produk, masukkan keranjang, lalu pesan.
-      </div>
-
-      <button
-        class="banner-button"
-        onclick="document.getElementById('productSection').scrollIntoView({behavior:'smooth'})"
-      >
-        🛒 Belanja Sekarang →
-      </button>
-
-    </div>
+    <section class="hero">
 
 
-    <div class="banner-logo">
+        <div class="hero-content">
 
-      <div class="banner-logo-z">
-        ZOKENT
-      </div>
-
-      <div class="banner-logo-store">
-        STORE
-      </div>
-
-    </div>
-
-  </section>
+            <div class="hero-small">
+                Belanja Lebih Mudah
+            </div>
 
 
-  <!-- =====================================================
-       CATEGORY
-  ====================================================== -->
-
-  <section class="section">
-
-    <div class="section-header">
-
-      <div class="section-title">
-
-        <span class="section-title-icon">
-          ▦
-        </span>
-
-        Kategori
-
-      </div>
-
-      <button
-        class="section-more"
-        onclick="selectCategory('all')"
-      >
-        Lihat Semua →
-      </button>
-
-    </div>
+            <div class="hero-title">
+                ZOKENT STORE
+            </div>
 
 
-    <div
-      id="categoryList"
-      class="category-list"
-    >
+            <div class="hero-description">
+                Temukan kebutuhan sehari-hari kamu di ZOKENT STORE.
+                <br>
+                Pilih produk, masukkan keranjang, lalu pesan.
+            </div>
 
-      <button
-        class="category-card active"
-        onclick="selectCategory('all')"
-      >
 
-        <div class="category-icon">
-          🛍️
+            <button
+                class="hero-button"
+                onclick="scrollToProducts()"
+            >
+                🛒 &nbsp; Belanja Sekarang &nbsp; →
+            </button>
+
         </div>
 
-        <div class="category-name">
-          Semua
+
+        <!-- Dekorasi produk -->
+
+        <div class="hero-products">
+            🧃 🥤 🛍️
         </div>
 
-      </button>
 
-    </div>
+        <!-- Logo kanan -->
 
-  </section>
+        <div class="hero-logo">
 
+            <div class="hero-logo-z">
+                ZOKENT
+            </div>
 
-  <!-- =====================================================
-       PRODUCTS
-  ====================================================== -->
+            <div class="hero-logo-store">
+                STORE
+            </div>
 
-  <section
-    id="productSection"
-    class="section"
-  >
+        </div>
 
-    <div class="section-header">
-
-      <div class="section-title">
-
-        <span class="section-title-icon">
-          🔥
-        </span>
-
-        Produk Tersedia
-
-      </div>
-
-      <div
-        id="productCount"
-        class="section-more"
-      >
-        Memuat...
-      </div>
-
-    </div>
+    </section>
 
 
-    <div
-      id="productGrid"
-      class="product-grid"
+
+    <!-- =================================================
+         CATEGORY
+    ================================================== -->
+
+    <section class="section">
+
+        <div class="section-header">
+
+            <div class="section-title">
+
+                <span class="section-icon">
+                    ▦
+                </span>
+
+                Kategori
+
+            </div>
+
+
+            <button
+                class="section-more"
+                onclick="selectCategory('all')"
+            >
+                Lihat Semua →
+            </button>
+
+        </div>
+
+
+        <div
+            id="categoryList"
+            class="category-list"
+        >
+
+            <button
+                class="category-card active"
+                onclick="selectCategory('all')"
+            >
+
+                <div class="category-icon">
+                    🛍️
+                </div>
+
+                <div class="category-name">
+                    Semua
+                </div>
+
+            </button>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- =================================================
+         PRODUCTS
+    ================================================== -->
+
+    <section
+        id="productSection"
+        class="section"
     >
 
-      <div class="loading">
+        <div class="section-header">
 
-        <div class="spinner"></div>
+            <div class="section-title">
 
-        Memuat produk ZOKENT STORE...
+                <span class="section-icon">
+                    🔥
+                </span>
 
-      </div>
+                Produk Tersedia
 
-    </div>
+            </div>
 
-  </section>
+
+            <div
+                id="productCount"
+                class="section-count"
+            >
+                Memuat...
+            </div>
+
+        </div>
+
+
+        <div
+            id="productGrid"
+            class="product-grid"
+        >
+
+            <div class="loading">
+
+                <div class="spinner"></div>
+
+                Memuat produk ZOKENT STORE...
+
+            </div>
+
+        </div>
+
+    </section>
 
 </main>
 
 
-<!-- =======================================================
-     CART POPUP
-======================================================= -->
+
+<!-- =====================================================
+     FLOATING CART
+===================================================== -->
 
 <div
-  id="cartPopup"
-  class="cart-popup"
+    id="cartFloating"
+    class="cart-floating"
 >
 
-  <div class="cart-popup-inner">
-
-    <div class="cart-popup-icon">
-      🛒
+    <div class="cart-round">
+        🛒
     </div>
 
-    <div class="cart-popup-info">
 
-      <div
-        id="cartPopupItems"
-        class="cart-popup-items"
-      >
-        0 item
-      </div>
+    <div class="cart-summary">
 
-      <div
-        id="cartPopupTotal"
-        class="cart-popup-total"
-      >
-        Total: Rp0
-      </div>
+        <div
+            id="cartItems"
+            class="cart-items"
+        >
+            0 item
+        </div>
+
+
+        <div
+            id="cartTotal"
+            class="cart-total"
+        >
+            Total: Rp0
+        </div>
 
     </div>
+
 
     <button
-      class="cart-popup-button"
-      onclick="goToCheckout()"
+        class="cart-checkout"
+        onclick="goCheckout()"
     >
-      Lihat Keranjang →
+        Lihat Keranjang →
     </button>
-
-  </div>
 
 </div>
 
 
-<!-- =======================================================
+
+<!-- =====================================================
      BOTTOM NAV
-======================================================= -->
+===================================================== -->
 
 <nav class="bottom-nav">
 
-  <div class="bottom-nav-inner">
-
-    <button
-      class="nav-button active"
-      onclick="window.scrollTo({top:0,behavior:'smooth'})"
-    >
-
-      <span class="nav-icon">
-        🏠
-      </span>
-
-      Beranda
-
-    </button>
+    <div class="bottom-nav-inner">
 
 
-    <button
-      class="nav-button"
-      onclick="document.getElementById('categoryList').scrollIntoView({behavior:'smooth'})"
-    >
+        <button
+            class="nav-item active"
+            onclick="goHome()"
+        >
 
-      <span class="nav-icon">
-        ▦
-      </span>
+            <span class="nav-icon">
+                🏠
+            </span>
 
-      Kategori
+            Beranda
 
-    </button>
-
-
-    <button
-      class="nav-button"
-      onclick="document.getElementById('searchInput').focus()"
-    >
-
-      <span class="nav-icon">
-        🔍
-      </span>
-
-      Cari
-
-    </button>
+        </button>
 
 
-    <button
-      class="nav-button"
-      onclick="goToCheckout()"
-    >
+        <button
+            class="nav-item"
+            onclick="scrollToCategories()"
+        >
 
-      <span class="nav-icon">
-        🛒
-      </span>
+            <span class="nav-icon">
+                ▦
+            </span>
 
-      Keranjang
+            Kategori
 
-    </button>
+        </button>
 
-  </div>
+
+        <button
+            class="nav-item"
+            onclick="focusSearch()"
+        >
+
+            <span class="nav-icon">
+                🔍
+            </span>
+
+            Cari
+
+        </button>
+
+
+        <button
+            class="nav-item"
+            onclick="goCheckout()"
+        >
+
+            <span class="nav-icon">
+                🛒
+            </span>
+
+            Keranjang
+
+        </button>
+
+    </div>
 
 </nav>
 
 
-<!-- TOAST -->
+
+<!-- =====================================================
+     TOAST
+===================================================== -->
 
 <div
-  id="toast"
-  class="toast"
->
-</div>
+    id="toast"
+    class="toast"
+></div>
+
 
 
 <script>
 
 /* =========================================================
-   1. SUPABASE
-   =========================================================
+   SUPABASE
+=========================================================
 
-   GANTI HANYA 2 BARIS INI.
+   GANTI 2 BAGIAN INI DENGAN PUNYAMU.
 
-   JANGAN GUNAKAN SERVICE_ROLE KEY.
-   GUNAKAN ANON / PUBLIC KEY.
+   Gunakan:
+   - Project URL
+   - anon/public key
+
+   JANGAN gunakan service_role key.
 ========================================================= */
 
+
 const SUPABASE_URL =
-  "https://weuousmvkxmgmsnwiuad.supabase.co";
+    "https://weuousmvkxmgmsnwiuad.supabase.co";
+
 
 const SUPABASE_ANON_KEY =
-  "sb_publishable_e375KDL0vuoahHO_kWMjwA_a04R4yHb";
+    "sb_publishable_e375KDL0vuoahHO_kWMjwA_a04R4yHb";
 
 
 const supabaseClient =
-  window.supabase.createClient(
-    SUPABASE_URL,
-    SUPABASE_ANON_KEY
-  );
+    window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_ANON_KEY
+    );
+
 
 
 /* =========================================================
-   2. DATA
+   DATA
 ========================================================= */
 
 let products = [];
+
 let categories = [];
+
 let productCategoryMap = {};
 
 let selectedCategory = "all";
 
-let cart = JSON.parse(
-  localStorage.getItem("zokent_cart") || "[]"
-);
 
-
-/* =========================================================
-   3. FORMAT RUPIAH
-========================================================= */
-
-function rupiah(value) {
-
-  return new Intl.NumberFormat(
-    "id-ID",
-    {
-      style: "currency",
-      currency: "IDR",
-      maximumFractionDigits: 0
-    }
-  ).format(Number(value) || 0);
-
-}
-
-
-/* =========================================================
-   4. ESCAPE HTML
-========================================================= */
-
-function escapeHtml(value) {
-
-  return String(value ?? "")
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#039;");
-
-}
-
-
-/* =========================================================
-   5. LOAD PRODUCTS
-========================================================= */
-
-async function loadProducts() {
-
-  try {
-
-    const {
-      data,
-      error
-    } = await supabaseClient
-
-      .from("products")
-
-      .select(`
-        id,
-        name,
-        catalog_name,
-        sku,
-        description,
-        selling_price,
-        image_url,
-        is_active,
-        show_in_catalog,
-        show_when_out_of_stock,
-        stock_quantity,
-        category,
-        created_at
-      `)
-
-      .eq("is_active", true)
-
-      .eq("show_in_catalog", true)
-
-      .order("created_at", {
-        ascending: false
-      });
-
-
-    if (error) {
-      throw error;
-    }
-
-
-    products = data || [];
-
-  } catch (error) {
-
-    console.error(
-      "PRODUCT ERROR:",
-      error
-    );
-
-    products = [];
-
-    showProductError(
-      "Produk belum dapat dimuat. Periksa URL Supabase, ANON KEY, dan RLS."
-    );
-
-  }
-
-}
-
-
-/* =========================================================
-   6. LOAD CATEGORIES
-========================================================= */
-
-async function loadCategories() {
-
-  try {
-
-    const {
-      data,
-      error
-    } = await supabaseClient
-
-      .from("categories")
-
-      .select("*")
-
-      .order("name", {
-        ascending: true
-      });
-
-
-    if (error) {
-      throw error;
-    }
-
-
-    categories = data || [];
-
-  } catch (error) {
-
-    console.warn(
-      "CATEGORY ERROR:",
-      error
-    );
-
-    categories = [];
-
-  }
-
-}
-
-
-/* =========================================================
-   7. LOAD PRODUCT-CATEGORY RELATION
-=========================================================
-
-   Ini menggunakan tabel:
-
-   product_categories
-       ↓
-   product_id
-   category_id
-
-   Jadi kategori yang dibuat admin
-   tetap bisa dipakai pelanggan.
-========================================================= */
-
-async function loadProductCategories() {
-
-  try {
-
-    const {
-      data,
-      error
-    } = await supabaseClient
-
-      .from("product_categories")
-
-      .select(`
-        product_id,
-        category_id
-      `);
-
-
-    if (error) {
-      throw error;
-    }
-
-
-    productCategoryMap = {};
-
-
-    (data || []).forEach(row => {
-
-      if (!productCategoryMap[row.product_id]) {
-
-        productCategoryMap[row.product_id] = [];
-
-      }
-
-      productCategoryMap[row.product_id]
-        .push(String(row.category_id));
-
-    });
-
-
-  } catch (error) {
-
-    console.warn(
-      "PRODUCT CATEGORY ERROR:",
-      error
-    );
-
-    productCategoryMap = {};
-
-  }
-
-}
-
-
-/* =========================================================
-   8. LOAD SEMUA DATA
-========================================================= */
-
-async function loadStore() {
-
-  showLoading();
-
-  await Promise.all([
-    loadProducts(),
-    loadCategories(),
-    loadProductCategories()
-  ]);
-
-  renderCategories();
-
-  renderProducts();
-
-  updateCart();
-
-}
-
-
-/* =========================================================
-   9. CATEGORY ICON
-========================================================= */
-
-function categoryIcon(name) {
-
-  const value =
-    String(name || "")
-      .toLowerCase();
-
-  if (value.includes("sembako"))
-    return "🍚";
-
-  if (value.includes("minuman"))
-    return "🥤";
-
-  if (value.includes("bumbu"))
-    return "🌶️";
-
-  if (
-    value.includes("mandi") ||
-    value.includes("cuci")
-  )
-    return "🧴";
-
-  if (value.includes("snack"))
-    return "🍪";
-
-  if (value.includes("pulsa"))
-    return "📱";
-
-  return "📦";
-
-}
-
-
-/* =========================================================
-   10. RENDER CATEGORY
-========================================================= */
-
-function renderCategories() {
-
-  const container =
-    document.getElementById(
-      "categoryList"
+let cart =
+    JSON.parse(
+        localStorage.getItem(
+            "zokent_cart"
+        ) || "[]"
     );
 
 
-  let html = `
-
-    <button
-      class="category-card ${selectedCategory === "all" ? "active" : ""}"
-      onclick="selectCategory('all')"
-    >
-
-      <div class="category-icon">
-        🛍️
-      </div>
-
-      <div class="category-name">
-        Semua
-      </div>
-
-    </button>
-
-  `;
-
-
-  categories.forEach(category => {
-
-    html += `
-
-      <button
-        class="category-card ${
-          selectedCategory === String(category.id)
-            ? "active"
-            : ""
-        }"
-        onclick="selectCategory('${category.id}')"
-      >
-
-        <div class="category-icon">
-          ${categoryIcon(category.name)}
-        </div>
-
-        <div class="category-name">
-          ${escapeHtml(category.name)}
-        </div>
-
-      </button>
-
-    `;
-
-  });
-
-
-  container.innerHTML = html;
-
-}
-
 
 /* =========================================================
-   11. SELECT CATEGORY
+   FORMAT RUPIAH
 ========================================================= */
 
-function selectCategory(categoryId) {
+function rupiah(value){
 
-  selectedCategory =
-    String(categoryId);
-
-  renderCategories();
-
-  renderProducts();
-
-  document
-    .getElementById("productSection")
-    .scrollIntoView({
-      behavior: "smooth"
-    });
-
-}
-
-
-/* =========================================================
-   12. GET PRODUCT CATEGORY
-========================================================= */
-
-function productBelongsToCategory(
-  product,
-  categoryId
-) {
-
-  /*
-    PRIORITAS 1:
-    relasi product_categories
-  */
-
-  const relations =
-    productCategoryMap[product.id] || [];
-
-
-  if (
-    relations.length &&
-    relations.includes(String(categoryId))
-  ) {
-
-    return true;
-
-  }
-
-
-  /*
-    PRIORITAS 2:
-    fallback ke kolom products.category
-  */
-
-  const selected =
-    categories.find(
-      category =>
-        String(category.id) ===
-        String(categoryId)
+    return new Intl.NumberFormat(
+        "id-ID",
+        {
+            style:"currency",
+            currency:"IDR",
+            maximumFractionDigits:0
+        }
+    ).format(
+        Number(value) || 0
     );
 
-
-  if (!selected) {
-    return false;
-  }
+}
 
 
-  return (
-    String(product.category || "")
-      .toLowerCase()
-      ===
-    String(selected.name || "")
-      .toLowerCase()
-  );
+
+/* =========================================================
+   ESCAPE HTML
+========================================================= */
+
+function escapeHtml(value){
+
+    return String(
+        value ?? ""
+    )
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;")
+    .replace(/'/g,"&#039;");
 
 }
 
 
+
 /* =========================================================
-   13. RENDER PRODUCTS
+   LOAD PRODUCTS
 ========================================================= */
 
-function renderProducts() {
+async function loadProducts(){
 
-  const container =
-    document.getElementById(
-      "productGrid"
-    );
+    const result =
+        await supabaseClient
 
+        .from("products")
 
-  const search =
-    document
-      .getElementById("searchInput")
-      .value
-      .toLowerCase()
-      .trim();
+        .select(`
+            id,
+            name,
+            catalog_name,
+            sku,
+            description,
+            selling_price,
+            image_url,
+            is_active,
+            show_in_catalog,
+            show_when_out_of_stock,
+            stock_quantity,
+            category,
+            created_at
+        `)
 
+        .eq(
+            "is_active",
+            true
+        )
 
-  let filtered =
-    [...products];
+        .eq(
+            "show_in_catalog",
+            true
+        )
 
-
-  /* SEARCH */
-
-  if (search) {
-
-    filtered =
-      filtered.filter(product => {
-
-        const name =
-          String(
-            product.catalog_name ||
-            product.name ||
-            ""
-          ).toLowerCase();
-
-
-        const sku =
-          String(
-            product.sku || ""
-          ).toLowerCase();
-
-
-        const description =
-          String(
-            product.description || ""
-          ).toLowerCase();
-
-
-        return (
-          name.includes(search) ||
-          sku.includes(search) ||
-          description.includes(search)
+        .order(
+            "created_at",
+            {
+                ascending:false
+            }
         );
 
-      });
 
-  }
+    if(result.error){
 
+        console.error(
+            result.error
+        );
 
-  /* CATEGORY */
+        throw result.error;
 
-  if (
-    selectedCategory !== "all"
-  ) {
-
-    filtered =
-      filtered.filter(
-        product =>
-          productBelongsToCategory(
-            product,
-            selectedCategory
-          )
-      );
-
-  }
+    }
 
 
-  document.getElementById(
-    "productCount"
-  ).textContent =
-    `${filtered.length} produk`;
+    /*
+       Produk yang ditampilkan:
+
+       is_active = true
+       show_in_catalog = true
+
+       Stok habis tetap dapat muncul
+       apabila admin mengaktifkan
+       show_when_out_of_stock.
+    */
 
 
-  if (!filtered.length) {
+    products =
+        (result.data || [])
+        .filter(product => {
 
-    container.innerHTML = `
+            const stock =
+                Number(
+                    product.stock_quantity || 0
+                );
 
-      <div class="empty">
+            if(stock > 0){
 
-        <div class="empty-icon">
-          🔎
-        </div>
+                return true;
 
-        <strong>
-          Produk tidak ditemukan
-        </strong>
+            }
 
-        <div style="margin-top:7px;font-size:12px;">
-          Coba gunakan kata pencarian lain.
-        </div>
+            return (
+                product.show_when_out_of_stock
+                === true
+            );
 
-      </div>
-
-    `;
-
-    return;
-
-  }
-
-
-  container.innerHTML =
-    filtered
-      .map(createProductCard)
-      .join("");
+        });
 
 }
 
 
+
 /* =========================================================
-   14. PRODUCT CARD
+   LOAD CATEGORIES
 ========================================================= */
 
-function createProductCard(product) {
+async function loadCategories(){
 
-  const name =
-    product.catalog_name ||
-    product.name ||
-    "Produk";
+    const result =
+        await supabaseClient
 
+        .from("categories")
 
-  const price =
-    Number(
-      product.selling_price || 0
-    );
+        .select("*")
 
-
-  const stock =
-    Number(
-      product.stock_quantity || 0
-    );
+        .order(
+            "name",
+            {
+                ascending:true
+            }
+        );
 
 
-  const outOfStock =
-    stock <= 0;
+    if(result.error){
+
+        console.warn(
+            "Kategori:",
+            result.error
+        );
+
+        categories = [];
+
+        return;
+
+    }
 
 
-  const showOutOfStock =
-    product.show_when_out_of_stock === true;
+    categories =
+        result.data || [];
+
+}
 
 
-  const image =
-    product.image_url ||
-    "https://placehold.co/600x600?text=ZOKENT";
+
+/* =========================================================
+   LOAD PRODUCT CATEGORIES
+========================================================= */
+
+async function loadProductCategories(){
+
+    const result =
+        await supabaseClient
+
+        .from(
+            "product_categories"
+        )
+
+        .select(`
+            product_id,
+            category_id
+        `);
 
 
-  /*
-    Produk yang stoknya habis tetapi
-    admin memilih show_when_out_of_stock
-    tetap boleh ditampilkan.
+    if(result.error){
 
-    Namun tombol beli dinonaktifkan.
-  */
+        console.warn(
+            "Relasi kategori:",
+            result.error
+        );
 
-  const buttonDisabled =
-    outOfStock;
+        productCategoryMap = {};
 
+        return;
 
-  return `
-
-    <article class="product-card">
-
-      <div class="product-image-wrap">
-
-        <img
-          class="product-image"
-          src="${escapeHtml(image)}"
-          alt="${escapeHtml(name)}"
-          loading="lazy"
-          onerror="
-            this.src='https://placehold.co/600x600?text=ZOKENT'
-          "
-        >
-
-      </div>
+    }
 
 
-      <div class="product-info">
-
-        <div class="product-name">
-          ${escapeHtml(name)}
-        </div>
+    productCategoryMap = {};
 
 
-        <div class="product-price">
-          ${rupiah(price)}
-        </div>
+    (result.data || [])
+    .forEach(row => {
 
+        if(
+            !productCategoryMap[
+                row.product_id
+            ]
+        ){
 
-        ${
-          outOfStock
-            ? `
-              <div class="product-stock empty">
-                ● Stok habis
-              </div>
-            `
-            : `
-              <div class="product-stock">
-                ● Stok ${stock}
-              </div>
-            `
+            productCategoryMap[
+                row.product_id
+            ] = [];
+
         }
 
 
-        <button
-          class="add-cart"
-          ${buttonDisabled ? "disabled" : ""}
-          onclick="addToCart('${product.id}')"
-        >
-
-          ${
-            buttonDisabled
-              ? "Stok Habis"
-              : "🛒 + Keranjang"
-          }
-
-        </button>
-
-      </div>
-
-    </article>
-
-  `;
-
-}
-
-
-/* =========================================================
-   15. ADD TO CART
-========================================================= */
-
-function addToCart(productId) {
-
-  const product =
-    products.find(
-      item =>
-        String(item.id) ===
-        String(productId)
-    );
-
-
-  if (!product) {
-
-    showToast(
-      "Produk tidak ditemukan"
-    );
-
-    return;
-
-  }
-
-
-  const stock =
-    Number(
-      product.stock_quantity || 0
-    );
-
-
-  if (stock <= 0) {
-
-    showToast(
-      "Stok produk habis"
-    );
-
-    return;
-
-  }
-
-
-  const existing =
-    cart.find(
-      item =>
-        String(item.id) ===
-        String(product.id)
-    );
-
-
-  if (existing) {
-
-    if (
-      existing.quantity >= stock
-    ) {
-
-      showToast(
-        "Jumlah sudah mencapai stok"
-      );
-
-      return;
-
-    }
-
-
-    existing.quantity++;
-
-  } else {
-
-    cart.push({
-
-      id: product.id,
-
-      name:
-        product.catalog_name ||
-        product.name,
-
-      price:
-        Number(
-          product.selling_price || 0
-        ),
-
-      image:
-        product.image_url || "",
-
-      quantity: 1
+        productCategoryMap[
+            row.product_id
+        ].push(
+            String(
+                row.category_id
+            )
+        );
 
     });
 
-  }
+}
 
 
-  saveCart();
 
-  updateCart();
+/* =========================================================
+   LOAD STORE
+========================================================= */
 
-  showToast(
-    "✓ Produk masuk keranjang"
-  );
+async function loadStore(){
+
+    showLoading();
+
+
+    try{
+
+        await Promise.all([
+
+            loadProducts(),
+
+            loadCategories(),
+
+            loadProductCategories()
+
+        ]);
+
+
+        renderCategories();
+
+        renderProducts();
+
+        updateCart();
+
+
+    }catch(error){
+
+        console.error(
+            "STORE ERROR:",
+            error
+        );
+
+
+        document
+            .getElementById(
+                "productGrid"
+            )
+            .innerHTML = `
+
+                <div class="empty">
+
+                    <div class="empty-icon">
+                        ⚠️
+                    </div>
+
+                    <strong>
+                        Produk belum dapat dimuat
+                    </strong>
+
+                    <p style="
+                        margin-top:8px;
+                        font-size:12px;
+                    ">
+                        Periksa URL Supabase,
+                        ANON KEY, dan RLS.
+                    </p>
+
+                </div>
+
+            `;
+
+    }
 
 }
 
 
+
 /* =========================================================
-   16. SAVE CART
+   CATEGORY ICON
 ========================================================= */
 
-function saveCart() {
+function categoryIcon(name){
 
-  localStorage.setItem(
-    "zokent_cart",
-    JSON.stringify(cart)
-  );
+    const value =
+        String(name || "")
+        .toLowerCase();
+
+
+    if(value.includes("sembako"))
+        return "🍚";
+
+
+    if(value.includes("minuman"))
+        return "🥤";
+
+
+    if(value.includes("bumbu"))
+        return "🌶️";
+
+
+    if(
+        value.includes("mandi") ||
+        value.includes("cuci")
+    )
+        return "🧴";
+
+
+    if(value.includes("snack"))
+        return "🍪";
+
+
+    if(value.includes("pulsa"))
+        return "📱";
+
+
+    return "📦";
 
 }
 
 
+
 /* =========================================================
-   17. UPDATE CART
+   RENDER CATEGORY
 ========================================================= */
 
-function updateCart() {
+function renderCategories(){
 
-  const itemCount =
-    cart.reduce(
-      (sum, item) =>
-        sum + Number(item.quantity || 0),
-      0
-    );
+    const container =
+        document.getElementById(
+            "categoryList"
+        );
 
 
-  const total =
-    cart.reduce(
-      (sum, item) =>
-        sum +
-        (
-          Number(item.price || 0) *
-          Number(item.quantity || 0)
-        ),
-      0
-    );
+    let html = `
+
+        <button
+            class="category-card
+            ${selectedCategory === "all"
+                ? "active"
+                : ""}"
+            onclick="selectCategory('all')"
+        >
+
+            <div class="category-icon">
+                🛍️
+            </div>
+
+            <div class="category-name">
+                Semua
+            </div>
+
+        </button>
+
+    `;
 
 
-  /* HEADER BADGE */
+    categories.forEach(category => {
 
-  document.getElementById(
-    "cartBadge"
-  ).textContent =
-    itemCount;
+        html += `
+
+            <button
+                class="category-card
+                ${
+                    selectedCategory ===
+                    String(category.id)
+                    ? "active"
+                    : ""
+                }"
+                onclick="
+                    selectCategory(
+                        '${category.id}'
+                    )
+                "
+            >
+
+                <div class="category-icon">
+                    ${categoryIcon(
+                        category.name
+                    )}
+                </div>
+
+                <div class="category-name">
+                    ${escapeHtml(
+                        category.name
+                    )}
+                </div>
+
+            </button>
+
+        `;
+
+    });
 
 
-  /* POPUP */
+    container.innerHTML =
+        html;
 
-  document.getElementById(
-    "cartPopupItems"
-  ).textContent =
-    `${itemCount} item`;
+}
 
 
-  document.getElementById(
-    "cartPopupTotal"
-  ).textContent =
-    `Total: ${rupiah(total)}`;
+
+/* =========================================================
+   CHECK PRODUCT CATEGORY
+========================================================= */
+
+function belongsToCategory(
+    product,
+    categoryId
+){
+
+    const relations =
+        productCategoryMap[
+            product.id
+        ] || [];
 
 
-  const popup =
+    /*
+       Jika mempunyai relasi
+       product_categories
+    */
+
+    if(
+        relations.includes(
+            String(categoryId)
+        )
+    ){
+
+        return true;
+
+    }
+
+
+    /*
+       Fallback ke kolom
+       products.category
+    */
+
+    const category =
+        categories.find(
+            item =>
+                String(item.id) ===
+                String(categoryId)
+        );
+
+
+    if(!category){
+
+        return false;
+
+    }
+
+
+    return String(
+        product.category || ""
+    ).toLowerCase()
+    ===
+    String(
+        category.name || ""
+    ).toLowerCase();
+
+}
+
+
+
+/* =========================================================
+   SELECT CATEGORY
+========================================================= */
+
+function selectCategory(
+    categoryId
+){
+
+    selectedCategory =
+        String(categoryId);
+
+
+    renderCategories();
+
+    renderProducts();
+
+}
+
+
+
+/* =========================================================
+   RENDER PRODUCTS
+========================================================= */
+
+function renderProducts(){
+
+    const grid =
+        document.getElementById(
+            "productGrid"
+        );
+
+
+    const search =
+        document.getElementById(
+            "searchInput"
+        )
+        .value
+        .toLowerCase()
+        .trim();
+
+
+    let result =
+        [...products];
+
+
+    /*
+       SEARCH
+    */
+
+    if(search){
+
+        result =
+            result.filter(product => {
+
+                const name =
+                    String(
+                        product.catalog_name ||
+                        product.name ||
+                        ""
+                    )
+                    .toLowerCase();
+
+
+                const sku =
+                    String(
+                        product.sku || ""
+                    )
+                    .toLowerCase();
+
+
+                return (
+                    name.includes(search) ||
+                    sku.includes(search)
+                );
+
+            });
+
+    }
+
+
+    /*
+       CATEGORY
+    */
+
+    if(
+        selectedCategory !==
+        "all"
+    ){
+
+        result =
+            result.filter(
+                product =>
+                    belongsToCategory(
+                        product,
+                        selectedCategory
+                    )
+            );
+
+    }
+
+
     document.getElementById(
-      "cartPopup"
-    );
+        "productCount"
+    ).textContent =
+        `${result.length} produk`;
 
 
-  /*
-    Popup muncul hanya kalau
-    ada barang di keranjang.
-  */
+    if(!result.length){
 
-  if (itemCount > 0) {
+        grid.innerHTML = `
 
-    popup.classList.add(
-      "show"
-    );
+            <div class="empty">
 
-  } else {
+                <div class="empty-icon">
+                    🔎
+                </div>
 
-    popup.classList.remove(
-      "show"
-    );
+                <strong>
+                    Produk tidak ditemukan
+                </strong>
 
-  }
+                <p style="
+                    margin-top:7px;
+                    font-size:12px;
+                ">
+                    Coba kata pencarian lain.
+                </p>
+
+            </div>
+
+        `;
+
+        return;
+
+    }
+
+
+    grid.innerHTML =
+        result
+        .map(
+            createProductCard
+        )
+        .join("");
 
 }
 
 
+
 /* =========================================================
-   18. CHECKOUT
+   PRODUCT CARD
 ========================================================= */
 
-function goToCheckout() {
+function createProductCard(
+    product
+){
 
-  window.location.href =
-    "checkout.html";
+    const name =
+        product.catalog_name ||
+        product.name ||
+        "Produk";
+
+
+    const price =
+        Number(
+            product.selling_price || 0
+        );
+
+
+    const stock =
+        Number(
+            product.stock_quantity || 0
+        );
+
+
+    const out =
+        stock <= 0;
+
+
+    const image =
+        product.image_url ||
+        "https://placehold.co/600x500?text=ZOKENT";
+
+
+    return `
+
+        <article class="product-card">
+
+
+            <img
+                class="product-image"
+                src="${escapeHtml(image)}"
+                alt="${escapeHtml(name)}"
+                loading="lazy"
+
+                onerror="
+                    this.src=
+                    'https://placehold.co/600x500?text=ZOKENT'
+                "
+            >
+
+
+            <div class="product-info">
+
+
+                <div class="product-name">
+                    ${escapeHtml(name)}
+                </div>
+
+
+                <div class="product-price">
+                    ${rupiah(price)}
+                </div>
+
+
+                ${
+                    out
+
+                    ? `
+
+                        <div
+                            class="product-stock out"
+                        >
+                            ● Stok Habis
+                        </div>
+
+                    `
+
+                    : `
+
+                        <div
+                            class="product-stock"
+                        >
+                            ● Stok ${stock}
+                        </div>
+
+                    `
+                }
+
+
+                <button
+                    class="add-button"
+                    ${
+                        out
+                        ? "disabled"
+                        : ""
+                    }
+                    onclick="
+                        addToCart(
+                            '${product.id}'
+                        )
+                    "
+                >
+
+                    🛒 &nbsp; + Keranjang
+
+                </button>
+
+
+            </div>
+
+        </article>
+
+    `;
 
 }
 
 
+
 /* =========================================================
-   19. SEARCH
+   ADD TO CART
+========================================================= */
+
+function addToCart(
+    productId
+){
+
+    const product =
+        products.find(
+            item =>
+                String(item.id) ===
+                String(productId)
+        );
+
+
+    if(!product){
+
+        showToast(
+            "Produk tidak ditemukan"
+        );
+
+        return;
+
+    }
+
+
+    const stock =
+        Number(
+            product.stock_quantity || 0
+        );
+
+
+    if(stock <= 0){
+
+        showToast(
+            "Stok produk habis"
+        );
+
+        return;
+
+    }
+
+
+    const existing =
+        cart.find(
+            item =>
+                String(item.id) ===
+                String(product.id)
+        );
+
+
+    if(existing){
+
+        if(
+            existing.quantity >=
+            stock
+        ){
+
+            showToast(
+                "Jumlah sudah mencapai stok"
+            );
+
+            return;
+
+        }
+
+
+        existing.quantity++;
+
+    }else{
+
+        cart.push({
+
+            id:product.id,
+
+            name:
+                product.catalog_name ||
+                product.name,
+
+            price:
+                Number(
+                    product.selling_price || 0
+                ),
+
+            image:
+                product.image_url || "",
+
+            quantity:1
+
+        });
+
+    }
+
+
+    saveCart();
+
+    updateCart();
+
+    showToast(
+        "✓ Produk masuk keranjang"
+    );
+
+}
+
+
+
+/* =========================================================
+   SAVE CART
+========================================================= */
+
+function saveCart(){
+
+    localStorage.setItem(
+        "zokent_cart",
+        JSON.stringify(cart)
+    );
+
+}
+
+
+
+/* =========================================================
+   UPDATE CART
+========================================================= */
+
+function updateCart(){
+
+    const count =
+        cart.reduce(
+            (total,item) =>
+                total +
+                Number(
+                    item.quantity || 0
+                ),
+            0
+        );
+
+
+    const total =
+        cart.reduce(
+            (sum,item) =>
+                sum +
+                (
+                    Number(
+                        item.price || 0
+                    ) *
+                    Number(
+                        item.quantity || 0
+                    )
+                ),
+            0
+        );
+
+
+    document.getElementById(
+        "cartBadge"
+    ).textContent =
+        count;
+
+
+    document.getElementById(
+        "cartItems"
+    ).textContent =
+        `${count} item`;
+
+
+    document.getElementById(
+        "cartTotal"
+    ).textContent =
+        `Total: ${rupiah(total)}`;
+
+
+    const popup =
+        document.getElementById(
+            "cartFloating"
+        );
+
+
+    if(count > 0){
+
+        popup.classList.add(
+            "show"
+        );
+
+    }else{
+
+        popup.classList.remove(
+            "show"
+        );
+
+    }
+
+}
+
+
+
+/* =========================================================
+   CHECKOUT
+========================================================= */
+
+function goCheckout(){
+
+    window.location.href =
+        "checkout.html";
+
+}
+
+
+
+/* =========================================================
+   SEARCH
 ========================================================= */
 
 document
-  .getElementById("searchInput")
-  .addEventListener(
-    "input",
-    function() {
+    .getElementById(
+        "searchInput"
+    )
+    .addEventListener(
+        "input",
+        function(){
 
-      renderProducts();
+            renderProducts();
 
-    }
-  );
+        }
+    );
+
 
 
 /* =========================================================
-   20. TOAST
+   NAVIGATION
+========================================================= */
+
+function goHome(){
+
+    window.scrollTo({
+        top:0,
+        behavior:"smooth"
+    });
+
+}
+
+
+function scrollToProducts(){
+
+    document
+        .getElementById(
+            "productSection"
+        )
+        .scrollIntoView({
+            behavior:"smooth"
+        });
+
+}
+
+
+function scrollToCategories(){
+
+    document
+        .getElementById(
+            "categoryList"
+        )
+        .scrollIntoView({
+            behavior:"smooth"
+        });
+
+}
+
+
+function focusSearch(){
+
+    document
+        .getElementById(
+            "searchInput"
+        )
+        .focus();
+
+}
+
+
+
+/* =========================================================
+   TOAST
 ========================================================= */
 
 let toastTimer;
 
 
-function showToast(message) {
+function showToast(message){
 
-  const toast =
-    document.getElementById(
-      "toast"
-    );
-
-
-  toast.textContent =
-    message;
-
-
-  toast.classList.add(
-    "show"
-  );
-
-
-  clearTimeout(
-    toastTimer
-  );
-
-
-  toastTimer =
-    setTimeout(
-      () => {
-
-        toast.classList.remove(
-          "show"
+    const toast =
+        document.getElementById(
+            "toast"
         );
 
-      },
-      2000
+
+    toast.textContent =
+        message;
+
+
+    toast.classList.add(
+        "show"
     );
 
+
+    clearTimeout(
+        toastTimer
+    );
+
+
+    toastTimer =
+        setTimeout(
+            function(){
+
+                toast.classList.remove(
+                    "show"
+                );
+
+            },
+            2000
+        );
+
 }
 
 
+
 /* =========================================================
-   21. LOADING
+   LOADING
 ========================================================= */
 
-function showLoading() {
+function showLoading(){
 
-  document.getElementById(
-    "productGrid"
-  ).innerHTML = `
+    document.getElementById(
+        "productGrid"
+    ).innerHTML = `
 
-    <div class="loading">
+        <div class="loading">
 
-      <div class="spinner"></div>
+            <div class="spinner"></div>
 
-      Memuat produk ZOKENT STORE...
+            Memuat produk
+            ZOKENT STORE...
 
-    </div>
+        </div>
 
-  `;
-
-}
-
-
-/* =========================================================
-   22. ERROR
-========================================================= */
-
-function showProductError(message) {
-
-  document.getElementById(
-    "productGrid"
-  ).innerHTML = `
-
-    <div class="empty">
-
-      <div class="empty-icon">
-        ⚠️
-      </div>
-
-      <strong>
-        Tidak dapat memuat produk
-      </strong>
-
-      <div style="
-        margin-top:8px;
-        font-size:12px;
-      ">
-        ${escapeHtml(message)}
-      </div>
-
-    </div>
-
-  `;
-
-
-  document.getElementById(
-    "productCount"
-  ).textContent =
-    "Error";
+    `;
 
 }
 
 
+
 /* =========================================================
-   23. START
+   START
 ========================================================= */
 
 document.addEventListener(
-  "DOMContentLoaded",
-  function() {
+    "DOMContentLoaded",
+    function(){
 
-    updateCart();
+        updateCart();
 
-    loadStore();
+        loadStore();
 
-  }
+    }
 );
 
 </script>
