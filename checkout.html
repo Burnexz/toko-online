@@ -1,1011 +1,1529 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
+
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
 
   <title>Checkout - ZOKENT STORE</title>
 
-  <script src="https://cdn.tailwindcss.com"></script>
-
   <style>
-    * {
-      box-sizing: border-box;
+
+    :root{
+      --blue:#087ff5;
+      --blue2:#006fe8;
+      --soft-blue:#eaf5ff;
+      --dark:#102b50;
+      --text:#18365d;
+      --muted:#8292a8;
+      --bg:#f6f9fd;
+      --white:#fff;
+      --green:#16ad68;
+      --red:#ef3030;
+      --border:#e1e9f2;
+      --shadow:0 5px 18px rgba(31,74,120,.08);
     }
 
-    body {
-      margin: 0;
-      font-family: Arial, Helvetica, sans-serif;
-      background: #f5f7fb;
-      color: #172033;
+
+    *{
+      box-sizing:border-box;
+      margin:0;
+      padding:0;
     }
 
-    .top-gradient {
-      background: linear-gradient(135deg, #087ff5, #0066d6);
+
+    body{
+      font-family:Arial,Helvetica,sans-serif;
+      background:var(--bg);
+      color:var(--text);
+      padding-bottom:30px;
     }
 
-    .card {
-      background: white;
-      border-radius: 18px;
-      box-shadow: 0 4px 18px rgba(0,0,0,.06);
+
+    button,
+    input,
+    textarea,
+    select{
+      font-family:inherit;
     }
 
-    .btn-blue {
-      background: linear-gradient(135deg, #1688f8, #006bdc);
+
+    button{
+      cursor:pointer;
     }
 
-    .btn-blue:hover {
-      opacity: .92;
+
+    /* HEADER */
+
+    header{
+      background:#fff;
+      position:sticky;
+      top:0;
+      z-index:100;
+      box-shadow:0 2px 12px rgba(0,0,0,.06);
     }
 
-    .payment-option {
-      transition: .2s;
+
+    .header-inner{
+      max-width:1000px;
+      margin:auto;
+      min-height:65px;
+      padding:10px 16px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
     }
 
-    .payment-option:has(input:checked) {
-      border-color: #1688f8;
-      background: #eef7ff;
-      box-shadow: 0 0 0 2px rgba(22,136,248,.08);
+
+    .logo{
+      font-size:31px;
+      font-weight:1000;
+      font-style:italic;
+      letter-spacing:-3px;
+      color:#087ff5;
+      text-shadow:2px 2px 0 #102b50;
     }
 
-    .bottom-space {
-      height: 30px;
+
+    .logo span{
+      display:block;
+      margin-left:39px;
+      margin-top:2px;
+      font-size:9px;
+      letter-spacing:5px;
+      color:#102b50;
+      font-style:normal;
+      text-shadow:none;
     }
 
-    @media (max-width: 640px) {
-      .desktop-only {
-        display: none;
+
+    .back-btn{
+      border:0;
+      background:var(--soft-blue);
+      color:var(--blue);
+      padding:10px 15px;
+      border-radius:12px;
+      font-weight:bold;
+    }
+
+
+    /* CONTAINER */
+
+    .container{
+      max-width:1000px;
+      margin:auto;
+      padding:20px 16px;
+    }
+
+
+    .title{
+      margin-bottom:18px;
+    }
+
+
+    .title h1{
+      color:var(--dark);
+      font-size:25px;
+    }
+
+
+    .title p{
+      color:var(--muted);
+      margin-top:5px;
+      font-size:14px;
+    }
+
+
+    .layout{
+      display:grid;
+      grid-template-columns:1.4fr .8fr;
+      gap:18px;
+      align-items:start;
+    }
+
+
+    .card{
+      background:#fff;
+      border-radius:18px;
+      padding:18px;
+      box-shadow:var(--shadow);
+      margin-bottom:16px;
+    }
+
+
+    .card h2{
+      font-size:18px;
+      margin-bottom:15px;
+      color:var(--dark);
+    }
+
+
+    /* CART */
+
+    .cart-item{
+      display:flex;
+      gap:12px;
+      padding:12px 0;
+      border-bottom:1px solid var(--border);
+    }
+
+
+    .cart-item:last-child{
+      border-bottom:0;
+    }
+
+
+    .cart-image{
+      width:75px;
+      height:75px;
+      flex-shrink:0;
+      border-radius:12px;
+      background:#f3f6fa;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      overflow:hidden;
+    }
+
+
+    .cart-image img{
+      width:100%;
+      height:100%;
+      object-fit:contain;
+    }
+
+
+    .cart-no-image{
+      font-size:30px;
+      opacity:.3;
+    }
+
+
+    .cart-info{
+      flex:1;
+      min-width:0;
+    }
+
+
+    .cart-name{
+      font-size:14px;
+      font-weight:bold;
+      color:var(--dark);
+      line-height:1.35;
+    }
+
+
+    .cart-price{
+      color:var(--blue);
+      font-weight:900;
+      margin-top:5px;
+      font-size:14px;
+    }
+
+
+    .cart-controls{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      margin-top:8px;
+    }
+
+
+    .qty-btn{
+      width:30px;
+      height:30px;
+      border:1px solid #d8e2ec;
+      background:#fff;
+      border-radius:8px;
+      font-size:17px;
+      color:var(--dark);
+    }
+
+
+    .qty{
+      min-width:25px;
+      text-align:center;
+      font-weight:bold;
+    }
+
+
+    .delete-btn{
+      border:0;
+      background:#fff0f0;
+      color:var(--red);
+      border-radius:8px;
+      padding:7px 10px;
+      margin-left:auto;
+      font-size:12px;
+    }
+
+
+    /* EMPTY */
+
+    .empty{
+      text-align:center;
+      padding:45px 20px;
+      color:var(--muted);
+    }
+
+
+    .empty-icon{
+      font-size:55px;
+      margin-bottom:12px;
+    }
+
+
+    .back-store{
+      margin-top:15px;
+      border:0;
+      background:var(--blue);
+      color:#fff;
+      border-radius:11px;
+      padding:12px 20px;
+      font-weight:bold;
+    }
+
+
+    /* FORM */
+
+    .field{
+      margin-bottom:14px;
+    }
+
+
+    .field label{
+      display:block;
+      font-size:13px;
+      font-weight:bold;
+      color:var(--dark);
+      margin-bottom:6px;
+    }
+
+
+    .field input,
+    .field textarea,
+    .field select{
+      width:100%;
+      border:1px solid var(--border);
+      background:#fafcff;
+      border-radius:11px;
+      padding:12px;
+      outline:none;
+      font-size:14px;
+    }
+
+
+    .field textarea{
+      min-height:80px;
+      resize:vertical;
+    }
+
+
+    .field input:focus,
+    .field textarea:focus,
+    .field select:focus{
+      border-color:var(--blue);
+      background:#fff;
+    }
+
+
+    /* PAYMENT */
+
+    .payment-options{
+      display:grid;
+      grid-template-columns:repeat(2,1fr);
+      gap:10px;
+    }
+
+
+    .payment-option{
+      position:relative;
+    }
+
+
+    .payment-option input{
+      position:absolute;
+      opacity:0;
+    }
+
+
+    .payment-option label{
+      display:block;
+      border:1px solid var(--border);
+      border-radius:12px;
+      padding:14px;
+      cursor:pointer;
+      text-align:center;
+      font-weight:bold;
+      font-size:13px;
+      background:#fff;
+    }
+
+
+    .payment-option input:checked + label{
+      border:2px solid var(--blue);
+      background:var(--soft-blue);
+      color:var(--blue);
+    }
+
+
+    /* QRIS */
+
+    .qris-box{
+      margin-top:15px;
+      padding:15px;
+      border-radius:14px;
+      background:var(--soft-blue);
+      text-align:center;
+      display:none;
+    }
+
+
+    .qris-box.show{
+      display:block;
+    }
+
+
+    .qris-box img{
+      max-width:240px;
+      width:100%;
+      background:#fff;
+      padding:10px;
+      border-radius:12px;
+    }
+
+
+    .qris-box p{
+      margin-top:8px;
+      font-size:12px;
+      color:var(--muted);
+    }
+
+
+    /* SUMMARY */
+
+    .summary-row{
+      display:flex;
+      justify-content:space-between;
+      gap:15px;
+      margin-bottom:11px;
+      font-size:14px;
+    }
+
+
+    .summary-row span:first-child{
+      color:var(--muted);
+    }
+
+
+    .summary-row.total{
+      border-top:1px solid var(--border);
+      padding-top:14px;
+      margin-top:14px;
+      font-size:18px;
+      font-weight:900;
+      color:var(--dark);
+    }
+
+
+    .summary-row.total span:last-child{
+      color:var(--blue);
+    }
+
+
+    .wa-button{
+      width:100%;
+      border:0;
+      background:#16ad68;
+      color:#fff;
+      padding:14px;
+      border-radius:12px;
+      font-size:15px;
+      font-weight:bold;
+      margin-top:15px;
+    }
+
+
+    .wa-button:disabled{
+      background:#b8c5d1;
+      cursor:not-allowed;
+    }
+
+
+    .note{
+      margin-top:10px;
+      font-size:11px;
+      color:var(--muted);
+      line-height:1.5;
+      text-align:center;
+    }
+
+
+    /* RESPONSIVE */
+
+    @media(max-width:750px){
+
+      .layout{
+        grid-template-columns:1fr;
       }
+
+
+      .container{
+        padding:15px 12px;
+      }
+
+
+      .card{
+        padding:15px;
+      }
+
+
+      .title h1{
+        font-size:22px;
+      }
+
     }
+
   </style>
+
 </head>
+
 
 <body>
 
-  <!-- HEADER -->
-  <header class="top-gradient text-white sticky top-0 z-50 shadow-lg">
 
-    <div class="max-w-6xl mx-auto px-4 py-3">
+<header>
 
-      <div class="flex items-center justify-between gap-3">
+  <div class="header-inner">
 
-        <!-- KIRI -->
-        <div class="flex items-center gap-3">
-
-          <button
-            onclick="kembaliKeToko()"
-            class="bg-white/15 hover:bg-white/25 border border-white/20 rounded-xl px-3 py-2 text-sm font-bold">
-            ←
-          </button>
-
-          <div>
-            <div class="font-extrabold text-lg tracking-wide">
-              ZOKENT STORE
-            </div>
-
-            <div class="text-[11px] text-blue-100">
-              Checkout & Pembayaran
-            </div>
-          </div>
-
-        </div>
-
-        <!-- ICON -->
-        <div class="text-2xl">
-          🛒
-        </div>
-
-      </div>
-
+    <div class="logo">
+      ZOKENT
+      <span>STORE</span>
     </div>
 
-  </header>
+    <button
+      class="back-btn"
+      onclick="goStore()"
+    >
+      ← Belanja Lagi
+    </button>
 
+  </div>
 
-  <!-- CONTENT -->
-  <main class="max-w-6xl mx-auto px-4 py-5">
+</header>
 
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
 
-      <!-- ========================= -->
-      <!-- KIRI -->
-      <!-- ========================= -->
-      <div class="lg:col-span-2 space-y-5">
+<div class="container">
 
 
-        <!-- KERANJANG -->
-        <section class="card p-4 md:p-6">
+  <div class="title">
 
-          <div class="flex items-center justify-between mb-4">
+    <h1>Checkout</h1>
 
-            <div>
-              <h2 class="font-extrabold text-lg">
-                🛒 Keranjang Belanja
-              </h2>
+    <p>
+      Periksa pesanan sebelum dikirim ke ZOKENT STORE.
+    </p>
 
-              <p
-                id="jumlah-item"
-                class="text-xs text-slate-500 mt-1">
-                0 item
-              </p>
-            </div>
+  </div>
 
-            <button
-              onclick="kembaliKeToko()"
-              class="text-blue-600 text-xs font-bold">
-              + Tambah Produk
-            </button>
 
-          </div>
+  <div class="layout">
 
 
-          <div
-            id="daftar-keranjang"
-            class="divide-y divide-slate-100">
+    <!-- KIRI -->
 
-          </div>
+    <div>
 
-        </section>
 
+      <!-- CART -->
 
-        <!-- DATA PEMBELI -->
-        <section class="card p-4 md:p-6">
+      <div class="card">
 
-          <h2 class="font-extrabold text-lg mb-1">
-            📍 Data Pengiriman
-          </h2>
+        <h2>🛒 Pesanan Kamu</h2>
 
-          <p class="text-xs text-slate-500 mb-5">
-            Masukkan data agar pesanan mudah diproses.
-          </p>
+        <div id="cartContainer">
 
+          <div class="empty">
 
-          <form id="form-checkout">
-
-            <!-- NAMA -->
-            <div class="mb-4">
-
-              <label
-                class="block text-sm font-bold mb-2">
-                Nama Lengkap
-              </label>
-
-              <input
-                type="text"
-                id="nama-pembeli"
-                required
-                autocomplete="name"
-                placeholder="Contoh: Budi"
-                class="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100">
-
-            </div>
-
-
-            <!-- NOMOR -->
-            <div class="mb-4">
-
-              <label
-                class="block text-sm font-bold mb-2">
-                Nomor WhatsApp
-              </label>
-
-              <input
-                type="tel"
-                id="nomor-pembeli"
-                required
-                autocomplete="tel"
-                placeholder="08xxxxxxxxxx"
-                class="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100">
-
-            </div>
-
-
-            <!-- ALAMAT -->
-            <div class="mb-4">
-
-              <label
-                class="block text-sm font-bold mb-2">
-                Alamat Pengiriman
-              </label>
-
-              <textarea
-                id="alamat-pembeli"
-                required
-                rows="3"
-                placeholder="Desa/Kelurahan, RT/RW, patokan rumah, dll."
-                class="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"></textarea>
-
-            </div>
-
-
-            <!-- CATATAN -->
-            <div>
-
-              <label
-                class="block text-sm font-bold mb-2">
-                Catatan Pesanan
-                <span class="font-normal text-slate-400">
-                  (opsional)
-                </span>
-              </label>
-
-              <textarea
-                id="catatan-pembeli"
-                rows="2"
-                placeholder="Contoh: Tolong antar sore..."
-                class="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"></textarea>
-
-            </div>
-
-          </form>
-
-        </section>
-
-
-        <!-- PEMBAYARAN -->
-        <section class="card p-4 md:p-6">
-
-          <h2 class="font-extrabold text-lg mb-1">
-            💳 Metode Pembayaran
-          </h2>
-
-          <p class="text-xs text-slate-500 mb-4">
-            Pilih metode pembayaran yang kamu inginkan.
-          </p>
-
-
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-
-            <!-- CASH -->
-            <label
-              class="payment-option border-2 border-slate-200 rounded-2xl p-4 cursor-pointer">
-
-              <div class="flex items-start gap-3">
-
-                <input
-                  type="radio"
-                  name="metode-bayar"
-                  value="Cash / Bayar di Tempat"
-                  checked
-                  onchange="toggleQris()"
-                  class="mt-1">
-
-                <div>
-
-                  <div class="font-extrabold text-sm">
-                    💵 Cash / Bayar di Tempat
-                  </div>
-
-                  <div class="text-xs text-slate-500 mt-1">
-                    Bayar ketika pesanan diterima.
-                  </div>
-
-                </div>
-
-              </div>
-
-            </label>
-
-
-            <!-- QRIS -->
-            <label
-              class="payment-option border-2 border-slate-200 rounded-2xl p-4 cursor-pointer">
-
-              <div class="flex items-start gap-3">
-
-                <input
-                  type="radio"
-                  name="metode-bayar"
-                  value="QRIS"
-                  onchange="toggleQris()"
-                  class="mt-1">
-
-                <div>
-
-                  <div class="font-extrabold text-sm">
-                    📱 QRIS
-                  </div>
-
-                  <div class="text-xs text-slate-500 mt-1">
-                    DANA, GoPay, OVO, BCA, dll.
-                  </div>
-
-                </div>
-
-              </div>
-
-            </label>
-
-          </div>
-
-
-          <!-- QRIS BOX -->
-          <div
-            id="qris-box"
-            class="hidden mt-5 bg-blue-50 border border-blue-100 rounded-2xl p-5 text-center">
-
-            <div class="font-extrabold text-blue-700 mb-3">
-              📱 Scan QRIS ZOKENT STORE
-            </div>
-
-            <img
-              src="qris.jpg"
-              alt="QRIS ZOKENT STORE"
-              class="w-56 h-56 object-contain mx-auto bg-white rounded-xl p-2 shadow-sm">
-
-            <p class="text-xs text-slate-500 mt-3">
-              Setelah pembayaran berhasil, kirim bukti pembayaran melalui WhatsApp.
-            </p>
-
-          </div>
-
-        </section>
-
-      </div>
-
-
-      <!-- ========================= -->
-      <!-- RINGKASAN -->
-      <!-- ========================= -->
-
-      <div class="lg:col-span-1">
-
-        <section class="card p-5 lg:sticky lg:top-24">
-
-          <h2 class="font-extrabold text-lg mb-5">
-            🧾 Ringkasan Pesanan
-          </h2>
-
-
-          <div class="flex justify-between text-sm mb-3">
-
-            <span class="text-slate-500">
-              Subtotal
-            </span>
-
-            <span
-              id="subtotal-ringkasan"
-              class="font-semibold">
-              Rp 0
-            </span>
-
-          </div>
-
-
-          <div class="flex justify-between text-sm mb-4">
-
-            <span class="text-slate-500">
-              Pengiriman
-            </span>
-
-            <span class="font-semibold text-green-600">
-              Konfirmasi WA
-            </span>
-
-          </div>
-
-
-          <div class="border-t border-slate-100 pt-4">
-
-            <div class="flex justify-between items-center">
-
-              <span class="font-bold">
-                Total
-              </span>
-
-              <span
-                id="total-harga"
-                class="text-xl font-extrabold text-blue-600">
-                Rp 0
-              </span>
-
-            </div>
-
-          </div>
-
-
-          <button
-            type="submit"
-            form="form-checkout"
-            id="btn-kirim"
-            class="btn-blue w-full mt-5 text-white rounded-2xl py-4 font-extrabold shadow-lg flex items-center justify-center gap-2">
-
-            <span>📲</span>
-            Kirim Pesanan via WhatsApp
-
-          </button>
-
-
-          <div class="text-[10px] text-slate-400 text-center mt-4 leading-relaxed">
-
-            Dengan mengirim pesanan, kamu menyetujui
-            proses pemesanan melalui WhatsApp ZOKENT STORE.
-
-          </div>
-
-        </section>
-
-      </div>
-
-    </div>
-
-    <div class="bottom-space"></div>
-
-  </main>
-
-
-  <!-- ========================= -->
-  <!-- JAVASCRIPT -->
-  <!-- ========================= -->
-
-  <script>
-
-    /*
-    =====================================================
-    PENGATURAN TOKO
-    =====================================================
-    */
-
-    const NOMOR_WA_TOKO = "6283863000922";
-
-    const STORAGE_KEY = "keranjang_zokent";
-
-
-    /*
-    =====================================================
-    FORMAT RUPIAH
-    =====================================================
-    */
-
-    function rupiah(angka) {
-
-      return "Rp " + Number(angka || 0)
-        .toLocaleString("id-ID");
-
-    }
-
-
-    /*
-    =====================================================
-    AMBIL KERANJANG
-    =====================================================
-    */
-
-    function ambilKeranjang() {
-
-      try {
-
-        return JSON.parse(
-          localStorage.getItem(STORAGE_KEY)
-        ) || [];
-
-      } catch (error) {
-
-        console.error(error);
-
-        return [];
-
-      }
-
-    }
-
-
-    /*
-    =====================================================
-    SIMPAN KERANJANG
-    =====================================================
-    */
-
-    function simpanKeranjang(keranjang) {
-
-      localStorage.setItem(
-        STORAGE_KEY,
-        JSON.stringify(keranjang)
-      );
-
-    }
-
-
-    /*
-    =====================================================
-    HITUNG TOTAL
-    =====================================================
-    */
-
-    function hitungTotal(keranjang) {
-
-      return keranjang.reduce(
-        (total, item) => {
-
-          const harga = Number(item.harga) || 0;
-          const jumlah = Number(item.jumlah) || 0;
-
-          return total + (harga * jumlah);
-
-        },
-        0
-      );
-
-    }
-
-
-    /*
-    =====================================================
-    ESCAPE HTML
-    =====================================================
-    */
-
-    function aman(teks) {
-
-      return String(teks ?? "")
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
-
-    }
-
-
-    /*
-    =====================================================
-    RENDER KERANJANG
-    =====================================================
-    */
-
-    function renderKeranjang() {
-
-      const container =
-        document.getElementById("daftar-keranjang");
-
-      const jumlahItem =
-        document.getElementById("jumlah-item");
-
-      const totalHarga =
-        document.getElementById("total-harga");
-
-      const subtotalRingkasan =
-        document.getElementById("subtotal-ringkasan");
-
-
-      const keranjang = ambilKeranjang();
-
-
-      if (keranjang.length === 0) {
-
-        container.innerHTML = `
-
-          <div class="text-center py-12">
-
-            <div class="text-5xl mb-4">
+            <div class="empty-icon">
               🛒
             </div>
 
-            <div class="font-extrabold text-slate-700">
-              Keranjang masih kosong
-            </div>
-
-            <div class="text-xs text-slate-400 mt-2">
-              Yuk pilih produk terlebih dahulu.
-            </div>
-
-            <button
-              onclick="kembaliKeToko()"
-              class="mt-5 bg-blue-600 text-white px-5 py-3 rounded-xl text-sm font-bold">
-
-              Belanja Sekarang
-
-            </button>
+            Keranjang masih kosong.
 
           </div>
 
-        `;
+        </div>
 
-        jumlahItem.textContent = "0 item";
-        totalHarga.textContent = "Rp 0";
-        subtotalRingkasan.textContent = "Rp 0";
+      </div>
 
-        return;
 
-      }
+      <!-- CUSTOMER -->
 
+      <div class="card">
 
-      let totalJumlah = 0;
+        <h2>👤 Data Pembeli</h2>
 
 
-      container.innerHTML = keranjang.map(
-        (item, index) => {
+        <div class="field">
 
-          const harga =
-            Number(item.harga) || 0;
+          <label>
+            Nama
+          </label>
 
-          const jumlah =
-            Number(item.jumlah) || 1;
+          <input
+            id="customerName"
+            type="text"
+            placeholder="Masukan Nama kamu"
+          >
 
-          const subtotal =
-            harga * jumlah;
+        </div>
 
-          totalJumlah += jumlah;
 
+        <div class="field">
 
-          const gambar =
-            item.gambar
-              ? `
-                <img
-                  src="${aman(item.gambar)}"
-                  alt="${aman(item.nama)}"
-                  class="w-20 h-20 object-contain rounded-xl bg-slate-50">
-              `
-              : `
-                <div class="w-20 h-20 rounded-xl bg-slate-100 flex items-center justify-center text-3xl">
-                  📦
-                </div>
-              `;
+          <label>
+            Nomor WhatsApp
+          </label>
 
+          <input
+            id="customerPhone"
+            type="tel"
+            placeholder="08xxxxxxxxxx"
+          >
 
-          return `
+        </div>
 
-            <div class="py-4 flex gap-3">
 
-              ${gambar}
+        <div class="field">
 
-              <div class="flex-1 min-w-0">
+          <label>
+            Alamat
+          </label>
 
-                <div class="font-bold text-sm text-slate-800">
-                  ${aman(item.nama)}
-                </div>
+          <textarea
+            id="customerAddress"
+            placeholder="Alamat pengantaran"
+          ></textarea>
 
-                <div class="text-xs text-blue-600 font-bold mt-1">
-                  ${rupiah(harga)}
-                </div>
+        </div>
 
 
-                <div class="flex items-center justify-between mt-3">
+        <div class="field">
 
-                  <!-- QTY -->
-                  <div class="flex items-center border border-slate-200 rounded-xl overflow-hidden">
+          <label>
+            Catatan Pesanan
+          </label>
 
-                    <button
-                      type="button"
-                      onclick="ubahJumlah(${index}, -1)"
-                      class="w-8 h-8 font-bold text-slate-600 hover:bg-slate-100">
+          <textarea
+            id="customerNote"
+            placeholder="Contoh: titip di depan rumah..."
+          ></textarea>
 
-                      −
+        </div>
 
-                    </button>
+      </div>
 
-                    <span class="w-8 text-center text-sm font-bold">
-                      ${jumlah}
-                    </span>
 
-                    <button
-                      type="button"
-                      onclick="ubahJumlah(${index}, 1)"
-                      class="w-8 h-8 font-bold text-blue-600 hover:bg-blue-50">
+      <!-- PAYMENT -->
 
-                      +
+      <div class="card">
 
-                    </button>
+        <h2>💳 Metode Pembayaran</h2>
 
-                  </div>
 
+        <div class="payment-options">
 
-                  <div class="font-extrabold text-sm">
-                    ${rupiah(subtotal)}
-                  </div>
 
+          <div class="payment-option">
 
-                  <button
-                    type="button"
-                    onclick="hapusItem(${index})"
-                    class="text-red-500 text-xs font-bold">
+            <input
+              type="radio"
+              name="payment"
+              id="cash"
+              value="Cash"
+              checked
+              onchange="changePayment()"
+            >
 
-                    Hapus
+            <label for="cash">
+              💵 Cash
+            </label>
 
-                  </button>
+          </div>
 
-                </div>
 
-              </div>
+          <div class="payment-option">
 
-            </div>
+            <input
+              type="radio"
+              name="payment"
+              id="qris"
+              value="QRIS"
+              onchange="changePayment()"
+            >
 
-          `;
+            <label for="qris">
+              📱 QRIS
+            </label>
 
-        }
-      ).join("");
+          </div>
 
 
-      const total =
-        hitungTotal(keranjang);
+        </div>
 
 
-      jumlahItem.textContent =
-        totalJumlah + " item";
+        <div
+          class="qris-box"
+          id="qrisBox"
+        >
 
+          <img
+            src="qris.jpg"
+            alt="QRIS ZOKENT STORE"
+          >
 
-      totalHarga.textContent =
-        rupiah(total);
+          <p>
+            Scan QRIS untuk melakukan pembayaran.
+          </p>
 
+        </div>
 
-      subtotalRingkasan.textContent =
-        rupiah(total);
 
-    }
+      </div>
 
 
-    /*
-    =====================================================
-    UBAH JUMLAH
-    =====================================================
-    */
+    </div>
 
-    function ubahJumlah(index, delta) {
 
-      const keranjang =
-        ambilKeranjang();
+    <!-- KANAN -->
 
+    <div>
 
-      if (!keranjang[index]) return;
 
+      <div class="card">
 
-      let jumlah =
-        Number(keranjang[index].jumlah) || 1;
+        <h2>📋 Ringkasan</h2>
 
 
-      jumlah += delta;
+        <div class="summary-row">
 
+          <span>
+            Jumlah barang
+          </span>
 
-      if (jumlah <= 0) {
+          <span id="summaryQty">
+            0
+          </span>
 
-        keranjang.splice(index, 1);
+        </div>
 
-      } else {
 
-        keranjang[index].jumlah = jumlah;
+        <div class="summary-row">
 
-      }
+          <span>
+            Subtotal
+          </span>
 
+          <span id="summarySubtotal">
+            Rp0
+          </span>
 
-      simpanKeranjang(keranjang);
+        </div>
 
-      renderKeranjang();
 
-    }
+        <div class="summary-row">
 
+          <span>
+            Pengiriman
+          </span>
 
-    /*
-    =====================================================
-    HAPUS ITEM
-    =====================================================
-    */
+          <span>
+            Konfirmasi via WhatsApp
+          </span>
 
-    function hapusItem(index) {
+        </div>
 
-      const keranjang =
-        ambilKeranjang();
 
+        <div class="summary-row total">
 
-      if (!keranjang[index]) return;
+          <span>
+            Total
+          </span>
 
+          <span id="summaryTotal">
+            Rp0
+          </span>
 
-      keranjang.splice(index, 1);
+        </div>
 
 
-      simpanKeranjang(keranjang);
+        <button
+          id="checkoutButton"
+          class="wa-button"
+          onclick="sendWhatsApp()"
+        >
+          📲 Pesan via WhatsApp
+        </button>
 
-      renderKeranjang();
 
-    }
+        <div class="note">
 
+          Setelah menekan tombol,
+          detail pesanan akan dikirim ke WhatsApp ZOKENT STORE.
 
-    /*
-    =====================================================
-    QRIS
-    =====================================================
-    */
+        </div>
 
-    function toggleQris() {
 
-      const metode =
-        document.querySelector(
-          'input[name="metode-bayar"]:checked'
-        )?.value;
+      </div>
 
 
-      const qrisBox =
-        document.getElementById("qris-box");
+    </div>
 
 
-      if (metode === "QRIS") {
+  </div>
 
-        qrisBox.classList.remove("hidden");
 
-      } else {
+</div>
 
-        qrisBox.classList.add("hidden");
 
-      }
+<script>
 
-    }
 
+  /* =====================================================
+     SETTING
+  ===================================================== */
 
-    /*
-    =====================================================
-    KEMBALI KE TOKO
-    =====================================================
-    */
+  const STORAGE_KEY =
+    "zokent_cart";
 
-    function kembaliKeToko() {
 
-      window.location.href = "toko.html";
+  const WHATSAPP_NUMBER =
+    "6283863000922";
 
-    }
 
+  /* =====================================================
+     CART
+  ===================================================== */
 
-    /*
-    =====================================================
-    CHECKOUT
-    =====================================================
-    */
+  let cart = [];
 
-    document
-      .getElementById("form-checkout")
-      .addEventListener("submit", function(e) {
 
-        e.preventDefault();
+  /* =====================================================
+     LOAD CART
+     
+     Prioritas:
+     1. cart dari URL
+     2. localStorage
+  ===================================================== */
 
+  function loadCart(){
 
-        const keranjang =
-          ambilKeranjang();
+    try{
 
+      const params =
+        new URLSearchParams(
+          window.location.search
+        );
 
-        if (keranjang.length === 0) {
 
-          alert(
-            "Keranjang belanja masih kosong."
+      const urlCart =
+        params.get("cart");
+
+
+      if(urlCart){
+
+        const decoded =
+          decodeURIComponent(urlCart);
+
+
+        const parsed =
+          JSON.parse(decoded);
+
+
+        if(Array.isArray(parsed)){
+
+          cart =
+            normalizeCart(parsed);
+
+
+          localStorage.setItem(
+            STORAGE_KEY,
+            JSON.stringify(cart)
           );
+
+
+          renderCart();
 
           return;
 
         }
 
+      }
 
-        const nama =
-          document
-            .getElementById("nama-pembeli")
-            .value
-            .trim();
+    }catch(error){
 
+      console.warn(
+        "Cart dari URL tidak dapat dibaca:",
+        error
+      );
 
-        const nomor =
-          document
-            .getElementById("nomor-pembeli")
-            .value
-            .trim();
+    }
 
 
-        const alamat =
-          document
-            .getElementById("alamat-pembeli")
-            .value
-            .trim();
+    /* FALLBACK LOCAL STORAGE */
+
+    try{
+
+      const saved =
+        localStorage.getItem(
+          STORAGE_KEY
+        );
 
 
-        const catatan =
-          document
-            .getElementById("catatan-pembeli")
-            .value
-            .trim();
+      if(saved){
+
+        const parsed =
+          JSON.parse(saved);
 
 
-        const metode =
-          document.querySelector(
-            'input[name="metode-bayar"]:checked'
-          )?.value || "Cash / Bayar di Tempat";
+        if(Array.isArray(parsed)){
 
-
-        const total =
-          hitungTotal(keranjang);
-
-
-        let rincian = "";
-
-
-        keranjang.forEach(item => {
-
-          const harga =
-            Number(item.harga) || 0;
-
-          const jumlah =
-            Number(item.jumlah) || 0;
-
-          const subtotal =
-            harga * jumlah;
-
-
-          rincian +=
-            `• ${item.nama} x${jumlah} = ${rupiah(subtotal)}\n`;
-
-        });
-
-
-        let pesan =
-
-`Halo ZOKENT STORE 👋
-
-Saya mau melakukan pemesanan.
-
-*DATA PEMBELI*
-Nama: ${nama}
-WhatsApp: ${nomor}
-
-*ALAMAT PENGIRIMAN*
-${alamat}
-
-*METODE PEMBAYARAN*
-${metode}
-
-*DETAIL PESANAN*
-${rincian}
-*TOTAL: ${rupiah(total)}*`;
-
-
-        if (catatan) {
-
-          pesan +=
-            `\n*CATATAN*\n${catatan}`;
+          cart =
+            normalizeCart(parsed);
 
         }
 
+      }
 
-        pesan +=
-          `\n\nMohon dikonfirmasi ketersediaan dan total akhirnya ya.
-Terima kasih 🙏`;
+    }catch(error){
 
-
-        /*
-        =============================================
-        BUKA WHATSAPP
-        =============================================
-        */
-
-        const url =
-          `https://wa.me/${NOMOR_WA_TOKO}?text=${encodeURIComponent(pesan)}`;
+      console.error(
+        "Cart localStorage error:",
+        error
+      );
 
 
-        window.open(url, "_blank");
+      cart = [];
+
+    }
 
 
-        /*
-        =============================================
-        KOSONGKAN KERANJANG
-        =============================================
-        */
+    renderCart();
 
-        localStorage.removeItem(STORAGE_KEY);
+  }
 
 
-        setTimeout(() => {
+  /* =====================================================
+     NORMALIZE CART
+  ===================================================== */
 
-          renderKeranjang();
+  function normalizeCart(items){
 
-        }, 300);
+    return items
+      .filter(item => item && item.id)
+      .map(item => ({
 
-      });
+        id:String(item.id),
+
+        name:
+          String(item.name || "Produk"),
+
+        price:
+          Number(item.price || 0),
+
+        image:
+          String(item.image || ""),
+
+        quantity:
+          Math.max(
+            1,
+            Number(item.quantity || 1)
+          )
+
+      }));
+
+  }
+
+
+  /* =====================================================
+     SAVE CART
+  ===================================================== */
+
+  function saveCart(){
+
+    localStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify(cart)
+    );
+
+  }
+
+
+  /* =====================================================
+     RENDER CART
+  ===================================================== */
+
+  function renderCart(){
+
+    const container =
+      document.getElementById(
+        "cartContainer"
+      );
+
+
+    if(!cart.length){
+
+      container.innerHTML = `
+
+        <div class="empty">
+
+          <div class="empty-icon">
+            🛒
+          </div>
+
+          Keranjang masih kosong.
+
+          <br>
+
+          <button
+            class="back-store"
+            onclick="goStore()"
+          >
+            Mulai Belanja
+          </button>
+
+        </div>
+
+      `;
+
+
+      updateSummary();
+
+      return;
+
+    }
+
+
+    container.innerHTML =
+      cart.map(
+        (item,index) =>
+          createCartItem(item,index)
+      ).join("");
+
+
+    updateSummary();
+
+  }
+
+
+  /* =====================================================
+     CART ITEM
+  ===================================================== */
+
+  function createCartItem(item,index){
+
+    return `
+
+      <div class="cart-item">
+
+
+        <div class="cart-image">
+
+          ${
+            item.image
+            ?
+            `<img
+              src="${escapeHtml(item.image)}"
+              alt="${escapeHtml(item.name)}"
+              onerror="this.style.display='none';this.nextElementSibling.style.display='block';"
+            >`
+            :
+            ""
+          }
+
+          <div
+            class="cart-no-image"
+            style="${item.image ? 'display:none' : ''}"
+          >
+            🛒
+          </div>
+
+        </div>
+
+
+        <div class="cart-info">
+
+          <div class="cart-name">
+            ${escapeHtml(item.name)}
+          </div>
+
+
+          <div class="cart-price">
+
+            ${formatRupiah(item.price)}
+
+            / item
+
+          </div>
+
+
+          <div class="cart-controls">
+
+            <button
+              class="qty-btn"
+              onclick="changeQuantity(${index},-1)"
+            >
+              −
+            </button>
+
+
+            <span class="qty">
+              ${item.quantity}
+            </span>
+
+
+            <button
+              class="qty-btn"
+              onclick="changeQuantity(${index},1)"
+            >
+              +
+            </button>
+
+
+            <button
+              class="delete-btn"
+              onclick="removeItem(${index})"
+            >
+              🗑 Hapus
+            </button>
+
+          </div>
+
+
+        </div>
+
+      </div>
+
+    `;
+
+  }
+
+
+  /* =====================================================
+     CHANGE QUANTITY
+  ===================================================== */
+
+  function changeQuantity(index,change){
+
+    if(!cart[index]){
+      return;
+    }
+
+
+    let newQty =
+      Number(cart[index].quantity) +
+      Number(change);
+
+
+    if(newQty <= 0){
+
+      removeItem(index);
+
+      return;
+
+    }
+
+
+    cart[index].quantity =
+      newQty;
+
+
+    saveCart();
+
+    renderCart();
+
+  }
+
+
+  /* =====================================================
+     REMOVE
+  ===================================================== */
+
+  function removeItem(index){
+
+    if(!cart[index]){
+      return;
+    }
+
+
+    cart.splice(index,1);
+
+
+    saveCart();
+
+    renderCart();
+
+  }
+
+
+  /* =====================================================
+     SUMMARY
+  ===================================================== */
+
+  function updateSummary(){
+
+    const totalQty =
+      cart.reduce(
+        (sum,item) =>
+          sum +
+          Number(item.quantity || 0),
+        0
+      );
+
+
+    const subtotal =
+      cart.reduce(
+        (sum,item) =>
+          sum +
+          Number(item.price || 0) *
+          Number(item.quantity || 0),
+        0
+      );
+
+
+    document.getElementById(
+      "summaryQty"
+    ).textContent =
+      totalQty;
+
+
+    document.getElementById(
+      "summarySubtotal"
+    ).textContent =
+      formatRupiah(subtotal);
+
+
+    document.getElementById(
+      "summaryTotal"
+    ).textContent =
+      formatRupiah(subtotal);
+
+
+    const button =
+      document.getElementById(
+        "checkoutButton"
+      );
+
+
+    button.disabled =
+      cart.length === 0;
+
+  }
+
+
+  /* =====================================================
+     PAYMENT
+  ===================================================== */
+
+  function changePayment(){
+
+    const selected =
+      document.querySelector(
+        'input[name="payment"]:checked'
+      );
+
+
+    const qrisBox =
+      document.getElementById(
+        "qrisBox"
+      );
+
+
+    if(
+      selected &&
+      selected.value === "QRIS"
+    ){
+
+      qrisBox.classList.add("show");
+
+    }else{
+
+      qrisBox.classList.remove("show");
+
+    }
+
+  }
+
+
+  /* =====================================================
+     SEND WHATSAPP
+  ===================================================== */
+
+  function sendWhatsApp(){
+
+    if(!cart.length){
+
+      alert(
+        "Keranjang masih kosong."
+      );
+
+      return;
+
+    }
+
+
+    const name =
+      document
+        .getElementById("customerName")
+        .value
+        .trim();
+
+
+    const phone =
+      document
+        .getElementById("customerPhone")
+        .value
+        .trim();
+
+
+    const address =
+      document
+        .getElementById("customerAddress")
+        .value
+        .trim();
+
+
+    const note =
+      document
+        .getElementById("customerNote")
+        .value
+        .trim();
+
+
+    const payment =
+      document.querySelector(
+        'input[name="payment"]:checked'
+      )?.value || "Cash";
+
+
+    if(!name){
+
+      alert(
+        "Silakan isi nama terlebih dahulu."
+      );
+
+      document
+        .getElementById("customerName")
+        .focus();
+
+      return;
+
+    }
+
+
+    if(!phone){
+
+      alert(
+        "Silakan isi nomor WhatsApp."
+      );
+
+      document
+        .getElementById("customerPhone")
+        .focus();
+
+      return;
+
+    }
+
+
+    if(!address){
+
+      alert(
+        "Silakan isi alamat pengantaran."
+      );
+
+      document
+        .getElementById("customerAddress")
+        .focus();
+
+      return;
+
+    }
+
+
+    let subtotal = 0;
+
+    let totalQty = 0;
+
+
+    let productLines = "";
+
+
+    cart.forEach(
+      (item,index) => {
+
+        const qty =
+          Number(item.quantity || 0);
+
+
+        const price =
+          Number(item.price || 0);
+
+
+        const itemTotal =
+          qty * price;
+
+
+        subtotal +=
+          itemTotal;
+
+
+        totalQty +=
+          qty;
+
+
+        productLines +=
+          `${index + 1}. ${item.name}\n` +
+          `   ${qty} x ${formatRupiah(price)} = ${formatRupiah(itemTotal)}\n`;
+
+      }
+    );
+
+
+    const message =
+
+`🛒 *PESANAN ZOKENT STORE*
+
+Halo ZOKENT STORE, saya ingin memesan:
+
+${productLines}
+*TOTAL ITEM:* ${totalQty}
+*SUBTOTAL:* ${formatRupiah(subtotal)}
+
+👤 *DATA PEMBELI*
+Nama: ${name}
+WhatsApp: ${phone}
+Alamat: ${address}
+
+💳 *PEMBAYARAN*
+Metode: ${payment}
+
+📝 *CATATAN*
+${note || "-"}
+
+Mohon konfirmasi ketersediaan dan total pesanan saya.
+
+Terima kasih.`;
+
+
+
+    const whatsappUrl =
+      "https://wa.me/" +
+      WHATSAPP_NUMBER +
+      "?text=" +
+      encodeURIComponent(message);
 
 
     /*
-    =====================================================
-    START
-    =====================================================
+      Buka WhatsApp terlebih dahulu.
     */
 
-    renderKeranjang();
+    window.open(
+      whatsappUrl,
+      "_blank"
+    );
 
-    toggleQris();
 
-  </script>
+    /*
+      Jangan langsung menghapus cart.
+      Beri waktu supaya WhatsApp terbuka.
+    */
+
+    setTimeout(
+      () => {
+
+        localStorage.removeItem(
+          STORAGE_KEY
+        );
+
+        cart = [];
+
+      },
+      1500
+    );
+
+  }
+
+
+  /* =====================================================
+     BACK TO STORE
+  ===================================================== */
+
+  function goStore(){
+
+    window.location.href =
+      "toko.html";
+
+  }
+
+
+  /* =====================================================
+     FORMAT RUPIAH
+  ===================================================== */
+
+  function formatRupiah(number){
+
+    return new Intl.NumberFormat(
+      "id-ID",
+      {
+        style:"currency",
+        currency:"IDR",
+        maximumFractionDigits:0
+      }
+    ).format(
+      Number(number || 0)
+    );
+
+  }
+
+
+  /* =====================================================
+     ESCAPE HTML
+  ===================================================== */
+
+  function escapeHtml(value){
+
+    return String(value ?? "")
+      .replace(/&/g,"&amp;")
+      .replace(/</g,"&lt;")
+      .replace(/>/g,"&gt;")
+      .replace(/"/g,"&quot;")
+      .replace(/'/g,"&#039;");
+
+  }
+
+
+  /* =====================================================
+     START
+  ===================================================== */
+
+  document.addEventListener(
+    "DOMContentLoaded",
+    () => {
+
+      loadCart();
+
+      changePayment();
+
+    }
+  );
+
+</script>
 
 </body>
 </html>
