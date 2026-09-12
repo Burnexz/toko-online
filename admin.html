@@ -9,7 +9,7 @@
     <script>
         if (localStorage.getItem("adminLoggedIn") !== "true") {
             alert("AKSES DITOLAK! Silakan login melalui portal terlebih dahulu.");
-            window.location.href = "login-admin.html";
+            window.location.replace("login-admin.html");
         }
     </script>
 
@@ -195,10 +195,9 @@
         }
 
         function handleLogout() {
-            if (confirm("Apakah Anda yakin ingin keluar dari sesi Administrator?")) {
-                localStorage.removeItem("adminLoggedIn");
-                window.location.href = "login-admin.html";
-            }
+            // Langsung hapus sesi dan arahkan ke login tanpa pop-up konfirmasi
+            localStorage.removeItem("adminLoggedIn");
+            window.location.replace("login-admin.html");
         }
     </script>
 </body>
