@@ -1,2866 +1,1097 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>ZOKENT STORE</title>
+  <title>Checkout - ZOKENT STORE</title>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
 
-<style>
-
-/* =========================================================
-   ZOKENT STORE
-   CUSTOMER SHOP
-========================================================= */
-
-*{
-    box-sizing:border-box;
-    margin:0;
-    padding:0;
-}
-
-:root{
-    --blue:#0788f5;
-    --blue2:#006fe8;
-    --dark:#102b50;
-    --text:#18365d;
-    --muted:#8292a8;
-    --bg:#f6f9fd;
-    --white:#fff;
-    --green:#16ad68;
-    --red:#ef3030;
-    --shadow:0 5px 18px rgba(31,74,120,.08);
-}
-
-html{
-    scroll-behavior:smooth;
-}
-
-body{
-    font-family:
-        Arial,
-        Helvetica,
-        sans-serif;
-    background:var(--bg);
-    color:var(--text);
-    padding-bottom:90px;
-}
-
-
-/* =========================================================
-   HEADER
-========================================================= */
-
-.header{
-    position:sticky;
-    top:0;
-    z-index:1000;
-    background:rgba(255,255,255,.96);
-    backdrop-filter:blur(15px);
-    border-bottom:1px solid #e8eef6;
-}
-
-.header-inner{
-    max-width:1500px;
-    margin:auto;
-    padding:12px 28px;
-}
-
-.header-row{
-    display:flex;
-    align-items:center;
-    gap:25px;
-}
-
-
-/* =========================================================
-   LOGO
-========================================================= */
-
-.logo{
-    display:flex;
-    align-items:center;
-    gap:16px;
-    min-width:520px;
-}
-
-.logo-image{
-    width:175px;
-    height:75px;
-
-    display:flex;
-    align-items:center;
-    justify-content:center;
-
-    position:relative;
-}
-
-
-/*
-   Gaya ZOKENT graffiti.
-   Nanti kalau kamu punya file logo asli,
-   cukup ganti isi .logo-image dengan <img>.
-*/
-
-.logo-zokent{
-    font-size:42px;
-    font-weight:1000;
-    font-style:italic;
-    letter-spacing:-4px;
-    color:#079cf1;
-
-    -webkit-text-stroke:2px #071923;
-
-    text-shadow:
-        4px 4px 0 #071923,
-        7px 7px 0 rgba(0,0,0,.18);
-
-    transform:skew(-8deg) rotate(-2deg);
-}
-
-.logo-store{
-    position:absolute;
-
-    left:55px;
-    bottom:1px;
-
-    font-size:22px;
-    font-weight:1000;
-    font-style:italic;
-
-    color:white;
-
-    -webkit-text-stroke:1.5px #071923;
-
-    text-shadow:
-        3px 3px 0 #071923;
-
-    transform:rotate(-3deg);
-}
-
-.logo-divider{
-    width:3px;
-    height:50px;
-    background:#152c48;
-    border-radius:5px;
-}
-
-.logo-text{
-    line-height:1.1;
-}
-
-.logo-title{
-    font-size:27px;
-    font-weight:1000;
-    font-style:italic;
-    letter-spacing:-1px;
-}
-
-.logo-tagline{
-    margin-top:5px;
-    color:#8391a5;
-    font-size:12px;
-    font-weight:600;
-}
-
-
-/* =========================================================
-   SEARCH
-========================================================= */
-
-.search-box{
-    flex:1;
-    position:relative;
-}
-
-.search-box input{
-    width:100%;
-    height:52px;
-
-    border:none;
-    outline:none;
-
-    border-radius:28px;
-
-    background:#f0f4f9;
-
-    padding:
-        0 25px
-        0 57px;
-
-    font-size:14px;
-    color:var(--text);
-
-    box-shadow:
-        inset 0 1px 3px rgba(0,0,0,.03);
-}
-
-.search-box input:focus{
-    background:#fff;
-
-    box-shadow:
-        0 0 0 3px rgba(7,136,245,.12);
-}
-
-.search-icon{
-    position:absolute;
-    left:21px;
-    top:13px;
-
-    font-size:25px;
-    color:#70829a;
-}
-
-
-/* =========================================================
-   HEADER ACTION
-========================================================= */
-
-.header-actions{
-    display:flex;
-    gap:10px;
-}
-
-.header-action{
-    width:52px;
-    height:52px;
-
-    border:none;
-    border-radius:16px;
-
-    background:var(--blue);
-    color:white;
-
-    font-size:23px;
-
-    cursor:pointer;
-
-    position:relative;
-
-    box-shadow:
-        0 5px 14px rgba(7,136,245,.20);
-}
-
-.cart-badge{
-    position:absolute;
-
-    right:-5px;
-    top:-6px;
-
-    min-width:22px;
-    height:22px;
-
-    padding:0 5px;
-
-    display:flex;
-    align-items:center;
-    justify-content:center;
-
-    background:#f02727;
-    color:white;
-
-    border:2px solid white;
-    border-radius:50%;
-
-    font-size:11px;
-    font-weight:900;
-}
-
-
-/* =========================================================
-   MAIN
-========================================================= */
-
-.main{
-    max-width:1500px;
-    margin:auto;
-    padding:14px 28px;
-}
-
-
-/* =========================================================
-   HERO
-========================================================= */
-
-.hero{
-    position:relative;
-
-    min-height:238px;
-
-    overflow:hidden;
-
-    border-radius:18px;
-
-    background:
-        linear-gradient(
-            115deg,
-            #0069db 0%,
-            #058df4 53%,
-            #11b5f5 100%
-        );
-
-    box-shadow:
-        0 10px 30px rgba(0,91,180,.16);
-
-    margin-bottom:18px;
-}
-
-.hero::before{
-    content:"";
-
-    position:absolute;
-
-    width:500px;
-    height:500px;
-
-    right:30%;
-    top:-360px;
-
-    border-radius:50%;
-
-    border:100px solid rgba(255,255,255,.07);
-}
-
-.hero::after{
-    content:"";
-
-    position:absolute;
-
-    width:400px;
-    height:400px;
-
-    right:-100px;
-    bottom:-300px;
-
-    border-radius:50%;
-
-    background:rgba(255,255,255,.08);
-}
-
-.hero-content{
-    position:relative;
-    z-index:5;
-
-    padding:29px 68px;
-
-    color:white;
-}
-
-.hero-small{
-    font-size:22px;
-    font-weight:800;
-    font-style:italic;
-}
-
-.hero-title{
-    margin-top:2px;
-
-    font-size:60px;
-    line-height:1;
-
-    font-weight:1000;
-    font-style:italic;
-
-    letter-spacing:-3px;
-
-    text-shadow:
-        3px 4px 0 rgba(0,0,0,.18);
-}
-
-.hero-description{
-    margin-top:10px;
-
-    font-size:15px;
-    line-height:1.5;
-}
-
-.hero-button{
-    margin-top:14px;
-
-    height:43px;
-
-    padding:0 25px;
-
-    border:none;
-    border-radius:24px;
-
-    background:white;
-    color:#0865c6;
-
-    font-weight:900;
-    font-size:13px;
-
-    cursor:pointer;
-}
-
-.hero-products{
-    position:absolute;
-
-    z-index:4;
-
-    right:24%;
-    bottom:-12px;
-
-    font-size:80px;
-
-    letter-spacing:-12px;
-
-    filter:
-        drop-shadow(0 15px 10px rgba(0,0,0,.18));
-}
-
-.hero-logo{
-    position:absolute;
-
-    z-index:4;
-
-    right:5%;
-    top:31px;
-
-    transform:rotate(-4deg);
-
-    text-align:center;
-}
-
-.hero-logo-z{
-    font-size:61px;
-
-    font-weight:1000;
-    font-style:italic;
-
-    color:#08a5f4;
-
-    -webkit-text-stroke:3px #061b26;
-
-    text-shadow:
-        6px 6px 0 #061b26;
-}
-
-.hero-logo-store{
-    margin-top:-7px;
-
-    font-size:28px;
-
-    font-weight:1000;
-    font-style:italic;
-
-    color:white;
-
-    -webkit-text-stroke:1px #061b26;
-
-    text-shadow:
-        3px 3px 0 #061b26;
-}
-
-
-/* =========================================================
-   SECTION HEADER
-========================================================= */
-
-.section{
-    margin-bottom:18px;
-}
-
-.section-header{
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-
-    margin-bottom:10px;
-}
-
-.section-title{
-    display:flex;
-    align-items:center;
-    gap:10px;
-
-    font-size:23px;
-    font-weight:1000;
-}
-
-.section-icon{
-    color:var(--blue);
-    font-size:28px;
-}
-
-.section-count{
-    color:#8392a6;
-    font-size:13px;
-}
-
-.section-more{
-    border:none;
-    background:none;
-
-    color:var(--blue);
-
-    font-weight:800;
-
-    cursor:pointer;
-}
-
-
-/* =========================================================
-   CATEGORY
-========================================================= */
-
-.category-list{
-    display:grid;
-
-    grid-template-columns:
-        repeat(7,1fr);
-
-    gap:11px;
-}
-
-.category-card{
-    height:98px;
-
-    border:none;
-    border-radius:13px;
-
-    background:white;
-
-    box-shadow:var(--shadow);
-
-    cursor:pointer;
-
-    transition:.2s;
-
-    display:flex;
-    flex-direction:column;
-
-    align-items:center;
-    justify-content:center;
-
-    gap:7px;
-}
-
-.category-card:hover{
-    transform:translateY(-2px);
-}
-
-.category-card.active{
-    background:
-        linear-gradient(
-            135deg,
-            #0b92f8,
-            #0878e9
-        );
-
-    color:white;
-
-    box-shadow:
-        0 8px 20px rgba(7,136,245,.23);
-}
-
-.category-icon{
-    width:47px;
-    height:47px;
-
-    border-radius:50%;
-
-    background:#edf6ff;
-
-    display:flex;
-    align-items:center;
-    justify-content:center;
-
-    font-size:23px;
-}
-
-.category-card.active
-.category-icon{
-    background:rgba(255,255,255,.22);
-}
-
-.category-name{
-    font-size:13px;
-    font-weight:900;
-}
-
-
-/* =========================================================
-   PRODUCT GRID
-========================================================= */
-
-.product-grid{
-    display:grid;
-
-    grid-template-columns:
-        repeat(6,1fr);
-
-    gap:12px;
-}
-
-.product-card{
-    background:white;
-
-    border-radius:13px;
-
-    overflow:hidden;
-
-    box-shadow:var(--shadow);
-
-    transition:.2s;
-
-    min-width:0;
-}
-
-.product-card:hover{
-    transform:translateY(-2px);
-
-    box-shadow:
-        0 9px 22px rgba(31,74,120,.12);
-}
-
-.product-image{
-    width:100%;
-
-    aspect-ratio:1 / .83;
-
-    object-fit:contain;
-
-    padding:12px;
-
-    background:white;
-}
-
-.product-info{
-    padding:8px 13px 13px;
-}
-
-.product-name{
-    height:35px;
-
-    font-size:13px;
-    font-weight:800;
-
-    line-height:1.35;
-
-    overflow:hidden;
-
-    display:
-        -webkit-box;
-
-    -webkit-line-clamp:2;
-    -webkit-box-orient:vertical;
-}
-
-.product-price{
-    margin-top:3px;
-
-    color:#087cf0;
-
-    font-size:16px;
-    font-weight:1000;
-}
-
-.product-stock{
-    margin-top:5px;
-
-    color:#14a969;
-
-    font-size:12px;
-    font-weight:800;
-}
-
-.product-stock.out{
-    color:#ef3636;
-}
-
-.add-button{
-    width:100%;
-    height:34px;
-
-    margin-top:8px;
-
-    border:none;
-    border-radius:10px;
-
-    background:
-        linear-gradient(
-            90deg,
-            #087cf0,
-            #078ff5
-        );
-
-    color:white;
-
-    font-size:12px;
-    font-weight:900;
-
-    cursor:pointer;
-}
-
-.add-button:hover{
-    filter:brightness(.95);
-}
-
-.add-button:disabled{
-    background:#dce3eb;
-    color:#7c8998;
-    cursor:not-allowed;
-}
-
-
-/* =========================================================
-   LOADING
-========================================================= */
-
-.loading{
-    grid-column:1/-1;
-
-    text-align:center;
-
-    padding:70px;
-
-    color:#8291a5;
-}
-
-.spinner{
-    width:35px;
-    height:35px;
-
-    margin:0 auto 12px;
-
-    border:4px solid #dce8f5;
-    border-top-color:var(--blue);
-
-    border-radius:50%;
-
-    animation:spin .8s linear infinite;
-}
-
-@keyframes spin{
-    to{
-        transform:rotate(360deg);
-    }
-}
-
-
-/* =========================================================
-   EMPTY
-========================================================= */
-
-.empty{
-    grid-column:1/-1;
-
-    text-align:center;
-
-    padding:60px 20px;
-
-    color:#8291a5;
-}
-
-.empty-icon{
-    font-size:45px;
-    margin-bottom:8px;
-}
-
-
-/* =========================================================
-   FLOATING CART
-========================================================= */
-
-.cart-floating{
-    position:fixed;
-
-    z-index:2000;
-
-    left:50%;
-    bottom:70px;
-
-    transform:
-        translate(-50%,20px);
-
-    width:min(385px,calc(100% - 25px));
-
-    min-height:70px;
-
-    background:rgba(255,255,255,.98);
-
-    border-radius:25px;
-
-    box-shadow:
-        0 10px 35px rgba(16,67,116,.19);
-
-    padding:9px;
-
-    display:flex;
-    align-items:center;
-
-    gap:10px;
-
-    opacity:0;
-    pointer-events:none;
-
-    transition:.3s;
-}
-
-.cart-floating.show{
-    opacity:1;
-
-    pointer-events:auto;
-
-    transform:
-        translate(-50%,0);
-}
-
-.cart-round{
-    flex:0 0 52px;
-
-    width:52px;
-    height:52px;
-
-    border-radius:50%;
-
-    background:
-        linear-gradient(
-            135deg,
-            #0b92f8,
-            #0575e6
-        );
-
-    color:white;
-
-    display:flex;
-    align-items:center;
-    justify-content:center;
-
-    font-size:23px;
-}
-
-.cart-summary{
-    flex:1;
-}
-
-.cart-items{
-    font-size:15px;
-    font-weight:1000;
-}
-
-.cart-total{
-    margin-top:3px;
-
-    color:#8291a5;
-
-    font-size:11px;
-}
-
-.cart-checkout{
-    height:42px;
-
-    padding:0 16px;
-
-    border:none;
-
-    border-radius:22px;
-
-    background:var(--blue);
-
-    color:white;
-
-    font-weight:900;
-
-    cursor:pointer;
-}
-
-
-/* =========================================================
-   BOTTOM NAVIGATION
-========================================================= */
-
-.bottom-nav{
-    position:fixed;
-
-    z-index:1800;
-
-    left:0;
-    right:0;
-    bottom:0;
-
-    height:65px;
-
-    background:
-        rgba(255,255,255,.97);
-
-    backdrop-filter:blur(15px);
-
-    border-top:1px solid #e5ebf3;
-}
-
-.bottom-nav-inner{
-    max-width:650px;
-
-    height:100%;
-
-    margin:auto;
-
-    display:flex;
-}
-
-.nav-item{
-    flex:1;
-
-    border:none;
-
-    background:none;
-
-    color:#8795a8;
-
-    cursor:pointer;
-
-    font-size:10px;
-}
-
-.nav-icon{
-    display:block;
-
-    font-size:22px;
-
-    margin-bottom:3px;
-}
-
-.nav-item.active{
-    color:var(--blue);
-
-    font-weight:900;
-}
-
-
-/* =========================================================
-   TOAST
-========================================================= */
-
-.toast{
-    position:fixed;
-
-    z-index:3000;
-
-    left:50%;
-    bottom:145px;
-
-    transform:
-        translate(-50%,20px);
-
-    background:#172b45;
-
-    color:white;
-
-    padding:11px 17px;
-
-    border-radius:12px;
-
-    font-size:12px;
-
-    opacity:0;
-
-    pointer-events:none;
-
-    transition:.25s;
-}
-
-.toast.show{
-    opacity:1;
-
-    transform:
-        translate(-50%,0);
-}
-
-
-/* =========================================================
-   RESPONSIVE TABLET
-========================================================= */
-
-@media(max-width:1200px){
-
-    .logo{
-        min-width:410px;
+  <style>
+    * {
+      box-sizing: border-box;
     }
 
-    .product-grid{
-        grid-template-columns:
-            repeat(5,1fr);
+    body {
+      margin: 0;
+      background: #f4f7fb;
+      font-family: Arial, Helvetica, sans-serif;
+      color: #111827;
     }
 
-    .hero-logo{
-        right:3%;
-        opacity:.7;
+    .zokent-logo {
+      font-weight: 1000;
+      font-style: italic;
+      letter-spacing: -2px;
+      line-height: 0.8;
+      text-shadow:
+        2px 2px 0 #000,
+        -1px -1px 0 #000,
+        1px -1px 0 #000,
+        -1px 1px 0 #000;
     }
 
-    .hero-products{
-        right:24%;
-    }
-}
-
-
-/* =========================================================
-   RESPONSIVE MOBILE
-========================================================= */
-
-@media(max-width:700px){
-
-    body{
-        padding-bottom:75px;
+    .logo-z {
+      color: #1687ff;
     }
 
-    .header-inner{
-        padding:8px 10px;
+    .logo-store {
+      color: white;
+      font-size: 12px;
+      letter-spacing: 3px;
+      text-shadow: 1px 1px 0 #000;
     }
 
-    .header-row{
-        flex-wrap:wrap;
-
-        gap:8px;
+    .card {
+      background: white;
+      border-radius: 18px;
+      box-shadow: 0 3px 15px rgba(0,0,0,.07);
     }
 
-    .logo{
-        min-width:0;
-        flex:1;
-
-        gap:7px;
+    .product-image {
+      width: 80px;
+      height: 80px;
+      object-fit: contain;
+      border-radius: 12px;
+      background: #f8fafc;
     }
 
-    .logo-image{
-        width:65px;
-        height:45px;
+    .qty-btn {
+      width: 32px;
+      height: 32px;
+      border-radius: 9px;
+      border: none;
+      background: #eaf3ff;
+      color: #0878ed;
+      font-size: 20px;
+      font-weight: bold;
+      cursor: pointer;
     }
 
-    .logo-zokent{
-        font-size:29px;
-
-        -webkit-text-stroke:1.5px #071923;
-
-        text-shadow:
-            3px 3px 0 #071923;
+    .qty-btn:active {
+      transform: scale(.94);
     }
 
-    .logo-store{
-        left:20px;
-        bottom:0;
-
-        font-size:13px;
-
-        -webkit-text-stroke:1px #071923;
-
-        text-shadow:
-            2px 2px 0 #071923;
+    .delete-btn {
+      color: #ef4444;
+      font-size: 13px;
+      cursor: pointer;
+      background: none;
+      border: none;
+      padding: 4px 0;
     }
 
-    .logo-divider{
-        height:35px;
-        width:2px;
+    .payment-option {
+      border: 2px solid #e5e7eb;
+      border-radius: 14px;
+      padding: 14px;
+      cursor: pointer;
+      transition: .2s;
     }
 
-    .logo-title{
-        font-size:16px;
+    .payment-option.active {
+      border-color: #1687ff;
+      background: #eff7ff;
     }
 
-    .logo-tagline{
-        display:none;
+    .payment-option input {
+      accent-color: #1687ff;
     }
 
-    .header-actions{
-        gap:5px;
+    .checkout-btn {
+      width: 100%;
+      border: none;
+      border-radius: 15px;
+      background: #1687ff;
+      color: white;
+      padding: 16px;
+      font-size: 17px;
+      font-weight: 800;
+      cursor: pointer;
+      box-shadow: 0 6px 15px rgba(22,135,255,.25);
     }
 
-    .header-action{
-        width:42px;
-        height:42px;
-
-        border-radius:12px;
-
-        font-size:18px;
+    .checkout-btn:active {
+      transform: scale(.98);
     }
 
-    .search-box{
-        order:5;
-
-        flex-basis:100%;
+    .empty-cart {
+      text-align: center;
+      padding: 50px 20px;
     }
 
-    .search-box input{
-        height:43px;
-
-        padding-left:48px;
+    .empty-icon {
+      font-size: 60px;
+      margin-bottom: 15px;
     }
 
-    .search-icon{
-        left:17px;
-        top:9px;
+    @media (max-width: 640px) {
+      .product-image {
+        width: 68px;
+        height: 68px;
+      }
 
-        font-size:22px;
+      .product-name {
+        font-size: 14px;
+      }
+
+      .product-price {
+        font-size: 14px;
+      }
     }
-
-    .main{
-        padding:9px 10px;
-    }
-
-
-    /* HERO */
-
-    .hero{
-        min-height:195px;
-
-        border-radius:14px;
-    }
-
-    .hero-content{
-        padding:24px 19px;
-    }
-
-    .hero-small{
-        font-size:15px;
-    }
-
-    .hero-title{
-        font-size:34px;
-
-        letter-spacing:-2px;
-    }
-
-    .hero-description{
-        max-width:275px;
-
-        font-size:11px;
-    }
-
-    .hero-button{
-        height:38px;
-
-        padding:0 16px;
-
-        font-size:11px;
-    }
-
-    .hero-logo{
-        right:-13px;
-        top:54px;
-
-        opacity:.35;
-    }
-
-    .hero-logo-z{
-        font-size:55px;
-    }
-
-    .hero-logo-store{
-        font-size:23px;
-    }
-
-    .hero-products{
-        display:none;
-    }
-
-
-    /* CATEGORY */
-
-    .section-title{
-        font-size:18px;
-    }
-
-    .section-icon{
-        font-size:22px;
-    }
-
-    .category-list{
-        display:flex;
-
-        overflow-x:auto;
-
-        gap:8px;
-
-        scrollbar-width:none;
-    }
-
-    .category-list::-webkit-scrollbar{
-        display:none;
-    }
-
-    .category-card{
-        flex:0 0 82px;
-
-        height:90px;
-
-        border-radius:12px;
-    }
-
-    .category-icon{
-        width:42px;
-        height:42px;
-
-        font-size:20px;
-    }
-
-    .category-name{
-        font-size:10px;
-    }
-
-
-    /* PRODUCTS */
-
-    .product-grid{
-        grid-template-columns:
-            repeat(2,1fr);
-
-        gap:9px;
-    }
-
-    .product-image{
-        aspect-ratio:1/.88;
-
-        padding:9px;
-    }
-
-    .product-info{
-        padding:8px 9px 10px;
-    }
-
-    .product-name{
-        font-size:11px;
-    }
-
-    .product-price{
-        font-size:14px;
-    }
-
-    .product-stock{
-        font-size:10px;
-    }
-
-    .add-button{
-        height:34px;
-
-        font-size:11px;
-    }
-
-
-    /* CART */
-
-    .cart-floating{
-        bottom:70px;
-
-        width:
-            calc(100% - 20px);
-
-        border-radius:22px;
-    }
-
-    .cart-round{
-        width:48px;
-        height:48px;
-        flex-basis:48px;
-    }
-
-    .cart-checkout{
-        padding:0 13px;
-
-        font-size:11px;
-    }
-
-}
-
-</style>
+  </style>
 </head>
-
 
 <body>
 
+  <!-- HEADER -->
+  <header class="bg-black text-white sticky top-0 z-50 shadow-lg">
+    <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
 
-<!-- =====================================================
-     HEADER
-===================================================== -->
+      <div class="flex items-center gap-3">
 
-<header class="header">
+        <button
+          onclick="window.location.href='toko.html'"
+          class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-xl">
+          ←
+        </button>
 
-    <div class="header-inner">
+        <div>
+          <div class="zokent-logo text-3xl">
+            <span class="logo-z">ZOKENT</span>
+          </div>
 
-        <div class="header-row">
+          <div class="logo-store">
+            STORE
+          </div>
+        </div>
+
+      </div>
+
+      <div class="text-right">
+        <div class="text-xs text-gray-400">
+          CHECKOUT
+        </div>
+
+        <div class="font-bold text-sm">
+          Pembayaran
+        </div>
+      </div>
+
+    </div>
+  </header>
 
 
-            <!-- LOGO -->
+  <!-- CONTENT -->
+  <main class="max-w-6xl mx-auto px-4 py-6">
 
-            <div class="logo">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
 
-                <div class="logo-image">
+      <!-- KERANJANG -->
+      <section class="lg:col-span-2">
 
-                    <div class="logo-zokent">
-                        ZOKENT
-                    </div>
+        <div class="card p-5">
 
-                    <div class="logo-store">
-                        STORE
-                    </div>
+          <div class="flex items-center justify-between mb-5">
 
-                </div>
+            <div>
+              <h1 class="text-xl font-extrabold">
+                Keranjang Belanja
+              </h1>
 
-
-                <div class="logo-divider"></div>
-
-
-                <div class="logo-text">
-
-                    <div class="logo-title">
-                        ZOKENT STORE
-                    </div>
-
-                    <div class="logo-tagline">
-                        Belanja Mudah • Cepat • Terpercaya
-                    </div>
-
-                </div>
-
+              <p
+                id="jumlahProduk"
+                class="text-sm text-gray-500 mt-1">
+                0 produk
+              </p>
             </div>
 
+          </div>
 
-            <!-- SEARCH -->
 
-            <div class="search-box">
+          <div id="cartContainer"></div>
 
-                <span class="search-icon">
-                    🔍
-                </span>
+        </div>
+
+      </section>
+
+
+      <!-- RINGKASAN -->
+      <aside>
+
+        <div class="card p-5 lg:sticky lg:top-24">
+
+          <h2 class="text-lg font-extrabold mb-5">
+            Ringkasan Pesanan
+          </h2>
+
+
+          <!-- SUBTOTAL -->
+          <div class="flex justify-between text-sm mb-3">
+            <span class="text-gray-500">
+              Subtotal
+            </span>
+
+            <span
+              id="subtotal"
+              class="font-semibold">
+              Rp0
+            </span>
+          </div>
+
+
+          <!-- ONGKIR -->
+          <div class="flex justify-between text-sm mb-3">
+            <span class="text-gray-500">
+              Pengiriman
+            </span>
+
+            <span class="font-semibold">
+              Menyesuaikan
+            </span>
+          </div>
+
+
+          <div class="border-t my-4"></div>
+
+
+          <!-- TOTAL -->
+          <div class="flex justify-between items-center mb-6">
+
+            <span class="font-bold text-lg">
+              Total
+            </span>
+
+            <span
+              id="total"
+              class="font-black text-xl text-blue-600">
+              Rp0
+            </span>
+
+          </div>
+
+
+          <!-- DATA PEMBELI -->
+          <div class="mb-6">
+
+            <h3 class="font-bold mb-3">
+              Data Pembeli
+            </h3>
+
+            <input
+              id="namaPembeli"
+              type="text"
+              placeholder="Nama"
+              class="w-full border rounded-xl px-4 py-3 mb-3 outline-none focus:ring-2 focus:ring-blue-300">
+
+            <input
+              id="alamatPembeli"
+              type="text"
+              placeholder="Alamat pengiriman"
+              class="w-full border rounded-xl px-4 py-3 mb-3 outline-none focus:ring-2 focus:ring-blue-300">
+
+            <input
+              id="teleponPembeli"
+              type="tel"
+              placeholder="Nomor WhatsApp"
+              class="w-full border rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-blue-300">
+
+          </div>
+
+
+          <!-- PEMBAYARAN -->
+          <div class="mb-6">
+
+            <h3 class="font-bold mb-3">
+              Metode Pembayaran
+            </h3>
+
+
+            <!-- COD -->
+            <label
+              id="paymentCOD"
+              class="payment-option active block mb-3">
+
+              <div class="flex items-center gap-3">
 
                 <input
-                    id="searchInput"
-                    type="search"
-                    placeholder="Cari produk di ZOKENT STORE..."
-                    autocomplete="off"
-                >
+                  type="radio"
+                  name="payment"
+                  value="COD"
+                  checked
+                  onchange="pilihPembayaran('COD')">
 
-            </div>
+                <div>
+                  <div class="font-bold">
+                    💵 COD / Bayar di Tempat
+                  </div>
 
-
-            <!-- ACTION -->
-
-            <div class="header-actions">
-
-                <button
-                    class="header-action"
-                    onclick="showToast('Pelanggan tidak perlu login')"
-                >
-                    👤
-                </button>
-
-
-                <button
-                    class="header-action"
-                    onclick="goCheckout()"
-                >
-
-                    🛒
-
-                    <span
-                        id="cartBadge"
-                        class="cart-badge"
-                    >
-                        0
-                    </span>
-
-                </button>
-
-            </div>
-
-        </div>
-
-    </div>
-
-</header>
-
-
-
-<!-- =====================================================
-     MAIN
-===================================================== -->
-
-<main class="main">
-
-
-    <!-- =================================================
-         HERO
-    ================================================== -->
-
-    <section class="hero">
-
-
-        <div class="hero-content">
-
-            <div class="hero-small">
-                Belanja Lebih Mudah
-            </div>
-
-
-            <div class="hero-title">
-                ZOKENT STORE
-            </div>
-
-
-            <div class="hero-description">
-                Temukan kebutuhan sehari-hari kamu di ZOKENT STORE.
-                <br>
-                Pilih produk, masukkan keranjang, lalu pesan.
-            </div>
-
-
-            <button
-                class="hero-button"
-                onclick="scrollToProducts()"
-            >
-                🛒 &nbsp; Belanja Sekarang &nbsp; →
-            </button>
-
-        </div>
-
-
-        <!-- Dekorasi produk -->
-
-        <div class="hero-products">
-            🧃 🥤 🛍️
-        </div>
-
-
-        <!-- Logo kanan -->
-
-        <div class="hero-logo">
-
-            <div class="hero-logo-z">
-                ZOKENT
-            </div>
-
-            <div class="hero-logo-store">
-                STORE
-            </div>
-
-        </div>
-
-    </section>
-
-
-
-    <!-- =================================================
-         CATEGORY
-    ================================================== -->
-
-    <section class="section">
-
-        <div class="section-header">
-
-            <div class="section-title">
-
-                <span class="section-icon">
-                    ▦
-                </span>
-
-                Kategori
-
-            </div>
-
-
-            <button
-                class="section-more"
-                onclick="selectCategory('all')"
-            >
-                Lihat Semua →
-            </button>
-
-        </div>
-
-
-        <div
-            id="categoryList"
-            class="category-list"
-        >
-
-            <button
-                class="category-card active"
-                onclick="selectCategory('all')"
-            >
-
-                <div class="category-icon">
-                    🛍️
+                  <div class="text-xs text-gray-500 mt-1">
+                    Bayar saat pesanan diterima
+                  </div>
                 </div>
 
-                <div class="category-name">
-                    Semua
+              </div>
+
+            </label>
+
+
+            <!-- QRIS -->
+            <label
+              id="paymentQRIS"
+              class="payment-option block">
+
+              <div class="flex items-center gap-3">
+
+                <input
+                  type="radio"
+                  name="payment"
+                  value="QRIS"
+                  onchange="pilihPembayaran('QRIS')">
+
+                <div>
+                  <div class="font-bold">
+                    📱 QRIS
+                  </div>
+
+                  <div class="text-xs text-gray-500 mt-1">
+                    Pembayaran menggunakan QRIS
+                  </div>
                 </div>
 
-            </button>
+              </div>
 
-        </div>
+            </label>
 
-    </section>
-
-
-
-    <!-- =================================================
-         PRODUCTS
-    ================================================== -->
-
-    <section
-        id="productSection"
-        class="section"
-    >
-
-        <div class="section-header">
-
-            <div class="section-title">
-
-                <span class="section-icon">
-                    🔥
-                </span>
-
-                Produk Tersedia
-
-            </div>
+          </div>
 
 
-            <div
-                id="productCount"
-                class="section-count"
-            >
-                Memuat...
-            </div>
+          <!-- QRIS -->
+          <div
+            id="qrisBox"
+            class="hidden text-center mb-6">
 
-        </div>
+            <div class="bg-gray-50 rounded-2xl p-4">
 
+              <p class="font-bold mb-3">
+                Scan QRIS untuk pembayaran
+              </p>
 
-        <div
-            id="productGrid"
-            class="product-grid"
-        >
+              <img
+                src="qris.jpg"
+                alt="QRIS ZOKENT STORE"
+                class="w-56 max-w-full mx-auto rounded-xl">
 
-            <div class="loading">
-
-                <div class="spinner"></div>
-
-                Memuat produk ZOKENT STORE...
+              <p class="text-xs text-gray-500 mt-3">
+                Setelah pembayaran, kirim bukti pembayaran melalui WhatsApp.
+              </p>
 
             </div>
 
+          </div>
+
+
+          <!-- CATATAN -->
+          <div class="mb-5">
+
+            <textarea
+              id="catatan"
+              rows="3"
+              placeholder="Catatan pesanan (opsional)"
+              class="w-full border rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-blue-300 resize-none"></textarea>
+
+          </div>
+
+
+          <!-- BUTTON -->
+          <button
+            id="checkoutButton"
+            onclick="kirimPesanan()"
+            class="checkout-btn">
+
+            Pesan Sekarang via WhatsApp
+
+          </button>
+
+
+          <p class="text-center text-xs text-gray-400 mt-3">
+            Pesanan akan diteruskan ke WhatsApp ZOKENT STORE
+          </p>
+
         </div>
 
-    </section>
-
-</main>
-
-
-
-<!-- =====================================================
-     FLOATING CART
-===================================================== -->
-
-<div
-    id="cartFloating"
-    class="cart-floating"
->
-
-    <div class="cart-round">
-        🛒
-    </div>
-
-
-    <div class="cart-summary">
-
-        <div
-            id="cartItems"
-            class="cart-items"
-        >
-            0 item
-        </div>
-
-
-        <div
-            id="cartTotal"
-            class="cart-total"
-        >
-            Total: Rp0
-        </div>
+      </aside>
 
     </div>
 
-
-    <button
-        class="cart-checkout"
-        onclick="goCheckout()"
-    >
-        Lihat Keranjang →
-    </button>
-
-</div>
-
-
-
-<!-- =====================================================
-     BOTTOM NAV
-===================================================== -->
-
-<nav class="bottom-nav">
-
-    <div class="bottom-nav-inner">
-
-
-        <button
-            class="nav-item active"
-            onclick="goHome()"
-        >
-
-            <span class="nav-icon">
-                🏠
-            </span>
-
-            Beranda
-
-        </button>
-
-
-        <button
-            class="nav-item"
-            onclick="scrollToCategories()"
-        >
-
-            <span class="nav-icon">
-                ▦
-            </span>
-
-            Kategori
-
-        </button>
-
-
-        <button
-            class="nav-item"
-            onclick="focusSearch()"
-        >
-
-            <span class="nav-icon">
-                🔍
-            </span>
-
-            Cari
-
-        </button>
-
-
-        <button
-            class="nav-item"
-            onclick="goCheckout()"
-        >
-
-            <span class="nav-icon">
-                🛒
-            </span>
-
-            Keranjang
-
-        </button>
-
-    </div>
-
-</nav>
-
-
-
-<!-- =====================================================
-     TOAST
-===================================================== -->
-
-<div
-    id="toast"
-    class="toast"
-></div>
-
+  </main>
 
 
 <script>
 
-/* =========================================================
-   SUPABASE
-=========================================================
+  /*
+  =====================================================
+  ZOKENT STORE
+  CHECKOUT SYSTEM
+  =====================================================
+  */
 
-   GANTI 2 BAGIAN INI DENGAN PUNYAMU.
+  // HARUS SAMA DENGAN TOKO.HTML
+  const STORAGE_KEY = "zokent_cart";
 
-   Gunakan:
-   - Project URL
-   - anon/public key
+  // NOMOR WHATSAPP ZOKENT STORE
+  const WHATSAPP_NUMBER = "6283863000922";
 
-   JANGAN gunakan service_role key.
-========================================================= */
+  let cart = [];
 
-
-const SUPABASE_URL =
-    "https://weuousmvkxmgmsnwiuad.supabase.co";
-
-
-const SUPABASE_ANON_KEY =
-    "sb_publishable_e375KDL0vuoahHO_kWMjwA_a04R4yHb";
+  let paymentMethod = "COD";
 
 
-const supabaseClient =
-    window.supabase.createClient(
-        SUPABASE_URL,
-        SUPABASE_ANON_KEY
+  /*
+  =====================================================
+  LOAD CART
+  =====================================================
+  */
+
+  function loadCart() {
+
+    try {
+
+      const savedCart = localStorage.getItem(STORAGE_KEY);
+
+      if (!savedCart) {
+        cart = [];
+        renderCart();
+        return;
+      }
+
+      cart = JSON.parse(savedCart);
+
+      if (!Array.isArray(cart)) {
+        cart = [];
+      }
+
+    } catch (error) {
+
+      console.error("Gagal membaca keranjang:", error);
+
+      cart = [];
+
+    }
+
+    renderCart();
+
+  }
+
+
+  /*
+  =====================================================
+  SAVE CART
+  =====================================================
+  */
+
+  function saveCart() {
+
+    localStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify(cart)
     );
 
+  }
 
 
-/* =========================================================
-   DATA
-========================================================= */
+  /*
+  =====================================================
+  FORMAT RUPIAH
+  =====================================================
+  */
 
-let products = [];
-
-let categories = [];
-
-let productCategoryMap = {};
-
-let selectedCategory = "all";
-
-
-let cart =
-    JSON.parse(
-        localStorage.getItem(
-            "zokent_cart"
-        ) || "[]"
-    );
-
-
-
-/* =========================================================
-   FORMAT RUPIAH
-========================================================= */
-
-function rupiah(value){
+  function formatRupiah(number) {
 
     return new Intl.NumberFormat(
-        "id-ID",
-        {
-            style:"currency",
-            currency:"IDR",
-            maximumFractionDigits:0
-        }
-    ).format(
-        Number(value) || 0
-    );
-
-}
-
-
-
-/* =========================================================
-   ESCAPE HTML
-========================================================= */
-
-function escapeHtml(value){
-
-    return String(
-        value ?? ""
-    )
-    .replace(/&/g,"&amp;")
-    .replace(/</g,"&lt;")
-    .replace(/>/g,"&gt;")
-    .replace(/"/g,"&quot;")
-    .replace(/'/g,"&#039;");
-
-}
-
-
-
-/* =========================================================
-   LOAD PRODUCTS
-========================================================= */
-
-async function loadProducts(){
-
-    const result =
-        await supabaseClient
-
-        .from("products")
-
-        .select(`
-            id,
-            name,
-            catalog_name,
-            sku,
-            description,
-            selling_price,
-            image_url,
-            is_active,
-            show_in_catalog,
-            show_when_out_of_stock,
-            stock_quantity,
-            category,
-            created_at
-        `)
-
-        .eq(
-            "is_active",
-            true
-        )
-
-        .eq(
-            "show_in_catalog",
-            true
-        )
-
-        .order(
-            "created_at",
-            {
-                ascending:false
-            }
-        );
-
-
-    if(result.error){
-
-        console.error(
-            result.error
-        );
-
-        throw result.error;
-
-    }
-
-
-    /*
-       Produk yang ditampilkan:
-
-       is_active = true
-       show_in_catalog = true
-
-       Stok habis tetap dapat muncul
-       apabila admin mengaktifkan
-       show_when_out_of_stock.
-    */
-
-
-    products =
-        (result.data || [])
-        .filter(product => {
-
-            const stock =
-                Number(
-                    product.stock_quantity || 0
-                );
-
-            if(stock > 0){
-
-                return true;
-
-            }
-
-            return (
-                product.show_when_out_of_stock
-                === true
-            );
-
-        });
-
-}
-
-
-
-/* =========================================================
-   LOAD CATEGORIES
-========================================================= */
-
-async function loadCategories(){
-
-    const result =
-        await supabaseClient
-
-        .from("categories")
-
-        .select("*")
-
-        .order(
-            "name",
-            {
-                ascending:true
-            }
-        );
-
-
-    if(result.error){
-
-        console.warn(
-            "Kategori:",
-            result.error
-        );
-
-        categories = [];
-
-        return;
-
-    }
-
-
-    categories =
-        result.data || [];
-
-}
-
-
-
-/* =========================================================
-   LOAD PRODUCT CATEGORIES
-========================================================= */
-
-async function loadProductCategories(){
-
-    const result =
-        await supabaseClient
-
-        .from(
-            "product_categories"
-        )
-
-        .select(`
-            product_id,
-            category_id
-        `);
-
-
-    if(result.error){
-
-        console.warn(
-            "Relasi kategori:",
-            result.error
-        );
-
-        productCategoryMap = {};
-
-        return;
-
-    }
-
-
-    productCategoryMap = {};
-
-
-    (result.data || [])
-    .forEach(row => {
-
-        if(
-            !productCategoryMap[
-                row.product_id
-            ]
-        ){
-
-            productCategoryMap[
-                row.product_id
-            ] = [];
-
-        }
-
-
-        productCategoryMap[
-            row.product_id
-        ].push(
-            String(
-                row.category_id
-            )
-        );
-
-    });
-
-}
-
-
-
-/* =========================================================
-   LOAD STORE
-========================================================= */
-
-async function loadStore(){
-
-    showLoading();
-
-
-    try{
-
-        await Promise.all([
-
-            loadProducts(),
-
-            loadCategories(),
-
-            loadProductCategories()
-
-        ]);
-
-
-        renderCategories();
-
-        renderProducts();
-
-        updateCart();
-
-
-    }catch(error){
-
-        console.error(
-            "STORE ERROR:",
-            error
-        );
-
-
-        document
-            .getElementById(
-                "productGrid"
-            )
-            .innerHTML = `
-
-                <div class="empty">
-
-                    <div class="empty-icon">
-                        ⚠️
-                    </div>
-
-                    <strong>
-                        Produk belum dapat dimuat
-                    </strong>
-
-                    <p style="
-                        margin-top:8px;
-                        font-size:12px;
-                    ">
-                        Periksa URL Supabase,
-                        ANON KEY, dan RLS.
-                    </p>
-
-                </div>
-
-            `;
-
-    }
-
-}
-
-
-
-/* =========================================================
-   CATEGORY ICON
-========================================================= */
-
-function categoryIcon(name){
-
-    const value =
-        String(name || "")
-        .toLowerCase();
-
-
-    if(value.includes("sembako"))
-        return "🍚";
-
-
-    if(value.includes("minuman"))
-        return "🥤";
-
-
-    if(value.includes("bumbu"))
-        return "🌶️";
-
-
-    if(
-        value.includes("mandi") ||
-        value.includes("cuci")
-    )
-        return "🧴";
-
-
-    if(value.includes("snack"))
-        return "🍪";
-
-
-    if(value.includes("pulsa"))
-        return "📱";
-
-
-    return "📦";
-
-}
-
-
-
-/* =========================================================
-   RENDER CATEGORY
-========================================================= */
-
-function renderCategories(){
+      "id-ID",
+      {
+        style: "currency",
+        currency: "IDR",
+        maximumFractionDigits: 0
+      }
+    ).format(number);
+
+  }
+
+
+  /*
+  =====================================================
+  RENDER CART
+  =====================================================
+  */
+
+  function renderCart() {
 
     const container =
-        document.getElementById(
-            "categoryList"
-        );
+      document.getElementById("cartContainer");
+
+    const jumlahProduk =
+      document.getElementById("jumlahProduk");
+
+    const subtotalElement =
+      document.getElementById("subtotal");
+
+    const totalElement =
+      document.getElementById("total");
 
 
-    let html = `
+    if (!cart.length) {
 
-        <button
-            class="category-card
-            ${selectedCategory === "all"
-                ? "active"
-                : ""}"
-            onclick="selectCategory('all')"
-        >
+      container.innerHTML = `
+        <div class="empty-cart">
 
-            <div class="category-icon">
+          <div class="empty-icon">
+            🛒
+          </div>
+
+          <h2 class="text-xl font-bold mb-2">
+            Keranjang masih kosong
+          </h2>
+
+          <p class="text-gray-500 mb-5">
+            Silakan pilih produk terlebih dahulu.
+          </p>
+
+          <button
+            onclick="window.location.href='toko.html'"
+            class="bg-blue-600 text-white px-6 py-3 rounded-xl font-bold">
+
+            Kembali Belanja
+
+          </button>
+
+        </div>
+      `;
+
+      jumlahProduk.textContent = "0 produk";
+
+      subtotalElement.textContent =
+        formatRupiah(0);
+
+      totalElement.textContent =
+        formatRupiah(0);
+
+      document.getElementById("checkoutButton").disabled = true;
+
+      document.getElementById("checkoutButton").style.opacity = "0.5";
+
+      return;
+    }
+
+
+    document.getElementById("checkoutButton").disabled = false;
+
+    document.getElementById("checkoutButton").style.opacity = "1";
+
+
+    let subtotal = 0;
+
+    let totalQuantity = 0;
+
+
+    container.innerHTML = cart.map((item, index) => {
+
+      const price = Number(item.price || 0);
+
+      const quantity = Number(item.quantity || 1);
+
+      const itemSubtotal =
+        price * quantity;
+
+      subtotal += itemSubtotal;
+
+      totalQuantity += quantity;
+
+
+      const imageHTML = item.image
+        ? `
+          <img
+            src="${escapeHTML(item.image)}"
+            alt="${escapeHTML(item.name || "Produk")}"
+            class="product-image"
+            onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+        `
+        : "";
+
+
+      return `
+
+        <div class="border-b last:border-b-0 py-4">
+
+          <div class="flex gap-3">
+
+            <div class="flex-shrink-0">
+
+              ${imageHTML}
+
+              <div
+                style="display:${item.image ? "none" : "flex"}"
+                class="product-image items-center justify-center text-2xl">
+
                 🛍️
-            </div>
 
-            <div class="category-name">
-                Semua
-            </div>
-
-        </button>
-
-    `;
-
-
-    categories.forEach(category => {
-
-        html += `
-
-            <button
-                class="category-card
-                ${
-                    selectedCategory ===
-                    String(category.id)
-                    ? "active"
-                    : ""
-                }"
-                onclick="
-                    selectCategory(
-                        '${category.id}'
-                    )
-                "
-            >
-
-                <div class="category-icon">
-                    ${categoryIcon(
-                        category.name
-                    )}
-                </div>
-
-                <div class="category-name">
-                    ${escapeHtml(
-                        category.name
-                    )}
-                </div>
-
-            </button>
-
-        `;
-
-    });
-
-
-    container.innerHTML =
-        html;
-
-}
-
-
-
-/* =========================================================
-   CHECK PRODUCT CATEGORY
-========================================================= */
-
-function belongsToCategory(
-    product,
-    categoryId
-){
-
-    const relations =
-        productCategoryMap[
-            product.id
-        ] || [];
-
-
-    /*
-       Jika mempunyai relasi
-       product_categories
-    */
-
-    if(
-        relations.includes(
-            String(categoryId)
-        )
-    ){
-
-        return true;
-
-    }
-
-
-    /*
-       Fallback ke kolom
-       products.category
-    */
-
-    const category =
-        categories.find(
-            item =>
-                String(item.id) ===
-                String(categoryId)
-        );
-
-
-    if(!category){
-
-        return false;
-
-    }
-
-
-    return String(
-        product.category || ""
-    ).toLowerCase()
-    ===
-    String(
-        category.name || ""
-    ).toLowerCase();
-
-}
-
-
-
-/* =========================================================
-   SELECT CATEGORY
-========================================================= */
-
-function selectCategory(
-    categoryId
-){
-
-    selectedCategory =
-        String(categoryId);
-
-
-    renderCategories();
-
-    renderProducts();
-
-}
-
-
-
-/* =========================================================
-   RENDER PRODUCTS
-========================================================= */
-
-function renderProducts(){
-
-    const grid =
-        document.getElementById(
-            "productGrid"
-        );
-
-
-    const search =
-        document.getElementById(
-            "searchInput"
-        )
-        .value
-        .toLowerCase()
-        .trim();
-
-
-    let result =
-        [...products];
-
-
-    /*
-       SEARCH
-    */
-
-    if(search){
-
-        result =
-            result.filter(product => {
-
-                const name =
-                    String(
-                        product.catalog_name ||
-                        product.name ||
-                        ""
-                    )
-                    .toLowerCase();
-
-
-                const sku =
-                    String(
-                        product.sku || ""
-                    )
-                    .toLowerCase();
-
-
-                return (
-                    name.includes(search) ||
-                    sku.includes(search)
-                );
-
-            });
-
-    }
-
-
-    /*
-       CATEGORY
-    */
-
-    if(
-        selectedCategory !==
-        "all"
-    ){
-
-        result =
-            result.filter(
-                product =>
-                    belongsToCategory(
-                        product,
-                        selectedCategory
-                    )
-            );
-
-    }
-
-
-    document.getElementById(
-        "productCount"
-    ).textContent =
-        `${result.length} produk`;
-
-
-    if(!result.length){
-
-        grid.innerHTML = `
-
-            <div class="empty">
-
-                <div class="empty-icon">
-                    🔎
-                </div>
-
-                <strong>
-                    Produk tidak ditemukan
-                </strong>
-
-                <p style="
-                    margin-top:7px;
-                    font-size:12px;
-                ">
-                    Coba kata pencarian lain.
-                </p>
+              </div>
 
             </div>
 
-        `;
 
-        return;
+            <div class="flex-1 min-w-0">
 
-    }
+              <div class="flex justify-between gap-3">
 
+                <div class="min-w-0">
 
-    grid.innerHTML =
-        result
-        .map(
-            createProductCard
-        )
-        .join("");
+                  <h3 class="product-name font-bold truncate">
 
-}
+                    ${escapeHTML(item.name || "Produk")}
 
+                  </h3>
 
+                  <p class="product-price text-blue-600 font-bold mt-1">
 
-/* =========================================================
-   PRODUCT CARD
-========================================================= */
+                    ${formatRupiah(price)}
 
-function createProductCard(
-    product
-){
+                  </p>
 
-    const name =
-        product.catalog_name ||
-        product.name ||
-        "Produk";
-
-
-    const price =
-        Number(
-            product.selling_price || 0
-        );
-
-
-    const stock =
-        Number(
-            product.stock_quantity || 0
-        );
-
-
-    const out =
-        stock <= 0;
-
-
-    const image =
-        product.image_url ||
-        "https://placehold.co/600x500?text=ZOKENT";
-
-
-    return `
-
-        <article class="product-card">
-
-
-            <img
-                class="product-image"
-                src="${escapeHtml(image)}"
-                alt="${escapeHtml(name)}"
-                loading="lazy"
-
-                onerror="
-                    this.src=
-                    'https://placehold.co/600x500?text=ZOKENT'
-                "
-            >
-
-
-            <div class="product-info">
-
-
-                <div class="product-name">
-                    ${escapeHtml(name)}
                 </div>
 
 
-                <div class="product-price">
-                    ${rupiah(price)}
+                <div class="text-right flex-shrink-0">
+
+                  <div class="font-extrabold">
+
+                    ${formatRupiah(itemSubtotal)}
+
+                  </div>
+
                 </div>
 
+              </div>
 
-                ${
-                    out
 
-                    ? `
+              <div class="flex items-center justify-between mt-3">
 
-                        <div
-                            class="product-stock out"
-                        >
-                            ● Stok Habis
-                        </div>
+                <div class="flex items-center gap-2">
 
-                    `
+                  <button
+                    class="qty-btn"
+                    onclick="kurangiJumlah(${index})">
 
-                    : `
+                    −
 
-                        <div
-                            class="product-stock"
-                        >
-                            ● Stok ${stock}
-                        </div>
+                  </button>
 
-                    `
-                }
+
+                  <span class="font-bold w-8 text-center">
+
+                    ${quantity}
+
+                  </span>
+
+
+                  <button
+                    class="qty-btn"
+                    onclick="tambahJumlah(${index})">
+
+                    +
+
+                  </button>
+
+                </div>
 
 
                 <button
-                    class="add-button"
-                    ${
-                        out
-                        ? "disabled"
-                        : ""
-                    }
-                    onclick="
-                        addToCart(
-                            '${product.id}'
-                        )
-                    "
-                >
+                  class="delete-btn"
+                  onclick="hapusProduk(${index})">
 
-                    🛒 &nbsp; + Keranjang
+                  Hapus
 
                 </button>
 
+              </div>
 
             </div>
 
-        </article>
-
-    `;
-
-}
-
-
-
-/* =========================================================
-   ADD TO CART
-========================================================= */
-
-function addToCart(
-    productId
-){
-
-    const product =
-        products.find(
-            item =>
-                String(item.id) ===
-                String(productId)
-        );
-
-
-    if(!product){
-
-        showToast(
-            "Produk tidak ditemukan"
-        );
-
-        return;
-
-    }
-
-
-    const stock =
-        Number(
-            product.stock_quantity || 0
-        );
-
-
-    if(stock <= 0){
-
-        showToast(
-            "Stok produk habis"
-        );
-
-        return;
-
-    }
-
-
-    const existing =
-        cart.find(
-            item =>
-                String(item.id) ===
-                String(product.id)
-        );
-
-
-    if(existing){
-
-        if(
-            existing.quantity >=
-            stock
-        ){
-
-            showToast(
-                "Jumlah sudah mencapai stok"
-            );
-
-            return;
-
-        }
-
-
-        existing.quantity++;
-
-    }else{
-
-        cart.push({
-
-            id:product.id,
-
-            name:
-                product.catalog_name ||
-                product.name,
-
-            price:
-                Number(
-                    product.selling_price || 0
-                ),
-
-            image:
-                product.image_url || "",
-
-            quantity:1
-
-        });
-
-    }
-
-
-    saveCart();
-
-    updateCart();
-
-    showToast(
-        "✓ Produk masuk keranjang"
-    );
-
-}
-
-
-
-/* =========================================================
-   SAVE CART
-========================================================= */
-
-function saveCart(){
-
-    localStorage.setItem(
-        "zokent_cart",
-        JSON.stringify(cart)
-    );
-
-}
-
-
-
-/* =========================================================
-   UPDATE CART
-========================================================= */
-
-function updateCart(){
-
-    const count =
-        cart.reduce(
-            (total,item) =>
-                total +
-                Number(
-                    item.quantity || 0
-                ),
-            0
-        );
-
-
-    const total =
-        cart.reduce(
-            (sum,item) =>
-                sum +
-                (
-                    Number(
-                        item.price || 0
-                    ) *
-                    Number(
-                        item.quantity || 0
-                    )
-                ),
-            0
-        );
-
-
-    document.getElementById(
-        "cartBadge"
-    ).textContent =
-        count;
-
-
-    document.getElementById(
-        "cartItems"
-    ).textContent =
-        `${count} item`;
-
-
-    document.getElementById(
-        "cartTotal"
-    ).textContent =
-        `Total: ${rupiah(total)}`;
-
-
-    const popup =
-        document.getElementById(
-            "cartFloating"
-        );
-
-
-    if(count > 0){
-
-        popup.classList.add(
-            "show"
-        );
-
-    }else{
-
-        popup.classList.remove(
-            "show"
-        );
-
-    }
-
-}
-
-
-
-/* =========================================================
-   CHECKOUT
-========================================================= */
-
-function goCheckout(){
-
-    window.location.href =
-        "checkout.html";
-
-}
-
-
-
-/* =========================================================
-   SEARCH
-========================================================= */
-
-document
-    .getElementById(
-        "searchInput"
-    )
-    .addEventListener(
-        "input",
-        function(){
-
-            renderProducts();
-
-        }
-    );
-
-
-
-/* =========================================================
-   NAVIGATION
-========================================================= */
-
-function goHome(){
-
-    window.scrollTo({
-        top:0,
-        behavior:"smooth"
-    });
-
-}
-
-
-function scrollToProducts(){
-
-    document
-        .getElementById(
-            "productSection"
-        )
-        .scrollIntoView({
-            behavior:"smooth"
-        });
-
-}
-
-
-function scrollToCategories(){
-
-    document
-        .getElementById(
-            "categoryList"
-        )
-        .scrollIntoView({
-            behavior:"smooth"
-        });
-
-}
-
-
-function focusSearch(){
-
-    document
-        .getElementById(
-            "searchInput"
-        )
-        .focus();
-
-}
-
-
-
-/* =========================================================
-   TOAST
-========================================================= */
-
-let toastTimer;
-
-
-function showToast(message){
-
-    const toast =
-        document.getElementById(
-            "toast"
-        );
-
-
-    toast.textContent =
-        message;
-
-
-    toast.classList.add(
-        "show"
-    );
-
-
-    clearTimeout(
-        toastTimer
-    );
-
-
-    toastTimer =
-        setTimeout(
-            function(){
-
-                toast.classList.remove(
-                    "show"
-                );
-
-            },
-            2000
-        );
-
-}
-
-
-
-/* =========================================================
-   LOADING
-========================================================= */
-
-function showLoading(){
-
-    document.getElementById(
-        "productGrid"
-    ).innerHTML = `
-
-        <div class="loading">
-
-            <div class="spinner"></div>
-
-            Memuat produk
-            ZOKENT STORE...
+          </div>
 
         </div>
 
-    `;
+      `;
 
-}
+    }).join("");
 
 
+    jumlahProduk.textContent =
+      `${totalQuantity} produk`;
 
-/* =========================================================
-   START
-========================================================= */
 
-document.addEventListener(
-    "DOMContentLoaded",
-    function(){
+    subtotalElement.textContent =
+      formatRupiah(subtotal);
 
-        updateCart();
 
-        loadStore();
+    totalElement.textContent =
+      formatRupiah(subtotal);
+
+  }
+
+
+  /*
+  =====================================================
+  TAMBAH JUMLAH
+  =====================================================
+  */
+
+  function tambahJumlah(index) {
+
+    if (!cart[index]) return;
+
+    cart[index].quantity =
+      Number(cart[index].quantity || 1) + 1;
+
+    saveCart();
+
+    renderCart();
+
+  }
+
+
+  /*
+  =====================================================
+  KURANGI JUMLAH
+  =====================================================
+  */
+
+  function kurangiJumlah(index) {
+
+    if (!cart[index]) return;
+
+    const current =
+      Number(cart[index].quantity || 1);
+
+
+    if (current <= 1) {
+
+      hapusProduk(index);
+
+      return;
 
     }
-);
+
+
+    cart[index].quantity =
+      current - 1;
+
+    saveCart();
+
+    renderCart();
+
+  }
+
+
+  /*
+  =====================================================
+  HAPUS PRODUK
+  =====================================================
+  */
+
+  function hapusProduk(index) {
+
+    if (!cart[index]) return;
+
+
+    const nama =
+      cart[index].name || "produk";
+
+
+    const yakin =
+      confirm(`Hapus ${nama} dari keranjang?`);
+
+
+    if (!yakin) return;
+
+
+    cart.splice(index, 1);
+
+    saveCart();
+
+    renderCart();
+
+  }
+
+
+  /*
+  =====================================================
+  PILIH PEMBAYARAN
+  =====================================================
+  */
+
+  function pilihPembayaran(method) {
+
+    paymentMethod = method;
+
+
+    const cod =
+      document.getElementById("paymentCOD");
+
+    const qris =
+      document.getElementById("paymentQRIS");
+
+    const qrisBox =
+      document.getElementById("qrisBox");
+
+
+    cod.classList.remove("active");
+
+    qris.classList.remove("active");
+
+
+    if (method === "COD") {
+
+      cod.classList.add("active");
+
+      qrisBox.classList.add("hidden");
+
+    }
+
+
+    if (method === "QRIS") {
+
+      qris.classList.add("active");
+
+      qrisBox.classList.remove("hidden");
+
+    }
+
+  }
+
+
+  /*
+  =====================================================
+  KIRIM PESANAN WHATSAPP
+  =====================================================
+  */
+
+  function kirimPesanan() {
+
+    if (!cart.length) {
+
+      alert("Keranjang masih kosong.");
+
+      return;
+
+    }
+
+
+    const nama =
+      document.getElementById("namaPembeli")
+        .value.trim();
+
+
+    const alamat =
+      document.getElementById("alamatPembeli")
+        .value.trim();
+
+
+    const telepon =
+      document.getElementById("teleponPembeli")
+        .value.trim();
+
+
+    const catatan =
+      document.getElementById("catatan")
+        .value.trim();
+
+
+    if (!nama) {
+
+      alert("Silakan isi nama terlebih dahulu.");
+
+      document
+        .getElementById("namaPembeli")
+        .focus();
+
+      return;
+
+    }
+
+
+    if (!alamat) {
+
+      alert("Silakan isi alamat pengiriman.");
+
+      document
+        .getElementById("alamatPembeli")
+        .focus();
+
+      return;
+
+    }
+
+
+    if (!telepon) {
+
+      alert("Silakan isi nomor WhatsApp.");
+
+      document
+        .getElementById("teleponPembeli")
+        .focus();
+
+      return;
+
+    }
+
+
+    let subtotal = 0;
+
+    let daftarProduk = "";
+
+
+    cart.forEach((item, index) => {
+
+      const price =
+        Number(item.price || 0);
+
+      const quantity =
+        Number(item.quantity || 1);
+
+      const itemTotal =
+        price * quantity;
+
+      subtotal += itemTotal;
+
+
+      daftarProduk +=
+        `${index + 1}. ${item.name}\n` +
+        `   ${quantity} x ${formatRupiah(price)} = ${formatRupiah(itemTotal)}\n\n`;
+
+    });
+
+
+    const total = subtotal;
+
+
+    let pesan =
+
+`*PESANAN ZOKENT STORE*
+
+━━━━━━━━━━━━━━━━━━
+
+*DATA PEMBELI*
+
+Nama: ${nama}
+WhatsApp: ${telepon}
+Alamat: ${alamat}
+
+━━━━━━━━━━━━━━━━━━
+
+*DETAIL PESANAN*
+
+${daftarProduk}
+
+━━━━━━━━━━━━━━━━━━
+
+Subtotal: ${formatRupiah(subtotal)}
+Pengiriman: Menyesuaikan
+*TOTAL: ${formatRupiah(total)}*
+
+Metode Pembayaran: *${paymentMethod}*`;
+
+
+    if (catatan) {
+
+      pesan +=
+
+`\n\nCatatan:
+${catatan}`;
+
+    }
+
+
+    pesan +=
+
+`
+
+━━━━━━━━━━━━━━━━━━
+
+Mohon konfirmasi pesanan saya.
+
+Terima kasih.
+*ZOKENT STORE*`;
+
+
+    const whatsappURL =
+      `https://wa.me/${WHATSAPP_NUMBER}?text=` +
+      encodeURIComponent(pesan);
+
+
+    /*
+    QRIS:
+    tetap arahkan ke WhatsApp agar pelanggan
+    bisa mengirim bukti pembayaran.
+    */
+
+    window.open(
+      whatsappURL,
+      "_blank"
+    );
+
+
+    /*
+    Kosongkan keranjang setelah WhatsApp dibuka
+    */
+
+    setTimeout(() => {
+
+      localStorage.removeItem(STORAGE_KEY);
+
+      cart = [];
+
+      renderCart();
+
+    }, 1000);
+
+  }
+
+
+  /*
+  =====================================================
+  ESCAPE HTML
+  =====================================================
+  */
+
+  function escapeHTML(value) {
+
+    return String(value || "")
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+
+  }
+
+
+  /*
+  =====================================================
+  LOAD
+  =====================================================
+  */
+
+  document.addEventListener(
+    "DOMContentLoaded",
+    function() {
+
+      loadCart();
+
+    }
+  );
 
 </script>
 
