@@ -3,212 +3,1008 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Checkout & Pembayaran - SRC Zokent</title>
+
+  <title>Checkout - ZOKENT STORE</title>
+
   <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: #f5f7fb;
+      color: #172033;
+    }
+
+    .top-gradient {
+      background: linear-gradient(135deg, #087ff5, #0066d6);
+    }
+
+    .card {
+      background: white;
+      border-radius: 18px;
+      box-shadow: 0 4px 18px rgba(0,0,0,.06);
+    }
+
+    .btn-blue {
+      background: linear-gradient(135deg, #1688f8, #006bdc);
+    }
+
+    .btn-blue:hover {
+      opacity: .92;
+    }
+
+    .payment-option {
+      transition: .2s;
+    }
+
+    .payment-option:has(input:checked) {
+      border-color: #1688f8;
+      background: #eef7ff;
+      box-shadow: 0 0 0 2px rgba(22,136,248,.08);
+    }
+
+    .bottom-space {
+      height: 30px;
+    }
+
+    @media (max-width: 640px) {
+      .desktop-only {
+        display: none;
+      }
+    }
+  </style>
 </head>
-<body class="bg-slate-100 text-slate-800 font-sans antialiased min-h-screen">
+
+<body>
 
   <!-- HEADER -->
-  <header class="bg-red-600 text-white py-4 px-6 shadow-md sticky top-0 z-50 flex justify-between items-center">
-    <div class="flex items-center gap-3">
-      <button onclick="window.location.href='src.html'" class="bg-red-700 hover:bg-red-800 text-white text-xs px-2.5 py-1.5 rounded-lg font-semibold flex items-center gap-1 transition-all border border-red-500">
-        ← Kembali Belanja
-      </button>
-      <h1 class="text-lg font-bold">🛒 Detail Pesanan Anda</h1>
+  <header class="top-gradient text-white sticky top-0 z-50 shadow-lg">
+
+    <div class="max-w-6xl mx-auto px-4 py-3">
+
+      <div class="flex items-center justify-between gap-3">
+
+        <!-- KIRI -->
+        <div class="flex items-center gap-3">
+
+          <button
+            onclick="kembaliKeToko()"
+            class="bg-white/15 hover:bg-white/25 border border-white/20 rounded-xl px-3 py-2 text-sm font-bold">
+            ←
+          </button>
+
+          <div>
+            <div class="font-extrabold text-lg tracking-wide">
+              ZOKENT STORE
+            </div>
+
+            <div class="text-[11px] text-blue-100">
+              Checkout & Pembayaran
+            </div>
+          </div>
+
+        </div>
+
+        <!-- ICON -->
+        <div class="text-2xl">
+          🛒
+        </div>
+
+      </div>
+
     </div>
+
   </header>
 
-  <main class="max-w-3xl mx-auto p-4 md:p-6">
-    
-    <!-- DAFTAR ITEM KERANJANG -->
-    <div class="bg-white rounded-2xl p-4 md:p-6 shadow-sm border border-slate-200 mb-6">
-      <h2 class="text-base font-bold text-slate-900 mb-4 pb-2 border-b border-slate-100">
-        📦 Barang di Keranjang
-      </h2>
-      
-      <div id="daftar-keranjang" class="divide-y divide-slate-100">
-        <p class="text-center py-6 text-slate-400">Keranjang belanja Anda masih kosong.</p>
-      </div>
 
-      <!-- TOTAL HARGA -->
-      <div class="mt-6 pt-4 border-t border-slate-200 flex justify-between items-center">
-        <span class="text-sm font-semibold text-slate-600">Total Pembayaran:</span>
-        <span id="total-harga" class="text-xl font-extrabold text-red-600">Rp 0</span>
-      </div>
-    </div>
+  <!-- CONTENT -->
+  <main class="max-w-6xl mx-auto px-4 py-5">
 
-    <!-- FORM DATA PEMBELI & PEMBAYARAN -->
-    <div class="bg-white rounded-2xl p-4 md:p-6 shadow-sm border border-slate-200">
-      <h2 class="text-base font-bold text-slate-900 mb-4 pb-2 border-b border-slate-100">
-        📝 Form Pengiriman & Pembayaran
-      </h2>
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
 
-      <form id="form-checkout" class="space-y-4">
-        <div>
-          <label class="block text-xs font-semibold text-slate-700 mb-1">Nama Lengkap</label>
-          <input type="text" id="nama-pembeli" required placeholder="Contoh: Zokent" class="w-full text-xs px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-red-500">
-        </div>
+      <!-- ========================= -->
+      <!-- KIRI -->
+      <!-- ========================= -->
+      <div class="lg:col-span-2 space-y-5">
 
-        <div>
-          <label class="block text-xs font-semibold text-slate-700 mb-1">Alamat Pengiriman / Catatan</label>
-          <textarea id="alamat-pembeli" rows="2" required placeholder="Masukkan alamat atau RT/RW..." class="w-full text-xs px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-red-500"></textarea>
-        </div>
 
-        <!-- PILIHAN METODE PEMBAYARAN -->
-        <div>
-          <label class="block text-xs font-semibold text-slate-700 mb-2">Pilih Metode Pembayaran</label>
-          <div class="grid grid-cols-2 gap-3">
-            <label class="border border-slate-200 rounded-xl p-3 flex items-center gap-2 cursor-pointer hover:border-red-500 transition-all bg-slate-50">
-              <input type="radio" name="metode-bayar" value="COD / Bayar di Tempat" checked class="text-red-600 focus:ring-red-500" onchange="toggleQris(false)">
-              <div>
-                <p class="text-xs font-bold text-slate-800">💵 COD / Manual</p>
-                <p class="text-[10px] text-slate-500">Bayar langsung / konfirmasi via WA</p>
-              </div>
-            </label>
+        <!-- KERANJANG -->
+        <section class="card p-4 md:p-6">
 
-            <label class="border border-slate-200 rounded-xl p-3 flex items-center gap-2 cursor-pointer hover:border-red-500 transition-all bg-slate-50">
-              <input type="radio" name="metode-bayar" value="QRIS" class="text-red-600 focus:ring-red-500" onchange="toggleQris(true)">
-              <div>
-                <p class="text-xs font-bold text-slate-800">📱 QRIS (Scan)</p>
-                <p class="text-[10px] text-slate-500">Scan pakai Dana, GoPay, OVO, BCA, dll</p>
-              </div>
-            </label>
+          <div class="flex items-center justify-between mb-4">
+
+            <div>
+              <h2 class="font-extrabold text-lg">
+                🛒 Keranjang Belanja
+              </h2>
+
+              <p
+                id="jumlah-item"
+                class="text-xs text-slate-500 mt-1">
+                0 item
+              </p>
+            </div>
+
+            <button
+              onclick="kembaliKeToko()"
+              class="text-blue-600 text-xs font-bold">
+              + Tambah Produk
+            </button>
+
           </div>
-        </div>
 
-        <!-- CONTAINER GAMBAR QRIS (Muncul Otomatis jika QRIS dipilih) -->
-        <div id="qris-box" class="hidden p-4 bg-slate-50 border border-dashed border-red-300 rounded-xl text-center space-y-2">
-          <p class="text-xs font-bold text-red-600">Scan QRIS di bawah ini untuk membayar:</p>
-          <img src="qris.jpg" alt="QRIS Toko" class="w-48 h-48 mx-auto object-contain rounded-lg border border-slate-200 bg-white p-2 shadow-sm">
-          <p class="text-[11px] text-slate-500">Setelah scan dan berhasil, klik tombol kirim pesanan di bawah dan lampirkan buktinya.</p>
-        </div>
 
-        <button type="submit" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold text-sm py-3 rounded-xl transition-all shadow-md flex items-center justify-center gap-2">
-          📲 Kirim Pesanan via WhatsApp
-        </button>
-      </form>
+          <div
+            id="daftar-keranjang"
+            class="divide-y divide-slate-100">
+
+          </div>
+
+        </section>
+
+
+        <!-- DATA PEMBELI -->
+        <section class="card p-4 md:p-6">
+
+          <h2 class="font-extrabold text-lg mb-1">
+            📍 Data Pengiriman
+          </h2>
+
+          <p class="text-xs text-slate-500 mb-5">
+            Masukkan data agar pesanan mudah diproses.
+          </p>
+
+
+          <form id="form-checkout">
+
+            <!-- NAMA -->
+            <div class="mb-4">
+
+              <label
+                class="block text-sm font-bold mb-2">
+                Nama Lengkap
+              </label>
+
+              <input
+                type="text"
+                id="nama-pembeli"
+                required
+                autocomplete="name"
+                placeholder="Contoh: Budi"
+                class="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100">
+
+            </div>
+
+
+            <!-- NOMOR -->
+            <div class="mb-4">
+
+              <label
+                class="block text-sm font-bold mb-2">
+                Nomor WhatsApp
+              </label>
+
+              <input
+                type="tel"
+                id="nomor-pembeli"
+                required
+                autocomplete="tel"
+                placeholder="08xxxxxxxxxx"
+                class="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100">
+
+            </div>
+
+
+            <!-- ALAMAT -->
+            <div class="mb-4">
+
+              <label
+                class="block text-sm font-bold mb-2">
+                Alamat Pengiriman
+              </label>
+
+              <textarea
+                id="alamat-pembeli"
+                required
+                rows="3"
+                placeholder="Desa/Kelurahan, RT/RW, patokan rumah, dll."
+                class="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"></textarea>
+
+            </div>
+
+
+            <!-- CATATAN -->
+            <div>
+
+              <label
+                class="block text-sm font-bold mb-2">
+                Catatan Pesanan
+                <span class="font-normal text-slate-400">
+                  (opsional)
+                </span>
+              </label>
+
+              <textarea
+                id="catatan-pembeli"
+                rows="2"
+                placeholder="Contoh: Tolong antar sore..."
+                class="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"></textarea>
+
+            </div>
+
+          </form>
+
+        </section>
+
+
+        <!-- PEMBAYARAN -->
+        <section class="card p-4 md:p-6">
+
+          <h2 class="font-extrabold text-lg mb-1">
+            💳 Metode Pembayaran
+          </h2>
+
+          <p class="text-xs text-slate-500 mb-4">
+            Pilih metode pembayaran yang kamu inginkan.
+          </p>
+
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+
+            <!-- CASH -->
+            <label
+              class="payment-option border-2 border-slate-200 rounded-2xl p-4 cursor-pointer">
+
+              <div class="flex items-start gap-3">
+
+                <input
+                  type="radio"
+                  name="metode-bayar"
+                  value="Cash / Bayar di Tempat"
+                  checked
+                  onchange="toggleQris()"
+                  class="mt-1">
+
+                <div>
+
+                  <div class="font-extrabold text-sm">
+                    💵 Cash / Bayar di Tempat
+                  </div>
+
+                  <div class="text-xs text-slate-500 mt-1">
+                    Bayar ketika pesanan diterima.
+                  </div>
+
+                </div>
+
+              </div>
+
+            </label>
+
+
+            <!-- QRIS -->
+            <label
+              class="payment-option border-2 border-slate-200 rounded-2xl p-4 cursor-pointer">
+
+              <div class="flex items-start gap-3">
+
+                <input
+                  type="radio"
+                  name="metode-bayar"
+                  value="QRIS"
+                  onchange="toggleQris()"
+                  class="mt-1">
+
+                <div>
+
+                  <div class="font-extrabold text-sm">
+                    📱 QRIS
+                  </div>
+
+                  <div class="text-xs text-slate-500 mt-1">
+                    DANA, GoPay, OVO, BCA, dll.
+                  </div>
+
+                </div>
+
+              </div>
+
+            </label>
+
+          </div>
+
+
+          <!-- QRIS BOX -->
+          <div
+            id="qris-box"
+            class="hidden mt-5 bg-blue-50 border border-blue-100 rounded-2xl p-5 text-center">
+
+            <div class="font-extrabold text-blue-700 mb-3">
+              📱 Scan QRIS ZOKENT STORE
+            </div>
+
+            <img
+              src="qris.jpg"
+              alt="QRIS ZOKENT STORE"
+              class="w-56 h-56 object-contain mx-auto bg-white rounded-xl p-2 shadow-sm">
+
+            <p class="text-xs text-slate-500 mt-3">
+              Setelah pembayaran berhasil, kirim bukti pembayaran melalui WhatsApp.
+            </p>
+
+          </div>
+
+        </section>
+
+      </div>
+
+
+      <!-- ========================= -->
+      <!-- RINGKASAN -->
+      <!-- ========================= -->
+
+      <div class="lg:col-span-1">
+
+        <section class="card p-5 lg:sticky lg:top-24">
+
+          <h2 class="font-extrabold text-lg mb-5">
+            🧾 Ringkasan Pesanan
+          </h2>
+
+
+          <div class="flex justify-between text-sm mb-3">
+
+            <span class="text-slate-500">
+              Subtotal
+            </span>
+
+            <span
+              id="subtotal-ringkasan"
+              class="font-semibold">
+              Rp 0
+            </span>
+
+          </div>
+
+
+          <div class="flex justify-between text-sm mb-4">
+
+            <span class="text-slate-500">
+              Pengiriman
+            </span>
+
+            <span class="font-semibold text-green-600">
+              Konfirmasi WA
+            </span>
+
+          </div>
+
+
+          <div class="border-t border-slate-100 pt-4">
+
+            <div class="flex justify-between items-center">
+
+              <span class="font-bold">
+                Total
+              </span>
+
+              <span
+                id="total-harga"
+                class="text-xl font-extrabold text-blue-600">
+                Rp 0
+              </span>
+
+            </div>
+
+          </div>
+
+
+          <button
+            type="submit"
+            form="form-checkout"
+            id="btn-kirim"
+            class="btn-blue w-full mt-5 text-white rounded-2xl py-4 font-extrabold shadow-lg flex items-center justify-center gap-2">
+
+            <span>📲</span>
+            Kirim Pesanan via WhatsApp
+
+          </button>
+
+
+          <div class="text-[10px] text-slate-400 text-center mt-4 leading-relaxed">
+
+            Dengan mengirim pesanan, kamu menyetujui
+            proses pemesanan melalui WhatsApp ZOKENT STORE.
+
+          </div>
+
+        </section>
+
+      </div>
+
     </div>
+
+    <div class="bottom-space"></div>
 
   </main>
 
+
+  <!-- ========================= -->
+  <!-- JAVASCRIPT -->
+  <!-- ========================= -->
+
   <script>
-    // Nomor WhatsApp Toko (Sudah diset ke nomor Anda)
-    const NOMOR_WA_TOKO = "6283863000922"; 
 
-    // 1. TAMPILKAN DAFTAR KERANJANG
+    /*
+    =====================================================
+    PENGATURAN TOKO
+    =====================================================
+    */
+
+    const NOMOR_WA_TOKO = "6283863000922";
+
+    const STORAGE_KEY = "keranjang_zokent";
+
+
+    /*
+    =====================================================
+    FORMAT RUPIAH
+    =====================================================
+    */
+
+    function rupiah(angka) {
+
+      return "Rp " + Number(angka || 0)
+        .toLocaleString("id-ID");
+
+    }
+
+
+    /*
+    =====================================================
+    AMBIL KERANJANG
+    =====================================================
+    */
+
+    function ambilKeranjang() {
+
+      try {
+
+        return JSON.parse(
+          localStorage.getItem(STORAGE_KEY)
+        ) || [];
+
+      } catch (error) {
+
+        console.error(error);
+
+        return [];
+
+      }
+
+    }
+
+
+    /*
+    =====================================================
+    SIMPAN KERANJANG
+    =====================================================
+    */
+
+    function simpanKeranjang(keranjang) {
+
+      localStorage.setItem(
+        STORAGE_KEY,
+        JSON.stringify(keranjang)
+      );
+
+    }
+
+
+    /*
+    =====================================================
+    HITUNG TOTAL
+    =====================================================
+    */
+
+    function hitungTotal(keranjang) {
+
+      return keranjang.reduce(
+        (total, item) => {
+
+          const harga = Number(item.harga) || 0;
+          const jumlah = Number(item.jumlah) || 0;
+
+          return total + (harga * jumlah);
+
+        },
+        0
+      );
+
+    }
+
+
+    /*
+    =====================================================
+    ESCAPE HTML
+    =====================================================
+    */
+
+    function aman(teks) {
+
+      return String(teks ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+
+    }
+
+
+    /*
+    =====================================================
+    RENDER KERANJANG
+    =====================================================
+    */
+
     function renderKeranjang() {
-      const container = document.getElementById('daftar-keranjang');
-      const totalEl = document.getElementById('total-harga');
-      const keranjang = JSON.parse(localStorage.getItem('keranjang_zokent')) || [];
+
+      const container =
+        document.getElementById("daftar-keranjang");
+
+      const jumlahItem =
+        document.getElementById("jumlah-item");
+
+      const totalHarga =
+        document.getElementById("total-harga");
+
+      const subtotalRingkasan =
+        document.getElementById("subtotal-ringkasan");
+
+
+      const keranjang = ambilKeranjang();
+
 
       if (keranjang.length === 0) {
-        container.innerHTML = `<p class="text-center py-6 text-slate-400">Keranjang belanja Anda masih kosong.</p>`;
-        totalEl.innerText = "Rp 0";
-        return;
-      }
 
-      let grandTotal = 0;
-      container.innerHTML = keranjang.map((item, index) => {
-        const subtotal = item.harga * item.jumlah;
-        grandTotal += subtotal;
+        container.innerHTML = `
 
-        return `
-          <div class="py-3 flex items-center justify-between gap-4">
-            <div class="flex items-center gap-3">
-              ${item.gambar ? `<img src="${item.gambar}" class="w-12 h-12 rounded-lg object-cover">` : '<span class="text-2xl">📦</span>'}
-              <div>
-                <h4 class="font-bold text-xs text-slate-800">${item.nama}</h4>
-                <p class="text-[11px] text-slate-500">Rp ${Number(item.harga).toLocaleString('id-ID')} x ${item.jumlah}</p>
-              </div>
+          <div class="text-center py-12">
+
+            <div class="text-5xl mb-4">
+              🛒
             </div>
 
-            <div class="flex items-center gap-3">
-              <div class="flex items-center border border-slate-200 rounded-lg">
-                <button type="button" onclick="ubahJumlah(${index}, -1)" class="px-2 py-0.5 text-xs font-bold text-slate-600 hover:bg-slate-100">-</button>
-                <span class="px-2 text-xs font-semibold">${item.jumlah}</span>
-                <button type="button" onclick="ubahJumlah(${index}, 1)" class="px-2 py-0.5 text-xs font-bold text-slate-600 hover:bg-slate-100">+</button>
-              </div>
-              <span class="text-xs font-bold text-slate-800">Rp ${Number(subtotal).toLocaleString('id-ID')}</span>
-              <button type="button" onclick="hapusItem(${index})" class="text-red-500 hover:text-red-700 text-xs font-bold">🗑</button>
+            <div class="font-extrabold text-slate-700">
+              Keranjang masih kosong
             </div>
+
+            <div class="text-xs text-slate-400 mt-2">
+              Yuk pilih produk terlebih dahulu.
+            </div>
+
+            <button
+              onclick="kembaliKeToko()"
+              class="mt-5 bg-blue-600 text-white px-5 py-3 rounded-xl text-sm font-bold">
+
+              Belanja Sekarang
+
+            </button>
+
           </div>
+
         `;
-      }).join('');
 
-      totalEl.innerText = `Rp ${Number(grandTotal).toLocaleString('id-ID')}`;
-    }
+        jumlahItem.textContent = "0 item";
+        totalHarga.textContent = "Rp 0";
+        subtotalRingkasan.textContent = "Rp 0";
 
-    // 2. TOGGLE TAMPILAN QRIS
-    function toggleQris(tampilkan) {
-      const qrisBox = document.getElementById('qris-box');
-      if (tampilkan) {
-        qrisBox.classList.remove('hidden');
-      } else {
-        qrisBox.classList.add('hidden');
-      }
-    }
-
-    // 3. UBAH JUMLAH ITEM (+ / -)
-    function ubahJumlah(index, delta) {
-      let keranjang = JSON.parse(localStorage.getItem('keranjang_zokent')) || [];
-      keranjang[index].jumlah += delta;
-      
-      if (keranjang[index].jumlah <= 0) {
-        keranjang.splice(index, 1);
-      }
-      
-      localStorage.setItem('keranjang_zokent', JSON.stringify(keranjang));
-      renderKeranjang();
-    }
-
-    // 4. HAPUS ITEM
-    function hapusItem(index) {
-      let keranjang = JSON.parse(localStorage.getItem('keranjang_zokent')) || [];
-      keranjang.splice(index, 1);
-      localStorage.setItem('keranjang_zokent', JSON.stringify(keranjang));
-      renderKeranjang();
-    }
-
-    // 5. KIRIM PESANAN KE WHATSAPP
-    document.getElementById('form-checkout').addEventListener('submit', (e) => {
-      e.preventDefault();
-      const keranjang = JSON.parse(localStorage.getItem('keranjang_zokent')) || [];
-      
-      if (keranjang.length === 0) {
-        alert('Keranjang belanja Anda masih kosong!');
         return;
+
       }
 
-      const nama = document.getElementById('nama-pembeli').value.trim();
-      const alamat = document.getElementById('alamat-pembeli').value.trim();
-      const metodeBayar = document.querySelector('input[name="metode-bayar"]:checked').value;
 
-      let rincianPesanan = "";
-      let grandTotal = 0;
+      let totalJumlah = 0;
 
-      keranjang.forEach(item => {
-        const subtotal = item.harga * item.jumlah;
-        grandTotal += subtotal;
-        rincianPesanan += `- ${item.nama} (${item.jumlah}x) = Rp ${Number(subtotal).toLocaleString('id-ID')}\n`;
+
+      container.innerHTML = keranjang.map(
+        (item, index) => {
+
+          const harga =
+            Number(item.harga) || 0;
+
+          const jumlah =
+            Number(item.jumlah) || 1;
+
+          const subtotal =
+            harga * jumlah;
+
+          totalJumlah += jumlah;
+
+
+          const gambar =
+            item.gambar
+              ? `
+                <img
+                  src="${aman(item.gambar)}"
+                  alt="${aman(item.nama)}"
+                  class="w-20 h-20 object-contain rounded-xl bg-slate-50">
+              `
+              : `
+                <div class="w-20 h-20 rounded-xl bg-slate-100 flex items-center justify-center text-3xl">
+                  📦
+                </div>
+              `;
+
+
+          return `
+
+            <div class="py-4 flex gap-3">
+
+              ${gambar}
+
+              <div class="flex-1 min-w-0">
+
+                <div class="font-bold text-sm text-slate-800">
+                  ${aman(item.nama)}
+                </div>
+
+                <div class="text-xs text-blue-600 font-bold mt-1">
+                  ${rupiah(harga)}
+                </div>
+
+
+                <div class="flex items-center justify-between mt-3">
+
+                  <!-- QTY -->
+                  <div class="flex items-center border border-slate-200 rounded-xl overflow-hidden">
+
+                    <button
+                      type="button"
+                      onclick="ubahJumlah(${index}, -1)"
+                      class="w-8 h-8 font-bold text-slate-600 hover:bg-slate-100">
+
+                      −
+
+                    </button>
+
+                    <span class="w-8 text-center text-sm font-bold">
+                      ${jumlah}
+                    </span>
+
+                    <button
+                      type="button"
+                      onclick="ubahJumlah(${index}, 1)"
+                      class="w-8 h-8 font-bold text-blue-600 hover:bg-blue-50">
+
+                      +
+
+                    </button>
+
+                  </div>
+
+
+                  <div class="font-extrabold text-sm">
+                    ${rupiah(subtotal)}
+                  </div>
+
+
+                  <button
+                    type="button"
+                    onclick="hapusItem(${index})"
+                    class="text-red-500 text-xs font-bold">
+
+                    Hapus
+
+                  </button>
+
+                </div>
+
+              </div>
+
+            </div>
+
+          `;
+
+        }
+      ).join("");
+
+
+      const total =
+        hitungTotal(keranjang);
+
+
+      jumlahItem.textContent =
+        totalJumlah + " item";
+
+
+      totalHarga.textContent =
+        rupiah(total);
+
+
+      subtotalRingkasan.textContent =
+        rupiah(total);
+
+    }
+
+
+    /*
+    =====================================================
+    UBAH JUMLAH
+    =====================================================
+    */
+
+    function ubahJumlah(index, delta) {
+
+      const keranjang =
+        ambilKeranjang();
+
+
+      if (!keranjang[index]) return;
+
+
+      let jumlah =
+        Number(keranjang[index].jumlah) || 1;
+
+
+      jumlah += delta;
+
+
+      if (jumlah <= 0) {
+
+        keranjang.splice(index, 1);
+
+      } else {
+
+        keranjang[index].jumlah = jumlah;
+
+      }
+
+
+      simpanKeranjang(keranjang);
+
+      renderKeranjang();
+
+    }
+
+
+    /*
+    =====================================================
+    HAPUS ITEM
+    =====================================================
+    */
+
+    function hapusItem(index) {
+
+      const keranjang =
+        ambilKeranjang();
+
+
+      if (!keranjang[index]) return;
+
+
+      keranjang.splice(index, 1);
+
+
+      simpanKeranjang(keranjang);
+
+      renderKeranjang();
+
+    }
+
+
+    /*
+    =====================================================
+    QRIS
+    =====================================================
+    */
+
+    function toggleQris() {
+
+      const metode =
+        document.querySelector(
+          'input[name="metode-bayar"]:checked'
+        )?.value;
+
+
+      const qrisBox =
+        document.getElementById("qris-box");
+
+
+      if (metode === "QRIS") {
+
+        qrisBox.classList.remove("hidden");
+
+      } else {
+
+        qrisBox.classList.add("hidden");
+
+      }
+
+    }
+
+
+    /*
+    =====================================================
+    KEMBALI KE TOKO
+    =====================================================
+    */
+
+    function kembaliKeToko() {
+
+      window.location.href = "toko.html";
+
+    }
+
+
+    /*
+    =====================================================
+    CHECKOUT
+    =====================================================
+    */
+
+    document
+      .getElementById("form-checkout")
+      .addEventListener("submit", function(e) {
+
+        e.preventDefault();
+
+
+        const keranjang =
+          ambilKeranjang();
+
+
+        if (keranjang.length === 0) {
+
+          alert(
+            "Keranjang belanja masih kosong."
+          );
+
+          return;
+
+        }
+
+
+        const nama =
+          document
+            .getElementById("nama-pembeli")
+            .value
+            .trim();
+
+
+        const nomor =
+          document
+            .getElementById("nomor-pembeli")
+            .value
+            .trim();
+
+
+        const alamat =
+          document
+            .getElementById("alamat-pembeli")
+            .value
+            .trim();
+
+
+        const catatan =
+          document
+            .getElementById("catatan-pembeli")
+            .value
+            .trim();
+
+
+        const metode =
+          document.querySelector(
+            'input[name="metode-bayar"]:checked'
+          )?.value || "Cash / Bayar di Tempat";
+
+
+        const total =
+          hitungTotal(keranjang);
+
+
+        let rincian = "";
+
+
+        keranjang.forEach(item => {
+
+          const harga =
+            Number(item.harga) || 0;
+
+          const jumlah =
+            Number(item.jumlah) || 0;
+
+          const subtotal =
+            harga * jumlah;
+
+
+          rincian +=
+            `• ${item.nama} x${jumlah} = ${rupiah(subtotal)}\n`;
+
+        });
+
+
+        let pesan =
+
+`Halo ZOKENT STORE 👋
+
+Saya mau melakukan pemesanan.
+
+*DATA PEMBELI*
+Nama: ${nama}
+WhatsApp: ${nomor}
+
+*ALAMAT PENGIRIMAN*
+${alamat}
+
+*METODE PEMBAYARAN*
+${metode}
+
+*DETAIL PESANAN*
+${rincian}
+*TOTAL: ${rupiah(total)}*`;
+
+
+        if (catatan) {
+
+          pesan +=
+            `\n*CATATAN*\n${catatan}`;
+
+        }
+
+
+        pesan +=
+          `\n\nMohon dikonfirmasi ketersediaan dan total akhirnya ya.
+Terima kasih 🙏`;
+
+
+        /*
+        =============================================
+        BUKA WHATSAPP
+        =============================================
+        */
+
+        const url =
+          `https://wa.me/${NOMOR_WA_TOKO}?text=${encodeURIComponent(pesan)}`;
+
+
+        window.open(url, "_blank");
+
+
+        /*
+        =============================================
+        KOSONGKAN KERANJANG
+        =============================================
+        */
+
+        localStorage.removeItem(STORAGE_KEY);
+
+
+        setTimeout(() => {
+
+          renderKeranjang();
+
+        }, 300);
+
       });
 
-      const pesanWA = `Halo SRC Zokent, saya mau pesan:\n\n` +
-        `*Nama:* ${nama}\n` +
-        `*Alamat / RT/RW:* ${alamat}\n` +
-        `*Metode Pembayaran:* ${metodeBayar}\n\n` +
-        `*Detail Pesanan:*\n${rincianPesanan}\n` +
-        `*Total Pembayaran:* Rp ${Number(grandTotal).toLocaleString('id-ID')}\n\n` +
-        `Mohon diproses ya, terima kasih!`;
 
-      // Buka Whatsapp
-      window.open(`https://wa.me/${NOMOR_WA_TOKO}?text=${encodeURIComponent(pesanWA)}`, '_blank');
-      
-      // Kosongkan keranjang setelah order terkirim
-      localStorage.removeItem('keranjang_zokent');
-      renderKeranjang();
-    });
+    /*
+    =====================================================
+    START
+    =====================================================
+    */
 
     renderKeranjang();
+
+    toggleQris();
+
   </script>
 
 </body>
