@@ -20,8 +20,8 @@
       --white:#fff;
       --green:#16ad68;
       --red:#ef3030;
+      --border:#e1e9f2;
       --shadow:0 5px 18px rgba(31,74,120,.08);
-      --radius:18px;
     }
 
     *{
@@ -45,7 +45,9 @@
       cursor:pointer;
     }
 
-    /* HEADER */
+    /* =========================
+       HEADER
+    ========================= */
 
     header{
       position:sticky;
@@ -61,26 +63,42 @@
       min-height:70px;
       display:flex;
       align-items:center;
-      gap:18px;
+      gap:15px;
       padding:10px 18px;
     }
 
+    .back-btn{
+      border:0;
+      background:var(--soft-blue);
+      color:var(--blue);
+      height:42px;
+      padding:0 14px;
+      border-radius:12px;
+      font-size:13px;
+      font-weight:bold;
+      white-space:nowrap;
+    }
+
+    .back-btn:hover{
+      background:#dceeff;
+    }
+
     .logo{
-      min-width:160px;
+      min-width:145px;
       line-height:.8;
       font-weight:1000;
       font-style:italic;
       letter-spacing:-3px;
-      font-size:34px;
+      font-size:32px;
       color:#087ff5;
       text-shadow:2px 2px 0 #102b50;
     }
 
     .logo span{
       display:block;
-      margin-left:48px;
+      margin-left:45px;
       margin-top:5px;
-      font-size:13px;
+      font-size:11px;
       letter-spacing:5px;
       color:#102b50;
       text-shadow:none;
@@ -95,7 +113,7 @@
     .search-box input{
       width:100%;
       height:44px;
-      border:1px solid #dce7f3;
+      border:1px solid var(--border);
       background:#f7faff;
       border-radius:24px;
       padding:0 18px 0 45px;
@@ -118,7 +136,7 @@
 
     .header-actions{
       display:flex;
-      gap:10px;
+      gap:9px;
     }
 
     .icon-btn{
@@ -138,7 +156,7 @@
       min-width:19px;
       height:19px;
       padding:0 5px;
-      background:#ef3030;
+      background:var(--red);
       color:#fff;
       font-size:11px;
       border-radius:20px;
@@ -148,21 +166,26 @@
       font-weight:bold;
     }
 
-    /* MAIN */
+    /* =========================
+       MAIN
+    ========================= */
 
     main{
       max-width:1250px;
       margin:auto;
-      padding:20px 18px 100px;
+      padding:20px 18px 110px;
     }
 
-    /* HERO */
+    /* =========================
+       HERO
+    ========================= */
 
     .hero{
       min-height:230px;
       border-radius:25px;
       padding:32px;
-      color:white;
+      color:#fff;
+
       background:
         linear-gradient(
           115deg,
@@ -170,22 +193,25 @@
           #058df4 53%,
           #11b5f5 100%
         );
+
       display:flex;
       align-items:center;
       justify-content:space-between;
+
       overflow:hidden;
       position:relative;
+
       box-shadow:var(--shadow);
     }
 
     .hero::after{
       content:"";
       position:absolute;
-      width:320px;
-      height:320px;
+      width:330px;
+      height:330px;
       border-radius:50%;
-      right:-100px;
-      top:-140px;
+      right:-110px;
+      top:-145px;
       background:rgba(255,255,255,.12);
     }
 
@@ -209,7 +235,7 @@
     .hero-logo{
       position:relative;
       z-index:2;
-      font-size:60px;
+      font-size:58px;
       font-weight:1000;
       font-style:italic;
       transform:rotate(-5deg);
@@ -219,13 +245,15 @@
     .hero-logo small{
       display:block;
       text-align:center;
-      font-size:17px;
+      font-size:16px;
       letter-spacing:8px;
       text-shadow:none;
       margin-top:-3px;
     }
 
-    /* CATEGORY */
+    /* =========================
+       SECTION
+    ========================= */
 
     .section{
       margin-top:25px;
@@ -249,6 +277,10 @@
       color:var(--blue);
       font-weight:bold;
     }
+
+    /* =========================
+       CATEGORY
+    ========================= */
 
     .categories{
       display:grid;
@@ -288,7 +320,9 @@
       font-weight:bold;
     }
 
-    /* PRODUCT */
+    /* =========================
+       PRODUCTS
+    ========================= */
 
     .products{
       display:grid;
@@ -302,7 +336,6 @@
       overflow:hidden;
       box-shadow:var(--shadow);
       min-width:0;
-      position:relative;
     }
 
     .product-image{
@@ -376,7 +409,32 @@
       cursor:not-allowed;
     }
 
-    /* FLOATING CART */
+    /* =========================
+       EMPTY / LOADING
+    ========================= */
+
+    .empty{
+      background:#fff;
+      border-radius:18px;
+      padding:45px 20px;
+      text-align:center;
+      color:var(--muted);
+      box-shadow:var(--shadow);
+      grid-column:1/-1;
+    }
+
+    .loading{
+      background:#fff;
+      border-radius:18px;
+      padding:40px;
+      text-align:center;
+      color:var(--muted);
+      grid-column:1/-1;
+    }
+
+    /* =========================
+       FLOATING CART
+    ========================= */
 
     .floating-cart{
       position:fixed;
@@ -384,10 +442,13 @@
       transform:translateX(-50%);
       bottom:20px;
       z-index:900;
+
       width:min(500px,calc(100% - 30px));
+
       background:#fff;
       border-radius:18px;
       box-shadow:0 8px 30px rgba(0,0,0,.18);
+
       padding:10px;
       display:none;
     }
@@ -403,67 +464,69 @@
       color:#fff;
       border-radius:13px;
       padding:13px;
+
       display:flex;
       justify-content:space-between;
       align-items:center;
+
       font-weight:bold;
     }
 
-    /* EMPTY */
-
-    .empty{
-      background:#fff;
-      border-radius:18px;
-      padding:45px 20px;
-      text-align:center;
-      color:var(--muted);
-      box-shadow:var(--shadow);
-      grid-column:1/-1;
-    }
-
-    /* LOADING */
-
-    .loading{
-      background:#fff;
-      border-radius:18px;
-      padding:40px;
-      text-align:center;
-      color:var(--muted);
-      grid-column:1/-1;
-    }
-
-    /* TOAST */
-
-    .toast{
-      position:fixed;
-      left:50%;
-      bottom:90px;
-      transform:translateX(-50%) translateY(20px);
-      background:#102b50;
-      color:#fff;
-      padding:12px 18px;
-      border-radius:12px;
-      opacity:0;
-      pointer-events:none;
-      transition:.25s;
-      z-index:2000;
-      font-size:14px;
-    }
-
-    .toast.show{
-      opacity:1;
-      transform:translateX(-50%) translateY(0);
-    }
-
-    /* MOBILE NAV */
+    /* =========================
+       BOTTOM NAV
+    ========================= */
 
     .bottom-nav{
       display:none;
     }
 
-    /* RESPONSIVE */
+    /* =========================
+       TOAST
+    ========================= */
+
+    .toast{
+      position:fixed;
+      left:50%;
+      bottom:90px;
+
+      transform:
+        translateX(-50%)
+        translateY(20px);
+
+      background:#102b50;
+      color:#fff;
+
+      padding:12px 18px;
+
+      border-radius:12px;
+
+      opacity:0;
+      pointer-events:none;
+
+      transition:.25s;
+
+      z-index:2000;
+
+      font-size:14px;
+
+      max-width:90%;
+      text-align:center;
+    }
+
+    .toast.show{
+      opacity:1;
+
+      transform:
+        translateX(-50%)
+        translateY(0);
+    }
+
+    /* =========================
+       RESPONSIVE
+    ========================= */
 
     @media(max-width:1000px){
+
       .products{
         grid-template-columns:repeat(4,1fr);
       }
@@ -471,7 +534,9 @@
       .categories{
         grid-template-columns:repeat(3,1fr);
       }
+
     }
+
 
     @media(max-width:700px){
 
@@ -482,23 +547,31 @@
         gap:8px;
       }
 
+      .back-btn{
+        order:1;
+        padding:0 10px;
+        font-size:12px;
+      }
+
       .logo{
+        order:2;
         min-width:auto;
-        font-size:29px;
+        font-size:28px;
       }
 
       .logo span{
-        font-size:9px;
-        margin-left:39px;
+        font-size:8px;
+        margin-left:38px;
         letter-spacing:4px;
       }
 
       .header-actions{
+        order:3;
         margin-left:auto;
       }
 
       .search-box{
-        order:3;
+        order:4;
         flex-basis:100%;
       }
 
@@ -551,13 +624,18 @@
       .bottom-nav{
         position:fixed;
         display:flex;
+
         left:0;
         right:0;
         bottom:0;
+
         height:64px;
+
         background:#fff;
         border-top:1px solid #e5ebf2;
+
         z-index:1000;
+
         justify-content:space-around;
       }
 
@@ -577,440 +655,887 @@
       .floating-cart{
         bottom:72px;
       }
+
     }
+
   </style>
 </head>
 
+
 <body>
 
+
+<!-- =====================================================
+     HEADER
+===================================================== -->
+
 <header>
+
   <div class="header-inner">
 
+
+    <button
+      class="back-btn"
+      onclick="backToHome()"
+    >
+      ← Beranda
+    </button>
+
+
     <div class="logo">
+
       ZOKENT
-      <span>STORE</span>
+
+      <span>
+        STORE
+      </span>
+
     </div>
 
+
     <div class="search-box">
-      <span class="search-icon">🔎</span>
+
+      <span class="search-icon">
+        🔎
+      </span>
+
       <input
         id="searchInput"
         type="text"
         placeholder="Cari produk di ZOKENT STORE..."
         oninput="searchProducts()"
       >
+
     </div>
+
 
     <div class="header-actions">
 
-      <button class="icon-btn" onclick="goCheckout()" title="Keranjang">
+
+      <button
+        class="icon-btn"
+        onclick="goCheckout()"
+        title="Keranjang"
+      >
+
         🛒
-        <span class="cart-badge" id="cartBadge">0</span>
+
+        <span
+          class="cart-badge"
+          id="cartBadge"
+        >
+          0
+        </span>
+
       </button>
 
-      <button class="icon-btn" onclick="showToast('Pelanggan tidak perlu login untuk belanja')">
+
+      <button
+        class="icon-btn"
+        onclick="showToast('Pelanggan tidak perlu login untuk belanja')"
+        title="Pelanggan"
+      >
         👤
       </button>
 
+
     </div>
 
+
   </div>
+
 </header>
 
 
+<!-- =====================================================
+     MAIN
+===================================================== -->
+
 <main>
+
+
+  <!-- HERO -->
 
   <section class="hero">
 
+
     <div class="hero-text">
-      <h1>Belanja Lebih Mudah di ZOKENT STORE</h1>
+
+      <h1>
+        Belanja Lebih Mudah di ZOKENT STORE
+      </h1>
+
 
       <p>
         Toko kelontong modern untuk kebutuhan sehari-hari.
-        Pilih produk, masukkan ke keranjang, lalu pesan melalui WhatsApp.
+        Pilih produk, masukkan ke keranjang,
+        lalu pesan melalui WhatsApp.
       </p>
+
     </div>
+
 
     <div class="hero-logo">
+
       ZOKENT
-      <small>STORE</small>
+
+      <small>
+        STORE
+      </small>
+
+    </div>
+
+
+  </section>
+
+
+  <!-- CATEGORY -->
+
+  <section class="section">
+
+
+    <div class="section-head">
+
+      <h2>
+        Kategori
+      </h2>
+
+
+      <button
+        onclick="showAllProducts()"
+      >
+        Lihat Semua
+      </button>
+
+    </div>
+
+
+    <div class="categories">
+
+
+      <button
+        class="category"
+        onclick="filterCategory('Sembako')"
+      >
+
+        <div class="category-icon">
+          🍚
+        </div>
+
+        <div class="category-name">
+          Sembako
+        </div>
+
+      </button>
+
+
+      <button
+        class="category"
+        onclick="filterCategory('Minuman')"
+      >
+
+        <div class="category-icon">
+          🥤
+        </div>
+
+        <div class="category-name">
+          Minuman
+        </div>
+
+      </button>
+
+
+      <button
+        class="category"
+        onclick="filterCategory('Bumbu')"
+      >
+
+        <div class="category-icon">
+          🌶️
+        </div>
+
+        <div class="category-name">
+          Bumbu
+        </div>
+
+      </button>
+
+
+      <button
+        class="category"
+        onclick="filterCategory('Mandi-Cuci')"
+      >
+
+        <div class="category-icon">
+          🧼
+        </div>
+
+        <div class="category-name">
+          Mandi-Cuci
+        </div>
+
+      </button>
+
+
+      <button
+        class="category"
+        onclick="filterCategory('Snack')"
+      >
+
+        <div class="category-icon">
+          🍪
+        </div>
+
+        <div class="category-name">
+          Snack
+        </div>
+
+      </button>
+
+
+      <button
+        class="category"
+        onclick="filterCategory('Pulsa')"
+      >
+
+        <div class="category-icon">
+          📱
+        </div>
+
+        <div class="category-name">
+          Pulsa
+        </div>
+
+      </button>
+
+
     </div>
 
   </section>
 
 
-  <section class="section">
-
-    <div class="section-head">
-      <h2>Kategori</h2>
-      <button onclick="showAllProducts()">Lihat Semua</button>
-    </div>
-
-    <div class="categories" id="categories">
-
-      <button class="category" onclick="filterCategory('Sembako')">
-        <div class="category-icon">🍚</div>
-        <div class="category-name">Sembako</div>
-      </button>
-
-      <button class="category" onclick="filterCategory('Minuman')">
-        <div class="category-icon">🥤</div>
-        <div class="category-name">Minuman</div>
-      </button>
-
-      <button class="category" onclick="filterCategory('Bumbu')">
-        <div class="category-icon">🌶️</div>
-        <div class="category-name">Bumbu</div>
-      </button>
-
-      <button class="category" onclick="filterCategory('Mandi-Cuci')">
-        <div class="category-icon">🧼</div>
-        <div class="category-name">Mandi-Cuci</div>
-      </button>
-
-      <button class="category" onclick="filterCategory('Snack')">
-        <div class="category-icon">🍪</div>
-        <div class="category-name">Snack</div>
-      </button>
-
-      <button class="category" onclick="filterCategory('Pulsa')">
-        <div class="category-icon">📱</div>
-        <div class="category-name">Pulsa</div>
-      </button>
-
-    </div>
-
-  </section>
-
+  <!-- PRODUCTS -->
 
   <section class="section">
 
+
     <div class="section-head">
-      <h2>Produk Tersedia</h2>
-      <button onclick="showAllProducts()">Semua Produk</button>
+
+      <h2>
+        Produk Tersedia
+      </h2>
+
+
+      <button
+        onclick="showAllProducts()"
+      >
+        Semua Produk
+      </button>
+
     </div>
 
-    <div class="products" id="products">
+
+    <div
+      class="products"
+      id="products"
+    >
+
       <div class="loading">
         Memuat produk...
       </div>
+
     </div>
 
+
   </section>
+
 
 </main>
 
 
-<div class="floating-cart" id="floatingCart">
+<!-- =====================================================
+     FLOATING CART
+===================================================== -->
 
-  <button onclick="goCheckout()">
+<div
+  class="floating-cart"
+  id="floatingCart"
+>
+
+
+  <button
+    onclick="goCheckout()"
+  >
 
     <span>
-      🛒 <span id="floatingQty">0</span> item
+
+      🛒
+
+      <span id="floatingQty">
+        0
+      </span>
+
+      item
+
     </span>
 
+
     <span>
-      <span id="floatingTotal">Rp0</span>
+
+      <span id="floatingTotal">
+        Rp0
+      </span>
+
       &nbsp; →
+
     </span>
 
   </button>
 
+
 </div>
 
 
+<!-- =====================================================
+     MOBILE NAV
+===================================================== -->
+
 <div class="bottom-nav">
 
-  <button class="active" onclick="window.scrollTo({top:0,behavior:'smooth'})">
+
+  <button
+    class="active"
+    onclick="window.scrollTo({top:0,behavior:'smooth'})"
+  >
     🏠<br>
     Beranda
   </button>
 
-  <button onclick="document.querySelector('.categories').scrollIntoView({behavior:'smooth'})">
+
+  <button
+    onclick="document.querySelector('.categories').scrollIntoView({behavior:'smooth'})"
+  >
     📦<br>
     Kategori
   </button>
 
-  <button onclick="goCheckout()">
+
+  <button
+    onclick="goCheckout()"
+  >
     🛒<br>
     Keranjang
   </button>
 
+
 </div>
 
 
-<div class="toast" id="toast"></div>
+<div
+  class="toast"
+  id="toast"
+></div>
 
 
 <script>
 
-  /* =====================================================
-     SUPABASE
-  ===================================================== */
 
-  const SUPABASE_URL = "https://weuousmvkxmgmsnwiuad.supabase.co";
-  const SUPABASE_ANON_KEY = "sb_publishable_e375KDL0vuoahHO_kWMjwA_a04R4yHb";
+/* =====================================================
+   1. PENGAMAN ALUR
 
-  const supabaseClient =
-    window.supabase.createClient(
-      SUPABASE_URL,
-      SUPABASE_ANON_KEY
+   index.html → toko.html
+
+   index.html harus memberikan tanda:
+   sessionStorage.setItem("zokent_from_index","true")
+
+   Jika belum ada tanda tersebut,
+   toko.html mengembalikan user ke index.html.
+===================================================== */
+
+(function checkEntry(){
+
+  const fromIndex =
+    sessionStorage.getItem(
+      "zokent_from_index"
     );
 
 
-  /* =====================================================
-     CART
-  ===================================================== */
+  /*
+    Untuk pertama kali pemasangan/testing,
+    kode di bawah membuat toko tetap bisa
+    dibuka jika user sudah berada di halaman ini.
 
-  const CART_KEY = "zokent_cart";
+    Setelah index.html kita sesuaikan,
+    pengamanan penuh akan diaktifkan.
+  */
 
-  let cart = [];
+  if(fromIndex !== "true"){
 
-  try {
-    const saved = localStorage.getItem(CART_KEY);
+    /*
+      Jika toko.html dibuka langsung,
+      arahkan ke index.html.
+    */
 
-    if(saved){
-      const parsed = JSON.parse(saved);
+    window.location.replace(
+      "index.html"
+    );
 
-      if(Array.isArray(parsed)){
-        cart = parsed;
-      }
-    }
-
-  } catch(error){
-
-    console.error("Cart error:", error);
-
-    cart = [];
+    return;
 
   }
 
 
-  /* =====================================================
-     PRODUCT DATA
-  ===================================================== */
+  /*
+    Tanda bahwa user sekarang sudah
+    berada di halaman toko.
+  */
 
-  let products = [];
-  let allProducts = [];
-  let selectedCategory = "";
+  sessionStorage.setItem(
+    "zokent_in_toko",
+    "true"
+  );
+
+})();
 
 
-  /* =====================================================
-     SAVE CART
-  ===================================================== */
+/* =====================================================
+   2. SUPABASE
+===================================================== */
 
-  function saveCart(){
+const SUPABASE_URL =
+  "https://weuousmvkxmgmsnwiuad.supabase.co";
 
-    try{
 
-      localStorage.setItem(
-        CART_KEY,
+const SUPABASE_ANON_KEY =
+  "sb_publishable_e375KDL0vuoahHO_kWMjwA_a04R4yHb";
+
+
+const supabaseClient =
+  window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_ANON_KEY
+  );
+
+
+/* =====================================================
+   3. CART
+===================================================== */
+
+const CART_KEY =
+  "zokent_cart";
+
+
+let cart = [];
+
+
+try{
+
+  const saved =
+    localStorage.getItem(
+      CART_KEY
+    );
+
+
+  if(saved){
+
+    const parsed =
+      JSON.parse(saved);
+
+
+    if(Array.isArray(parsed)){
+
+      cart =
+        normalizeCart(parsed);
+
+    }
+
+  }
+
+}catch(error){
+
+  console.error(
+    "Gagal membaca keranjang:",
+    error
+  );
+
+  cart = [];
+
+}
+
+
+/* =====================================================
+   4. DATA PRODUK
+===================================================== */
+
+let allProducts = [];
+
+let products = [];
+
+let selectedCategory = "";
+
+
+/* =====================================================
+   5. NORMALIZE CART
+===================================================== */
+
+function normalizeCart(items){
+
+  return items
+    .filter(
+      item =>
+        item &&
+        item.id
+    )
+    .map(
+      item => ({
+
+        id:
+          String(item.id),
+
+        name:
+          String(
+            item.name ||
+            "Produk"
+          ),
+
+        price:
+          Number(
+            item.price ||
+            0
+          ),
+
+        image:
+          String(
+            item.image ||
+            ""
+          ),
+
+        quantity:
+          Math.max(
+            1,
+            Number(
+              item.quantity ||
+              1
+            )
+          )
+
+      })
+    );
+
+}
+
+
+/* =====================================================
+   6. SAVE CART
+===================================================== */
+
+function saveCart(){
+
+  try{
+
+    localStorage.setItem(
+      CART_KEY,
+      JSON.stringify(cart)
+    );
+
+  }catch(error){
+
+    console.error(
+      "Gagal menyimpan cart:",
+      error
+    );
+
+  }
+
+
+  updateCart();
+
+}
+
+
+/* =====================================================
+   7. UPDATE CART
+===================================================== */
+
+function updateCart(){
+
+  const totalQty =
+    cart.reduce(
+      (sum,item) =>
+        sum +
+        Number(
+          item.quantity ||
+          0
+        ),
+      0
+    );
+
+
+  const totalPrice =
+    cart.reduce(
+      (sum,item) =>
+        sum +
+        (
+          Number(
+            item.price ||
+            0
+          ) *
+          Number(
+            item.quantity ||
+            0
+          )
+        ),
+      0
+    );
+
+
+  document.getElementById(
+    "cartBadge"
+  ).textContent =
+    totalQty;
+
+
+  document.getElementById(
+    "floatingQty"
+  ).textContent =
+    totalQty;
+
+
+  document.getElementById(
+    "floatingTotal"
+  ).textContent =
+    formatRupiah(
+      totalPrice
+    );
+
+
+  const floating =
+    document.getElementById(
+      "floatingCart"
+    );
+
+
+  if(totalQty > 0){
+
+    floating.classList.add(
+      "show"
+    );
+
+  }else{
+
+    floating.classList.remove(
+      "show"
+    );
+
+  }
+
+}
+
+
+/* =====================================================
+   8. ADD TO CART
+===================================================== */
+
+function addToCart(productId){
+
+  const product =
+    allProducts.find(
+      p =>
+        p.id === productId
+    );
+
+
+  if(!product){
+
+    showToast(
+      "Produk tidak ditemukan."
+    );
+
+    return;
+
+  }
+
+
+  const stock =
+    Number(
+      product.stock_quantity ||
+      0
+    );
+
+
+  if(stock <= 0){
+
+    showToast(
+      "Stok produk sedang habis."
+    );
+
+    return;
+
+  }
+
+
+  const existing =
+    cart.find(
+      item =>
+        item.id === product.id
+    );
+
+
+  if(existing){
+
+    if(
+      Number(
+        existing.quantity
+      ) >= stock
+    ){
+
+      showToast(
+        "Jumlah sudah mencapai stok."
+      );
+
+      return;
+
+    }
+
+
+    existing.quantity =
+      Number(
+        existing.quantity
+      ) + 1;
+
+  }else{
+
+    cart.push({
+
+      id:
+        product.id,
+
+      name:
+        product.catalog_name ||
+        product.name,
+
+      price:
+        Number(
+          product.selling_price ||
+          0
+        ),
+
+      image:
+        product.image_url ||
+        "",
+
+      quantity:
+        1
+
+    });
+
+  }
+
+
+  saveCart();
+
+
+  showToast(
+    `${product.catalog_name || product.name} masuk keranjang`
+  );
+
+}
+
+
+/* =====================================================
+   9. CHECKOUT
+
+   Sebelum pindah:
+   - simpan localStorage
+   - beri tanda toko
+   - kirim cart melalui URL sebagai backup
+===================================================== */
+
+function goCheckout(){
+
+  if(!cart.length){
+
+    showToast(
+      "Keranjang masih kosong."
+    );
+
+    return;
+
+  }
+
+
+  saveCart();
+
+
+  sessionStorage.setItem(
+    "zokent_from_toko",
+    "true"
+  );
+
+
+  try{
+
+    const encodedCart =
+      encodeURIComponent(
         JSON.stringify(cart)
       );
 
-    }catch(error){
 
-      console.error("Gagal menyimpan cart:",error);
+    window.location.href =
+      "checkout.html?cart=" +
+      encodedCart;
 
-    }
+  }catch(error){
 
-    updateCart();
+    console.error(error);
 
-  }
-
-
-  /* =====================================================
-     UPDATE CART
-  ===================================================== */
-
-  function updateCart(){
-
-    const totalQty = cart.reduce(
-      (sum,item) => sum + Number(item.quantity || 0),
-      0
-    );
-
-    const totalPrice = cart.reduce(
-      (sum,item) =>
-        sum +
-        Number(item.price || 0) *
-        Number(item.quantity || 0),
-      0
-    );
-
-
-    document.getElementById("cartBadge").textContent =
-      totalQty;
-
-    document.getElementById("floatingQty").textContent =
-      totalQty;
-
-    document.getElementById("floatingTotal").textContent =
-      formatRupiah(totalPrice);
-
-
-    const floating =
-      document.getElementById("floatingCart");
-
-
-    if(totalQty > 0){
-
-      floating.classList.add("show");
-
-    }else{
-
-      floating.classList.remove("show");
-
-    }
+    window.location.href =
+      "checkout.html";
 
   }
 
-
-  /* =====================================================
-     ADD TO CART
-  ===================================================== */
-
-  function addToCart(productId){
-
-    const product =
-      allProducts.find(
-        p => p.id === productId
-      );
+}
 
 
-    if(!product){
+/* =====================================================
+   10. KEMBALI KE INDEX
+===================================================== */
 
-      showToast("Produk tidak ditemukan");
+function backToHome(){
 
-      return;
+  /*
+    Hapus tanda toko agar alurnya
+    dimulai kembali dari index.
+  */
 
-    }
+  sessionStorage.removeItem(
+    "zokent_in_toko"
+  );
 
-
-    const stock =
-      Number(product.stock_quantity || 0);
-
-
-    if(stock <= 0){
-
-      showToast("Stok produk sedang habis");
-
-      return;
-
-    }
+  sessionStorage.removeItem(
+    "zokent_from_toko"
+  );
 
 
-    const existing =
-      cart.find(
-        item => item.id === product.id
-      );
+  window.location.href =
+    "index.html";
+
+}
 
 
-    if(existing){
+/* =====================================================
+   11. LOAD PRODUK
+===================================================== */
 
-      if(
-        Number(existing.quantity) >= stock
-      ){
+async function loadStore(){
 
-        showToast("Jumlah sudah mencapai stok");
+  try{
 
-        return;
-
-      }
-
-      existing.quantity =
-        Number(existing.quantity) + 1;
-
-    }else{
-
-      cart.push({
-
-        id: product.id,
-
-        name:
-          product.catalog_name ||
-          product.name,
-
-        price:
-          Number(product.selling_price || 0),
-
-        image:
-          product.image_url || "",
-
-        quantity: 1
-
-      });
-
-    }
-
-
-    saveCart();
-
-    showToast(
-      `${product.catalog_name || product.name} masuk keranjang`
-    );
-
-  }
-
-
-  /* =====================================================
-     CHECKOUT
-     
-     Cart dikirim juga melalui URL sebagai backup.
-     Ini membantu apabila localStorage checkout
-     tidak terbaca karena perbedaan path/deployment.
-  ===================================================== */
-
-  function goCheckout(){
-
-    if(!cart.length){
-
-      showToast("Keranjang masih kosong");
-
-      return;
-
-    }
-
-
-    saveCart();
-
-
-    try{
-
-      const encodedCart =
-        encodeURIComponent(
-          JSON.stringify(cart)
-        );
-
-
-      window.location.href =
-        "checkout.html?cart=" +
-        encodedCart;
-
-    }catch(error){
-
-      console.error(error);
-
-      window.location.href =
-        "checkout.html";
-
-    }
-
-  }
-
-
-  /* =====================================================
-     LOAD STORE
-  ===================================================== */
-
-  async function loadStore(){
-
-    try{
-
-      const {
-        data,
-        error
-      } = await supabaseClient
+    const {
+      data,
+      error
+    } =
+      await supabaseClient
 
         .from("products")
 
@@ -1030,9 +1555,15 @@
           created_at
         `)
 
-        .eq("is_active", true)
+        .eq(
+          "is_active",
+          true
+        )
 
-        .eq("show_in_catalog", true)
+        .eq(
+          "show_in_catalog",
+          true
+        )
 
         .order(
           "created_at",
@@ -1042,78 +1573,27 @@
         );
 
 
-      if(error){
+    if(error){
 
-        console.error(error);
-
-        document.getElementById("products").innerHTML = `
-          <div class="empty">
-            ❌ Gagal memuat produk.
-            <br><br>
-            Periksa URL dan Anon Key Supabase.
-          </div>
-        `;
-
-        return;
-
-      }
+      console.error(
+        error
+      );
 
 
-      allProducts =
-        (data || []).filter(product => {
+      document.getElementById(
+        "products"
+      ).innerHTML = `
 
-          const stock =
-            Number(product.stock_quantity || 0);
-
-          return (
-            stock > 0 ||
-            product.show_when_out_of_stock === true
-          );
-
-        });
-
-
-      products =
-        [...allProducts];
-
-
-      renderProducts();
-
-    }catch(error){
-
-      console.error(error);
-
-      document.getElementById("products").innerHTML = `
         <div class="empty">
-          ❌ Terjadi kesalahan saat memuat produk.
+
+          ❌ Gagal memuat produk.
+
+          <br><br>
+
+          Periksa URL dan Anon Key Supabase.
+
         </div>
-      `;
 
-    }
-
-  }
-
-
-  /* =====================================================
-     RENDER PRODUCTS
-  ===================================================== */
-
-  function renderProducts(){
-
-    const container =
-      document.getElementById("products");
-
-
-    if(!products.length){
-
-      container.innerHTML = `
-        <div class="empty">
-          <div style="font-size:45px;margin-bottom:10px;">
-            📦
-          </div>
-
-          Belum ada produk tersedia.
-        </div>
       `;
 
       return;
@@ -1121,108 +1601,48 @@
     }
 
 
-    container.innerHTML =
-      products.map(
-        product => createProductCard(product)
-      ).join("");
+    allProducts =
+      (data || [])
+        .filter(
+          product => {
 
-  }
-
-
-  /* =====================================================
-     PRODUCT CARD
-  ===================================================== */
-
-  function createProductCard(product){
-
-    const stock =
-      Number(product.stock_quantity || 0);
+            const stock =
+              Number(
+                product.stock_quantity ||
+                0
+              );
 
 
-    const outOfStock =
-      stock <= 0;
+            return (
+              stock > 0 ||
+              product.show_when_out_of_stock === true
+            );
 
-
-    const image =
-      product.image_url;
-
-
-    return `
-
-      <div class="product">
-
-        <div class="product-image">
-
-          ${
-            image
-            ?
-            `<img
-              src="${escapeHtml(image)}"
-              alt="${escapeHtml(product.catalog_name || product.name)}"
-              loading="lazy"
-              onerror="this.style.display='none';this.nextElementSibling.style.display='block';"
-            >`
-            :
-            ""
           }
-
-          <div
-            class="no-image"
-            style="${image ? 'display:none' : ''}"
-          >
-            🛒
-          </div>
-
-        </div>
+        );
 
 
-        <div class="product-info">
-
-          <div class="product-name">
-            ${escapeHtml(
-              product.catalog_name ||
-              product.name
-            )}
-          </div>
+    products =
+      [...allProducts];
 
 
-          <div class="product-price">
-            ${formatRupiah(
-              Number(product.selling_price || 0)
-            )}
-          </div>
+    renderProducts();
+
+  }catch(error){
+
+    console.error(
+      error
+    );
 
 
-          <div class="stock ${outOfStock ? 'out' : ''}">
+    document.getElementById(
+      "products"
+    ).innerHTML = `
 
-            ${
-              outOfStock
-              ?
-              "Stok habis"
-              :
-              `Stok: ${stock}`
-            }
+      <div class="empty">
 
-          </div>
-
-
-          <button
-            class="add-button"
-            onclick="addToCart('${product.id}')"
-            ${outOfStock ? "disabled" : ""}
-          >
-
-            ${
-              outOfStock
-              ?
-              "Stok Habis"
-              :
-              "🛒 + Keranjang"
-            }
-
-          </button>
-
-        </div>
+        ❌ Terjadi kesalahan
+        saat memuat produk.
 
       </div>
 
@@ -1230,118 +1650,345 @@
 
   }
 
-
-  /* =====================================================
-     CATEGORY
-  ===================================================== */
-
-  function filterCategory(category){
-
-    selectedCategory =
-      category;
+}
 
 
-    const normalized =
-      category.toLowerCase().trim();
+/* =====================================================
+   12. RENDER PRODUCTS
+===================================================== */
+
+function renderProducts(){
+
+  const container =
+    document.getElementById(
+      "products"
+    );
 
 
-    products =
-      allProducts.filter(product => {
+  if(!products.length){
+
+    container.innerHTML = `
+
+      <div class="empty">
+
+        <div
+          style="font-size:45px;margin-bottom:10px;"
+        >
+          📦
+        </div>
+
+        Belum ada produk tersedia.
+
+      </div>
+
+    `;
+
+    return;
+
+  }
+
+
+  container.innerHTML =
+    products
+      .map(
+        product =>
+          createProductCard(
+            product
+          )
+      )
+      .join("");
+
+}
+
+
+/* =====================================================
+   13. PRODUCT CARD
+===================================================== */
+
+function createProductCard(product){
+
+  const stock =
+    Number(
+      product.stock_quantity ||
+      0
+    );
+
+
+  const outOfStock =
+    stock <= 0;
+
+
+  const image =
+    product.image_url ||
+    "";
+
+
+  const productName =
+    product.catalog_name ||
+    product.name ||
+    "Produk";
+
+
+  return `
+
+    <div class="product">
+
+
+      <div class="product-image">
+
+
+        ${
+          image
+
+          ?
+
+          `
+
+            <img
+              src="${escapeHtml(image)}"
+              alt="${escapeHtml(productName)}"
+              loading="lazy"
+
+              onerror="
+                this.style.display='none';
+                this.nextElementSibling.style.display='block';
+              "
+            >
+
+          `
+
+          :
+
+          ""
+
+        }
+
+
+        <div
+          class="no-image"
+          style="${image ? "display:none" : ""}"
+        >
+          🛒
+        </div>
+
+
+      </div>
+
+
+      <div class="product-info">
+
+
+        <div class="product-name">
+
+          ${escapeHtml(productName)}
+
+        </div>
+
+
+        <div class="product-price">
+
+          ${formatRupiah(
+            Number(
+              product.selling_price ||
+              0
+            )
+          )}
+
+        </div>
+
+
+        <div
+          class="stock ${outOfStock ? "out" : ""}"
+        >
+
+          ${
+            outOfStock
+            ?
+            "Stok habis"
+            :
+            `Stok: ${stock}`
+          }
+
+        </div>
+
+
+        <button
+          class="add-button"
+          onclick="addToCart('${product.id}')"
+          ${outOfStock ? "disabled" : ""}
+        >
+
+          ${
+            outOfStock
+            ?
+            "Stok Habis"
+            :
+            "🛒 + Keranjang"
+          }
+
+        </button>
+
+
+      </div>
+
+
+    </div>
+
+  `;
+
+}
+
+
+/* =====================================================
+   14. CATEGORY
+===================================================== */
+
+function filterCategory(category){
+
+  selectedCategory =
+    category;
+
+
+  const normalized =
+    category
+      .toLowerCase()
+      .trim();
+
+
+  products =
+    allProducts.filter(
+      product => {
 
         const productCategory =
           String(
-            product.category || ""
+            product.category ||
+            ""
           )
           .toLowerCase()
           .trim();
 
 
         return (
-          productCategory === normalized
+          productCategory ===
+          normalized
         );
 
-      });
+      }
+    );
 
 
-    renderProducts();
+  renderProducts();
 
 
-    window.scrollTo({
-      top:500,
-      behavior:"smooth"
-    });
+  window.scrollTo({
+    top:500,
+    behavior:"smooth"
+  });
 
-  }
-
-
-  function showAllProducts(){
-
-    selectedCategory = "";
-
-    products =
-      [...allProducts];
-
-    renderProducts();
-
-  }
+}
 
 
-  /* =====================================================
-     SEARCH
-  ===================================================== */
+/* =====================================================
+   15. SHOW ALL
+===================================================== */
 
-  function searchProducts(){
+function showAllProducts(){
 
-    const keyword =
-      document
-        .getElementById("searchInput")
-        .value
-        .toLowerCase()
-        .trim();
+  selectedCategory =
+    "";
 
 
-    if(!keyword){
+  document.getElementById(
+    "searchInput"
+  ).value =
+    "";
+
+
+  products =
+    [...allProducts];
+
+
+  renderProducts();
+
+}
+
+
+/* =====================================================
+   16. SEARCH
+===================================================== */
+
+function searchProducts(){
+
+  const keyword =
+    document.getElementById(
+      "searchInput"
+    )
+    .value
+    .toLowerCase()
+    .trim();
+
+
+  if(!keyword){
+
+    if(selectedCategory){
 
       products =
-        selectedCategory
-        ?
-        allProducts.filter(product =>
-          String(product.category || "")
+        allProducts.filter(
+          product =>
+
+            String(
+              product.category ||
+              ""
+            )
             .toLowerCase()
             .trim() ===
-          selectedCategory.toLowerCase().trim()
-        )
-        :
+            selectedCategory
+              .toLowerCase()
+              .trim()
+        );
+
+    }else{
+
+      products =
         [...allProducts];
-
-      renderProducts();
-
-      return;
 
     }
 
 
-    products =
-      allProducts.filter(product => {
+    renderProducts();
+
+    return;
+
+  }
+
+
+  products =
+    allProducts.filter(
+      product => {
 
         const name =
           String(
             product.catalog_name ||
             product.name ||
             ""
-          ).toLowerCase();
+          )
+          .toLowerCase();
 
 
         const sku =
           String(
-            product.sku || ""
-          ).toLowerCase();
+            product.sku ||
+            ""
+          )
+          .toLowerCase();
 
 
         const category =
           String(
-            product.category || ""
-          ).toLowerCase();
+            product.category ||
+            ""
+          )
+          .toLowerCase();
 
 
         return (
@@ -1350,98 +1997,129 @@
           category.includes(keyword)
         );
 
-      });
-
-
-    renderProducts();
-
-  }
-
-
-  /* =====================================================
-     FORMAT RUPIAH
-  ===================================================== */
-
-  function formatRupiah(number){
-
-    return new Intl.NumberFormat(
-      "id-ID",
-      {
-        style:"currency",
-        currency:"IDR",
-        maximumFractionDigits:0
       }
-    ).format(
-      Number(number || 0)
     );
 
-  }
+
+  renderProducts();
+
+}
 
 
-  /* =====================================================
-     HTML ESCAPE
-  ===================================================== */
+/* =====================================================
+   17. FORMAT RUPIAH
+===================================================== */
 
-  function escapeHtml(value){
+function formatRupiah(number){
 
-    return String(value ?? "")
-      .replace(/&/g,"&amp;")
-      .replace(/</g,"&lt;")
-      .replace(/>/g,"&gt;")
-      .replace(/"/g,"&quot;")
-      .replace(/'/g,"&#039;");
-
-  }
-
-
-  /* =====================================================
-     TOAST
-  ===================================================== */
-
-  let toastTimer;
-
-
-  function showToast(message){
-
-    const toast =
-      document.getElementById("toast");
-
-
-    toast.textContent =
-      message;
-
-
-    toast.classList.add("show");
-
-
-    clearTimeout(toastTimer);
-
-
-    toastTimer =
-      setTimeout(
-        () => {
-          toast.classList.remove("show");
-        },
-        2200
-      );
-
-  }
-
-
-  /* =====================================================
-     START
-  ===================================================== */
-
-  document.addEventListener(
-    "DOMContentLoaded",
-    () => {
-
-      updateCart();
-
-      loadStore();
-
+  return new Intl.NumberFormat(
+    "id-ID",
+    {
+      style:"currency",
+      currency:"IDR",
+      maximumFractionDigits:0
     }
+  ).format(
+    Number(
+      number ||
+      0
+    )
   );
+
+}
+
+
+/* =====================================================
+   18. ESCAPE HTML
+===================================================== */
+
+function escapeHtml(value){
+
+  return String(
+    value ?? ""
+  )
+  .replace(
+    /&/g,
+    "&amp;"
+  )
+  .replace(
+    /</g,
+    "&lt;"
+  )
+  .replace(
+    />/g,
+    "&gt;"
+  )
+  .replace(
+    /"/g,
+    "&quot;"
+  )
+  .replace(
+    /'/g,
+    "&#039;"
+  );
+
+}
+
+
+/* =====================================================
+   19. TOAST
+===================================================== */
+
+let toastTimer;
+
+
+function showToast(message){
+
+  const toast =
+    document.getElementById(
+      "toast"
+    );
+
+
+  toast.textContent =
+    message;
+
+
+  toast.classList.add(
+    "show"
+  );
+
+
+  clearTimeout(
+    toastTimer
+  );
+
+
+  toastTimer =
+    setTimeout(
+      () => {
+
+        toast.classList.remove(
+          "show"
+        );
+
+      },
+      2200
+    );
+
+}
+
+
+/* =====================================================
+   20. START
+===================================================== */
+
+document.addEventListener(
+  "DOMContentLoaded",
+  () => {
+
+    updateCart();
+
+    loadStore();
+
+  }
+);
 
 </script>
 
