@@ -1,501 +1,455 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Kelola Produk - SRC Zokent Admin</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <!-- SDK Supabase -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <!-- Library Scan Barcode -->
-  <script src="https://unpkg.com/html5-qrcode"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kelola Produk - SRC Zokent Admin</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- SDK Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- Library Scan Barcode -->
+    <script src="https://unpkg.com/html5-qrcode"></script>
 </head>
 <body class="bg-slate-100 text-slate-800 font-sans antialiased min-h-screen">
 
-  <!-- HEADER -->
-  <header class="bg-[#1b3a4b] text-white py-4 px-6 shadow-md sticky top-0 z-50 flex justify-between items-center">
-    <div>
-      <h1 class="text-lg font-bold text-[#38bdf8]">📦 Kelola Produk Toko</h1>
-      <p class="text-xs text-slate-300">Tambah & Atur Produk Katalog SRC Zokent</p>
-    </div>
-    <a href="admin.html" class="text-xs bg-slate-700 hover:bg-slate-600 text-white px-3 py-1.5 rounded-lg border border-slate-600 transition-all">
-      ← Kembali ke Admin
-    </a>
-  </header>
+    <!-- HEADER -->
+    <header class="bg-[#1b3a4b] text-white py-4 px-6 shadow-md sticky top-0 z-50 flex justify-between items-center">
+        <div>
+            <h1 class="text-lg font-bold text-[#38bdf8]">📦 Kelola Produk Toko</h1>
+            <p class="text-xs text-slate-300">Tambah & Atur Produk Katalog SRC Zokent</p>
+        </div>
+        <a href="admin.html" class="text-xs bg-slate-700 hover:bg-slate-600 text-white px-3 py-1.5 rounded-lg border border-slate-600 transition-all">
+            ← Kembali ke Admin
+        </a>
+    </header>
 
-  <main class="max-w-6xl mx-auto p-4 md:p-6 grid grid-cols-1 lg:grid-cols-3 gap-6">
-    
-    <!-- FORM TAMBAH / EDIT PRODUK -->
-    <section class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 h-fit">
-      <div class="flex justify-between items-center mb-4 pb-2 border-b border-slate-100">
-        <h2 id="form-title" class="text-base font-bold text-slate-900 flex items-center gap-2">
-          ➕ Input Produk / Tambah Stok
-        </h2>
-        <button type="button" id="btn-cancel-edit" onclick="resetFormManual()" class="hidden text-[11px] bg-slate-200 hover:bg-slate-300 text-slate-700 px-2 py-1 rounded font-semibold transition-all">
-          Batal Edit
-        </button>
-      </div>
-      
-      <form id="form-produk" class="space-y-4">
+    <main class="max-w-6xl mx-auto p-4 md:p-6 grid grid-cols-1 lg:grid-cols-3 gap-6">
         
-        <!-- INPUT TERSEMBUNYI -->
-        <input type="hidden" id="edit-id" value="">
-        <!-- PENANDA MODE: 'akumulasi' (default/scan) atau 'edit_murni' (dari tombol edit) -->
-        <input type="hidden" id="mode-aksi" value="akumulasi">
+        <!-- FORM TAMBAH / EDIT PRODUK -->
+        <section class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 h-fit">
+            <div class="flex justify-between items-center mb-4 pb-2 border-b border-slate-100">
+                <h2 id="form-title" class="text-base font-bold text-slate-900 flex items-center gap-2">
+                    ➕ Input Produk / Tambah Stok
+                </h2>
+                <button type="button" id="btn-cancel-edit" onclick="resetFormManual()" class="hidden text-[11px] bg-slate-200 hover:bg-slate-300 text-slate-700 px-2 py-1 rounded font-semibold transition-all">
+                    Batal Edit
+                </button>
+            </div>
 
-        <!-- INPUT BARCODE + TOMBOL SCAN -->
-        <div>
-          <label class="block text-xs font-semibold text-slate-700 mb-1">Kode Barcode Pabrik / SKU</label>
-          <div class="flex gap-2">
-            <input type="text" id="barcode" placeholder="Scan atau ketik barcode..." class="w-full text-xs px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500">
-            <button type="button" onclick="bukaScanner()" class="bg-slate-800 hover:bg-slate-700 text-white px-3 py-2 rounded-lg text-xs font-semibold whitespace-nowrap flex items-center gap-1">
-              📷 Kamera
-            </button>
-          </div>
-          <p class="text-[10px] text-slate-400 mt-1">Scan barcode barang untuk otomatis mendeteksi atau menambah stok.</p>
-        </div>
+            <form id="form-produk" class="space-y-4">
+                <!-- INPUT TERSEMBUNYI -->
+                <input type="hidden" id="edit-id" value="">
+                <!-- PENANDA MODE: 'akumulasi' (default/scan) atau 'edit_murni' (dari tombol edit) -->
+                <input type="hidden" id="mode-aksi" value="akumulasi">
 
-        <!-- KAMERA SCANNER -->
-        <div id="scanner-container" class="hidden p-3 bg-slate-900 rounded-xl">
-          <div id="reader" class="w-full rounded-lg overflow-hidden"></div>
-          <button type="button" onclick="tutupScanner()" class="w-full mt-2 bg-red-600 hover:bg-red-700 text-white py-1 rounded text-xs font-bold">
-            Tutup Kamera
-          </button>
-        </div>
+                <!-- INPUT BARCODE + TOMBOL SCAN -->
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Kode Barcode Pabrik / SKU</label>
+                    <div class="flex gap-2">
+                        <input type="text" id="barcode" placeholder="Scan atau ketik barcode..." class="w-full text-xs px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500">
+                        <button type="button" onclick="bukaScanner()" class="bg-slate-800 hover:bg-slate-700 text-white px-3 py-2 rounded-lg text-xs font-semibold whitespace-nowrap flex items-center gap-1">
+                            📷 Kamera
+                        </button>
+                    </div>
+                    <p class="text-[10px] text-slate-400 mt-1">Scan barcode barang untuk otomatis mendeteksi atau menambah stok.</p>
+                </div>
 
-        <div>
-          <label class="block text-xs font-semibold text-slate-700 mb-1">Nama Produk</label>
-          <input type="text" id="name" required placeholder="Masukkan nama produk" class="w-full text-xs px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500">
-        </div>
+                <!-- KAMERA SCANNER -->
+                <div id="scanner-container" class="hidden p-3 bg-slate-900 rounded-xl">
+                    <div id="reader" class="w-full rounded-lg overflow-hidden"></div>
+                    <button type="button" onclick="tutupScanner()" class="w-full mt-2 bg-red-600 hover:bg-red-700 text-white py-1 rounded text-xs font-bold">
+                        Tutup Kamera
+                    </button>
+                </div>
 
-        <!-- PILIHAN KATEGORI PRODUK -->
-        <div>
-          <label class="block text-xs font-semibold text-slate-700 mb-1">Kategori Produk</label>
-          <select id="category" required class="w-full text-xs px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 bg-white">
-            <option value="">-- Pilih Kategori --</option>
-            <option value="Makanan">🍔 Makanan</option>
-            <option value="Minuman">🥤 Minuman</option>
-            <option value="Sembako">🌾 Sembako</option>
-            <option value="Kebutuhan Rumah">🏠 Kebutuhan Rumah</option>
-          </select>
-        </div>
-        
-        <div>
-          <label class="block text-xs font-semibold text-slate-700 mb-1">Harga Jual (Rp)</label>
-          <input type="number" id="selling_price" required placeholder="Masukkan harga" class="w-full text-xs px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500">
-        </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Nama Produk</label>
+                    <input type="text" id="name" required placeholder="Masukkan nama produk" class="w-full text-xs px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500">
+                </div>
 
-        <div>
-          <label class="block text-xs font-semibold text-slate-700 mb-1">Jumlah Stok <span id="label-stok-keterangan" class="text-blue-600 font-normal">(Jumlah Ditambahkan)</span></label>
-          <input type="number" id="stock_quantity" required placeholder="Masukkan jumlah stok" class="w-full text-xs px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500">
-        </div>
+                <!-- PILIHAN KATEGORI PRODUK (DITAMBAHKAN KESEHATAN) -->
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Kategori Produk</label>
+                    <select id="category" required class="w-full text-xs px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 bg-white">
+                        <option value="">-- Pilih Kategori --</option>
+                        <option value="Makanan">🍔 Makanan</option>
+                        <option value="Minuman">🥤 Minuman</option>
+                        <option value="Sembako">🌾 Sembako</option>
+                        <option value="Kebutuhan Rumah">🏠 Kebutuhan Rumah</option>
+                        <option value="Kesehatan">💊 Kesehatan</option>
+                    </select>
+                </div>
 
-        <div>
-          <label class="block text-xs font-semibold text-slate-700 mb-1">URL Gambar Produk (Link Foto)</label>
-          <input type="url" id="image_url" placeholder="https://..." class="w-full text-xs px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500">
-        </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Harga Jual (Rp)</label>
+                    <input type="number" id="selling_price" required placeholder="Masukkan harga" class="w-full text-xs px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500">
+                </div>
 
-        <div>
-          <label class="block text-xs font-semibold text-slate-700 mb-1">Deskripsi Ringkas</label>
-          <textarea id="description" rows="2" placeholder="Keterangan barang..." class="w-full text-xs px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500"></textarea>
-        </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Jumlah Stok <span id="label-stok-keterangan" class="text-blue-600 font-normal">(Jumlah Ditambahkan)</span></label>
+                    <input type="number" id="stock_quantity" required placeholder="Masukkan jumlah stok" class="w-full text-xs px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500">
+                </div>
 
-        <button type="submit" id="btn-submit" class="w-full bg-red-600 hover:bg-red-700 text-white font-semibold text-xs py-2.5 rounded-lg transition-all shadow-md">
-          Simpan & Akumulasi Stok
-        </button>
-      </form>
-    </section>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">URL Gambar Produk (Link Foto)</label>
+                    <input type="url" id="image_url" placeholder="https://..." class="w-full text-xs px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500">
+                </div>
 
-    <!-- TABEL DAFTAR PRODUK -->
-    <section class="lg:col-span-2 bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
-      <div class="flex justify-between items-center mb-4 pb-2 border-b border-slate-100">
-        <h2 class="text-base font-bold text-slate-900">📋 Daftar Produk Aktif</h2>
-        <button onclick="loadProdukAdmin()" class="text-xs text-blue-600 font-semibold hover:underline">🔄 Refresh</button>
-      </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Deskripsi Ringkas</label>
+                    <textarea id="description" rows="2" placeholder="Keterangan barang..." class="w-full text-xs px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500"></textarea>
+                </div>
 
-      <div class="overflow-x-auto">
-        <table class="w-full text-left text-xs text-slate-600">
-          <thead class="bg-slate-50 text-slate-700 uppercase font-semibold border-b border-slate-200">
-            <tr>
-              <th class="py-3 px-3">Produk</th>
-              <th class="py-3 px-3">Kategori</th>
-              <th class="py-3 px-3">Harga</th>
-              <th class="py-3 px-3">Stok</th>
-              <th class="py-3 px-3 text-center">Aksi</th>
-            </tr>
-          </thead>
-          <tbody id="tabel-produk" class="divide-y divide-slate-100">
-            <tr>
-              <td colspan="5" class="text-center py-6 text-slate-400">Memuat data produk...</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </section>
+                <button type="submit" id="btn-submit" class="w-full bg-red-600 hover:bg-red-700 text-white font-semibold text-xs py-2.5 rounded-lg transition-all shadow-md">
+                    Simpan & Akumulasi Stok
+                </button>
+            </form>
+        </section>
 
-  </main>
-
-  <!-- SKRIP LOGIKA & SUPABASE -->
-  <script>
-    const SUPABASE_URL = "https://weuousmvkxmgmsnwiuad.supabase.co";
-    const SUPABASE_ANON_KEY = "sb_publishable_e375KDL0vuoahHO_kWMjwA_a04R4yHb";
-    const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
-    let html5QrcodeScanner = null;
-    let daftarSemuaProduk = [];
-
-    // Fungsi pencarian saat barcode di-scan/diketik
-    async function prosesCariBarcode(barcodeVal) {
-      if (!barcodeVal || barcodeVal.trim().length < 3) return;
-      const cleanBarcode = barcodeVal.trim();
-      document.getElementById('barcode').value = cleanBarcode;
-      
-      // Jika sedang dalam mode edit murni (dari tombol edit), jangan ganggu form
-      if (document.getElementById('mode-aksi').value === 'edit_murni') return;
-
-      const { data: produkLama } = await supabaseClient
-        .from('products')
-        .select('*')
-        .eq('barcode', cleanBarcode)
-        .maybeSingle();
-
-      if (produkLama) {
-        document.getElementById('edit-id').value = produkLama.id;
-        document.getElementById('name').value = produkLama.name || '';
-        document.getElementById('category').value = produkLama.category || '';
-        document.getElementById('selling_price').value = produkLama.selling_price || '';
-        document.getElementById('image_url').value = produkLama.image_url || '';
-        document.getElementById('description').value = produkLama.description || '';
-        document.getElementById('stock_quantity').value = ''; // Kosongkan agar diisi stok tambahan
-        
-        alert(`✅ Barang Ditemukan di Toko: "${produkLama.name}".\nStok saat ini: ${produkLama.stock_quantity}.\nSilakan masukkan jumlah stok baru yang ingin ditambahkan.`);
-        return;
-      }
-
-      // Cari dari API Global Open Food Facts
-      try {
-        const res = await fetch(`https://world.openfoodfacts.org/api/v0/product/${cleanBarcode}.json`);
-        const data = await res.json();
-        
-        if (data.status === 1 && data.product) {
-          const namaGlobal = data.product.product_name || data.product.product_name_en || '';
-          if (namaGlobal) {
-            document.getElementById('name').value = namaGlobal;
+        <!-- TABEL DAFTAR PRODUK -->
+        <section class="lg:col-span-2 bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+            <div class="flex justify-between items-center mb-4 pb-2 border-b border-slate-100">
+                <h2 class="text-base font-bold text-slate-900">📋 Daftar Produk Aktif</h2>
+                <button onclick="loadProdukAdmin()" class="text-xs text-blue-600 font-semibold hover:underline">🔄 Refresh</button>
+            </div>
             
-            const { data: produkByName } = await supabaseClient
-              .from('products')
-              .select('*')
-              .ilike('name', namaGlobal.trim())
-              .maybeSingle();
+            <div class="overflow-x-auto">
+                <table class="w-full text-left text-xs text-slate-600">
+                    <thead class="bg-slate-50 text-slate-700 uppercase font-semibold border-b border-slate-200">
+                        <tr>
+                            <th class="py-3 px-3">Produk</th>
+                            <th class="py-3 px-3">Kategori</th>
+                            <th class="py-3 px-3">Harga</th>
+                            <th class="py-3 px-3">Stok</th>
+                            <th class="py-3 px-3 text-center">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabel-produk" class="divide-y divide-slate-100">
+                        <tr>
+                            <td colspan="5" class="text-center py-6 text-slate-400">Memuat data produk...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
 
-            if (produkByName) {
-              document.getElementById('edit-id').value = produkByName.id;
-              document.getElementById('category').value = produkByName.category || '';
-              document.getElementById('selling_price').value = produkByName.selling_price || '';
-              document.getElementById('image_url').value = produkByName.image_url || '';
-              document.getElementById('description').value = produkByName.description || '';
-              document.getElementById('stock_quantity').value = '';
-              
-              alert(`✅ Nama produk mirip ditemukan di toko: "${produkByName.name}".\nStok saat ini: ${produkByName.stock_quantity}.\nMasukkan jumlah stok tambahan.`);
-              return;
+    </main>
+
+    <!-- SKRIP LOGIKA & SUPABASE -->
+    <script>
+        const SUPABASE_URL = "https://weuousmvkxmgmsnwiuad.supabase.co";
+        const SUPABASE_ANON_KEY = "sb_publishable_e375KDL0vuoahHO_kWMjwA_a04R4yHb";
+        const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        let html5QrcodeScanner = null;
+        let daftarSemuaProduk = [];
+
+        // Fungsi pencarian saat barcode di-scan/diketik
+        async function prosesCariBarcode(barcodeVal) {
+            if (!barcodeVal || barcodeVal.trim().length < 3) return;
+            const cleanBarcode = barcodeVal.trim();
+            document.getElementById('barcode').value = cleanBarcode;
+
+            if (document.getElementById('mode-aksi').value === 'edit_murni') return;
+
+            const { data: produkLama } = await supabaseClient
+                .from('products')
+                .select('*')
+                .eq('barcode', cleanBarcode)
+                .maybeSingle();
+
+            if (produkLama) {
+                document.getElementById('edit-id').value = produkLama.id;
+                document.getElementById('name').value = produkLama.name || '';
+                document.getElementById('category').value = produkLama.category || '';
+                document.getElementById('selling_price').value = produkLama.selling_price || '';
+                document.getElementById('image_url').value = produkLama.image_url || '';
+                document.getElementById('description').value = produkLama.description || '';
+                document.getElementById('stock_quantity').value = ''; 
+                alert(`✅ Barang Ditemukan di Toko: "${produkLama.name}".\nStok saat ini: ${produkLama.stock_quantity}.\nSilakan masukkan jumlah stok baru yang ingin ditambahkan.`);
+                return;
             }
-          }
 
-          if (data.product.image_front_url) {
-            document.getElementById('image_url').value = data.product.image_front_url;
-          }
+            // Cari dari API Global Open Food Facts
+            try {
+                const res = await fetch(`https://world.openfoodfacts.org/api/v0/product/${cleanBarcode}.json`);
+                const data = await res.json();
+                
+                if (data.status === 1 && data.product) {
+                    const namaGlobal = data.product.product_name || data.product.product_name_en || '';
+                    if (namaGlobal) {
+                        document.getElementById('name').value = namaGlobal;
+                        const { data: produkByName } = await supabaseClient
+                            .from('products')
+                            .select('*')
+                            .ilike('name', namaGlobal.trim())
+                            .maybeSingle();
 
-          const kategoriGlobal = (data.product.categories || '').toLowerCase();
-          const selectKategori = document.getElementById('category');
-          if (kategoriGlobal.includes('drink') || kategoriGlobal.includes('beverage') || kategoriGlobal.includes('minuman')) {
-            selectKategori.value = 'Minuman';
-          } else if (kategoriGlobal.includes('snack') || kategoriGlobal.includes('food') || kategoriGlobal.includes('makanan')) {
-            selectKategori.value = 'Makanan';
-          } else if (kategoriGlobal.includes('sembako') || kategoriGlobal.includes('oil') || kategoriGlobal.includes('rice') || kategoriGlobal.includes('sugar')) {
-            selectKategori.value = 'Sembako';
-          }
+                        if (produkByName) {
+                            document.getElementById('edit-id').value = produkByName.id;
+                            document.getElementById('category').value = produkByName.category || '';
+                            document.getElementById('selling_price').value = produkByName.selling_price || '';
+                            document.getElementById('image_url').value = produkByName.image_url || '';
+                            document.getElementById('description').value = produkByName.description || '';
+                            document.getElementById('stock_quantity').value = '';
+                            alert(`✅ Nama produk mirip ditemukan di toko: "${produkByName.name}".\nStok saat ini: ${produkByName.stock_quantity}.\nMasukkan jumlah stok tambahan.`);
+                            return;
+                        }
+                    }
 
-          alert('✨ Data produk terdeteksi dari database global! Silakan lengkapi harga & jumlah stok.');
-        } else {
-          alert('⚠️ Barcode baru, silakan isi nama dan data produk secara manual.');
+                    if (data.product.image_front_url) {
+                        document.getElementById('image_url').value = data.product.image_front_url;
+                    }
+
+                    const kategoriGlobal = (data.product.categories || '').toLowerCase();
+                    const selectKategori = document.getElementById('category');
+
+                    if (kategoriGlobal.includes('drink') || kategoriGlobal.includes('beverage') || kategoriGlobal.includes('minuman')) {
+                        selectKategori.value = 'Minuman';
+                    } else if (kategoriGlobal.includes('snack') || kategoriGlobal.includes('food') || kategoriGlobal.includes('makanan')) {
+                        selectKategori.value = 'Makanan';
+                    } else if (kategoriGlobal.includes('sembako') || kategoriGlobal.includes('oil') || kategoriGlobal.includes('rice') || kategoriGlobal.includes('sugar')) {
+                        selectKategori.value = 'Sembako';
+                    } else if (kategoriGlobal.includes('health') || kategoriGlobal.includes('medicine') || kategoriGlobal.includes('vitamin') || kategoriGlobal.includes('kesehatan')) {
+                        selectKategori.value = 'Kesehatan';
+                    }
+
+                    alert('✨ Data produk terdeteksi dari database global! Silakan lengkapi harga & jumlah stok.');
+                } else {
+                    alert('⚠️ Barcode baru, silakan isi nama dan data produk secara manual.');
+                }
+            } catch (e) {
+                console.log('Gagal terhubung ke database global:', e);
+            }
         }
-      } catch (e) {
-        console.log('Gagal terhubung ke database global:', e);
-      }
-    }
 
-    const inputBarcode = document.getElementById('barcode');
-    inputBarcode.addEventListener('keydown', async (e) => {
-      if (e.key === 'Enter') {
-        e.preventDefault(); 
-        await prosesCariBarcode(inputBarcode.value);
-      }
-    });
-
-    inputBarcode.addEventListener('blur', async (e) => {
-      if (e.target.value.trim().length > 3) {
-        await prosesCariBarcode(e.target.value);
-      }
-    });
-
-    function bukaScanner() {
-      const container = document.getElementById('scanner-container');
-      container.classList.remove('hidden');
-
-      if (!html5QrcodeScanner) {
-        html5QrcodeScanner = new Html5Qrcode("reader");
-      }
-
-      html5QrcodeScanner.start(
-        { facingMode: "environment" },
-        { fps: 10, qrbox: { width: 250, height: 150 } },
-        async (decodedText) => {
-          inputBarcode.value = decodedText;
-          tutupScanner();
-          await prosesCariBarcode(decodedText);
-        },
-        (err) => {}
-      ).catch(err => {
-        alert("Gagal membuka kamera: " + err);
-        tutupScanner();
-      });
-    }
-
-    function tutupScanner() {
-      if (html5QrcodeScanner) {
-        html5QrcodeScanner.stop().then(() => {
-          document.getElementById('scanner-container').classList.add('hidden');
-        }).catch(() => {
-          document.getElementById('scanner-container').classList.add('hidden');
+        const inputBarcode = document.getElementById('barcode');
+        inputBarcode.addEventListener('keydown', async (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                await prosesCariBarcode(inputBarcode.value);
+            }
         });
-      } else {
-        document.getElementById('scanner-container').classList.add('hidden');
-      }
-    }
 
-    async function loadProdukAdmin() {
-      const tabel = document.getElementById('tabel-produk');
-      const { data: products, error } = await supabaseClient
-        .from('products')
-        .select('*')
-        .order('created_at', { ascending: false });
+        inputBarcode.addEventListener('blur', async (e) => {
+            if (e.target.value.trim().length > 3) {
+                await prosesCariBarcode(e.target.value);
+            }
+        });
 
-      if (error) {
-        tabel.innerHTML = `<tr><td colspan="5" class="text-center py-4 text-red-500">Gagal mengambil data: ${error.message}</td></tr>`;
-        return;
-      }
-
-      daftarSemuaProduk = products || [];
-
-      if (daftarSemuaProduk.length === 0) {
-        tabel.innerHTML = `<tr><td colspan="5" class="text-center py-4 text-slate-400">Belum ada produk di toko.</td></tr>`;
-        return;
-      }
-
-      tabel.innerHTML = daftarSemuaProduk.map(item => `
-        <tr class="hover:bg-slate-50 transition-all">
-          <td class="py-3 px-3 font-semibold text-slate-800 flex items-center gap-2">
-            ${item.image_url ? `<img src="${item.image_url}" class="w-8 h-8 rounded object-cover">` : '📦'}
-            <span>${item.name}</span>
-          </td>
-          <td class="py-3 px-3 font-semibold text-slate-600">${item.category || '-'}</td>
-          <td class="py-3 px-3 font-bold text-red-600">Rp ${Number(item.selling_price || 0).toLocaleString('id-ID')}</td>
-          <td class="py-3 px-3 font-bold text-blue-600">${item.stock_quantity}</td>
-          <td class="py-3 px-3 text-center space-x-1 whitespace-nowrap">
-            <button onclick="mulaiEditProduk('${item.id}')" class="bg-blue-50 hover:bg-blue-100 text-blue-600 px-2.5 py-1 rounded text-[11px] font-semibold transition-all">
-              ✏️ Edit
-            </button>
-            <button onclick="hapusProduk('${item.id}')" class="bg-red-50 hover:bg-red-100 text-red-600 px-2.5 py-1 rounded text-[11px] font-semibold transition-all">
-              🗑 Hapus
-            </button>
-          </td>
-        </tr>
-      `).join('');
-    }
-
-    // FUNGSI KETIKA TOMBOL EDIT DI TABEL DIKLIK
-    function mulaiEditProduk(id) {
-      const produk = daftarSemuaProduk.find(p => p.id === id);
-      if (!produk) return;
-
-      document.getElementById('edit-id').value = produk.id;
-      document.getElementById('mode-aksi').value = 'edit_murni'; // Tandai ini edit murni
-      document.getElementById('barcode').value = produk.barcode || '';
-      document.getElementById('name').value = produk.name || '';
-      document.getElementById('category').value = produk.category || '';
-      document.getElementById('selling_price').value = produk.selling_price || '';
-      document.getElementById('stock_quantity').value = produk.stock_quantity || '';
-      document.getElementById('image_url').value = produk.image_url || '';
-      document.getElementById('description').value = produk.description || '';
-
-      // Ubah UI Form
-      document.getElementById('form-title').innerText = '✏️ Edit / Perbarui Produk';
-      document.getElementById('label-stok-keterangan').innerText = '(Total Stok Langsung)';
-      document.getElementById('btn-submit').innerText = 'Simpan Perubahan';
-      document.getElementById('btn-cancel-edit').classList.remove('hidden');
-
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-
-    function resetFormManual() {
-      document.getElementById('form-produk').reset();
-      document.getElementById('edit-id').value = '';
-      document.getElementById('mode-aksi').value = 'akumulasi'; // Kembalikan ke mode akumulasi
-      document.getElementById('form-title').innerText = '➕ Input Produk / Tambah Stok';
-      document.getElementById('label-stok-keterangan').innerText = '(Jumlah Ditambahkan)';
-      document.getElementById('btn-submit').innerText = 'Simpan & Akumulasi Stok';
-      document.getElementById('btn-cancel-edit').classList.add('hidden');
-    }
-
-    // PENYIMPANAN DATA
-    document.getElementById('form-produk').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const btn = document.getElementById('btn-submit');
-      const editId = document.getElementById('edit-id').value;
-      const modeAksi = document.getElementById('mode-aksi').value;
-      
-      btn.innerText = 'Menyimpan...';
-      btn.disabled = true;
-
-      const barcode = document.getElementById('barcode').value.trim() || null;
-      const name = document.getElementById('name').value.trim();
-      const category = document.getElementById('category').value;
-      const selling_price = parseFloat(document.getElementById('selling_price').value);
-      const inputNilaiStok = parseInt(document.getElementById('stock_quantity').value) || 0;
-      const image_url = document.getElementById('image_url').value.trim() || null;
-      const description = document.getElementById('description').value.trim() || null;
-
-      try {
-        // 1. JIKA MODE EDIT MURNI (Admin klik tombol Edit di tabel)
-        if (editId && modeAksi === 'edit_murni') {
-          const { error: updateError } = await supabaseClient
-            .from('products')
-            .update({
-              name: name,
-              category: category,
-              selling_price: selling_price,
-              stock_quantity: inputNilaiStok, // Ubah langsung
-              barcode: barcode,
-              image_url: image_url,
-              description: description
-            })
-            .eq('id', editId);
-
-          if (updateError) throw updateError;
-
-          alert('✅ Perubahan produk berhasil disimpan!');
-          resetFormManual();
-          loadProdukAdmin();
-          btn.innerText = 'Simpan & Akumulasi Stok';
-          btn.disabled = false;
-          return;
+        function bukaScanner() {
+            const container = document.getElementById('scanner-container');
+            container.classList.remove('hidden');
+            if (!html5QrcodeScanner) {
+                html5QrcodeScanner = new Html5Qrcode("reader");
+            }
+            html5QrcodeScanner.start(
+                { facingMode: "environment" },
+                { fps: 10, qrbox: { width: 250, height: 150 } },
+                async (decodedText) => {
+                    inputBarcode.value = decodedText;
+                    tutupScanner();
+                    await prosesCariBarcode(decodedText);
+                },
+                (err) => {}
+            ).catch(err => {
+                alert("Gagal membuka kamera: " + err);
+                tutupScanner();
+            });
         }
 
-        // 2. JIKA MODE AKUMULASI (Scan barcode / input produk biasa)
-        let produkEksis = null;
-
-        // Cek berdasarkan ID jika tersimpan saat scan barcode
-        if (editId) {
-          const { data: byId } = await supabaseClient
-            .from('products')
-            .select('*')
-            .eq('id', editId)
-            .maybeSingle();
-          if (byId) produkEksis = byId;
+        function tutupScanner() {
+            if (html5QrcodeScanner) {
+                html5QrcodeScanner.stop().then(() => {
+                    document.getElementById('scanner-container').classList.add('hidden');
+                }).catch(() => {
+                    document.getElementById('scanner-container').classList.add('hidden');
+                });
+            } else {
+                document.getElementById('scanner-container').classList.add('hidden');
+            }
         }
 
-        // Cek berdasarkan barcode
-        if (!produkEksis && barcode) {
-          const { data: byBar } = await supabaseClient
-            .from('products')
-            .select('*')
-            .eq('barcode', barcode)
-            .maybeSingle();
-          if (byBar) produkEksis = byBar;
+        async function loadProdukAdmin() {
+            const tabel = document.getElementById('tabel-produk');
+            const { data: products, error } = await supabaseClient
+                .from('products')
+                .select('*')
+                .order('created_at', { ascending: false });
+
+            if (error) {
+                tabel.innerHTML = `<tr><td colspan="5" class="text-center py-4 text-red-500">Gagal mengambil data: ${error.message}</td></tr>`;
+                return;
+            }
+
+            daftarSemuaProduk = products || [];
+            if (daftarSemuaProduk.length === 0) {
+                tabel.innerHTML = `<tr><td colspan="5" class="text-center py-4 text-slate-400">Belum ada produk di toko.</td></tr>`;
+                return;
+            }
+
+            tabel.innerHTML = daftarSemuaProduk.map(item => `
+                <tr class="hover:bg-slate-50 transition-all">
+                    <td class="py-3 px-3 font-semibold text-slate-800 flex items-center gap-2">
+                        ${item.image_url ? `<img src="${item.image_url}" class="w-8 h-8 rounded object-cover">` : '📦'}
+                        <span>${item.name}</span>
+                    </td>
+                    <td class="py-3 px-3 font-semibold text-slate-600">${item.category || '-'}</td>
+                    <td class="py-3 px-3 font-bold text-red-600">Rp ${Number(item.selling_price || 0).toLocaleString('id-ID')}</td>
+                    <td class="py-3 px-3 font-bold text-blue-600">${item.stock_quantity}</td>
+                    <td class="py-3 px-3 text-center space-x-1 whitespace-nowrap">
+                        <button onclick="mulaiEditProduk('${item.id}')" class="bg-blue-50 hover:bg-blue-100 text-blue-600 px-2.5 py-1 rounded text-[11px] font-semibold transition-all">
+                            ✏️ Edit
+                        </button>
+                        <button onclick="hapusProduk('${item.id}')" class="bg-red-50 hover:bg-red-100 text-red-600 px-2.5 py-1 rounded text-[11px] font-semibold transition-all">
+                            🗑 Hapus
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
         }
 
-        // Cek berdasarkan nama
-        if (!produkEksis && name) {
-          const { data: byName } = await supabaseClient
-            .from('products')
-            .select('*')
-            .ilike('name', name)
-            .maybeSingle();
-          if (byName) produkEksis = byName;
+        function mulaiEditProduk(id) {
+            const produk = daftarSemuaProduk.find(p => p.id === id);
+            if (!produk) return;
+
+            document.getElementById('edit-id').value = produk.id;
+            document.getElementById('mode-aksi').value = 'edit_murni';
+            document.getElementById('barcode').value = produk.barcode || '';
+            document.getElementById('name').value = produk.name || '';
+            document.getElementById('category').value = produk.category || '';
+            document.getElementById('selling_price').value = produk.selling_price || '';
+            document.getElementById('stock_quantity').value = produk.stock_quantity || '';
+            document.getElementById('image_url').value = produk.image_url || '';
+            document.getElementById('description').value = produk.description || '';
+
+            document.getElementById('form-title').innerText = '✏️ Edit / Perbarui Produk';
+            document.getElementById('label-stok-keterangan').innerText = '(Total Stok Langsung)';
+            document.getElementById('btn-submit').innerText = 'Simpan Perubahan';
+            document.getElementById('btn-cancel-edit').classList.remove('hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        if (produkEksis) {
-          // AKUMULASI STOK: Stok lama + Stok input baru
-          const stokLama = parseInt(produkEksis.stock_quantity) || 0;
-          const totalStokAkumulasi = stokLama + inputNilaiStok;
-
-          const { error: updateError } = await supabaseClient
-            .from('products')
-            .update({
-              name: name,
-              category: category,
-              selling_price: selling_price,
-              stock_quantity: totalStokAkumulasi,
-              barcode: barcode || produkEksis.barcode,
-              image_url: image_url || produkEksis.image_url,
-              description: description || produkEksis.description
-            })
-            .eq('id', produkEksis.id);
-
-          if (updateError) throw updateError;
-
-          alert(`✅ Stok Berhasil Diakumulasikan!\n\nStok Sebelumnya: ${stokLama}\nDitambahkan: ${inputNilaiStok}\nTotal Stok Sekarang: ${totalStokAkumulasi}`);
-          
-          resetFormManual();
-          loadProdukAdmin();
-          btn.innerText = 'Simpan & Akumulasi Stok';
-          btn.disabled = false;
-          return;
+        function resetFormManual() {
+            document.getElementById('form-produk').reset();
+            document.getElementById('edit-id').value = '';
+            document.getElementById('mode-aksi').value = 'akumulasi';
+            document.getElementById('form-title').innerText = '➕ Input Produk / Tambah Stok';
+            document.getElementById('label-stok-keterangan').innerText = '(Jumlah Ditambahkan)';
+            document.getElementById('btn-submit').innerText = 'Simpan & Akumulasi Stok';
+            document.getElementById('btn-cancel-edit').classList.add('hidden');
         }
 
-        // 3. JIKA PRODUK BENAR-BENAR BARU
-        const newProduct = {
-          name,
-          category,
-          barcode,
-          selling_price,
-          stock_quantity: inputNilaiStok,
-          image_url,
-          description
-        };
+        // PENYIMPANAN DATA
+        document.getElementById('form-produk').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('btn-submit');
+            const editId = document.getElementById('edit-id').value;
+            const modeAksi = document.getElementById('mode-aksi').value;
 
-        const { error: insertError } = await supabaseClient
-          .from('products')
-          .insert([newProduct]);
+            btn.innerText = 'Menyimpan...';
+            btn.disabled = true;
 
-        if (insertError) throw insertError;
+            const barcode = document.getElementById('barcode').value.trim() || null;
+            const name = document.getElementById('name').value.trim();
+            const category = document.getElementById('category').value;
+            const selling_price = parseFloat(document.getElementById('selling_price').value);
+            const inputNilaiStok = parseInt(document.getElementById('stock_quantity').value) || 0;
+            const image_url = document.getElementById('image_url').value.trim() || null;
+            const description = document.getElementById('description').value.trim() || null;
 
-        alert('✅ Produk baru berhasil ditambahkan ke katalog!');
-        resetFormManual();
+            try {
+                if (editId && modeAksi === 'edit_murni') {
+                    const { error: updateError } = await supabaseClient
+                        .from('products')
+                        .update({
+                            name: name,
+                            category: category,
+                            selling_price: selling_price,
+                            stock_quantity: inputNilaiStok,
+                            barcode: barcode,
+                            image_url: image_url,
+                            description: description
+                        })
+                        .eq('id', editId);
+
+                    if (updateError) throw updateError;
+                    alert('✅ Perubahan produk berhasil disimpan!');
+                    resetFormManual();
+                    loadProdukAdmin();
+                    btn.innerText = 'Simpan & Akumulasi Stok';
+                    btn.disabled = false;
+                    return;
+                }
+
+                let produkEksis = null;
+                if (editId) {
+                    const { data: byId } = await supabaseClient.from('products').select('*').eq('id', editId).maybeSingle();
+                    if (byId) produkEksis = byId;
+                }
+                if (!produkEksis && barcode) {
+                    const { data: byBar } = await supabaseClient.from('products').select('*').eq('barcode', barcode).maybeSingle();
+                    if (byBar) produkEksis = byBar;
+                }
+                if (!produkEksis && name) {
+                    const { data: byName } = await supabaseClient.from('products').select('*').ilike('name', name).maybeSingle();
+                    if (byName) produkEksis = byName;
+                }
+
+                if (produkEksis) {
+                    const stokLama = parseInt(produkEksis.stock_quantity) || 0;
+                    const totalStokAkumulasi = stokLama + inputNilaiStok;
+                    const { error: updateError } = await supabaseClient
+                        .from('products')
+                        .update({
+                            name: name,
+                            category: category,
+                            selling_price: selling_price,
+                            stock_quantity: totalStokAkumulasi,
+                            barcode: barcode || produkEksis.barcode,
+                            image_url: image_url || produkEksis.image_url,
+                            description: description || produkEksis.description
+                        })
+                        .eq('id', produkEksis.id);
+
+                    if (updateError) throw updateError;
+                    alert(`✅ Stok Berhasil Diakumulasikan!\n\nStok Sebelumnya: ${stokLama}\nDitambahkan: ${inputNilaiStok}\nTotal Stok Sekarang: ${totalStokAkumulasi}`);
+                    resetFormManual();
+                    loadProdukAdmin();
+                    btn.innerText = 'Simpan & Akumulasi Stok';
+                    btn.disabled = false;
+                    return;
+                }
+
+                const newProduct = { name, category, barcode, selling_price, stock_quantity: inputNilaiStok, image_url, description };
+                const { error: insertError } = await supabaseClient.from('products').insert([newProduct]);
+
+                if (insertError) throw insertError;
+                alert('✅ Produk baru berhasil ditambahkan ke katalog!');
+                resetFormManual();
+                loadProdukAdmin();
+
+            } catch (err) {
+                console.error('Error Supabase:', err);
+                alert('❌ Gagal menyimpan produk!\nDetail Error: ' + err.message);
+            }
+
+            btn.innerText = 'Simpan & Akumulasi Stok';
+            btn.disabled = false;
+        });
+
+        async function hapusProduk(id) {
+            if (confirm('Apakah Anda yakin ingin menghapus produk ini?')) {
+                const { error } = await supabaseClient.from('products').delete().eq('id', id);
+                if (error) {
+                    alert('Gagal menghapus: ' + error.message);
+                } else {
+                    loadProdukAdmin();
+                }
+            }
+        }
+
         loadProdukAdmin();
-
-      } catch (err) {
-        console.error('Error Supabase:', err);
-        alert('❌ Gagal menyimpan produk!\nDetail Error: ' + err.message);
-      }
-
-      btn.innerText = 'Simpan & Akumulasi Stok';
-      btn.disabled = false;
-    });
-
-    async function hapusProduk(id) {
-      if (confirm('Apakah Anda yakin ingin menghapus produk ini?')) {
-        const { error } = await supabaseClient.from('products').delete().eq('id', id);
-        if (error) {
-          alert('Gagal menghapus: ' + error.message);
-        } else {
-          loadProdukAdmin();
-        }
-      }
-    }
-
-    loadProdukAdmin();
-  </script>
-
+    </script>
 </body>
 </html>
