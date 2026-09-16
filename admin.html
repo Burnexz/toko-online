@@ -1,204 +1,286 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Admin - Matrix Terminal Zokent Group</title>
-    
-    <!-- PROTEKSI HALAMAN: Cek apakah admin sudah login -->
-    <script>
-        if (localStorage.getItem("adminLoggedIn") !== "true") {
-            alert("AKSES DITOLAK! Silakan login melalui portal terlebih dahulu.");
-            window.location.replace("login-admin.html");
-        }
-    </script>
-
-    <style>
-        :root {
-            --bg-color: #070c0a;
-            --panel-bg: #0e1714;
-            --border-color: #1a2e24;
-            --neon-green: #00ff66;
-            --neon-green-dim: #00b347;
-            --text-main: #c0d8d0;
-            --text-muted: #6b8c80;
-        }
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Courier New', Courier, monospace; }
-        body { background-color: var(--bg-color); color: var(--text-main); padding: 20px; }
-        .container { max-width: 900px; margin: 0 auto; }
-        
-        /* Header Dashboard */
-        .dashboard-header { background: var(--panel-bg); border: 1px solid var(--border-color); padding: 20px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; box-shadow: 0 0 15px rgba(0, 255, 102, 0.03); }
-        .dashboard-title h1 { color: var(--neon-green); font-size: 1.1rem; margin-bottom: 5px; letter-spacing: 1px; }
-        .dashboard-title p { font-size: 0.75rem; color: var(--text-muted); }
-        .header-actions { display: flex; gap: 10px; align-items: center; }
-        .btn-back { background: rgba(0, 255, 102, 0.1); color: var(--neon-green); border: 1px solid var(--neon-green); padding: 8px 14px; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 0.8rem; transition: all 0.3s ease; }
-        .btn-back:hover { background: var(--neon-green); color: #050a08; box-shadow: 0 0 10px rgba(0, 255, 102, 0.4); }
-        .btn-logout { background: rgba(255, 77, 77, 0.1); color: #ff4d4d; border: 1px solid #ff4d4d; padding: 8px 14px; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 0.8rem; transition: all 0.3s ease; }
-        .btn-logout:hover { background: #ff4d4d; color: #fff; box-shadow: 0 0 10px rgba(255, 77, 77, 0.4); }
-
-        /* Panel Card */
-        .panel-card { background: var(--panel-bg); border: 1px solid var(--border-color); padding: 25px; border-radius: 8px; margin-bottom: 20px; }
-        .panel-card h3 { color: var(--neon-green); font-size: 0.95rem; margin-bottom: 8px; display: flex; align-items: center; gap: 8px; letter-spacing: 0.5px; }
-        .panel-card > p { font-size: 0.8rem; color: var(--text-muted); margin-bottom: 20px; }
-
-        /* Form Elements */
-        .form-group { margin-bottom: 15px; }
-        .form-label { display: block; font-size: 0.7rem; color: var(--neon-green); margin-bottom: 6px; letter-spacing: 1px; }
-        .form-input { width: 100%; background: #050a08; border: 1px solid var(--border-color); padding: 12px 15px; color: var(--text-main); border-radius: 4px; font-size: 0.85rem; outline: none; transition: border-color 0.3s, box-shadow 0.3s; }
-        .form-input:focus { border-color: var(--neon-green); box-shadow: 0 0 8px rgba(0, 255, 102, 0.2); }
-
-        /* Buttons */
-        .btn-primary { width: 100%; background: var(--neon-green); color: #050a08; border: none; padding: 12px; border-radius: 4px; font-weight: bold; font-size: 0.85rem; cursor: pointer; margin-top: 10px; transition: all 0.3s ease; letter-spacing: 0.5px; }
-        .btn-primary:hover { background: var(--neon-green-dim); box-shadow: 0 0 12px rgba(0, 255, 102, 0.4); }
-        .btn-terminal { display: inline-block; background: rgba(0, 255, 102, 0.1); color: var(--neon-green); border: 1px dashed var(--neon-green); padding: 10px 15px; border-radius: 4px; text-decoration: none; font-size: 0.85rem; font-weight: bold; transition: all 0.3s ease; margin-top: 5px; }
-        .btn-terminal:hover { background: var(--neon-green); color: #050a08; box-shadow: 0 0 10px rgba(0, 255, 102, 0.3); }
-
-        /* Table List Kasir */
-        .table-container { overflow-x: auto; margin-top: 15px; }
-        table { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
-        th, td { border: 1px solid var(--border-color); padding: 10px; text-align: left; }
-        th { background: #050a08; color: var(--neon-green); letter-spacing: 0.5px; }
-        td { color: var(--text-main); }
-        .btn-delete { background: rgba(255, 77, 77, 0.1); color: #ff4d4d; border: 1px solid #ff4d4d; padding: 4px 8px; border-radius: 3px; cursor: pointer; font-size: 0.75rem; }
-        .btn-delete:hover { background: #ff4d4d; color: #fff; }
-
-        /* Status & Alert */
-        .status-badge { font-size: 0.8rem; color: var(--neon-green); font-weight: bold; margin-bottom: 15px; display: block; }
-        .alert { padding: 12px 15px; border-radius: 4px; font-size: 0.85rem; margin-bottom: 15px; display: none; font-weight: bold; }
-        .alert-success { background: rgba(0, 255, 102, 0.15); border: 1px solid var(--neon-green); color: var(--neon-green); }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Command Center - Zokent Group</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      min-height: 100vh;
+      width: 100%;
+      background-color: #030712;
+      font-family: 'ui-monospace', SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      color: #34d399;
+      margin: 0;
+      overflow-x: hidden;
+    }
+    #matrix-bg {
+      position: fixed;
+      inset: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 0;
+      pointer-events: none;
+    }
+    .glow-green-text {
+      color: #00ff66;
+      text-shadow: 0 0 12px rgba(0, 255, 102, 0.7);
+    }
+    .glow-box {
+      box-shadow: 0 0 25px rgba(0, 255, 102, 0.2);
+    }
+    .glass-card {
+      background-color: rgba(0, 10, 3, 0.75);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid rgba(0, 255, 102, 0.35);
+    }
+    .hacker-input {
+      background-color: rgba(0, 0, 0, 0.6);
+      border: 1px solid rgba(0, 255, 102, 0.4);
+      color: #00ff66;
+      text-shadow: 0 0 5px rgba(0, 255, 102, 0.5);
+      transition: all 0.2s ease-in-out;
+    }
+    .hacker-input:focus {
+      outline: none;
+      border-color: #00ff66;
+      box-shadow: 0 0 15px rgba(0, 255, 102, 0.6);
+    }
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: #030712; }
+    ::-webkit-scrollbar-thumb { background: #00ff66; border-radius: 3px; }
+  </style>
 </head>
-<body>
-    <div class="container">
-        <!-- Header Dashboard -->
-        <div class="dashboard-header">
-            <div class="dashboard-title">
-                <h1>>_ DASHBOARD ADMIN / PEMILIK</h1>
-                <p>[ SYSTEM ACCESS LEVEL : ADMINISTRATOR ROOT ]</p>
-            </div>
-            <div class="header-actions">
-                <button class="btn-back" onclick="history.back()">⬅ KEMBALI</button>
-                <button class="btn-logout" onclick="handleLogout()">🚪 LOGOUT ADMIN</button>
-            </div>
-        </div>
+<body class="min-h-screen w-full p-4 md:p-6 relative">
 
-        <!-- Registrasi Kasir -->
-        <div class="panel-card">
-            <h3>👤 REGISTRASI AKUN KASIR</h3>
-            <p>Buat kredensial kasir baru untuk akses portal terminal.</p>
-            <div id="alertBox" class="alert"></div>
-            <form id="formKasir" onsubmit="registerKasir(event)">
-                <div class="form-group">
-                    <label class="form-label">NAMA OPERATOR KASIR</label>
-                    <input type="text" id="namaKasir" class="form-input" placeholder="Contoh: Budi Santoso" required>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">EMAIL AKSES KASIR</label>
-                    <input type="email" id="emailKasir" class="form-input" placeholder="kasir1@toko.com" required>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">PASSWORD AKSES</label>
-                    <input type="password" id="passKasir" class="form-input" placeholder="Minimal 6 karakter" minlength="6" required>
-                </div>
-                <button type="submit" class="btn-primary">➕ BUAT AKUN KASIR</button>
-            </form>
+  <canvas id="matrix-bg"></canvas>
 
-            <!-- Tabel Daftar Akun Kasir Yang Aktif -->
-            <div style="margin-top: 30px;">
-                <h3 style="font-size: 0.85rem; margin-bottom: 10px; color: var(--neon-green);">📋 DAFTAR AKUN KASIR TERDAFTAR</h3>
-                <div class="table-container">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Nama Operator</th>
-                                <th>Email / Login</th>
-                                <th>Aksi</th>
-                            </tr>
-                        </thead>
-                        <tbody id="tabelKasirBody">
-                            <!-- Data akan dimuat otomatis via JavaScript -->
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
+  <div class="relative z-10 max-w-7xl mx-auto space-y-6">
+    
+    <!-- HEADER COMMAND CENTER -->
+    <header class="glass-card p-5 rounded-2xl glow-box flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+      <div>
+        <h1 class="text-xl font-black glow-green-text flex items-center gap-2">
+          <span>&gt;_</span> ADMIN COMMAND CENTER
+        </h1>
+        <p class="text-xs text-emerald-400/80 mt-1">[ MONITORING & EFFICIENCY CONTROL PANEL ]</p>
+      </div>
+      <div class="flex items-center gap-3 w-full sm:w-auto">
+        <a href="dashboard.html" class="flex-1 sm:flex-none text-center bg-emerald-950/80 hover:bg-emerald-900 border border-emerald-500/40 text-emerald-300 px-4 py-2 rounded-xl text-xs font-bold transition-all">
+          📊 DASHBOARD
+        </a>
+        <a href="kasir.html" class="flex-1 sm:flex-none text-center bg-emerald-500 hover:bg-emerald-400 text-black px-4 py-2 rounded-xl text-xs font-extrabold transition-all shadow-[0_0_15px_rgba(0,255,102,0.4)]">
+          🖥️ BUKA POS
+        </a>
+        <button id="btn-logout" class="bg-red-950/80 hover:bg-red-900 text-red-400 border border-red-500/40 px-3 py-2 rounded-xl text-xs font-bold transition-all">
+          🚪
+        </button>
+      </div>
+    </header>
 
-        <!-- Pintu Masuk Terminal POS -->
-        <div class="panel-card">
-            <h3>🛒 PINTU MASUK TERMINAL POS</h3>
-            <p>Admin/Pemilik dapat memantau atau menguji mesin kasir POS langsung melalui terminal di bawah ini.</p>
-            <span class="status-badge">STATUS MODUL POS: READY / SIAP OPERASIONAL</span>
-            <div>
-                <a href="pos.html" class="btn-terminal">🖥️ BUKA TERMINAL KASIR (POS)</a>
-            </div>
-        </div>
+    <!-- QUICK MONITORING STATS -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div class="glass-card p-4 rounded-xl glow-box space-y-1">
+        <span class="text-[10px] text-emerald-400/70 uppercase">&gt; TOTAL PRODUK AKTIF</span>
+        <div id="stat-products" class="text-2xl font-black text-white glow-green-text">0</div>
+      </div>
+      <div class="glass-card p-4 rounded-xl glow-box space-y-1">
+        <span class="text-[10px] text-emerald-400/70 uppercase">&gt; TRANSAKSI HARI INI</span>
+        <div id="stat-trx" class="text-2xl font-black text-white glow-green-text">0</div>
+      </div>
+      <div class="glass-card p-4 rounded-xl glow-box space-y-1">
+        <span class="text-[10px] text-emerald-400/70 uppercase">&gt; ESTIMASI OMZET</span>
+        <div id="stat-revenue" class="text-lg font-black text-white glow-green-text">Rp 0</div>
+      </div>
+      <div class="glass-card p-4 rounded-xl glow-box space-y-1 border-red-500/40">
+        <span class="text-[10px] text-red-400 uppercase">&gt; STOK MENIPIS (&lt; 5)</span>
+        <div id="stat-lowstock" class="text-2xl font-black text-red-400">0 Item</div>
+      </div>
     </div>
 
-    <script>
-        // Tampilkan daftar kasir saat halaman dimuat
-        document.addEventListener("DOMContentLoaded", muatDaftarKasir);
+    <!-- MAIN GRID SECTION -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      
+      <!-- KOLOM KIRI & TENGAH: MONITORING STOK MENIPIS & INVENTARIS -->
+      <div class="lg:col-span-2 space-y-6">
+        <div class="glass-card p-5 rounded-2xl glow-box space-y-4">
+          <div class="flex justify-between items-center border-b border-emerald-500/30 pb-3">
+            <h2 class="text-sm font-black text-emerald-300 uppercase tracking-wider flex items-center gap-2">
+              <span>⚠️</span> MONITORING STOK KRITIS
+            </h2>
+            <span class="text-[10px] text-emerald-400/70">Peringatan otomatis barang habis</span>
+          </div>
+          
+          <div class="max-h-[280px] overflow-y-auto pr-1">
+            <table class="w-full text-left text-xs font-mono">
+              <thead>
+                <tr class="text-emerald-500/70 border-b border-emerald-500/20">
+                  <th class="pb-2">NAMA BARANG</th>
+                  <th class="pb-2 text-center">SISA STOK</th>
+                  <th class="pb-2 text-right">HARGA</th>
+                </tr>
+              </thead>
+              <tbody id="lowstock-table-body">
+                <tr><td colspan="3" class="text-center py-6 text-emerald-600">Memeriksa status inventaris...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
 
-        function registerKasir(event) {
-            event.preventDefault();
-            const nama = document.getElementById('namaKasir').value;
-            const email = document.getElementById('emailKasir').value;
-            const password = document.getElementById('passKasir').value;
-            const alertBox = document.getElementById('alertBox');
+      <!-- KOLOM KANAN: REGISTRASI & KONTROL OPERATOR -->
+      <div class="space-y-6">
+        <div class="glass-card p-5 rounded-2xl glow-box space-y-4">
+          <div>
+            <h2 class="text-sm font-black text-emerald-300 uppercase tracking-wider flex items-center gap-2">
+              <span>👤</span> REGISTRASI KASIR
+            </h2>
+            <p class="text-[11px] text-emerald-500/70 mt-1">Tambah akses operator kasir baru.</p>
+          </div>
 
-            const dataKasirBaru = { nama, email, password };
-            let daftarKasir = JSON.parse(localStorage.getItem('daftarKasir')) || [];
-            daftarKasir.push(dataKasirBaru);
-            localStorage.setItem('daftarKasir', JSON.stringify(daftarKasir));
+          <form id="form-create-kasir" class="space-y-3">
+            <div>
+              <label class="block text-[10px] font-bold text-emerald-400 uppercase mb-1">NAMA OPERATOR</label>
+              <input type="text" id="kasir-name-input" required placeholder="Nama Kasir" class="hacker-input w-full px-3 py-2 rounded-xl text-xs font-mono">
+            </div>
+            <div>
+              <label class="block text-[10px] font-bold text-emerald-400 uppercase mb-1">EMAIL AKSES</label>
+              <input type="email" id="kasir-email-input" required placeholder="kasir@toko.com" class="hacker-input w-full px-3 py-2 rounded-xl text-xs font-mono">
+            </div>
+            <div>
+              <label class="block text-[10px] font-bold text-emerald-400 uppercase mb-1">PASSWORD</label>
+              <input type="password" id="kasir-password-input" required minlength="6" placeholder="Minimal 6 karakter" class="hacker-input w-full px-3 py-2 rounded-xl text-xs font-mono">
+            </div>
 
-            alert(`>_ SUCCESS: Akun kasir untuk "${nama}" (${email}) berhasil dibuat!`);
-            alertBox.style.display = 'block';
-            alertBox.className = 'alert alert-success';
-            alertBox.innerHTML = `>_ SUCCESS: Akun kasir untuk <strong>${nama}</strong> (${email}) berhasil dibuat dan disimpan ke sistem!`;
+            <button type="submit" id="btn-save-kasir" class="w-full bg-emerald-500 hover:bg-emerald-400 text-black font-extrabold py-2.5 rounded-xl text-xs transition-all shadow-[0_0_15px_rgba(0,255,102,0.4)] uppercase tracking-wider mt-1">
+              ➕ BUAT AKUN KASIR
+            </button>
+          </form>
+        </div>
+      </div>
 
-            document.getElementById('formKasir').reset();
-            muatDaftarKasir();
+    </div>
+  </div>
 
-            setTimeout(() => {
-                alertBox.style.display = 'none';
-            }, 5000);
+  <script type="module">
+    import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
+
+    const SUPABASE_URL = "https://weuousmvkxmgmsnwiuad.supabase.co";
+    const SUPABASE_ANON_KEY = "sb_publishable_e375KDL0vuoahHO_kWMjwA_a04R4yHb";
+    const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    const tempSupabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, { auth: { persistSession: false } });
+
+    // MATRIX EFFECT
+    const canvas = document.getElementById('matrix-bg');
+    const ctx = canvas.getContext('2d');
+    let fontSize = 14;
+    let columns = Math.floor(window.innerWidth / fontSize);
+    let rainDrops = Array.from({ length: columns }, () => Math.floor(Math.random() * -50));
+    const alphabet = 'アァカサタナハマヤャラワガザダバパイィキシチニヒミリヰギジヂビピウゥクスツヌフムユュルグズブヅプエェケセテネヘメレヱゲゼデベペオォコソトノホモヨョロヲゴゾドボポヴッンABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+
+    function drawMatrix() {
+      ctx.fillStyle = 'rgba(3, 7, 18, 0.08)';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = '#00ff66';
+      ctx.font = fontSize + 'px monospace';
+      for (let i = 0; i < rainDrops.length; i++) {
+        const text = alphabet.charAt(Math.floor(Math.random() * alphabet.length));
+        ctx.fillText(text, i * fontSize, rainDrops[i] * fontSize);
+        if (rainDrops[i] * fontSize > canvas.height && Math.random() > 0.975) rainDrops[i] = 0;
+        rainDrops[i]++;
+      }
+    }
+    function initMatrix() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      columns = Math.floor(canvas.width / fontSize);
+    }
+    initMatrix();
+    window.addEventListener('resize', initMatrix);
+    setInterval(drawMatrix, 45);
+
+    const formatRupiah = (num) => "Rp " + Number(num).toLocaleString("id-ID");
+
+    async function verifyAdminAndLoadData() {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        window.location.href = "login-admin.html";
+        return;
+      }
+      const role = session.user.user_metadata?.role;
+      if (role !== 'admin' && role !== 'pemilik') {
+        alert("⚠️ Akses ditolak! Area khusus Admin / Pemilik.");
+        window.location.href = "login-admin.html";
+        return;
+      }
+
+      // Load Metrics
+      const { data: products } = await supabase.from('products').select('*');
+      if (products) {
+        document.getElementById("stat-products").textContent = products.length;
+        const lowStockItems = products.filter(p => (p.stock ?? 0) <= 5);
+        document.getElementById("stat-lowstock").textContent = lowStockItems.length + " Item";
+        
+        const lowStockTable = document.getElementById("lowstock-table-body");
+        if (lowStockItems.length === 0) {
+          lowStockTable.innerHTML = `<tr><td colspan="3" class="text-center py-6 text-emerald-500">Semua stok barang aman dan tercukupi.</td></tr>`;
+        } else {
+          lowStockTable.innerHTML = lowStockItems.map(p => `
+            <tr class="border-b border-emerald-500/10 hover:bg-red-950/20">
+              <td class="py-2.5 font-bold text-white">${p.name}</td>
+              <td class="py-2.5 text-center font-black text-red-400">${p.stock ?? 0}</td>
+              <td class="py-2.5 text-right text-emerald-300">${formatRupiah(p.price)}</td>
+            </tr>
+          `).join("");
         }
+      }
 
-        function muatDaftarKasir() {
-            const tbody = document.getElementById('tabelKasirBody');
-            let daftarKasir = JSON.parse(localStorage.getItem('daftarKasir')) || [];
-            tbody.innerHTML = '';
-            
-            if (daftarKasir.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="3" style="text-align: center; color: var(--text-muted);">Belum ada akun kasir yang terdaftar.</td></tr>`;
-                return;
-            }
+      const { data: trx } = await supabase.from('transactions').select('total_price');
+      if (trx) {
+        document.getElementById("stat-trx").textContent = trx.length;
+        const totalRev = trx.reduce((acc, curr) => acc + (curr.total_price || 0), 0);
+        document.getElementById("stat-revenue").textContent = formatRupiah(totalRev);
+      }
+    }
 
-            daftarKasir.forEach((kasir, index) => {
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td>${kasir.nama}</td>
-                    <td>${kasir.email}</td>
-                    <td><button class="btn-delete" onclick="hapusKasir(${index})">Hapus</button></td>
-                `;
-                tbody.appendChild(tr);
-            });
-        }
+    // Form Registrasi Kasir
+    const formCreateKasir = document.getElementById("form-create-kasir");
+    const btnSaveKasir = document.getElementById("btn-save-kasir");
 
-        function hapusKasir(index) {
-            if (confirm("Apakah Anda yakin ingin menghapus akun kasir ini?")) {
-                let daftarKasir = JSON.parse(localStorage.getItem('daftarKasir')) || [];
-                daftarKasir.splice(index, 1);
-                localStorage.setItem('daftarKasir', JSON.stringify(daftarKasir));
-                muatDaftarKasir();
-            }
-        }
+    formCreateKasir.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      btnSaveKasir.disabled = true;
+      btnSaveKasir.textContent = "⏳ MENDAFTARKAN...";
 
-        function handleLogout() {
-            // Langsung hapus sesi dan arahkan ke login tanpa pop-up konfirmasi
-            localStorage.removeItem("adminLoggedIn");
-            window.location.replace("login-admin.html");
-        }
-    </script>
+      const username = document.getElementById("kasir-name-input").value.trim();
+      const email = document.getElementById("kasir-email-input").value.trim();
+      const password = document.getElementById("kasir-password-input").value.trim();
+
+      const { error } = await tempSupabase.auth.signUp({
+        email: email,
+        password: password,
+        options: { data: { username: username, role: 'kasir' } }
+      });
+
+      if (error) {
+        alert("❌ Gagal membuat akun: " + error.message);
+      } else {
+        alert(`✅ Akun Kasir '${username}' berhasil diaktifkan!`);
+        formCreateKasir.reset();
+      }
+
+      btnSaveKasir.disabled = false;
+      btnSaveKasir.textContent = "➕ BUAT AKUN KASIR";
+    });
+
+    document.getElementById("btn-logout").addEventListener("click", async () => {
+      await supabase.auth.signOut();
+      window.location.href = "login-admin.html";
+    });
+
+    await verifyAdminAndLoadData();
+  </script>
 </body>
 </html>
