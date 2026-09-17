@@ -1,1144 +1,338 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Admin - Zokent Store Command Center</title>
+    
+    <!-- PROTEKSI HALAMAN: Cek apakah admin sudah login via localStorage (Anti-Mental) -->
+    <script>
+        if (localStorage.getItem("adminLoggedIn") !== "true") {
+            alert("AKSES DITOLAK! Silakan login melalui portal terlebih dahulu.");
+            window.location.replace("login-admin.html");
+        }
+    </script>
 
-  <title>Dashboard Admin - Zokent Store</title>
+    <!-- Supabase JS Client untuk sinkronisasi data real-time -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-  <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    body {
-      font-family: Arial, sans-serif;
-      background: #f3f4f6;
-      color: #111827;
-    }
-
-    .header {
-      background: #111827;
-      color: white;
-      padding: 18px 20px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      position: sticky;
-      top: 0;
-      z-index: 10;
-    }
-
-    .brand {
-      font-size: 20px;
-      font-weight: bold;
-    }
-
-    .brand-small {
-      font-size: 11px;
-      color: #9ca3af;
-      margin-top: 3px;
-    }
-
-    .user-box {
-      text-align: right;
-    }
-
-    .user-icon {
-      font-size: 22px;
-    }
-
-    .user-name {
-      font-size: 12px;
-      color: #d1d5db;
-    }
-
-    .container {
-      width: 100%;
-      max-width: 1100px;
-      margin: auto;
-      padding: 25px 20px;
-    }
-
-    .welcome {
-      margin-bottom: 22px;
-    }
-
-    .welcome h1 {
-      font-size: 26px;
-      margin-bottom: 6px;
-    }
-
-    .welcome p {
-      color: #6b7280;
-      font-size: 14px;
-    }
-
-    /* =========================
-       RINGKASAN
-    ========================= */
-
-    .summary-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 12px;
-      margin-bottom: 25px;
-    }
-
-    .summary-card {
-      background: white;
-      padding: 18px;
-      border-radius: 15px;
-      box-shadow: 0 5px 18px rgba(0,0,0,0.06);
-      border: 1px solid #e5e7eb;
-    }
-
-    .summary-icon {
-      font-size: 28px;
-      margin-bottom: 10px;
-    }
-
-    .summary-title {
-      font-size: 12px;
-      color: #6b7280;
-      margin-bottom: 5px;
-    }
-
-    .summary-value {
-      font-size: 22px;
-      font-weight: bold;
-    }
-
-    .blue {
-      color: #2563eb;
-    }
-
-    .green {
-      color: #16a34a;
-    }
-
-    .orange {
-      color: #ea580c;
-    }
-
-    .red {
-      color: #dc2626;
-    }
-
-    /* =========================
-       MENU
-    ========================= */
-
-    .section-title {
-      font-size: 18px;
-      font-weight: bold;
-      margin-bottom: 12px;
-    }
-
-    .section-subtitle {
-      color: #6b7280;
-      font-size: 12px;
-      margin-bottom: 15px;
-    }
-
-    .menu-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 12px;
-    }
-
-    .menu-card {
-      background: white;
-      padding: 20px 16px;
-      border-radius: 15px;
-      box-shadow: 0 5px 18px rgba(0,0,0,0.06);
-      cursor: pointer;
-      transition: 0.2s;
-      border: 1px solid #e5e7eb;
-      text-decoration: none;
-      color: inherit;
-    }
-
-    .menu-card:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 22px rgba(0,0,0,0.10);
-    }
-
-    .menu-card:active {
-      transform: scale(0.98);
-    }
-
-    .icon {
-      font-size: 31px;
-      margin-bottom: 10px;
-    }
-
-    .menu-card h2 {
-      font-size: 16px;
-      margin-bottom: 5px;
-    }
-
-    .menu-card p {
-      font-size: 12px;
-      color: #6b7280;
-      line-height: 1.5;
-    }
-
-    /* =========================
-       STOK MENIPIS
-    ========================= */
-
-    .stock-section {
-      margin-top: 25px;
-      background: white;
-      border-radius: 15px;
-      padding: 18px;
-      box-shadow: 0 5px 18px rgba(0,0,0,0.06);
-      border: 1px solid #e5e7eb;
-    }
-
-    .stock-item {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 12px 0;
-      border-bottom: 1px solid #f3f4f6;
-    }
-
-    .stock-item:last-child {
-      border-bottom: none;
-    }
-
-    .stock-name {
-      font-size: 13px;
-      font-weight: bold;
-    }
-
-    .stock-sku {
-      font-size: 10px;
-      color: #9ca3af;
-      margin-top: 3px;
-    }
-
-    .stock-number {
-      background: #fee2e2;
-      color: #dc2626;
-      padding: 6px 9px;
-      border-radius: 8px;
-      font-size: 11px;
-      font-weight: bold;
-      white-space: nowrap;
-    }
-
-    .no-stock {
-      color: #6b7280;
-      font-size: 12px;
-      padding: 10px 0;
-    }
-
-    /* =========================
-       LOGOUT
-    ========================= */
-
-    .logout {
-      margin-top: 25px;
-      width: 100%;
-      padding: 14px;
-      border: none;
-      border-radius: 10px;
-      background: #dc2626;
-      color: white;
-      font-size: 15px;
-      font-weight: bold;
-      cursor: pointer;
-    }
-
-    .logout:hover {
-      background: #b91c1c;
-    }
-
-    /* =========================
-       LOADING
-    ========================= */
-
-    .loading {
-      position: fixed;
-      inset: 0;
-      background: white;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 16px;
-      z-index: 100;
-    }
-
-    .error-box {
-      background: #fee2e2;
-      color: #991b1b;
-      padding: 15px;
-      border-radius: 10px;
-      margin-bottom: 20px;
-      display: none;
-      font-size: 13px;
-    }
-
-    @media (min-width: 700px) {
-
-      .summary-grid {
-        grid-template-columns: repeat(4, 1fr);
-      }
-
-      .menu-grid {
-        grid-template-columns: repeat(4, 1fr);
-      }
-
-    }
-  </style>
+    <style>
+        :root {
+            --bg-color: #070c0a;
+            --panel-bg: #0e1714;
+            --border-color: #1a2e24;
+            --neon-green: #00ff66;
+            --neon-green-dim: #00b347;
+            --text-main: #c0d8d0;
+            --text-muted: #6b8c80;
+            --alert-red: #ff4d4d;
+        }
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: 'Courier New', Courier, monospace;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+        }
+        .glow-text {
+            color: var(--neon-green);
+            text-shadow: 0 0 10px rgba(0, 255, 102, 0.4);
+        }
+        .glow-box {
+            box-shadow: 0 0 20px rgba(0, 255, 102, 0.05);
+        }
+        .glass-panel {
+            background-color: var(--panel-bg);
+            border: 1px solid var(--border-color);
+            backdrop-filter: blur(10px);
+        }
+        .nav-link {
+            transition: all 0.2s ease-in-out;
+        }
+        .nav-link:hover, .nav-link.active {
+            background: rgba(0, 255, 102, 0.1);
+            color: var(--neon-green);
+            border-left: 3px solid var(--neon-green);
+        }
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-track { background: var(--bg-color); }
+        ::-webkit-scrollbar-thumb { background: var(--neon-green-dim); border-radius: 3px; }
+    </style>
 </head>
-
-<body>
-
-  <!-- =========================
-       LOADING
-  ========================= -->
-
-  <div class="loading" id="loading">
-    Memeriksa login...
-  </div>
-
-
-  <!-- =========================
-       HEADER
-  ========================= -->
-
-  <header class="header">
-
-    <div>
-
-      <div class="brand">
-        ZOKENT STORE
-      </div>
-
-      <div class="brand-small">
-        PANEL PEMILIK
-      </div>
-
-    </div>
-
-
-    <div class="user-box">
-
-      <div class="user-icon">
-        👤
-      </div>
-
-      <div class="user-name" id="userName">
-        Pemilik
-      </div>
-
-    </div>
-
-  </header>
-
-
-  <!-- =========================
-       MAIN
-  ========================= -->
-
-  <main class="container">
-
-
-    <!-- WELCOME -->
-
-    <section class="welcome">
-
-      <h1>
-        Dashboard Admin
-      </h1>
-
-      <p>
-        Kelola dan pantau toko Zokent dari sini.
-      </p>
-
-    </section>
-
-
-    <!-- ERROR -->
-
-    <div class="error-box" id="errorBox"></div>
-
-
-    <!-- =========================
-         RINGKASAN
-    ========================= -->
-
-    <section class="summary-grid">
-
-
-      <!-- TOTAL PRODUK -->
-
-      <div class="summary-card">
-
-        <div class="summary-icon">
-          📦
-        </div>
-
-        <div class="summary-title">
-          Total Produk
-        </div>
-
-        <div class="summary-value blue" id="totalProducts">
-          0
-        </div>
-
-      </div>
-
-
-      <!-- PRODUK AKTIF -->
-
-      <div class="summary-card">
-
-        <div class="summary-icon">
-          ✅
-        </div>
-
-        <div class="summary-title">
-          Produk Aktif
-        </div>
-
-        <div class="summary-value green" id="activeProducts">
-          0
-        </div>
-
-      </div>
-
-
-      <!-- KATEGORI -->
-
-      <div class="summary-card">
-
-        <div class="summary-icon">
-          🏷️
-        </div>
-
-        <div class="summary-title">
-          Total Kategori
-        </div>
-
-        <div class="summary-value orange" id="totalCategories">
-          0
-        </div>
-
-      </div>
-
-
-      <!-- STOK MENIPIS -->
-
-      <div class="summary-card">
-
-        <div class="summary-icon">
-          ⚠️
-        </div>
-
-        <div class="summary-title">
-          Stok Menipis
-        </div>
-
-        <div class="summary-value red" id="lowStock">
-          0
-        </div>
-
-      </div>
-
-
-    </section>
-
-
-    <!-- =========================
-         MENU PENGELOLAAN
-    ========================= -->
-
-    <section>
-
-      <h2 class="section-title">
-        Menu Pengelolaan
-      </h2>
-
-      <p class="section-subtitle">
-        Semua kontrol toko berada di sini.
-      </p>
-
-
-      <div class="menu-grid">
-
-
-        <a href="produk.html" class="menu-card">
-
-          <div class="icon">
-            📦
-          </div>
-
-          <h2>
-            Produk
-          </h2>
-
-          <p>
-            Tambah, ubah, hapus dan kelola produk.
-          </p>
-
-        </a>
-
-
-        <a href="kategori.html" class="menu-card">
-
-          <div class="icon">
-            🏷️
-          </div>
-
-          <h2>
-            Kategori
-          </h2>
-
-          <p>
-            Kelola kategori produk toko.
-          </p>
-
-        </a>
-
-
-        <a href="stok.html" class="menu-card">
-
-          <div class="icon">
-            📊
-          </div>
-
-          <h2>
-            Stok
-          </h2>
-
-          <p>
-            Pantau jumlah stok setiap produk.
-          </p>
-
-        </a>
-
-
-        <a href="barang-masuk.html" class="menu-card">
-
-          <div class="icon">
-            ➕
-          </div>
-
-          <h2>
-            Barang Masuk
-          </h2>
-
-          <p>
-            Tambahkan stok dari supplier.
-          </p>
-
-        </a>
-
-
-        <a href="barang-keluar.html" class="menu-card">
-
-          <div class="icon">
-            ➖
-          </div>
-
-          <h2>
-            Barang Keluar
-          </h2>
-
-          <p>
-            Catat barang yang keluar.
-          </p>
-
-        </a>
-
-
-        <a href="transaksi.html" class="menu-card">
-
-          <div class="icon">
-            🛒
-          </div>
-
-          <h2>
-            Transaksi
-          </h2>
-
-          <p>
-            Lihat dan kelola transaksi toko.
-          </p>
-
-        </a>
-
-
-        <a href="kasir.html" class="menu-card">
-
-          <div class="icon">
-            👨‍💼
-          </div>
-
-          <h2>
-            Kasir
-          </h2>
-
-          <p>
-            Buat dan kelola akun kasir.
-          </p>
-
-        </a>
-
-
-        <a href="pelanggan.html" class="menu-card">
-
-          <div class="icon">
-            👥
-          </div>
-
-          <h2>
-            Pelanggan
-          </h2>
-
-          <p>
-            Kelola data pelanggan toko.
-          </p>
-
-        </a>
-
-
-        <a href="keuangan.html" class="menu-card">
-
-          <div class="icon">
-            💰
-          </div>
-
-          <h2>
-            Keuangan
-          </h2>
-
-          <p>
-            Pantau pendapatan dan pengeluaran.
-          </p>
-
-        </a>
-
-
-        <a href="laporan.html" class="menu-card">
-
-          <div class="icon">
-            📈
-          </div>
-
-          <h2>
-            Laporan
-          </h2>
-
-          <p>
-            Lihat laporan toko.
-          </p>
-
-        </a>
-
-
-        <a href="pengaturan.html" class="menu-card">
-
-          <div class="icon">
-            ⚙️
-          </div>
-
-          <h2>
-            Pengaturan
-          </h2>
-
-          <p>
-            Atur toko dan sistem.
-          </p>
-
-        </a>
-
-
-      </div>
-
-    </section>
-
-
-    <!-- =========================
-         STOK MENIPIS
-    ========================= -->
-
-    <section class="stock-section">
-
-      <h2 class="section-title">
-        ⚠️ Stok Menipis
-      </h2>
-
-      <p class="section-subtitle">
-        Produk yang jumlah stoknya sudah mencapai batas minimum.
-      </p>
-
-      <div id="lowStockList">
-
-        <div class="no-stock">
-          Memuat data stok...
-        </div>
-
-      </div>
-
-    </section>
-
-
-    <!-- =========================
-         LOGOUT
-    ========================= -->
-
-    <button class="logout" id="logoutButton">
-      🔐 Keluar dari Akun Pemilik
-    </button>
-
-
-  </main>
-
-
-  <!-- =========================
-       SUPABASE
-  ========================= -->
-
-  <script>
-
-    // ==========================================
-    // SUPABASE
-    // ==========================================
-
-    const SUPABASE_URL =
-      "https://weuousmvkxmgmsnwiuad.supabase.co";
-
-    const SUPABASE_ANON_KEY =
-      "sb_publishable_e375KDL0vuoahHO_kWMjwA_a04R4yHb";
-
-
-    const supabaseClient =
-      window.supabase.createClient(
-        SUPABASE_URL,
-        SUPABASE_ANON_KEY
-      );
-
-
-    // ==========================================
-    // ELEMENT
-    // ==========================================
-
-    const loading =
-      document.getElementById("loading");
-
-    const errorBox =
-      document.getElementById("errorBox");
-
-    const userName =
-      document.getElementById("userName");
-
-    const totalProducts =
-      document.getElementById("totalProducts");
-
-    const activeProducts =
-      document.getElementById("activeProducts");
-
-    const totalCategories =
-      document.getElementById("totalCategories");
-
-    const lowStock =
-      document.getElementById("lowStock");
-
-    const lowStockList =
-      document.getElementById("lowStockList");
-
-
-    // ==========================================
-    // TAMPILKAN ERROR
-    // ==========================================
-
-    function showError(message) {
-
-      errorBox.textContent = message;
-
-      errorBox.style.display = "block";
-
-    }
-
-
-    // ==========================================
-    // CEK LOGIN PEMILIK
-    // ==========================================
-
-    async function checkLogin() {
-
-      try {
-
-        const {
-          data: { user },
-          error
-        } =
-          await supabaseClient.auth.getUser();
-
-
-        if (error) {
-
-          throw error;
-
-        }
-
-
-        // Tidak login
-
-        if (!user) {
-
-          window.location.href =
-            "login-admin.html";
-
-          return;
-
-        }
-
-
-        // ======================================
-        // CEK PROFILE PEMILIK
-        // ======================================
-
-        const {
-          data: profile,
-          error: profileError
-        } =
-          await supabaseClient
-            .from("profiles")
-            .select("full_name, role, is_active")
-            .eq("id", user.id)
-            .single();
-
-
-        if (profileError) {
-
-          throw profileError;
-
-        }
-
-
-        // Harus owner
-
-        if (
-          !profile ||
-          profile.role !== "owner" ||
-          profile.is_active !== true
-        ) {
-
-          await supabaseClient.auth.signOut();
-
-          alert(
-            "Akun ini bukan akun pemilik atau akun sedang tidak aktif."
-          );
-
-          window.location.href =
-            "login-admin.html";
-
-          return;
-
-        }
-
-
-        // ======================================
-        // NAMA PEMILIK
-        // ======================================
-
-        userName.textContent =
-          profile.full_name || "Pemilik";
-
-
-        // ======================================
-        // LOAD DASHBOARD
-        // ======================================
-
-        await loadDashboard();
-
-
-        // Hilangkan loading
-
-        loading.style.display = "none";
-
-      }
-
-      catch (error) {
-
-        console.error(error);
-
-        showError(
-          "Gagal memuat dashboard: " +
-          error.message
-        );
-
-        loading.style.display = "none";
-
-      }
-
-    }
-
-
-    // ==========================================
-    // LOAD DATA DASHBOARD
-    // ==========================================
-
-    async function loadDashboard() {
-
-
-      // ========================================
-      // TOTAL PRODUK
-      // ========================================
-
-      const {
-        count: productCount,
-        error: productError
-      } =
-        await supabaseClient
-          .from("products")
-          .select("*", {
-            count: "exact",
-            head: true
-          });
-
-
-      if (productError) {
-
-        throw productError;
-
-      }
-
-
-      totalProducts.textContent =
-        productCount || 0;
-
-
-      // ========================================
-      // PRODUK AKTIF
-      // ========================================
-
-      const {
-        count: activeCount,
-        error: activeError
-      } =
-        await supabaseClient
-          .from("products")
-          .select("*", {
-            count: "exact",
-            head: true
-          })
-          .eq("is_active", true);
-
-
-      if (activeError) {
-
-        throw activeError;
-
-      }
-
-
-      activeProducts.textContent =
-        activeCount || 0;
-
-
-      // ========================================
-      // TOTAL KATEGORI
-      // ========================================
-
-      const {
-        count: categoryCount,
-        error: categoryError
-      } =
-        await supabaseClient
-          .from("categories")
-          .select("*", {
-            count: "exact",
-            head: true
-          });
-
-
-      if (categoryError) {
-
-        throw categoryError;
-
-      }
-
-
-      totalCategories.textContent =
-        categoryCount || 0;
-
-
-      // ========================================
-      // STOK MENIPIS
-      // ========================================
-
-      const {
-        data: products,
-        error: stockError
-      } =
-        await supabaseClient
-          .from("products")
-          .select(
-            "id, name, sku, stock_quantity, minimum_stock"
-          )
-          .eq("is_active", true);
-
-
-      if (stockError) {
-
-        throw stockError;
-
-      }
-
-
-      // Cari produk yang stoknya <= minimum stock
-
-      const lowStockProducts =
-        (products || []).filter(product => {
-
-          const stock =
-            Number(product.stock_quantity || 0);
-
-          const minimum =
-            Number(product.minimum_stock || 0);
-
-          return stock <= minimum;
-
-        });
-
-
-      lowStock.textContent =
-        lowStockProducts.length;
-
-
-      // ========================================
-      // TAMPILKAN DAFTAR STOK MENIPIS
-      // ========================================
-
-      if (lowStockProducts.length === 0) {
-
-        lowStockList.innerHTML = `
-          <div class="no-stock">
-            ✅ Tidak ada produk dengan stok menipis.
-          </div>
-        `;
-
-        return;
-
-      }
-
-
-      // Maksimal tampilkan 10
-
-      const displayProducts =
-        lowStockProducts.slice(0, 10);
-
-
-      lowStockList.innerHTML =
-        displayProducts.map(product => {
-
-          const stock =
-            Number(product.stock_quantity || 0);
-
-          const minimum =
-            Number(product.minimum_stock || 0);
-
-          return `
-
-            <div class="stock-item">
-
-              <div>
-
-                <div class="stock-name">
-                  ${escapeHtml(product.name || "Tanpa Nama")}
+<body class="min-h-screen flex flex-col md:flex-row">
+
+    <!-- SIDEBAR NAVIGATION (Ala Image 2) -->
+    <aside class="w-full md:w-64 glass-panel border-r border-[#1a2e24] flex flex-col justify-between p-5 min-h-screen">
+        <div class="space-y-6">
+            <!-- Brand Logo -->
+            <div class="flex items-center gap-3 pb-4 border-b border-[#1a2e24]">
+                <div class="w-9 h-9 rounded-xl bg-emerald-950 border border-emerald-500 flex items-center justify-center glow-text font-bold">
+                    &gt;_
                 </div>
-
-                <div class="stock-sku">
-                  SKU: ${escapeHtml(product.sku || "-")}
-                  · Minimum: ${minimum}
+                <div>
+                    <h2 class="text-xs font-black glow-text tracking-wider">ZOKENT STORE</h2>
+                    <p class="text-[10px] text-emerald-400/60">PANEL PEMILIK</p>
                 </div>
-
-              </div>
-
-              <div class="stock-number">
-                Stok: ${stock}
-              </div>
-
             </div>
 
-          `;
+            <!-- Menu Navigasi Utama -->
+            <nav class="space-y-1 text-xs">
+                <p class="text-[9px] text-emerald-500/50 uppercase tracking-widest px-3 mb-2">Menu Utama</p>
+                <a href="dashboard.html" class="nav-link active flex items-center gap-3 px-3 py-2.5 rounded-lg text-emerald-300 font-bold">
+                    <span>📊</span> Dashboard
+                </a>
+                <a href="admin.html" class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-emerald-500/80">
+                    <span>⚙️</span> Command Center
+                </a>
+                <a href="kasir.html" class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-emerald-500/80">
+                    <span>🖥️</span> Terminal POS
+                </a>
 
-        }).join("");
+                <p class="text-[9px] text-emerald-500/50 uppercase tracking-widest px-3 mt-6 mb-2">Pengelolaan Toko</p>
+                <a href="#produk" class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-emerald-500/80">
+                    <span>📦</span> Produk & Stok
+                </a>
+                <a href="#transaksi" class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-emerald-500/80">
+                    <span>🛒</span> Transaksi
+                </a>
+                <a href="#kasir" class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-emerald-500/80">
+                    <span>👤</span> Akun Kasir
+                </a>
+                <a href="#laporan" class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-emerald-500/80">
+                    <span>📈</span> Laporan & Keuangan
+                </a>
+            </nav>
+        </div>
 
+        <!-- User Profile Footer di Sidebar -->
+        <div class="pt-4 border-t border-[#1a2e24] flex items-center justify-between">
+            <div class="flex items-center gap-2">
+                <div class="w-7 h-7 rounded-full bg-emerald-900 border border-emerald-500 flex items-center justify-center text-xs font-bold text-emerald-300">
+                    A
+                </div>
+                <div>
+                    <p class="text-[11px] font-bold text-emerald-300">Administrator</p>
+                    <p class="text-[9px] text-emerald-500/60">Root Access</p>
+                </div>
+            </div>
+            <button onclick="handleLogout()" title="Keluar" class="text-red-400 hover:text-red-300 p-1.5 rounded-lg bg-red-950/40 border border-red-500/30 transition-all">
+                🚪
+            </button>
+        </div>
+    </aside>
 
-    }
+    <!-- MAIN CONTENT AREA -->
+    <main class="flex-1 p-4 md:p-8 space-y-6 overflow-y-auto">
+        
+        <!-- TOP HEADER BAR -->
+        <header class="glass-panel p-4 md:p-5 rounded-xl glow-box flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+            <div>
+                <h1 class="text-lg md:text-xl font-black glow-text flex items-center gap-2">
+                    <span>&gt;_</span> Dashboard Admin
+                </h1>
+                <p class="text-xs text-emerald-400/70 mt-1">Kelola dan pantau toko Zokent dari satu panel kontrol.</p>
+            </div>
+            <div class="flex items-center gap-3 w-full sm:w-auto">
+                <input type="text" placeholder="Cari menu / produk..." class="bg-black/50 border border-emerald-500/30 px-3 py-2 rounded-lg text-xs text-emerald-300 focus:outline-none focus:border-emerald-500 w-full sm:w-48 font-mono">
+                <a href="kasir.html" class="bg-emerald-500 hover:bg-emerald-400 text-black px-4 py-2 rounded-lg text-xs font-extrabold transition-all shadow-[0_0_15px_rgba(0,255,102,0.3)] whitespace-nowrap">
+                    🖥️ BUKA POS
+                </a>
+            </div>
+        </header>
 
+        <!-- TOP METRICS STATS CARDS (Ala Image 1 & 2) -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div class="glass-panel p-4 rounded-xl glow-box space-y-1">
+                <div class="flex justify-between items-center text-[10px] text-emerald-400/60 uppercase">
+                    <span>&gt; Total Produk</span>
+                    <span>📦</span>
+                </div>
+                <div id="stat-total-produk" class="text-2xl font-black text-white glow-text">0</div>
+            </div>
+            <div class="glass-panel p-4 rounded-xl glow-box space-y-1">
+                <div class="flex justify-between items-center text-[10px] text-emerald-400/60 uppercase">
+                    <span>&gt; Produk Aktif</span>
+                    <span>✅</span>
+                </div>
+                <div id="stat-produk-aktif" class="text-2xl font-black text-white glow-text">0</div>
+            </div>
+            <div class="glass-panel p-4 rounded-xl glow-box space-y-1">
+                <div class="flex justify-between items-center text-[10px] text-emerald-400/60 uppercase">
+                    <span>&gt; Total Kategori</span>
+                    <span>🏷️</span>
+                </div>
+                <div id="stat-total-kategori" class="text-2xl font-black text-white glow-text">0</div>
+            </div>
+            <div class="glass-panel p-4 rounded-xl glow-box space-y-1 border-red-500/30">
+                <div class="flex justify-between items-center text-[10px] text-red-400 uppercase">
+                    <span>&gt; Stok Menipis</span>
+                    <span>⚠️</span>
+                </div>
+                <div id="stat-stok-menipis" class="text-2xl font-black text-red-400">0</div>
+            </div>
+        </div>
 
-    // ==========================================
-    // AMANKAN TEKS PRODUK
-    // ==========================================
+        <!-- MENU PENGELOLAAN GRID (Fitur Lengkap Image 1 dalam Gaya UI Image 2) -->
+        <div class="space-y-3">
+            <div>
+                <h2 class="text-sm font-black text-emerald-300 uppercase tracking-wider">&gt; Menu Pengelolaan</h2>
+                <p class="text-[11px] text-emerald-500/60">Semua kontrol toko berada di sini.</p>
+            </div>
 
-    function escapeHtml(text) {
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <!-- 1. Produk -->
+                <a href="admin.html" class="glass-panel p-4 rounded-xl hover:border-emerald-400 transition-all group cursor-pointer block">
+                    <div class="text-2xl mb-2 group-hover:scale-110 transition-transform">📦</div>
+                    <h3 class="text-xs font-bold text-emerald-300">Produk</h3>
+                    <p class="text-[10px] text-emerald-500/60 mt-1">Tambah, ubah, hapus dan kelola produk.</p>
+                </a>
+                <!-- 2. Kategori -->
+                <a href="admin.html" class="glass-panel p-4 rounded-xl hover:border-emerald-400 transition-all group cursor-pointer block">
+                    <div class="text-2xl mb-2 group-hover:scale-110 transition-transform">🏷️</div>
+                    <h3 class="text-xs font-bold text-emerald-300">Kategori</h3>
+                    <p class="text-[10px] text-emerald-500/60 mt-1">Kelola kategori produk toko.</p>
+                </a>
+                <!-- 3. Stok -->
+                <a href="admin.html" class="glass-panel p-4 rounded-xl hover:border-emerald-400 transition-all group cursor-pointer block">
+                    <div class="text-2xl mb-2 group-hover:scale-110 transition-transform">📊</div>
+                    <h3 class="text-xs font-bold text-emerald-300">Stok</h3>
+                    <p class="text-[10px] text-emerald-500/60 mt-1">Pantau jumlah stok setiap produk.</p>
+                </a>
+                <!-- 4. Barang Masuk -->
+                <a href="admin.html" class="glass-panel p-4 rounded-xl hover:border-emerald-400 transition-all group cursor-pointer block">
+                    <div class="text-2xl mb-2 group-hover:scale-110 transition-transform">➕</div>
+                    <h3 class="text-xs font-bold text-emerald-300">Barang Masuk</h3>
+                    <p class="text-[10px] text-emerald-500/60 mt-1">Tambahkan stok dari supplier.</p>
+                </a>
+                <!-- 5. Barang Keluar -->
+                <a href="admin.html" class="glass-panel p-4 rounded-xl hover:border-emerald-400 transition-all group cursor-pointer block">
+                    <div class="text-2xl mb-2 group-hover:scale-110 transition-transform">➖</div>
+                    <h3 class="text-xs font-bold text-emerald-300">Barang Keluar</h3>
+                    <p class="text-[10px] text-emerald-500/60 mt-1">Catat barang yang keluar.</p>
+                </a>
+                <!-- 6. Transaksi -->
+                <a href="admin.html" class="glass-panel p-4 rounded-xl hover:border-emerald-400 transition-all group cursor-pointer block">
+                    <div class="text-2xl mb-2 group-hover:scale-110 transition-transform">🛒</div>
+                    <h3 class="text-xs font-bold text-emerald-300">Transaksi</h3>
+                    <p class="text-[10px] text-emerald-500/60 mt-1">Lihat dan kelola transaksi toko.</p>
+                </a>
+                <!-- 7. Kasir -->
+                <a href="admin.html" class="glass-panel p-4 rounded-xl hover:border-emerald-400 transition-all group cursor-pointer block">
+                    <div class="text-2xl mb-2 group-hover:scale-110 transition-transform">👤</div>
+                    <h3 class="text-xs font-bold text-emerald-300">Kasir</h3>
+                    <p class="text-[10px] text-emerald-500/60 mt-1">Buat dan kelola akun kasir.</p>
+                </a>
+                <!-- 8. Pelanggan -->
+                <a href="admin.html" class="glass-panel p-4 rounded-xl hover:border-emerald-400 transition-all group cursor-pointer block">
+                    <div class="text-2xl mb-2 group-hover:scale-110 transition-transform">👥</div>
+                    <h3 class="text-xs font-bold text-emerald-300">Pelanggan</h3>
+                    <p class="text-[10px] text-emerald-500/60 mt-1">Kelola data pelanggan toko.</p>
+                </a>
+                <!-- 9. Keuangan -->
+                <a href="admin.html" class="glass-panel p-4 rounded-xl hover:border-emerald-400 transition-all group cursor-pointer block">
+                    <div class="text-2xl mb-2 group-hover:scale-110 transition-transform">💰</div>
+                    <h3 class="text-xs font-bold text-emerald-300">Keuangan</h3>
+                    <p class="text-[10px] text-emerald-500/60 mt-1">Pantau pendapatan & pengeluaran.</p>
+                </a>
+                <!-- 10. Laporan -->
+                <a href="admin.html" class="glass-panel p-4 rounded-xl hover:border-emerald-400 transition-all group cursor-pointer block">
+                    <div class="text-2xl mb-2 group-hover:scale-110 transition-transform">📈</div>
+                    <h3 class="text-xs font-bold text-emerald-300">Laporan</h3>
+                    <p class="text-[10px] text-emerald-500/60 mt-1">Lihat laporan lengkap toko.</p>
+                </a>
+                <!-- 11. Pengaturan -->
+                <a href="admin.html" class="glass-panel p-4 rounded-xl hover:border-emerald-400 transition-all group cursor-pointer block">
+                    <div class="text-2xl mb-2 group-hover:scale-110 transition-transform">⚙️</div>
+                    <h3 class="text-xs font-bold text-emerald-300">Pengaturan</h3>
+                    <p class="text-[10px] text-emerald-500/60 mt-1">Atur toko dan sistem.</p>
+                </a>
+            </div>
+        </div>
 
-      const div =
-        document.createElement("div");
+        <!-- STOK MENIPIS ALERT SECTION -->
+        <div class="glass-panel p-5 rounded-xl border-red-500/30 space-y-3">
+            <div class="flex items-center justify-between border-b border-red-500/20 pb-2">
+                <h3 class="text-xs font-black text-red-400 uppercase tracking-wider flex items-center gap-2">
+                    <span>⚠️</span> Stok Menipis (&lt; 5 Unit)
+                </h3>
+                <span class="text-[10px] text-red-400/80">Peringatan otomatis sistem</span>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left text-xs font-mono">
+                    <thead>
+                        <tr class="text-emerald-500/60 border-b border-emerald-500/20">
+                            <th class="pb-2">NAMA PRODUK</th>
+                            <th class="pb-2 text-center">SISA STOK</th>
+                            <th class="pb-2 text-right">HARGA JUAL</th>
+                        </tr>
+                    </thead>
+                    <tbody id="lowstock-table-body">
+                        <tr><td colspan="3" class="text-center py-4 text-emerald-600">Memeriksa database inventaris...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
 
-      div.textContent = text;
+        <!-- LOGOUT FOOTER BUTTON -->
+        <button onclick="handleLogout()" class="w-full bg-red-950/60 hover:bg-red-900 border border-red-500/40 text-red-400 font-bold py-3 rounded-xl text-xs transition-all uppercase tracking-widest shadow-[0_0_15px_rgba(255,77,77,0.1)]">
+            🚪 Keluar dari Akun Pemilik
+        </button>
 
-      return div.innerHTML;
+    </main>
 
-    }
+    <script type="module">
+        const SUPABASE_URL = "https://weuousmvkxmgmsnwiuad.supabase.co";
+        const SUPABASE_ANON_KEY = "sb_publishable_e375KDL0vuoahHO_kWMjwA_a04R4yHb";
+        const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
+        const formatRupiah = (num) => "Rp " + Number(num).toLocaleString("id-ID");
 
-    // ==========================================
-    // LOGOUT
-    // ==========================================
+        document.addEventListener("DOMContentLoaded", async () => {
+            await loadDashboardMetrics();
+        });
 
-    document
-      .getElementById("logoutButton")
-      .addEventListener(
-        "click",
-        async function() {
+        async function loadDashboardMetrics() {
+            try {
+                // Ambil data produk dari Supabase
+                const { data: products, error } = await supabase.from('products').select('*');
+                
+                if (!error && products) {
+                    document.getElementById("stat-total-produk").textContent = products.length;
+                    document.getElementById("stat-produk-aktif").textContent = products.length; // Anggap semua aktif
+                    
+                    // Hitung kategori unik
+                    const categories = [...new Set(products.map(p => p.category || 'Umum'))];
+                    document.getElementById("stat-total-kategori").textContent = categories.length;
 
-          const {
-            error
-          } =
-            await supabaseClient.auth.signOut();
+                    // Filter stok menipis < 5
+                    const lowStockItems = products.filter(p => (p.stock ?? 0) < 5);
+                    document.getElementById("stat-stok-menipis").textContent = lowStockItems.length;
 
-
-          if (error) {
-
-            alert(
-              "Gagal logout: " +
-              error.message
-            );
-
-            return;
-
-          }
-
-
-          window.location.href =
-            "login-admin.html";
-
+                    const lowStockTable = document.getElementById("lowstock-table-body");
+                    if (lowStockItems.length === 0) {
+                        lowStockTable.innerHTML = `<tr><td colspan="3" class="text-center py-4 text-emerald-500">Semua stok produk aman dan tercukupi.</td></tr>`;
+                    } else {
+                        lowStockTable.innerHTML = lowStockItems.map(p => `
+                            <tr class="border-b border-emerald-500/10 hover:bg-red-950/10">
+                                <td class="py-2.5 font-bold text-white">${p.name}</td>
+                                <td class="py-2.5 text-center font-black text-red-400">${p.stock ?? 0}</td>
+                                <td class="py-2.5 text-right text-emerald-300">${formatRupiah(p.price)}</td>
+                            </tr>
+                        `).join("");
+                    }
+                }
+            } catch (err) {
+                console.error("Gagal memuat metrik dashboard:", err);
+                document.getElementById("lowstock-table-body").innerHTML = `<tr><td colspan="3" class="text-center py-4 text-red-400">Gagal terhubung ke database Supabase.</td></tr>`;
+            }
         }
-      );
 
-
-    // ==========================================
-    // JALANKAN
-    // ==========================================
-
-    checkLogin();
-
-  </script>
-
+        window.handleLogout = function() {
+            localStorage.removeItem("adminLoggedIn");
+            window.location.replace("login-admin.html");
+        }
+    </script>
 </body>
 </html>
