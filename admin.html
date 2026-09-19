@@ -3,8 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>Dashboard - ZOKENT STORE</title>
+<title>ZOKENT STORE - SRC Theme</title>
 
 <!-- Supabase SDK & Chart.js -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -18,18 +17,19 @@
 }
 
 :root{
-    --primary:#42b8bb;
-    --primary-dark:#23979a;
-    --primary-light:#e8f8f8;
-    --dark:#17333a;
-    --text:#26383d;
-    --muted:#819095;
-    --bg:#f5f8f9;
+    /* TEMA SRC (Merah, Putih, Abu-abu Dark) */
+    --primary:#e11b22;
+    --primary-dark:#b81218;
+    --primary-light:#fde8e8;
+    --dark:#1e293b;
+    --text:#334155;
+    --muted:#64748b;
+    --bg:#f8fafc;
     --white:#ffffff;
-    --border:#e7eeee;
-    --danger:#e85d5d;
-    --warning:#e8a83e;
-    --success:#35a56f;
+    --border:#e2e8f0;
+    --danger:#ef4444;
+    --warning:#f59e0b;
+    --success:#10b981;
 }
 
 body{
@@ -56,47 +56,67 @@ body{
     height:82px;
     display:flex;
     align-items:center;
-    padding:0 22px;
-    border-bottom:1px solid rgba(255,255,255,.12);
+    justify-content:space-between;
+    padding:0 18px;
+    border-bottom:1px solid rgba(255,255,255,.18);
+}
+
+.brand-left{
+    display:flex;
+    align-items:center;
 }
 
 .brand-z{
-    width:43px;
-    height:43px;
-    border-radius:11px;
+    width:40px;
+    height:40px;
+    border-radius:10px;
     background:white;
-    color:var(--primary-dark);
+    color:var(--primary);
     display:flex;
     align-items:center;
     justify-content:center;
-    font-size:25px;
+    font-size:24px;
     font-weight:900;
-    margin-right:11px;
+    margin-right:10px;
 }
 
 .brand-name{
-    font-size:22px;
+    font-size:18px;
     font-weight:900;
-    letter-spacing:1.5px;
+    letter-spacing:1px;
+    line-height:1.1;
 }
 
 .brand-store{
     font-size:9px;
-    letter-spacing:4px;
-    opacity:.85;
-    margin-top:2px;
+    letter-spacing:3px;
+    opacity:.9;
+}
+
+/* JAM ATAS (Samping Zokent) */
+.brand-clock {
+    background: rgba(0, 0, 0, 0.2);
+    padding: 5px 8px;
+    border-radius: 6px;
+    font-family: monospace;
+    font-size: 11px;
+    font-weight: bold;
+    color: #fff;
+    border: 1px solid rgba(255,255,255,0.2);
+    text-align: center;
 }
 
 .menu-section{
-    padding:17px 15px 6px;
+    padding:16px 15px 6px;
     font-size:10px;
     text-transform:uppercase;
-    letter-spacing:1.3px;
-    opacity:.65;
+    letter-spacing:1.2px;
+    opacity:.75;
+    font-weight: bold;
 }
 
 .menu{
-    padding:0 10px 5px;
+    padding:0 10px 4px;
 }
 
 .menu button{
@@ -106,7 +126,7 @@ body{
     color:white;
     display:flex;
     align-items:center;
-    padding:11px 12px;
+    padding:10px 12px;
     border-radius:8px;
     cursor:pointer;
     font-size:13px;
@@ -115,28 +135,29 @@ body{
 }
 
 .menu button:hover{
-    background:rgba(255,255,255,.12);
+    background:rgba(255,255,255,.15);
 }
 
 .menu button.active{
     background:white;
     color:var(--primary-dark);
+    font-weight:bold;
 }
 
 .menu-icon{
-    width:29px;
-    font-size:17px;
+    width:28px;
+    font-size:16px;
 }
 
 .menu-arrow{
     margin-left:auto;
-    font-size:13px;
-    opacity:.65;
+    font-size:12px;
+    opacity:.7;
 }
 
 .sidebar-bottom{
     padding:12px 10px 20px;
-    border-top:1px solid rgba(255,255,255,.12);
+    border-top:1px solid rgba(255,255,255,.18);
     margin-top:10px;
 }
 
@@ -179,20 +200,21 @@ body{
 }
 
 .page-title{
-    font-size:21px;
-    font-weight:700;
+    font-size:20px;
+    font-weight:800;
+    color:var(--dark);
 }
 
 .page-subtitle{
     font-size:11px;
     color:var(--muted);
-    margin-top:4px;
+    margin-top:2px;
 }
 
 .top-right{
     display:flex;
     align-items:center;
-    gap:18px;
+    gap:16px;
 }
 
 .icon-btn{
@@ -203,7 +225,7 @@ body{
     background:white;
     cursor:pointer;
     position:relative;
-    font-size:17px;
+    font-size:16px;
 }
 
 .notification-dot{
@@ -213,7 +235,7 @@ body{
     width:7px;
     height:7px;
     border-radius:50%;
-    background:#e85d5d;
+    background:var(--danger);
 }
 
 .outlet{
@@ -221,7 +243,7 @@ body{
     align-items:center;
     gap:8px;
     border-left:1px solid var(--border);
-    padding-left:18px;
+    padding-left:16px;
     font-size:12px;
     font-weight:bold;
 }
@@ -231,90 +253,57 @@ body{
     height:34px;
     border-radius:8px;
     background:var(--primary-light);
+    color:var(--primary);
     display:flex;
     align-items:center;
     justify-content:center;
 }
 
-/* CONTENT */
+/* CONTENT & SPA SECTIONS */
 .content{
     padding:24px 27px 40px;
 }
 
-/* WELCOME BANNER & REAL-TIME CLOCK */
+.page-section {
+    display: block;
+}
+
+.page-section.hidden {
+    display: none !important;
+}
+
+/* WELCOME BANNER (SRC GRADIENT) */
 .welcome{
-    background: linear-gradient(110deg, #36abad, #64c7a1);
-    min-height:140px;
+    background: linear-gradient(110deg, #e11b22, #b81218);
+    min-height:110px;
     border-radius:12px;
     color:white;
-    padding:24px 28px;
+    padding:22px 28px;
     position:relative;
     overflow:hidden;
     margin-bottom:22px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    flex-wrap: wrap;
-    gap: 15px;
-}
-
-.welcome:after{
-    content:"";
-    position:absolute;
-    width:260px;
-    height:260px;
-    border-radius:50%;
-    right:-70px;
-    top:-110px;
-    background:rgba(255,255,255,.09);
-    pointer-events: none;
 }
 
 .welcome-text h2{
-    font-size:24px;
+    font-size:22px;
     margin-bottom:6px;
 }
 
 .welcome-text p{
     font-size:13px;
     opacity:.9;
-    max-width:520px;
-    line-height:1.5;
+    max-width:550px;
+    line-height:1.4;
 }
 
 .welcome-date{
-    margin-top:12px;
+    margin-top:10px;
     font-size:12px;
     font-weight: 600;
     opacity:.95;
-}
-
-.welcome-clock-box {
-    background: rgba(255, 255, 255, 0.18);
-    backdrop-filter: blur(8px);
-    padding: 12px 22px;
-    border-radius: 12px;
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    text-align: center;
-    box-shadow: inset 0 0 10px rgba(255, 255, 255, 0.1);
-    z-index: 1;
-}
-
-.clock-digits {
-    font-size: 32px;
-    font-weight: 900;
-    font-family: monospace;
-    letter-spacing: 2px;
-    color: #ffffff;
-    text-shadow: 0 2px 4px rgba(0,0,0,0.15);
-}
-
-.clock-label {
-    font-size: 10px;
-    font-weight: bold;
-    letter-spacing: 1.5px;
-    opacity: 0.9;
-    margin-top: 2px;
 }
 
 /* FILTER */
@@ -322,7 +311,7 @@ body{
     background:white;
     border:1px solid var(--border);
     border-radius:10px;
-    padding:13px 16px;
+    padding:12px 16px;
     display:flex;
     align-items:center;
     justify-content:space-between;
@@ -342,10 +331,11 @@ body{
 .period-btn{
     border:1px solid var(--border);
     background:white;
-    padding:8px 15px;
+    padding:7px 14px;
     border-radius:7px;
     font-size:11px;
     cursor:pointer;
+    font-weight:bold;
 }
 
 .period-btn.active{
@@ -367,7 +357,7 @@ body{
     border:1px solid var(--border);
     border-radius:11px;
     padding:16px;
-    min-height:120px;
+    min-height:115px;
 }
 
 .stat-top{
@@ -379,28 +369,30 @@ body{
 .stat-label{
     color:var(--muted);
     font-size:10px;
+    font-weight:600;
 }
 
 .stat-icon{
-    width:34px;
-    height:34px;
+    width:32px;
+    height:32px;
     border-radius:8px;
     display:flex;
     align-items:center;
     justify-content:center;
     background:var(--primary-light);
-    font-size:16px;
+    font-size:15px;
 }
 
 .stat-value{
     font-size:18px;
     font-weight:800;
-    margin-top:14px;
+    margin-top:12px;
+    color:var(--dark);
 }
 
 .stat-change{
     font-size:9px;
-    margin-top:6px;
+    margin-top:5px;
     color:var(--muted);
 }
 
@@ -439,14 +431,16 @@ body{
 .panel-title{
     font-size:14px;
     font-weight:700;
+    color:var(--dark);
 }
 
 .panel-link{
     border:none;
     background:none;
-    color:var(--primary-dark);
+    color:var(--primary);
     cursor:pointer;
-    font-size:10px;
+    font-size:11px;
+    font-weight:bold;
 }
 
 /* CHART AREA */
@@ -470,8 +464,8 @@ body{
 }
 
 .payment-icon{
-    width:37px;
-    height:37px;
+    width:36px;
+    height:36px;
     border-radius:8px;
     background:var(--primary-light);
     display:flex;
@@ -479,9 +473,7 @@ body{
     justify-content:center;
 }
 
-.payment-info{
-    flex:1;
-}
+.payment-info{ flex:1; }
 
 .payment-info strong{
     display:block;
@@ -492,114 +484,12 @@ body{
     display:block;
     font-size:9px;
     color:var(--muted);
-    margin-top:3px;
+    margin-top:2px;
 }
 
 .payment-value{
     font-size:11px;
     font-weight:bold;
-}
-
-/* PRODUCT LIST */
-.product-list{
-    display:flex;
-    flex-direction:column;
-    gap:11px;
-}
-
-/* STOCK */
-.stock-list{
-    display:flex;
-    flex-direction:column;
-    gap:12px;
-}
-
-.stock-row{
-    display:flex;
-    align-items:center;
-    gap:10px;
-}
-
-.stock-name{
-    flex:1;
-}
-
-.stock-name strong{
-    display:block;
-    font-size:11px;
-}
-
-.stock-name span{
-    display:block;
-    color:var(--muted);
-    font-size:9px;
-    margin-top:3px;
-}
-
-.stock-bar{
-    width:90px;
-    height:6px;
-    background:#edf1f2;
-    border-radius:10px;
-    overflow:hidden;
-}
-
-.stock-bar-inner{
-    height:100%;
-    background:var(--warning);
-    border-radius:10px;
-}
-
-.stock-number{
-    font-size:10px;
-    font-weight:bold;
-    color:var(--danger);
-    width:42px;
-    text-align:right;
-}
-
-/* ACTIVITY */
-.activity-list{
-    display:flex;
-    flex-direction:column;
-}
-
-.activity{
-    display:flex;
-    gap:10px;
-    padding:12px 0;
-    border-bottom:1px solid #f0f3f4;
-}
-
-.activity:last-child{ border:none; }
-
-.activity-icon{
-    width:35px;
-    height:35px;
-    background:var(--primary-light);
-    border-radius:50%;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-}
-
-.activity-content{ flex:1; }
-
-.activity-content strong{
-    display:block;
-    font-size:11px;
-}
-
-.activity-content span{
-    display:block;
-    color:var(--muted);
-    font-size:9px;
-    margin-top:3px;
-}
-
-.activity-time{
-    color:var(--muted);
-    font-size:9px;
 }
 
 /* QUICK ACTION */
@@ -613,7 +503,7 @@ body{
     border:1px solid var(--border);
     background:white;
     border-radius:9px;
-    padding:17px;
+    padding:16px;
     cursor:pointer;
     text-align:left;
     transition:.18s;
@@ -625,8 +515,8 @@ body{
 }
 
 .quick-icon{
-    font-size:21px;
-    margin-bottom:10px;
+    font-size:20px;
+    margin-bottom:8px;
 }
 
 .quick strong{
@@ -638,7 +528,7 @@ body{
     display:block;
     color:var(--muted);
     font-size:9px;
-    margin-top:4px;
+    margin-top:3px;
 }
 
 .empty{
@@ -666,74 +556,69 @@ body{
     .topbar{ padding:0 14px; height:65px; }
     .content{ padding:15px; }
     .top-right .icon-btn{ display:none; }
-    .outlet{ padding-left:10px; border-left:none; }
-    .outlet-text{ display:none; }
-    .welcome{ padding:18px; flex-direction:column; align-items:flex-start; }
-    .welcome-clock-box{ width:100%; }
-    .dashboard-filter{ align-items:flex-start; flex-direction:column; gap:10px; }
-    .filter-right{ width:100%; }
-    .period-btn{ flex:1; }
     .stats{ grid-template-columns: repeat(2,1fr); gap:9px; }
-    .stat{ min-height:105px; padding:13px; }
-    .stat-value{ font-size:16px; }
-    .quick-actions{ grid-template-columns: repeat(2,1fr); }
+    .welcome{ padding:18px; }
 }
 </style>
 </head>
 
 <body>
 
-<!-- SIDEBAR -->
+<!-- SIDEBAR MODERAT TEMA SRC -->
 <aside class="sidebar" id="sidebar">
     <div class="brand">
-        <div class="brand-z">Z</div>
-        <div>
-            <div class="brand-name">ZOKENT</div>
-            <div class="brand-store">STORE</div>
+        <div class="brand-left">
+            <div class="brand-z">Z</div>
+            <div>
+                <div class="brand-name">ZOKENT</div>
+                <div class="brand-store">STORE</div>
+            </div>
         </div>
+        <!-- JAM DIGITAL DI Samping ZOKENT -->
+        <div class="brand-clock" id="realtimeClock">00:00:00</div>
     </div>
 
     <div class="menu-section">Utama</div>
     <div class="menu">
-        <button class="active" onclick="goDashboard()">
+        <button class="menu-btn active" data-target="sec-dashboard" onclick="switchPage('sec-dashboard', this)">
             <span class="menu-icon">▦</span> Dashboard
         </button>
     </div>
 
     <div class="menu-section">Penjualan</div>
     <div class="menu">
-        <button onclick="goKasir()"><span class="menu-icon">💰</span> Kasir</button>
-        <button onclick="goPesanan()"><span class="menu-icon">🧾</span> Pesanan <span class="menu-arrow">›</span></button>
-        <button onclick="goInvoice()"><span class="menu-icon">📄</span> Invoice</button>
-        <button onclick="goPelanggan()"><span class="menu-icon">👥</span> Pelanggan <span class="menu-arrow">›</span></button>
+        <button class="menu-btn" data-target="sec-kasir" onclick="switchPage('sec-kasir', this)"><span class="menu-icon">💰</span> Kasir</button>
+        <button class="menu-btn" data-target="sec-pesanan" onclick="switchPage('sec-pesanan', this)"><span class="menu-icon">🧾</span> Pesanan <span class="menu-arrow">›</span></button>
+        <button class="menu-btn" data-target="sec-invoice" onclick="switchPage('sec-invoice', this)"><span class="menu-icon">📄</span> Invoice</button>
+        <button class="menu-btn" data-target="sec-pelanggan" onclick="switchPage('sec-pelanggan', this)"><span class="menu-icon">👥</span> Pelanggan <span class="menu-arrow">›</span></button>
     </div>
 
     <div class="menu-section">Produk & Inventori</div>
     <div class="menu">
-        <button onclick="goProduk()"><span class="menu-icon">📦</span> Produk <span class="menu-arrow">›</span></button>
-        <button onclick="goKategori()"><span class="menu-icon">🏷️</span> Kategori</button>
-        <button onclick="goInventori()"><span class="menu-icon">📊</span> Inventori <span class="menu-arrow">›</span></button>
-        <button onclick="goPembelian()"><span class="menu-icon">🛒</span> Pembelian <span class="menu-arrow">›</span></button>
-        <button onclick="goSupplier()"><span class="menu-icon">🚚</span> Supplier</button>
+        <button class="menu-btn" data-target="sec-produk" onclick="switchPage('sec-produk', this)"><span class="menu-icon">📦</span> Produk <span class="menu-arrow">›</span></button>
+        <button class="menu-btn" data-target="sec-kategori" onclick="switchPage('sec-kategori', this)"><span class="menu-icon">🏷️</span> Kategori</button>
+        <button class="menu-btn" data-target="sec-inventori" onclick="switchPage('sec-inventori', this)"><span class="menu-icon">📊</span> Inventori <span class="menu-arrow">›</span></button>
+        <button class="menu-btn" data-target="sec-pembelian" onclick="switchPage('sec-pembelian', this)"><span class="menu-icon">🛒</span> Pembelian <span class="menu-arrow">›</span></button>
+        <button class="menu-btn" data-target="sec-supplier" onclick="switchPage('sec-supplier', this)"><span class="menu-icon">🚚</span> Supplier</button>
     </div>
 
     <div class="menu-section">Keuangan</div>
     <div class="menu">
-        <button onclick="goPengeluaran()"><span class="menu-icon">💸</span> Pengeluaran</button>
-        <button onclick="goLaporan()"><span class="menu-icon">📈</span> Laporan <span class="menu-arrow">›</span></button>
-        <button onclick="goAnalisa()"><span class="menu-icon">📊</span> Analisa Laporan</button>
+        <button class="menu-btn" data-target="sec-pengeluaran" onclick="switchPage('sec-pengeluaran', this)"><span class="menu-icon">💸</span> Pengeluaran</button>
+        <button class="menu-btn" data-target="sec-laporan" onclick="switchPage('sec-laporan', this)"><span class="menu-icon">📈</span> Laporan <span class="menu-arrow">›</span></button>
+        <button class="menu-btn" data-target="sec-analisa" onclick="switchPage('sec-analisa', this)"><span class="menu-icon">📊</span> Analisa Laporan</button>
     </div>
 
     <div class="menu-section">Marketing</div>
     <div class="menu">
-        <button onclick="goPromosi()"><span class="menu-icon">🎟️</span> Promosi</button>
-        <button onclick="goKomisi()"><span class="menu-icon">🤝</span> Komisi</button>
-        <button onclick="goMarketing()"><span class="menu-icon">📣</span> Marketing</button>
+        <button class="menu-btn" data-target="sec-promosi" onclick="switchPage('sec-promosi', this)"><span class="menu-icon">🎟️</span> Promosi</button>
+        <button class="menu-btn" data-target="sec-komisi" onclick="switchPage('sec-komisi', this)"><span class="menu-icon">🤝</span> Komisi</button>
+        <button class="menu-btn" data-target="sec-marketing" onclick="switchPage('sec-marketing', this)"><span class="menu-icon">📣</span> Marketing</button>
     </div>
 
     <div class="menu-section">Sistem</div>
     <div class="menu">
-        <button onclick="goPengaturan()"><span class="menu-icon">⚙️</span> Pengaturan</button>
+        <button class="menu-btn" data-target="sec-pengaturan" onclick="switchPage('sec-pengaturan', this)"><span class="menu-icon">⚙️</span> Pengaturan</button>
     </div>
 
     <div class="sidebar-bottom">
@@ -745,7 +630,7 @@ body{
     </div>
 </aside>
 
-<!-- MAIN -->
+<!-- MAIN CONTENT AREA -->
 <main class="main">
 
     <!-- TOPBAR -->
@@ -753,7 +638,7 @@ body{
         <div class="top-left">
             <button class="mobile-menu" onclick="toggleSidebar()">☰</button>
             <div>
-                <div class="page-title">Dashboard</div>
+                <div class="page-title" id="currentTitle">Dashboard</div>
                 <div class="page-subtitle" id="tanggal">Memuat tanggal...</div>
             </div>
         </div>
@@ -763,236 +648,284 @@ body{
             <button class="icon-btn">🔔 <span class="notification-dot"></span></button>
             <div class="outlet">
                 <div class="outlet-icon">🏪</div>
-                <div class="outlet-text">
+                <div>
                     <div>ZOKENT STORE</div>
-                    <small>Outlet utama</small>
+                    <small style="color:var(--muted)">Toko SRC Utama</small>
                 </div>
             </div>
         </div>
     </header>
 
-    <!-- CONTENT -->
+    <!-- CONTENT WRAPPER -->
     <section class="content">
 
-        <!-- WELCOME + REALTIME CLOCK -->
-        <div class="welcome">
-            <div class="welcome-text">
-                <h2>Selamat datang di ZOKENT STORE</h2>
-                <p>Pantau penjualan, stok, produk, transaksi dan kondisi toko dari satu halaman dashboard.</p>
-                <div class="welcome-date" id="welcomeDate">Memuat tanggal...</div>
-            </div>
-            
-            <div class="welcome-clock-box">
-                <div class="clock-digits" id="realtimeClock">00:00:00</div>
-                <div class="clock-label">WIB • REAL-TIME</div>
-            </div>
-        </div>
-
-        <!-- FILTER -->
-        <div class="dashboard-filter">
-            <div class="filter-left">Ringkasan Penjualan</div>
-            <div class="filter-right">
-                <button class="period-btn active" onclick="setPeriod(this,'hari')">HARI</button>
-                <button class="period-btn" onclick="setPeriod(this,'bulan')">BULAN</button>
-            </div>
-        </div>
-
-        <!-- STATISTIK -->
-        <div class="stats">
-            <div class="stat">
-                <div class="stat-top">
-                    <div class="stat-label">Total Penjualan</div>
-                    <div class="stat-icon">💰</div>
+        <!-- SECTION: DASHBOARD -->
+        <div id="sec-dashboard" class="page-section">
+            <div class="welcome">
+                <div class="welcome-text">
+                    <h2>Selamat datang di ZOKENT STORE</h2>
+                    <p>Pantau penjualan, stok, produk, transaksi dan kondisi toko dari satu halaman dashboard.</p>
+                    <div class="welcome-date" id="welcomeDate">Memuat tanggal...</div>
                 </div>
-                <div class="stat-value" id="totalPenjualan">Rp 0</div>
-                <div class="stat-change">Hari ini</div>
             </div>
 
-            <div class="stat">
-                <div class="stat-top">
-                    <div class="stat-label">Penjualan Kotor</div>
-                    <div class="stat-icon">🧾</div>
+            <!-- FILTER -->
+            <div class="dashboard-filter">
+                <div class="filter-left">Ringkasan Penjualan</div>
+                <div class="filter-right">
+                    <button class="period-btn active" onclick="setPeriod(this,'hari')">HARI</button>
+                    <button class="period-btn" onclick="setPeriod(this,'bulan')">BULAN</button>
                 </div>
-                <div class="stat-value" id="penjualanKotor">Rp 0</div>
-                <div class="stat-change">Hari ini</div>
             </div>
 
-            <div class="stat">
-                <div class="stat-top">
-                    <div class="stat-label">Laba Kotor</div>
-                    <div class="stat-icon">📈</div>
+            <!-- STATISTIK -->
+            <div class="stats">
+                <div class="stat">
+                    <div class="stat-top">
+                        <div class="stat-label">Total Penjualan</div>
+                        <div class="stat-icon">💰</div>
+                    </div>
+                    <div class="stat-value" id="totalPenjualan">Rp 0</div>
+                    <div class="stat-change">Hari ini</div>
                 </div>
-                <div class="stat-value" id="labaKotor">Rp 0</div>
-                <div class="stat-change">Estimasi Laba</div>
-            </div>
 
-            <div class="stat">
-                <div class="stat-top">
-                    <div class="stat-label">Transaksi</div>
-                    <div class="stat-icon">🛍️</div>
+                <div class="stat">
+                    <div class="stat-top">
+                        <div class="stat-label">Penjualan Kotor</div>
+                        <div class="stat-icon">🧾</div>
+                    </div>
+                    <div class="stat-value" id="penjualanKotor">Rp 0</div>
+                    <div class="stat-change">Hari ini</div>
                 </div>
-                <div class="stat-value" id="totalTransaksi">0</div>
-                <div class="stat-change">Transaksi hari ini</div>
-            </div>
 
-            <div class="stat">
-                <div class="stat-top">
-                    <div class="stat-label">Produk</div>
-                    <div class="stat-icon">📦</div>
+                <div class="stat">
+                    <div class="stat-top">
+                        <div class="stat-label">Laba Kotor</div>
+                        <div class="stat-icon">📈</div>
+                    </div>
+                    <div class="stat-value" id="labaKotor">Rp 0</div>
+                    <div class="stat-change">Estimasi Laba</div>
                 </div>
-                <div class="stat-value" id="totalProduk">0</div>
-                <div class="stat-change">Produk terdaftar</div>
-            </div>
 
-            <div class="stat">
-                <div class="stat-top">
-                    <div class="stat-label">Stok Menipis</div>
-                    <div class="stat-icon">⚠️</div>
+                <div class="stat">
+                    <div class="stat-top">
+                        <div class="stat-label">Transaksi</div>
+                        <div class="stat-icon">🛍️</div>
+                    </div>
+                    <div class="stat-value" id="totalTransaksi">0</div>
+                    <div class="stat-change">Transaksi hari ini</div>
                 </div>
-                <div class="stat-value" id="stokMenipis">0</div>
-                <div class="stat-change down">Perlu diperiksa</div>
-            </div>
-        </div>
 
-        <!-- CHART + PAYMENT -->
-        <div class="grid-2">
-            <!-- GRAFIK -->
+                <div class="stat">
+                    <div class="stat-top">
+                        <div class="stat-label">Produk</div>
+                        <div class="stat-icon">📦</div>
+                    </div>
+                    <div class="stat-value" id="totalProduk">0</div>
+                    <div class="stat-change">Produk terdaftar</div>
+                </div>
+
+                <div class="stat">
+                    <div class="stat-top">
+                        <div class="stat-label">Stok Menipis</div>
+                        <div class="stat-icon">⚠️</div>
+                    </div>
+                    <div class="stat-value" id="stokMenipis">0</div>
+                    <div class="stat-change down">Perlu diperiksa</div>
+                </div>
+            </div>
+
+            <!-- CHART & PAYMENT -->
+            <div class="grid-2">
+                <div class="panel">
+                    <div class="panel-header">
+                        <div class="panel-title">Penjualan Dinamis</div>
+                        <button class="panel-link" onclick="switchPage('sec-laporan')">Lihat laporan</button>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="salesChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="panel">
+                    <div class="panel-header">
+                        <div class="panel-title">Metode Pembayaran</div>
+                    </div>
+                    <div class="payment-list">
+                        <div class="payment-item">
+                            <div class="payment-icon">💵</div>
+                            <div class="payment-info"><strong>Cash</strong><span>Tunai</span></div>
+                            <div class="payment-value" id="payCash">Rp 0</div>
+                        </div>
+                        <div class="payment-item">
+                            <div class="payment-icon">📱</div>
+                            <div class="payment-info"><strong>QRIS</strong><span>Digital</span></div>
+                            <div class="payment-value" id="payQris">Rp 0</div>
+                        </div>
+                        <div class="payment-item">
+                            <div class="payment-icon">💳</div>
+                            <div class="payment-info"><strong>Transfer</strong><span>Bank</span></div>
+                            <div class="payment-value" id="payTransfer">Rp 0</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- MENU CEPAT -->
             <div class="panel">
                 <div class="panel-header">
-                    <div class="panel-title">Penjualan Dinamis</div>
-                    <button class="panel-link" onclick="goLaporan()">Lihat laporan</button>
+                    <div class="panel-title">Menu Cepat</div>
                 </div>
-                <div class="chart-container">
-                    <canvas id="salesChart"></canvas>
-                </div>
-            </div>
-
-            <!-- PEMBAYARAN -->
-            <div class="panel">
-                <div class="panel-header">
-                    <div class="panel-title">Metode Pembayaran</div>
-                </div>
-                <div class="payment-list">
-                    <div class="payment-item">
-                        <div class="payment-icon">💵</div>
-                        <div class="payment-info">
-                            <strong>Cash</strong>
-                            <span>Transaksi tunai</span>
-                        </div>
-                        <div class="payment-value" id="payCash">Rp 0</div>
-                    </div>
-
-                    <div class="payment-item">
-                        <div class="payment-icon">📱</div>
-                        <div class="payment-info">
-                            <strong>QRIS</strong>
-                            <span>Pembayaran QRIS</span>
-                        </div>
-                        <div class="payment-value" id="payQris">Rp 0</div>
-                    </div>
-
-                    <div class="payment-item">
-                        <div class="payment-icon">💳</div>
-                        <div class="payment-info">
-                            <strong>Transfer</strong>
-                            <span>Transfer bank</span>
-                        </div>
-                        <div class="payment-value" id="payTransfer">Rp 0</div>
-                    </div>
-
-                    <div class="payment-item">
-                        <div class="payment-icon">📦</div>
-                        <div class="payment-info">
-                            <strong>COD</strong>
-                            <span>Bayar saat diterima</span>
-                        </div>
-                        <div class="payment-value" id="payCod">Rp 0</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- PRODUK TERLARIS + STOK MINIMUM + AKTIVITAS -->
-        <div class="grid-3">
-            <div class="panel">
-                <div class="panel-header">
-                    <div class="panel-title">Produk Terlaris</div>
-                    <button class="panel-link" onclick="goProduk()">Lihat semua</button>
-                </div>
-                <div class="product-list" id="bestProducts">
-                    <div class="empty">Memuat data produk...</div>
-                </div>
-            </div>
-
-            <div class="panel">
-                <div class="panel-header">
-                    <div class="panel-title">Stok Minimum</div>
-                    <button class="panel-link" onclick="goInventori()">Lihat semua</button>
-                </div>
-                <div class="stock-list" id="stockList">
-                    <div class="empty">Memuat data stok...</div>
-                </div>
-            </div>
-
-            <div class="panel">
-                <div class="panel-header">
-                    <div class="panel-title">Aktivitas Toko</div>
-                </div>
-                <div class="activity-list">
-                    <div class="activity">
-                        <div class="activity-icon">📦</div>
-                        <div class="activity-content">
-                            <strong>Sistem produk</strong>
-                            <span>Data produk terhubung</span>
-                        </div>
-                        <div class="activity-time">aktif</div>
-                    </div>
-                    <div class="activity">
-                        <div class="activity-icon">🏷️</div>
-                        <div class="activity-content">
-                            <strong>Kategori</strong>
-                            <span>Kategori toko tersedia</span>
-                        </div>
-                        <div class="activity-time">aktif</div>
-                    </div>
-                    <div class="activity">
-                        <div class="activity-icon">🔐</div>
-                        <div class="activity-content">
-                            <strong>Administrator</strong>
-                            <span>Sesi owner/admin aktif</span>
-                        </div>
-                        <div class="activity-time">aktif</div>
-                    </div>
+                <div class="quick-actions">
+                    <button class="quick" onclick="switchPage('sec-produk')">
+                        <div class="quick-icon">📦</div>
+                        <strong>Kelola Produk</strong>
+                        <span>Atur katalog & harga</span>
+                    </button>
+                    <button class="quick" onclick="switchPage('sec-kasir')">
+                        <div class="quick-icon">💰</div>
+                        <strong>Buka Kasir</strong>
+                        <span>Mulai transaksi</span>
+                    </button>
+                    <button class="quick" onclick="switchPage('sec-inventori')">
+                        <div class="quick-icon">📊</div>
+                        <strong>Cek Stok</strong>
+                        <span>Pantau stok barang</span>
+                    </button>
+                    <button class="quick" onclick="switchPage('sec-pembelian')">
+                        <div class="quick-icon">🛒</div>
+                        <strong>Pembelian</strong>
+                        <span>Catat barang masuk</span>
+                    </button>
                 </div>
             </div>
         </div>
 
-        <!-- MENU CEPAT -->
-        <div class="panel">
-            <div class="panel-header">
-                <div class="panel-title">Menu Cepat</div>
+        <!-- SECTION: KASIR -->
+        <div id="sec-kasir" class="page-section hidden">
+            <div class="panel">
+                <div class="panel-title" style="margin-bottom:10px;">Fitur Kasir Transaksi</div>
+                <p style="font-size:13px; color:var(--muted)">Area Point of Sales (POS) untuk melayani transaksi pelanggan secara langsung.</p>
             </div>
-            <div class="quick-actions">
-                <button class="quick" onclick="goProduk()">
-                    <div class="quick-icon">📦</div>
-                    <strong>Kelola Produk</strong>
-                    <span>Tambah, edit dan hapus produk</span>
-                </button>
-                <button class="quick" onclick="goKasir()">
-                    <div class="quick-icon">💰</div>
-                    <strong>Buka Kasir</strong>
-                    <span>Mulai transaksi penjualan</span>
-                </button>
-                <button class="quick" onclick="goInventori()">
-                    <div class="quick-icon">📊</div>
-                    <strong>Cek Stok</strong>
-                    <span>Pantau stok dan stok minimum</span>
-                </button>
-                <button class="quick" onclick="goPembelian()">
-                    <div class="quick-icon">🛒</div>
-                    <strong>Pembelian</strong>
-                    <span>Catat barang masuk dari supplier</span>
-                </button>
+        </div>
+
+        <!-- SECTION: PESANAN -->
+        <div id="sec-pesanan" class="page-section hidden">
+            <div class="panel">
+                <div class="panel-title" style="margin-bottom:10px;">Daftar Pesanan</div>
+                <p style="font-size:13px; color:var(--muted)">Melihat dan mengelola riwayat pesanan masuk.</p>
+            </div>
+        </div>
+
+        <!-- SECTION: INVOICE -->
+        <div id="sec-invoice" class="page-section hidden">
+            <div class="panel">
+                <div class="panel-title" style="margin-bottom:10px;">Kelola Invoice</div>
+                <p style="font-size:13px; color:var(--muted)">Cetak dan kirim faktur / invoice ke pelanggan.</p>
+            </div>
+        </div>
+
+        <!-- SECTION: PELANGGAN -->
+        <div id="sec-pelanggan" class="page-section hidden">
+            <div class="panel">
+                <div class="panel-title" style="margin-bottom:10px;">Data Pelanggan</div>
+                <p style="font-size:13px; color:var(--muted)">Kelola member dan database pelanggan toko.</p>
+            </div>
+        </div>
+
+        <!-- SECTION: PRODUK -->
+        <div id="sec-produk" class="page-section hidden">
+            <div class="panel">
+                <div class="panel-title" style="margin-bottom:10px;">Katalog Produk</div>
+                <p style="font-size:13px; color:var(--muted)">Tambah, ubah, dan hapus data produk toko.</p>
+            </div>
+        </div>
+
+        <!-- SECTION: KATEGORI -->
+        <div id="sec-kategori" class="page-section hidden">
+            <div class="panel">
+                <div class="panel-title" style="margin-bottom:10px;">Kategori Produk</div>
+                <p style="font-size:13px; color:var(--muted)">Pengelompokan jenis barang toko SRC.</p>
+            </div>
+        </div>
+
+        <!-- SECTION: INVENTORI -->
+        <div id="sec-inventori" class="page-section hidden">
+            <div class="panel">
+                <div class="panel-title" style="margin-bottom:10px;">Inventori & Stok</div>
+                <p style="font-size:13px; color:var(--muted)">Pantau pergerakan stok dan opname barang.</p>
+            </div>
+        </div>
+
+        <!-- SECTION: PEMBELIAN -->
+        <div id="sec-pembelian" class="page-section hidden">
+            <div class="panel">
+                <div class="panel-title" style="margin-bottom:10px;">Pembelian (Restock)</div>
+                <p style="font-size:13px; color:var(--muted)">Pencatatan pembelian barang dari distributor/supplier.</p>
+            </div>
+        </div>
+
+        <!-- SECTION: SUPPLIER -->
+        <div id="sec-supplier" class="page-section hidden">
+            <div class="panel">
+                <div class="panel-title" style="margin-bottom:10px;">Data Supplier</div>
+                <p style="font-size:13px; color:var(--muted)">Daftar Kontak Pemasok dan Distributor.</p>
+            </div>
+        </div>
+
+        <!-- SECTION: PENGELUARAN -->
+        <div id="sec-pengeluaran" class="page-section hidden">
+            <div class="panel">
+                <div class="panel-title" style="margin-bottom:10px;">Pengeluaran Operasional</div>
+                <p style="font-size:13px; color:var(--muted)">Catat biaya operasional bulanan toko.</p>
+            </div>
+        </div>
+
+        <!-- SECTION: LAPORAN -->
+        <div id="sec-laporan" class="page-section hidden">
+            <div class="panel">
+                <div class="panel-title" style="margin-bottom:10px;">Laporan Keuangan</div>
+                <p style="font-size:13px; color:var(--muted)">Laporan Penjualan, Laba Rugi, dan Neraca.</p>
+            </div>
+        </div>
+
+        <!-- SECTION: ANALISA -->
+        <div id="sec-analisa" class="page-section hidden">
+            <div class="panel">
+                <div class="panel-title" style="margin-bottom:10px;">Analisa Laporan</div>
+                <p style="font-size:13px; color:var(--muted)">Analisis performa penjualan produk terlaris.</p>
+            </div>
+        </div>
+
+        <!-- SECTION: PROMOSI -->
+        <div id="sec-promosi" class="page-section hidden">
+            <div class="panel">
+                <div class="panel-title" style="margin-bottom:10px;">Program Promosi</div>
+                <p style="font-size:13px; color:var(--muted)">Pengaturan diskon, kupon, dan promo toko.</p>
+            </div>
+        </div>
+
+        <!-- SECTION: KOMISI -->
+        <div id="sec-komisi" class="page-section hidden">
+            <div class="panel">
+                <div class="panel-title" style="margin-bottom:10px;">Komisi Karyawan</div>
+                <p style="font-size:13px; color:var(--muted)">Hitung bonus dan komisi kasir / staf.</p>
+            </div>
+        </div>
+
+        <!-- SECTION: MARKETING -->
+        <div id="sec-marketing" class="page-section hidden">
+            <div class="panel">
+                <div class="panel-title" style="margin-bottom:10px;">Pemasaran & Broadcast</div>
+                <p style="font-size:13px; color:var(--muted)">Kirim pesan promosi WhatsApp ke pelanggan.</p>
+            </div>
+        </div>
+
+        <!-- SECTION: PENGATURAN -->
+        <div id="sec-pengaturan" class="page-section hidden">
+            <div class="panel">
+                <div class="panel-title" style="margin-bottom:10px;">Pengaturan Toko</div>
+                <p style="font-size:13px; color:var(--muted)">Pengaturan profil toko SRC, struk, dan akun pengguna.</p>
             </div>
         </div>
 
@@ -1007,36 +940,37 @@ const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 let salesChartInstance = null;
 
-/* CEK ACCESS ADMIN/OWNER */
-async function checkOwner() {
-  const { data: { session } } = await supabaseClient.auth.getSession();
+/* PERGANTIAN HALAMAN DALAM 1 HALAMAN (SPA) */
+function switchPage(targetSectionId, btnElement = null) {
+    // Sembunyikan semua section
+    document.querySelectorAll('.page-section').forEach(sec => {
+        sec.classList.add('hidden');
+    });
 
-  if (!session) {
-    window.location.href = "login-admin.html";
-    return false;
-  }
+    // Tampilkan section yang dipilih
+    const target = document.getElementById(targetSectionId);
+    if (target) {
+        target.classList.remove('hidden');
+    }
 
-  const roleFromAuth = session.user.user_metadata?.role;
-  const { data: profile } = await supabaseClient
-    .from("profiles")
-    .select("role, is_active")
-    .eq("id", session.user.id)
-    .maybeSingle();
-
-  const currentRole = (profile?.role || roleFromAuth || "").toLowerCase();
-  const allowedRoles = ["owner", "admin", "pemilik"];
-
-  if (!allowedRoles.includes(currentRole)) {
-    alert("Akun ini tidak memiliki akses Administrator.");
-    await supabaseClient.auth.signOut();
-    window.location.href = "login-admin.html";
-    return false;
-  }
-
-  return true;
+    // Update status tombol menu aktif
+    document.querySelectorAll('.menu-btn').forEach(btn => btn.classList.remove('active'));
+    
+    if (btnElement) {
+        btnElement.classList.add('active');
+        const titleText = btnElement.innerText.replace(/›/g, '').trim();
+        document.getElementById('currentTitle').textContent = titleText;
+    } else {
+        const correspondingBtn = document.querySelector(`.menu-btn[data-target="${targetSectionId}"]`);
+        if (correspondingBtn) {
+            correspondingBtn.classList.add('active');
+            const titleText = correspondingBtn.innerText.replace(/›/g, '').trim();
+            document.getElementById('currentTitle').textContent = titleText;
+        }
+    }
 }
 
-/* JAM REAL-TIME DIGITAL & TANGGAL */
+/* JAM REAL-TIME DIGITAL DI ATAS SAMPLING ZOKENT */
 function startRealtimeClock() {
     function update() {
         const now = new Date();
@@ -1060,16 +994,13 @@ function startRealtimeClock() {
     setInterval(update, 1000);
 }
 
-/* MUAT PRODUK & STOK */
+/* MUAT PRODUK */
 async function loadProducts(){
     const { data, error } = await supabaseClient
         .from("products")
-        .select("id,name,sku,stock_quantity,minimum_stock,is_active");
+        .select("id,stock_quantity,minimum_stock");
 
-    if(error){
-        console.error("Gagal mengambil produk:", error);
-        return;
-    }
+    if(error) return;
 
     const products = data || [];
     document.getElementById("totalProduk").textContent = products.length;
@@ -1081,37 +1012,9 @@ async function loadProducts(){
     });
 
     document.getElementById("stokMenipis").textContent = lowStock.length;
-    renderStock(lowStock);
 }
 
-function renderStock(products){
-    const container = document.getElementById("stockList");
-    if(!products.length){
-        container.innerHTML = `<div class="empty">Semua stok berada di atas batas minimum.</div>`;
-        return;
-    }
-
-    container.innerHTML = products.slice(0,6).map(product => {
-        const stock = Number(product.stock_quantity || 0);
-        const minimum = Number(product.minimum_stock || 0);
-        let percentage = minimum > 0 ? Math.min(100, (stock / minimum) * 100) : 0;
-
-        return `
-            <div class="stock-row">
-                <div class="stock-name">
-                    <strong>${escapeHTML(product.name || "-")}</strong>
-                    <span>SKU: ${escapeHTML(product.sku || "-")}</span>
-                </div>
-                <div class="stock-bar">
-                    <div class="stock-bar-inner" style="width:${percentage}%;"></div>
-                </div>
-                <div class="stock-number">${stock}</div>
-            </div>
-        `;
-    }).join("");
-}
-
-/* MUAT TRANSAKSI & GRAFIK REAL-TIME */
+/* MUAT TRANSAKSI & GRAFIK */
 async function loadSalesData() {
     const startOfDay = new Date();
     startOfDay.setHours(0, 0, 0, 0);
@@ -1119,28 +1022,23 @@ async function loadSalesData() {
     const { data: transactions, error } = await supabaseClient
         .from("transactions")
         .select("created_at, total_amount, gross_profit, payment_method")
-        .gte("created_at", startOfDay.toISOString())
-        .order("created_at", { ascending: true });
+        .gte("created_at", startOfDay.toISOString());
 
     if (error) {
-        console.error("Gagal mengambil data transaksi:", error);
         renderChart(Array(24).fill(0));
         return;
     }
 
     const trxs = transactions || [];
-
     let totalPenjualan = 0;
     let labaKotor = 0;
-    let paymentTotals = { cash: 0, qris: 0, transfer: 0, cod: 0 };
+    let paymentTotals = { cash: 0, qris: 0, transfer: 0 };
     let hourlyData = Array(24).fill(0);
 
     trxs.forEach(trx => {
         const amount = Number(trx.total_amount || 0);
-        const profit = Number(trx.gross_profit || 0);
-        
         totalPenjualan += amount;
-        labaKotor += profit;
+        labaKotor += Number(trx.gross_profit || 0);
 
         const method = (trx.payment_method || "").toLowerCase();
         if (paymentTotals.hasOwnProperty(method)) {
@@ -1151,22 +1049,19 @@ async function loadSalesData() {
         hourlyData[hour] += amount;
     });
 
-    // Update Angka Statistik
     document.getElementById("totalPenjualan").textContent = "Rp " + totalPenjualan.toLocaleString("id-ID");
     document.getElementById("penjualanKotor").textContent = "Rp " + totalPenjualan.toLocaleString("id-ID");
     document.getElementById("labaKotor").textContent = "Rp " + labaKotor.toLocaleString("id-ID");
     document.getElementById("totalTransaksi").textContent = trxs.length;
 
-    // Update Metode Pembayaran
     document.getElementById("payCash").textContent = "Rp " + paymentTotals.cash.toLocaleString("id-ID");
     document.getElementById("payQris").textContent = "Rp " + paymentTotals.qris.toLocaleString("id-ID");
     document.getElementById("payTransfer").textContent = "Rp " + paymentTotals.transfer.toLocaleString("id-ID");
-    document.getElementById("payCod").textContent = "Rp " + paymentTotals.cod.toLocaleString("id-ID");
 
     renderChart(hourlyData);
 }
 
-/* RENDER CHART.JS */
+/* CHART.JS MERAH SRC */
 function renderChart(hourlyData) {
     const ctx = document.getElementById('salesChart')?.getContext('2d');
     if (!ctx) return;
@@ -1184,29 +1079,23 @@ function renderChart(hourlyData) {
             datasets: [{
                 label: 'Penjualan (Rp)',
                 data: hourlyData,
-                borderColor: '#23979a',
-                backgroundColor: 'rgba(66, 184, 187, 0.15)',
+                borderColor: '#e11b22',
+                backgroundColor: 'rgba(225, 27, 34, 0.1)',
                 fill: true,
                 tension: 0.35,
-                pointBackgroundColor: '#23979a',
-                pointRadius: 3,
-                pointHoverRadius: 6
+                pointBackgroundColor: '#e11b22',
+                pointRadius: 3
             }]
         },
         options: {
             responsive: true,
             maintainAspectRatio: false,
-            plugins: {
-                legend: { display: false }
-            },
+            plugins: { legend: { display: false } },
             scales: {
                 y: {
                     beginAtZero: true,
-                    ticks: {
-                        callback: (val) => 'Rp ' + val.toLocaleString('id-ID'),
-                        font: { size: 9 }
-                    },
-                    grid: { color: '#f0f3f4' }
+                    ticks: { callback: (val) => 'Rp ' + val.toLocaleString('id-ID'), font: { size: 9 } },
+                    grid: { color: '#f1f5f9' }
                 },
                 x: {
                     ticks: { font: { size: 9 } },
@@ -1215,15 +1104,6 @@ function renderChart(hourlyData) {
             }
         }
     });
-}
-
-function escapeHTML(value){
-    return String(value)
-        .replace(/&/g,"&amp;")
-        .replace(/</g,"&lt;")
-        .replace(/>/g,"&gt;")
-        .replace(/"/g,"&quot;")
-        .replace(/'/g,"&#039;");
 }
 
 function setPeriod(button, period){
@@ -1240,43 +1120,15 @@ function toggleSidebar(){
     document.getElementById("sidebar").classList.toggle("open");
 }
 
-/* NAVIGASI HALAMAN */
-function goDashboard(){ window.location.href = "admin.html"; }
-function goProduk(){ window.location.href = "produk.html"; }
-function goKategori(){ window.location.href = "kategori.html"; }
-function goInventori(){ window.location.href = "stok.html"; }
-function goKasir(){ window.location.href = "kasir.html"; }
-function goPesanan(){ window.location.href = "pesanan.html"; }
-function goInvoice(){ window.location.href = "invoice.html"; }
-function goPelanggan(){ window.location.href = "pelanggan.html"; }
-function goPembelian(){ window.location.href = "pembelian.html"; }
-function goSupplier(){ window.location.href = "supplier.html"; }
-function goPengeluaran(){ window.location.href = "pengeluaran.html"; }
-function goLaporan(){ window.location.href = "laporan.html"; }
-function goAnalisa(){ window.location.href = "analisa.html"; }
-function goPromosi(){ window.location.href = "promosi.html"; }
-function goKomisi(){ window.location.href = "komisi.html"; }
-function goMarketing(){ window.location.href = "marketing.html"; }
-function goPengaturan(){ window.location.href = "pengaturan.html"; }
-
-/* LOGOUT LANGSUNG (TANPA PROMPT BROWSER) */
 async function logout(){
     await supabaseClient.auth.signOut();
     window.location.href = "login-admin.html";
 }
 
-/* INISIALISASI DASBOR */
-async function startDashboard(){
-    startRealtimeClock();
-
-    const valid = await checkOwner();
-    if(!valid) return;
-
-    await loadProducts();
-    await loadSalesData();
-}
-
-startDashboard();
+/* INIT */
+startRealtimeClock();
+loadProducts();
+loadSalesData();
 </script>
 
 </body>
