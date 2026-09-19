@@ -6,7 +6,9 @@
 
 <title>Dashboard - ZOKENT STORE</title>
 
+<!-- Supabase SDK & Chart.js -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <style>
 *{
@@ -31,18 +33,12 @@
 }
 
 body{
-    font-family:
-        Arial,
-        Helvetica,
-        sans-serif;
+    font-family: Arial, Helvetica, sans-serif;
     background:var(--bg);
     color:var(--text);
 }
 
-/* =====================================================
-   SIDEBAR
-===================================================== */
-
+/* SIDEBAR */
 .sidebar{
     position:fixed;
     left:0;
@@ -148,19 +144,13 @@ body{
     color:#fff!important;
 }
 
-/* =====================================================
-   MAIN
-===================================================== */
-
+/* MAIN */
 .main{
     margin-left:250px;
     min-height:100vh;
 }
 
-/* =====================================================
-   TOPBAR
-===================================================== */
-
+/* TOPBAR */
 .topbar{
     height:74px;
     background:white;
@@ -246,32 +236,26 @@ body{
     justify-content:center;
 }
 
-/* =====================================================
-   CONTENT
-===================================================== */
-
+/* CONTENT */
 .content{
     padding:24px 27px 40px;
 }
 
-/* =====================================================
-   WELCOME
-===================================================== */
-
+/* WELCOME BANNER & REAL-TIME CLOCK */
 .welcome{
-    background:
-        linear-gradient(
-            110deg,
-            #36abad,
-            #64c7a1
-        );
-    min-height:150px;
+    background: linear-gradient(110deg, #36abad, #64c7a1);
+    min-height:140px;
     border-radius:12px;
     color:white;
-    padding:27px 30px;
+    padding:24px 28px;
     position:relative;
     overflow:hidden;
     margin-bottom:22px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 15px;
 }
 
 .welcome:after{
@@ -283,30 +267,57 @@ body{
     right:-70px;
     top:-110px;
     background:rgba(255,255,255,.09);
+    pointer-events: none;
 }
 
-.welcome h2{
-    font-size:25px;
-    margin-bottom:8px;
+.welcome-text h2{
+    font-size:24px;
+    margin-bottom:6px;
 }
 
-.welcome p{
+.welcome-text p{
     font-size:13px;
     opacity:.9;
-    max-width:580px;
-    line-height:1.6;
+    max-width:520px;
+    line-height:1.5;
 }
 
 .welcome-date{
-    margin-top:15px;
-    font-size:11px;
-    opacity:.8;
+    margin-top:12px;
+    font-size:12px;
+    font-weight: 600;
+    opacity:.95;
 }
 
-/* =====================================================
-   FILTER
-===================================================== */
+.welcome-clock-box {
+    background: rgba(255, 255, 255, 0.18);
+    backdrop-filter: blur(8px);
+    padding: 12px 22px;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    text-align: center;
+    box-shadow: inset 0 0 10px rgba(255, 255, 255, 0.1);
+    z-index: 1;
+}
 
+.clock-digits {
+    font-size: 32px;
+    font-weight: 900;
+    font-family: monospace;
+    letter-spacing: 2px;
+    color: #ffffff;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.15);
+}
+
+.clock-label {
+    font-size: 10px;
+    font-weight: bold;
+    letter-spacing: 1.5px;
+    opacity: 0.9;
+    margin-top: 2px;
+}
+
+/* FILTER */
 .dashboard-filter{
     background:white;
     border:1px solid var(--border);
@@ -343,14 +354,10 @@ body{
     color:white;
 }
 
-/* =====================================================
-   STAT CARDS
-===================================================== */
-
+/* STAT CARDS */
 .stats{
     display:grid;
-    grid-template-columns:
-        repeat(6,1fr);
+    grid-template-columns: repeat(6,1fr);
     gap:13px;
     margin-bottom:20px;
 }
@@ -386,7 +393,7 @@ body{
 }
 
 .stat-value{
-    font-size:19px;
+    font-size:18px;
     font-weight:800;
     margin-top:14px;
 }
@@ -397,18 +404,10 @@ body{
     color:var(--muted);
 }
 
-.up{
-    color:var(--success);
-}
+.up{ color:var(--success); }
+.down{ color:var(--danger); }
 
-.down{
-    color:var(--danger);
-}
-
-/* =====================================================
-   PANELS
-===================================================== */
-
+/* PANELS */
 .grid-2{
     display:grid;
     grid-template-columns:2fr 1fr;
@@ -418,8 +417,7 @@ body{
 
 .grid-3{
     display:grid;
-    grid-template-columns:
-        repeat(3,1fr);
+    grid-template-columns: repeat(3,1fr);
     gap:18px;
     margin-bottom:18px;
 }
@@ -451,72 +449,14 @@ body{
     font-size:10px;
 }
 
-/* =====================================================
-   CHART
-===================================================== */
-
-.chart-area{
-    height:270px;
-    position:relative;
+/* CHART AREA */
+.chart-container {
+    position: relative;
+    height: 240px;
+    width: 100%;
 }
 
-.chart-svg{
-    width:100%;
-    height:100%;
-}
-
-.chart-grid{
-    stroke:#edf1f2;
-    stroke-width:1;
-}
-
-.chart-line{
-    fill:none;
-    stroke:var(--primary);
-    stroke-width:3;
-}
-
-.chart-area-fill{
-    fill:url(#chartGradient);
-    opacity:.28;
-}
-
-.chart-point{
-    fill:white;
-    stroke:var(--primary);
-    stroke-width:3;
-}
-
-.chart-label{
-    font-size:9px;
-    fill:#9aa6aa;
-}
-
-.legend{
-    display:flex;
-    gap:20px;
-    margin-bottom:10px;
-}
-
-.legend-item{
-    display:flex;
-    align-items:center;
-    gap:6px;
-    font-size:10px;
-    color:var(--muted);
-}
-
-.legend-dot{
-    width:9px;
-    height:9px;
-    border-radius:50%;
-    background:var(--primary);
-}
-
-/* =====================================================
-   PAYMENT
-===================================================== */
-
+/* PAYMENT */
 .payment-list{
     display:flex;
     flex-direction:column;
@@ -560,71 +500,14 @@ body{
     font-weight:bold;
 }
 
-/* =====================================================
-   PRODUCT LIST
-===================================================== */
-
+/* PRODUCT LIST */
 .product-list{
     display:flex;
     flex-direction:column;
     gap:11px;
 }
 
-.product-row{
-    display:flex;
-    align-items:center;
-    gap:10px;
-    padding-bottom:10px;
-    border-bottom:1px solid #f0f3f4;
-}
-
-.product-row:last-child{
-    border-bottom:none;
-}
-
-.product-image{
-    width:42px;
-    height:42px;
-    border-radius:7px;
-    background:#f0f5f6;
-    object-fit:cover;
-}
-
-.product-info{
-    flex:1;
-}
-
-.product-info strong{
-    display:block;
-    font-size:11px;
-}
-
-.product-info span{
-    display:block;
-    color:var(--muted);
-    font-size:9px;
-    margin-top:3px;
-}
-
-.product-sales{
-    text-align:right;
-}
-
-.product-sales strong{
-    display:block;
-    font-size:11px;
-}
-
-.product-sales span{
-    display:block;
-    color:var(--muted);
-    font-size:9px;
-}
-
-/* =====================================================
-   STOCK
-===================================================== */
-
+/* STOCK */
 .stock-list{
     display:flex;
     flex-direction:column;
@@ -675,10 +558,7 @@ body{
     text-align:right;
 }
 
-/* =====================================================
-   ACTIVITY
-===================================================== */
-
+/* ACTIVITY */
 .activity-list{
     display:flex;
     flex-direction:column;
@@ -691,9 +571,7 @@ body{
     border-bottom:1px solid #f0f3f4;
 }
 
-.activity:last-child{
-    border:none;
-}
+.activity:last-child{ border:none; }
 
 .activity-icon{
     width:35px;
@@ -705,9 +583,7 @@ body{
     justify-content:center;
 }
 
-.activity-content{
-    flex:1;
-}
+.activity-content{ flex:1; }
 
 .activity-content strong{
     display:block;
@@ -726,14 +602,10 @@ body{
     font-size:9px;
 }
 
-/* =====================================================
-   QUICK ACTION
-===================================================== */
-
+/* QUICK ACTION */
 .quick-actions{
     display:grid;
-    grid-template-columns:
-        repeat(4,1fr);
+    grid-template-columns: repeat(4,1fr);
     gap:12px;
 }
 
@@ -769,10 +641,6 @@ body{
     margin-top:4px;
 }
 
-/* =====================================================
-   EMPTY
-===================================================== */
-
 .empty{
     text-align:center;
     color:var(--muted);
@@ -780,1298 +648,384 @@ body{
     font-size:11px;
 }
 
-/* =====================================================
-   MOBILE
-===================================================== */
-
+/* MOBILE RESPONSIVE */
 @media(max-width:1200px){
-
-    .stats{
-        grid-template-columns:
-            repeat(3,1fr);
-    }
-
+    .stats{ grid-template-columns: repeat(3,1fr); }
 }
 
 @media(max-width:900px){
-
-    .sidebar{
-        transform:translateX(-100%);
-    }
-
-    .sidebar.open{
-        transform:translateX(0);
-    }
-
-    .main{
-        margin-left:0;
-    }
-
-    .mobile-menu{
-        display:block;
-    }
-
-    .grid-2,
-    .grid-3{
-        grid-template-columns:1fr;
-    }
-
-    .quick-actions{
-        grid-template-columns:
-            repeat(2,1fr);
-    }
-
+    .sidebar{ transform:translateX(-100%); }
+    .sidebar.open{ transform:translateX(0); }
+    .main{ margin-left:0; }
+    .mobile-menu{ display:block; }
+    .grid-2, .grid-3{ grid-template-columns:1fr; }
+    .quick-actions{ grid-template-columns: repeat(2,1fr); }
 }
 
 @media(max-width:600px){
-
-    .topbar{
-        padding:0 14px;
-        height:65px;
-    }
-
-    .content{
-        padding:15px;
-    }
-
-    .top-right .icon-btn{
-        display:none;
-    }
-
-    .outlet{
-        padding-left:10px;
-        border-left:none;
-    }
-
-    .outlet-text{
-        display:none;
-    }
-
-    .welcome{
-        padding:20px;
-        min-height:145px;
-    }
-
-    .welcome h2{
-        font-size:19px;
-    }
-
-    .dashboard-filter{
-        align-items:flex-start;
-        flex-direction:column;
-        gap:10px;
-    }
-
-    .filter-right{
-        width:100%;
-    }
-
-    .period-btn{
-        flex:1;
-    }
-
-    .stats{
-        grid-template-columns:
-            repeat(2,1fr);
-        gap:9px;
-    }
-
-    .stat{
-        min-height:105px;
-        padding:13px;
-    }
-
-    .stat-value{
-        font-size:16px;
-    }
-
-    .stat-change{
-        font-size:8px;
-    }
-
-    .quick-actions{
-        grid-template-columns:
-            repeat(2,1fr);
-    }
-
-}
-
-@media(max-width:380px){
-
-    .stats{
-        grid-template-columns:1fr;
-    }
-
-    .quick-actions{
-        grid-template-columns:1fr;
-    }
-
+    .topbar{ padding:0 14px; height:65px; }
+    .content{ padding:15px; }
+    .top-right .icon-btn{ display:none; }
+    .outlet{ padding-left:10px; border-left:none; }
+    .outlet-text{ display:none; }
+    .welcome{ padding:18px; flex-direction:column; align-items:flex-start; }
+    .welcome-clock-box{ width:100%; }
+    .dashboard-filter{ align-items:flex-start; flex-direction:column; gap:10px; }
+    .filter-right{ width:100%; }
+    .period-btn{ flex:1; }
+    .stats{ grid-template-columns: repeat(2,1fr); gap:9px; }
+    .stat{ min-height:105px; padding:13px; }
+    .stat-value{ font-size:16px; }
+    .quick-actions{ grid-template-columns: repeat(2,1fr); }
 }
 </style>
 </head>
 
 <body>
 
-
-<!-- =====================================================
-     SIDEBAR
-===================================================== -->
-
+<!-- SIDEBAR -->
 <aside class="sidebar" id="sidebar">
-
     <div class="brand">
-
-        <div class="brand-z">
-            Z
-        </div>
-
+        <div class="brand-z">Z</div>
         <div>
-            <div class="brand-name">
-                ZOKENT
-            </div>
-
-            <div class="brand-store">
-                STORE
-            </div>
+            <div class="brand-name">ZOKENT</div>
+            <div class="brand-store">STORE</div>
         </div>
-
     </div>
 
-
-    <div class="menu-section">
-        Utama
-    </div>
-
+    <div class="menu-section">Utama</div>
     <div class="menu">
-
-        <button class="active"
-                onclick="goDashboard()">
-
-            <span class="menu-icon">▦</span>
-            Dashboard
-
+        <button class="active" onclick="goDashboard()">
+            <span class="menu-icon">▦</span> Dashboard
         </button>
-
     </div>
 
-
-    <div class="menu-section">
-        Penjualan
-    </div>
-
+    <div class="menu-section">Penjualan</div>
     <div class="menu">
-
-        <button onclick="goKasir()">
-            <span class="menu-icon">💰</span>
-            Kasir
-        </button>
-
-        <button onclick="goPesanan()">
-            <span class="menu-icon">🧾</span>
-            Pesanan
-            <span class="menu-arrow">›</span>
-        </button>
-
-        <button onclick="goInvoice()">
-            <span class="menu-icon">📄</span>
-            Invoice
-        </button>
-
-        <button onclick="goPelanggan()">
-            <span class="menu-icon">👥</span>
-            Pelanggan
-            <span class="menu-arrow">›</span>
-        </button>
-
+        <button onclick="goKasir()"><span class="menu-icon">💰</span> Kasir</button>
+        <button onclick="goPesanan()"><span class="menu-icon">🧾</span> Pesanan <span class="menu-arrow">›</span></button>
+        <button onclick="goInvoice()"><span class="menu-icon">📄</span> Invoice</button>
+        <button onclick="goPelanggan()"><span class="menu-icon">👥</span> Pelanggan <span class="menu-arrow">›</span></button>
     </div>
 
-
-    <div class="menu-section">
-        Produk & Inventori
-    </div>
-
+    <div class="menu-section">Produk & Inventori</div>
     <div class="menu">
-
-        <button onclick="goProduk()">
-            <span class="menu-icon">📦</span>
-            Produk
-            <span class="menu-arrow">›</span>
-        </button>
-
-        <button onclick="goKategori()">
-            <span class="menu-icon">🏷️</span>
-            Kategori
-        </button>
-
-        <button onclick="goInventori()">
-            <span class="menu-icon">📊</span>
-            Inventori
-            <span class="menu-arrow">›</span>
-        </button>
-
-        <button onclick="goPembelian()">
-            <span class="menu-icon">🛒</span>
-            Pembelian
-            <span class="menu-arrow">›</span>
-        </button>
-
-        <button onclick="goSupplier()">
-            <span class="menu-icon">🚚</span>
-            Supplier
-        </button>
-
+        <button onclick="goProduk()"><span class="menu-icon">📦</span> Produk <span class="menu-arrow">›</span></button>
+        <button onclick="goKategori()"><span class="menu-icon">🏷️</span> Kategori</button>
+        <button onclick="goInventori()"><span class="menu-icon">📊</span> Inventori <span class="menu-arrow">›</span></button>
+        <button onclick="goPembelian()"><span class="menu-icon">🛒</span> Pembelian <span class="menu-arrow">›</span></button>
+        <button onclick="goSupplier()"><span class="menu-icon">🚚</span> Supplier</button>
     </div>
 
-
-    <div class="menu-section">
-        Keuangan
-    </div>
-
+    <div class="menu-section">Keuangan</div>
     <div class="menu">
-
-        <button onclick="goPengeluaran()">
-            <span class="menu-icon">💸</span>
-            Pengeluaran
-        </button>
-
-        <button onclick="goLaporan()">
-            <span class="menu-icon">📈</span>
-            Laporan
-            <span class="menu-arrow">›</span>
-        </button>
-
-        <button onclick="goAnalisa()">
-            <span class="menu-icon">📊</span>
-            Analisa Laporan
-        </button>
-
+        <button onclick="goPengeluaran()"><span class="menu-icon">💸</span> Pengeluaran</button>
+        <button onclick="goLaporan()"><span class="menu-icon">📈</span> Laporan <span class="menu-arrow">›</span></button>
+        <button onclick="goAnalisa()"><span class="menu-icon">📊</span> Analisa Laporan</button>
     </div>
 
-
-    <div class="menu-section">
-        Marketing
-    </div>
-
+    <div class="menu-section">Marketing</div>
     <div class="menu">
-
-        <button onclick="goPromosi()">
-            <span class="menu-icon">🎟️</span>
-            Promosi
-        </button>
-
-        <button onclick="goKomisi()">
-            <span class="menu-icon">🤝</span>
-            Komisi
-        </button>
-
-        <button onclick="goMarketing()">
-            <span class="menu-icon">📣</span>
-            Marketing
-        </button>
-
+        <button onclick="goPromosi()"><span class="menu-icon">🎟️</span> Promosi</button>
+        <button onclick="goKomisi()"><span class="menu-icon">🤝</span> Komisi</button>
+        <button onclick="goMarketing()"><span class="menu-icon">📣</span> Marketing</button>
     </div>
 
-
-    <div class="menu-section">
-        Sistem
-    </div>
-
+    <div class="menu-section">Sistem</div>
     <div class="menu">
-
-        <button onclick="goPengaturan()">
-            <span class="menu-icon">⚙️</span>
-            Pengaturan
-        </button>
-
+        <button onclick="goPengaturan()"><span class="menu-icon">⚙️</span> Pengaturan</button>
     </div>
-
 
     <div class="sidebar-bottom">
-
         <div class="menu">
-
-            <button class="logout-btn"
-                    onclick="logout()">
-
-                <span class="menu-icon">↪</span>
-                Keluar
-
+            <button class="logout-btn" onclick="logout()">
+                <span class="menu-icon">↪</span> Keluar
             </button>
-
         </div>
-
     </div>
-
 </aside>
 
-
-<!-- =====================================================
-     MAIN
-===================================================== -->
-
+<!-- MAIN -->
 <main class="main">
 
-
     <!-- TOPBAR -->
-
     <header class="topbar">
-
         <div class="top-left">
-
-            <button class="mobile-menu"
-                    onclick="toggleSidebar()">
-                ☰
-            </button>
-
+            <button class="mobile-menu" onclick="toggleSidebar()">☰</button>
             <div>
-
-                <div class="page-title">
-                    Dashboard
-                </div>
-
-                <div class="page-subtitle"
-                     id="tanggal">
-                    Memuat tanggal...
-                </div>
-
+                <div class="page-title">Dashboard</div>
+                <div class="page-subtitle" id="tanggal">Memuat tanggal...</div>
             </div>
-
         </div>
-
 
         <div class="top-right">
-
-            <button class="icon-btn"
-                    onclick="refreshDashboard()">
-
-                ↻
-
-            </button>
-
-
-            <button class="icon-btn">
-
-                🔔
-
-                <span class="notification-dot"></span>
-
-            </button>
-
-
+            <button class="icon-btn" onclick="refreshDashboard()">↻</button>
+            <button class="icon-btn">🔔 <span class="notification-dot"></span></button>
             <div class="outlet">
-
-                <div class="outlet-icon">
-                    🏪
-                </div>
-
+                <div class="outlet-icon">🏪</div>
                 <div class="outlet-text">
-
-                    <div>
-                        ZOKENT STORE
-                    </div>
-
-                    <small>
-                        Outlet utama
-                    </small>
-
+                    <div>ZOKENT STORE</div>
+                    <small>Outlet utama</small>
                 </div>
-
             </div>
-
         </div>
-
     </header>
 
-
-    <!-- =================================================
-         CONTENT
-    ================================================= -->
-
+    <!-- CONTENT -->
     <section class="content">
 
-
-        <!-- WELCOME -->
-
+        <!-- WELCOME + REALTIME CLOCK -->
         <div class="welcome">
-
-            <h2>
-                Selamat datang di ZOKENT STORE
-            </h2>
-
-            <p>
-                Pantau penjualan, stok, produk,
-                transaksi dan kondisi toko dari
-                satu halaman dashboard.
-            </p>
-
-            <div class="welcome-date"
-                 id="welcomeDate">
+            <div class="welcome-text">
+                <h2>Selamat datang di ZOKENT STORE</h2>
+                <p>Pantau penjualan, stok, produk, transaksi dan kondisi toko dari satu halaman dashboard.</p>
+                <div class="welcome-date" id="welcomeDate">Memuat tanggal...</div>
             </div>
-
+            
+            <div class="welcome-clock-box">
+                <div class="clock-digits" id="realtimeClock">00:00:00</div>
+                <div class="clock-label">WIB • REAL-TIME</div>
+            </div>
         </div>
-
 
         <!-- FILTER -->
-
         <div class="dashboard-filter">
-
-            <div class="filter-left">
-                Ringkasan Penjualan
-            </div>
-
+            <div class="filter-left">Ringkasan Penjualan</div>
             <div class="filter-right">
-
-                <button class="period-btn active"
-                        onclick="setPeriod(this,'hari')">
-                    HARI
-                </button>
-
-                <button class="period-btn"
-                        onclick="setPeriod(this,'bulan')">
-                    BULAN
-                </button>
-
+                <button class="period-btn active" onclick="setPeriod(this,'hari')">HARI</button>
+                <button class="period-btn" onclick="setPeriod(this,'bulan')">BULAN</button>
             </div>
-
         </div>
 
-
-        <!-- =================================================
-             STATISTIK
-        ================================================= -->
-
+        <!-- STATISTIK -->
         <div class="stats">
-
-
             <div class="stat">
-
                 <div class="stat-top">
-
-                    <div class="stat-label">
-                        Total Penjualan
-                    </div>
-
-                    <div class="stat-icon">
-                        💰
-                    </div>
-
+                    <div class="stat-label">Total Penjualan</div>
+                    <div class="stat-icon">💰</div>
                 </div>
-
-                <div class="stat-value"
-                     id="totalPenjualan">
-                    Rp 0
-                </div>
-
-                <div class="stat-change">
-                    Hari ini
-                </div>
-
+                <div class="stat-value" id="totalPenjualan">Rp 0</div>
+                <div class="stat-change">Hari ini</div>
             </div>
 
-
             <div class="stat">
-
                 <div class="stat-top">
-
-                    <div class="stat-label">
-                        Penjualan Kotor
-                    </div>
-
-                    <div class="stat-icon">
-                        🧾
-                    </div>
-
+                    <div class="stat-label">Penjualan Kotor</div>
+                    <div class="stat-icon">🧾</div>
                 </div>
-
-                <div class="stat-value">
-                    Rp 0
-                </div>
-
-                <div class="stat-change">
-                    Belum ada transaksi
-                </div>
-
+                <div class="stat-value" id="penjualanKotor">Rp 0</div>
+                <div class="stat-change">Hari ini</div>
             </div>
 
-
             <div class="stat">
-
                 <div class="stat-top">
-
-                    <div class="stat-label">
-                        Laba Kotor
-                    </div>
-
-                    <div class="stat-icon">
-                        📈
-                    </div>
-
+                    <div class="stat-label">Laba Kotor</div>
+                    <div class="stat-icon">📈</div>
                 </div>
-
-                <div class="stat-value">
-                    Rp 0
-                </div>
-
-                <div class="stat-change">
-                    Menunggu data kasir
-                </div>
-
+                <div class="stat-value" id="labaKotor">Rp 0</div>
+                <div class="stat-change">Estimasi Laba</div>
             </div>
 
-
             <div class="stat">
-
                 <div class="stat-top">
-
-                    <div class="stat-label">
-                        Transaksi
-                    </div>
-
-                    <div class="stat-icon">
-                        🛍️
-                    </div>
-
+                    <div class="stat-label">Transaksi</div>
+                    <div class="stat-icon">🛍️</div>
                 </div>
-
-                <div class="stat-value"
-                     id="totalTransaksi">
-                    0
-                </div>
-
-                <div class="stat-change">
-                    Transaksi hari ini
-                </div>
-
+                <div class="stat-value" id="totalTransaksi">0</div>
+                <div class="stat-change">Transaksi hari ini</div>
             </div>
 
-
             <div class="stat">
-
                 <div class="stat-top">
-
-                    <div class="stat-label">
-                        Produk
-                    </div>
-
-                    <div class="stat-icon">
-                        📦
-                    </div>
-
+                    <div class="stat-label">Produk</div>
+                    <div class="stat-icon">📦</div>
                 </div>
-
-                <div class="stat-value"
-                     id="totalProduk">
-                    0
-                </div>
-
-                <div class="stat-change">
-                    Produk terdaftar
-                </div>
-
+                <div class="stat-value" id="totalProduk">0</div>
+                <div class="stat-change">Produk terdaftar</div>
             </div>
 
-
             <div class="stat">
-
                 <div class="stat-top">
-
-                    <div class="stat-label">
-                        Stok Menipis
-                    </div>
-
-                    <div class="stat-icon">
-                        ⚠️
-                    </div>
-
+                    <div class="stat-label">Stok Menipis</div>
+                    <div class="stat-icon">⚠️</div>
                 </div>
-
-                <div class="stat-value"
-                     id="stokMenipis">
-                    0
-                </div>
-
-                <div class="stat-change down">
-                    Perlu diperiksa
-                </div>
-
+                <div class="stat-value" id="stokMenipis">0</div>
+                <div class="stat-change down">Perlu diperiksa</div>
             </div>
-
-
         </div>
 
-
-        <!-- =================================================
-             CHART + PAYMENT
-        ================================================= -->
-
+        <!-- CHART + PAYMENT -->
         <div class="grid-2">
-
-
             <!-- GRAFIK -->
-
             <div class="panel">
-
                 <div class="panel-header">
-
-                    <div class="panel-title">
-                        Penjualan
-                    </div>
-
-                    <button class="panel-link"
-                            onclick="goLaporan()">
-                        Lihat laporan
-                    </button>
-
+                    <div class="panel-title">Penjualan Dinamis</div>
+                    <button class="panel-link" onclick="goLaporan()">Lihat laporan</button>
                 </div>
-
-
-                <div class="legend">
-
-                    <div class="legend-item">
-
-                        <span class="legend-dot"></span>
-
-                        Total penjualan per jam
-
-                    </div>
-
+                <div class="chart-container">
+                    <canvas id="salesChart"></canvas>
                 </div>
-
-
-                <div class="chart-area">
-
-                    <svg
-                        class="chart-svg"
-                        viewBox="0 0 800 270"
-                        preserveAspectRatio="none">
-
-                        <defs>
-
-                            <linearGradient
-                                id="chartGradient"
-                                x1="0"
-                                y1="0"
-                                x2="0"
-                                y2="1">
-
-                                <stop
-                                    offset="0%"
-                                    stop-opacity=".35"/>
-
-                                <stop
-                                    offset="100%"
-                                    stop-opacity="0"/>
-
-                            </linearGradient>
-
-                        </defs>
-
-
-                        <line
-                            class="chart-grid"
-                            x1="50"
-                            y1="30"
-                            x2="780"
-                            y2="30"/>
-
-                        <line
-                            class="chart-grid"
-                            x1="50"
-                            y1="90"
-                            x2="780"
-                            y2="90"/>
-
-                        <line
-                            class="chart-grid"
-                            x1="50"
-                            y1="150"
-                            x2="780"
-                            y2="150"/>
-
-                        <line
-                            class="chart-grid"
-                            x1="50"
-                            y1="210"
-                            x2="780"
-                            y2="210"/>
-
-
-                        <polygon
-                            class="chart-area-fill"
-                            points="
-                            50,210
-                            110,210
-                            170,205
-                            230,210
-                            290,195
-                            350,210
-                            410,180
-                            470,205
-                            530,145
-                            590,195
-                            650,175
-                            710,205
-                            780,190
-                            780,230
-                            50,230
-                            "/>
-
-
-                        <polyline
-                            class="chart-line"
-                            points="
-                            50,210
-                            110,210
-                            170,205
-                            230,210
-                            290,195
-                            350,210
-                            410,180
-                            470,205
-                            530,145
-                            590,195
-                            650,175
-                            710,205
-                            780,190
-                            "/>
-
-
-                        <circle
-                            class="chart-point"
-                            cx="50"
-                            cy="210"
-                            r="4"/>
-
-                        <circle
-                            class="chart-point"
-                            cx="170"
-                            cy="205"
-                            r="4"/>
-
-                        <circle
-                            class="chart-point"
-                            cx="290"
-                            cy="195"
-                            r="4"/>
-
-                        <circle
-                            class="chart-point"
-                            cx="410"
-                            cy="180"
-                            r="4"/>
-
-                        <circle
-                            class="chart-point"
-                            cx="530"
-                            cy="145"
-                            r="4"/>
-
-                        <circle
-                            class="chart-point"
-                            cx="650"
-                            cy="175"
-                            r="4"/>
-
-                        <circle
-                            class="chart-point"
-                            cx="780"
-                            cy="190"
-                            r="4"/>
-
-
-                        <text
-                            class="chart-label"
-                            x="45"
-                            y="255">
-                            00:00
-                        </text>
-
-                        <text
-                            class="chart-label"
-                            x="170"
-                            y="255">
-                            04:00
-                        </text>
-
-                        <text
-                            class="chart-label"
-                            x="290"
-                            y="255">
-                            08:00
-                        </text>
-
-                        <text
-                            class="chart-label"
-                            x="410"
-                            y="255">
-                            12:00
-                        </text>
-
-                        <text
-                            class="chart-label"
-                            x="530"
-                            y="255">
-                            16:00
-                        </text>
-
-                        <text
-                            class="chart-label"
-                            x="650"
-                            y="255">
-                            20:00
-                        </text>
-
-                        <text
-                            class="chart-label"
-                            x="755"
-                            y="255">
-                            24:00
-                        </text>
-
-                    </svg>
-
-                </div>
-
             </div>
-
 
             <!-- PEMBAYARAN -->
-
             <div class="panel">
-
                 <div class="panel-header">
-
-                    <div class="panel-title">
-                        Metode Pembayaran
-                    </div>
-
+                    <div class="panel-title">Metode Pembayaran</div>
                 </div>
-
-
                 <div class="payment-list">
-
-
                     <div class="payment-item">
-
-                        <div class="payment-icon">
-                            💵
-                        </div>
-
+                        <div class="payment-icon">💵</div>
                         <div class="payment-info">
-
-                            <strong>
-                                Cash
-                            </strong>
-
-                            <span>
-                                Transaksi tunai
-                            </span>
-
+                            <strong>Cash</strong>
+                            <span>Transaksi tunai</span>
                         </div>
-
-                        <div class="payment-value">
-                            Rp 0
-                        </div>
-
+                        <div class="payment-value" id="payCash">Rp 0</div>
                     </div>
 
-
                     <div class="payment-item">
-
-                        <div class="payment-icon">
-                            📱
-                        </div>
-
+                        <div class="payment-icon">📱</div>
                         <div class="payment-info">
-
-                            <strong>
-                                QRIS
-                            </strong>
-
-                            <span>
-                                Pembayaran QRIS
-                            </span>
-
+                            <strong>QRIS</strong>
+                            <span>Pembayaran QRIS</span>
                         </div>
-
-                        <div class="payment-value">
-                            Rp 0
-                        </div>
-
+                        <div class="payment-value" id="payQris">Rp 0</div>
                     </div>
 
-
                     <div class="payment-item">
-
-                        <div class="payment-icon">
-                            💳
-                        </div>
-
+                        <div class="payment-icon">💳</div>
                         <div class="payment-info">
-
-                            <strong>
-                                Transfer
-                            </strong>
-
-                            <span>
-                                Transfer bank
-                            </span>
-
+                            <strong>Transfer</strong>
+                            <span>Transfer bank</span>
                         </div>
-
-                        <div class="payment-value">
-                            Rp 0
-                        </div>
-
+                        <div class="payment-value" id="payTransfer">Rp 0</div>
                     </div>
 
-
                     <div class="payment-item">
-
-                        <div class="payment-icon">
-                            📦
-                        </div>
-
+                        <div class="payment-icon">📦</div>
                         <div class="payment-info">
-
-                            <strong>
-                                COD
-                            </strong>
-
-                            <span>
-                                Bayar saat diterima
-                            </span>
-
+                            <strong>COD</strong>
+                            <span>Bayar saat diterima</span>
                         </div>
-
-                        <div class="payment-value">
-                            Rp 0
-                        </div>
-
+                        <div class="payment-value" id="payCod">Rp 0</div>
                     </div>
-
-
                 </div>
-
             </div>
-
         </div>
 
-
-        <!-- =================================================
-             PRODUK TERLARIS + STOK MINIMUM + AKTIVITAS
-        ================================================= -->
-
+        <!-- PRODUK TERLARIS + STOK MINIMUM + AKTIVITAS -->
         <div class="grid-3">
-
-
-            <!-- PRODUK TERLARIS -->
-
             <div class="panel">
-
                 <div class="panel-header">
-
-                    <div class="panel-title">
-                        Produk Terlaris
-                    </div>
-
-                    <button class="panel-link"
-                            onclick="goProduk()">
-                        Lihat semua
-                    </button>
-
+                    <div class="panel-title">Produk Terlaris</div>
+                    <button class="panel-link" onclick="goProduk()">Lihat semua</button>
                 </div>
-
-
-                <div class="product-list"
-                     id="bestProducts">
-
-                    <div class="empty">
-                        Data penjualan akan muncul
-                        setelah modul kasir aktif.
-                    </div>
-
+                <div class="product-list" id="bestProducts">
+                    <div class="empty">Memuat data produk...</div>
                 </div>
-
             </div>
 
-
-            <!-- STOK MINIMUM -->
-
             <div class="panel">
-
                 <div class="panel-header">
-
-                    <div class="panel-title">
-                        Stok Minimum
-                    </div>
-
-                    <button class="panel-link"
-                            onclick="goInventori()">
-                        Lihat semua
-                    </button>
-
+                    <div class="panel-title">Stok Minimum</div>
+                    <button class="panel-link" onclick="goInventori()">Lihat semua</button>
                 </div>
-
-
-                <div class="stock-list"
-                     id="stockList">
-
-                    <div class="empty">
-                        Memuat data stok...
-                    </div>
-
+                <div class="stock-list" id="stockList">
+                    <div class="empty">Memuat data stok...</div>
                 </div>
-
             </div>
 
-
-            <!-- AKTIVITAS -->
-
             <div class="panel">
-
                 <div class="panel-header">
-
-                    <div class="panel-title">
-                        Aktivitas Toko
-                    </div>
-
+                    <div class="panel-title">Aktivitas Toko</div>
                 </div>
-
-
                 <div class="activity-list">
-
-
                     <div class="activity">
-
-                        <div class="activity-icon">
-                            📦
-                        </div>
-
+                        <div class="activity-icon">📦</div>
                         <div class="activity-content">
-
-                            <strong>
-                                Sistem produk
-                            </strong>
-
-                            <span>
-                                Data produk terhubung
-                            </span>
-
+                            <strong>Sistem produk</strong>
+                            <span>Data produk terhubung</span>
                         </div>
-
-                        <div class="activity-time">
-                            aktif
-                        </div>
-
+                        <div class="activity-time">aktif</div>
                     </div>
-
-
                     <div class="activity">
-
-                        <div class="activity-icon">
-                            🏷️
-                        </div>
-
+                        <div class="activity-icon">🏷️</div>
                         <div class="activity-content">
-
-                            <strong>
-                                Kategori
-                            </strong>
-
-                            <span>
-                                Kategori toko tersedia
-                            </span>
-
+                            <strong>Kategori</strong>
+                            <span>Kategori toko tersedia</span>
                         </div>
-
-                        <div class="activity-time">
-                            aktif
-                        </div>
-
+                        <div class="activity-time">aktif</div>
                     </div>
-
-
                     <div class="activity">
-
-                        <div class="activity-icon">
-                            🔐
-                        </div>
-
+                        <div class="activity-icon">🔐</div>
                         <div class="activity-content">
-
-                            <strong>
-                                Administrator
-                            </strong>
-
-                            <span>
-                                Sesi owner aktif
-                            </span>
-
+                            <strong>Administrator</strong>
+                            <span>Sesi owner/admin aktif</span>
                         </div>
-
-                        <div class="activity-time">
-                            aktif
-                        </div>
-
+                        <div class="activity-time">aktif</div>
                     </div>
-
-
                 </div>
-
             </div>
-
-
         </div>
 
-
-        <!-- =================================================
-             MENU CEPAT
-        ================================================= -->
-
+        <!-- MENU CEPAT -->
         <div class="panel">
-
             <div class="panel-header">
-
-                <div class="panel-title">
-                    Menu Cepat
-                </div>
-
+                <div class="panel-title">Menu Cepat</div>
             </div>
-
-
             <div class="quick-actions">
-
-
-                <button class="quick"
-                        onclick="goProduk()">
-
-                    <div class="quick-icon">
-                        📦
-                    </div>
-
-                    <strong>
-                        Kelola Produk
-                    </strong>
-
-                    <span>
-                        Tambah, edit dan hapus produk
-                    </span>
-
+                <button class="quick" onclick="goProduk()">
+                    <div class="quick-icon">📦</div>
+                    <strong>Kelola Produk</strong>
+                    <span>Tambah, edit dan hapus produk</span>
                 </button>
-
-
-                <button class="quick"
-                        onclick="goKasir()">
-
-                    <div class="quick-icon">
-                        💰
-                    </div>
-
-                    <strong>
-                        Buka Kasir
-                    </strong>
-
-                    <span>
-                        Mulai transaksi penjualan
-                    </span>
-
+                <button class="quick" onclick="goKasir()">
+                    <div class="quick-icon">💰</div>
+                    <strong>Buka Kasir</strong>
+                    <span>Mulai transaksi penjualan</span>
                 </button>
-
-
-                <button class="quick"
-                        onclick="goInventori()">
-
-                    <div class="quick-icon">
-                        📊
-                    </div>
-
-                    <strong>
-                        Cek Stok
-                    </strong>
-
-                    <span>
-                        Pantau stok dan stok minimum
-                    </span>
-
+                <button class="quick" onclick="goInventori()">
+                    <div class="quick-icon">📊</div>
+                    <strong>Cek Stok</strong>
+                    <span>Pantau stok dan stok minimum</span>
                 </button>
-
-
-                <button class="quick"
-                        onclick="goPembelian()">
-
-                    <div class="quick-icon">
-                        🛒
-                    </div>
-
-                    <strong>
-                        Pembelian
-                    </strong>
-
-                    <span>
-                        Catat barang masuk dari supplier
-                    </span>
-
+                <button class="quick" onclick="goPembelian()">
+                    <div class="quick-icon">🛒</div>
+                    <strong>Pembelian</strong>
+                    <span>Catat barang masuk dari supplier</span>
                 </button>
-
-
             </div>
-
         </div>
-
 
     </section>
-
 </main>
 
-
 <script>
+/* SUPABASE CLIENT */
+const SUPABASE_URL = "https://weuousmvkxmgmsnwiuad.supabase.co";
+const SUPABASE_KEY = "sb_publishable_e375KDL0vuoahHO_kWMjwA_a04R4yHb";
+const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-/* =====================================================
-   SUPABASE
-===================================================== */
+let salesChartInstance = null;
 
-const SUPABASE_URL =
-    "https://weuousmvkxmgmsnwiuad.supabase.co";
-
-const SUPABASE_KEY =
-    "sb_publishable_e375KDL0vuoahHO_kWMjwA_a04R4yHb";
-
-const supabaseClient =
-    window.supabase.createClient(
-        SUPABASE_URL,
-        SUPABASE_KEY
-    );
-
-
-/* =====================================================
-   CEK LOGIN OWNER
-===================================================== */
-
+/* CEK ACCESS ADMIN/OWNER */
 async function checkOwner() {
   const { data: { session } } = await supabaseClient.auth.getSession();
 
-  // 1. Jika tidak ada sesi, kembalikan ke login
   if (!session) {
     window.location.href = "login-admin.html";
     return false;
   }
 
-  // 2. Ambil role dari Auth Metadata
   const roleFromAuth = session.user.user_metadata?.role;
-
-  // 3. Ambil data dari tabel profiles (jika ada)
   const { data: profile } = await supabaseClient
     .from("profiles")
     .select("role, is_active")
     .eq("id", session.user.id)
     .maybeSingle();
 
-  // Gabungkan penentuan role (utamakan tabel profiles, lalu user_metadata)
   const currentRole = (profile?.role || roleFromAuth || "").toLowerCase();
   const allowedRoles = ["owner", "admin", "pemilik"];
 
-  // 4. Validasi Role
   if (!allowedRoles.includes(currentRole)) {
     alert("Akun ini tidak memiliki akses Administrator.");
     await supabaseClient.auth.signOut();
@@ -2081,452 +1035,248 @@ async function checkOwner() {
 
   return true;
 }
-/* =====================================================
-   PRODUK
-===================================================== */
 
-async function loadProducts(){
-
-    const {
-        data,
-        error
-    } =
-    await supabaseClient
-        .from("products")
-        .select(
-            "id,name,sku,stock_quantity,minimum_stock,is_active"
-        );
-
-
-    if(error){
-
-        console.error(
-            "Gagal mengambil produk:",
-            error
-        );
-
-        return;
-    }
-
-
-    const products =
-        data || [];
-
-
-    document.getElementById(
-        "totalProduk"
-    ).textContent =
-        products.length;
-
-
-    const lowStock =
-        products.filter(product => {
-
-            const stock =
-                Number(
-                    product.stock_quantity || 0
-                );
-
-            const minimum =
-                Number(
-                    product.minimum_stock || 0
-                );
-
-            return stock <= minimum;
-
+/* JAM REAL-TIME DIGITAL & TANGGAL */
+function startRealtimeClock() {
+    function update() {
+        const now = new Date();
+        
+        // Format Tanggal
+        const dateStr = now.toLocaleDateString("id-ID", {
+            weekday: "long", day: "numeric", month: "long", year: "numeric"
         });
 
+        // Format Jam Digital
+        const jam = String(now.getHours()).padStart(2, '0');
+        const menit = String(now.getMinutes()).padStart(2, '0');
+        const detik = String(now.getSeconds()).padStart(2, '0');
 
-    document.getElementById(
-        "stokMenipis"
-    ).textContent =
-        lowStock.length;
+        document.getElementById("tanggal").textContent = dateStr;
+        document.getElementById("welcomeDate").textContent = dateStr;
+        document.getElementById("realtimeClock").textContent = `${jam}:${menit}:${detik}`;
+    }
 
-
-    renderStock(lowStock);
-
+    update();
+    setInterval(update, 1000);
 }
 
+/* MUAT PRODUK & STOK */
+async function loadProducts(){
+    const { data, error } = await supabaseClient
+        .from("products")
+        .select("id,name,sku,stock_quantity,minimum_stock,is_active");
 
-/* =====================================================
-   STOK
-===================================================== */
-
-function renderStock(products){
-
-    const container =
-        document.getElementById(
-            "stockList"
-        );
-
-
-    if(!products.length){
-
-        container.innerHTML = `
-            <div class="empty">
-                Semua stok berada di atas
-                batas minimum.
-            </div>
-        `;
-
+    if(error){
+        console.error("Gagal mengambil produk:", error);
         return;
     }
 
+    const products = data || [];
+    document.getElementById("totalProduk").textContent = products.length;
 
-    container.innerHTML =
-        products
-        .slice(0,6)
-        .map(product => {
+    const lowStock = products.filter(product => {
+        const stock = Number(product.stock_quantity || 0);
+        const minimum = Number(product.minimum_stock || 0);
+        return stock <= minimum;
+    });
 
-            const stock =
-                Number(
-                    product.stock_quantity || 0
-                );
-
-            const minimum =
-                Number(
-                    product.minimum_stock || 0
-                );
-
-
-            let percentage = 0;
-
-            if(minimum > 0){
-
-                percentage =
-                    Math.min(
-                        100,
-                        (stock / minimum) * 100
-                    );
-
-            }
-
-
-            return `
-
-                <div class="stock-row">
-
-                    <div class="stock-name">
-
-                        <strong>
-                            ${escapeHTML(
-                                product.name || "-"
-                            )}
-                        </strong>
-
-                        <span>
-                            SKU:
-                            ${escapeHTML(
-                                product.sku || "-"
-                            )}
-                        </span>
-
-                    </div>
-
-                    <div class="stock-bar">
-
-                        <div
-                            class="stock-bar-inner"
-                            style="
-                                width:${percentage}%;
-                            ">
-                        </div>
-
-                    </div>
-
-                    <div class="stock-number">
-                        ${stock}
-                    </div>
-
-                </div>
-
-            `;
-
-        })
-        .join("");
-
+    document.getElementById("stokMenipis").textContent = lowStock.length;
+    renderStock(lowStock);
 }
 
+function renderStock(products){
+    const container = document.getElementById("stockList");
+    if(!products.length){
+        container.innerHTML = `<div class="empty">Semua stok berada di atas batas minimum.</div>`;
+        return;
+    }
 
-/* =====================================================
-   ESCAPE HTML
-===================================================== */
+    container.innerHTML = products.slice(0,6).map(product => {
+        const stock = Number(product.stock_quantity || 0);
+        const minimum = Number(product.minimum_stock || 0);
+        let percentage = minimum > 0 ? Math.min(100, (stock / minimum) * 100) : 0;
+
+        return `
+            <div class="stock-row">
+                <div class="stock-name">
+                    <strong>${escapeHTML(product.name || "-")}</strong>
+                    <span>SKU: ${escapeHTML(product.sku || "-")}</span>
+                </div>
+                <div class="stock-bar">
+                    <div class="stock-bar-inner" style="width:${percentage}%;"></div>
+                </div>
+                <div class="stock-number">${stock}</div>
+            </div>
+        `;
+    }).join("");
+}
+
+/* MUAT TRANSAKSI & GRAFIK REAL-TIME */
+async function loadSalesData() {
+    const startOfDay = new Date();
+    startOfDay.setHours(0, 0, 0, 0);
+
+    const { data: transactions, error } = await supabaseClient
+        .from("transactions")
+        .select("created_at, total_amount, gross_profit, payment_method")
+        .gte("created_at", startOfDay.toISOString())
+        .order("created_at", { ascending: true });
+
+    if (error) {
+        console.error("Gagal mengambil data transaksi:", error);
+        renderChart(Array(24).fill(0));
+        return;
+    }
+
+    const trxs = transactions || [];
+
+    let totalPenjualan = 0;
+    let labaKotor = 0;
+    let paymentTotals = { cash: 0, qris: 0, transfer: 0, cod: 0 };
+    let hourlyData = Array(24).fill(0);
+
+    trxs.forEach(trx => {
+        const amount = Number(trx.total_amount || 0);
+        const profit = Number(trx.gross_profit || 0);
+        
+        totalPenjualan += amount;
+        labaKotor += profit;
+
+        const method = (trx.payment_method || "").toLowerCase();
+        if (paymentTotals.hasOwnProperty(method)) {
+            paymentTotals[method] += amount;
+        }
+
+        const hour = new Date(trx.created_at).getHours();
+        hourlyData[hour] += amount;
+    });
+
+    // Update Angka Statistik
+    document.getElementById("totalPenjualan").textContent = "Rp " + totalPenjualan.toLocaleString("id-ID");
+    document.getElementById("penjualanKotor").textContent = "Rp " + totalPenjualan.toLocaleString("id-ID");
+    document.getElementById("labaKotor").textContent = "Rp " + labaKotor.toLocaleString("id-ID");
+    document.getElementById("totalTransaksi").textContent = trxs.length;
+
+    // Update Metode Pembayaran
+    document.getElementById("payCash").textContent = "Rp " + paymentTotals.cash.toLocaleString("id-ID");
+    document.getElementById("payQris").textContent = "Rp " + paymentTotals.qris.toLocaleString("id-ID");
+    document.getElementById("payTransfer").textContent = "Rp " + paymentTotals.transfer.toLocaleString("id-ID");
+    document.getElementById("payCod").textContent = "Rp " + paymentTotals.cod.toLocaleString("id-ID");
+
+    renderChart(hourlyData);
+}
+
+/* RENDER CHART.JS */
+function renderChart(hourlyData) {
+    const ctx = document.getElementById('salesChart')?.getContext('2d');
+    if (!ctx) return;
+
+    const labels = Array.from({ length: 24 }, (_, i) => `${String(i).padStart(2, '0')}:00`);
+
+    if (salesChartInstance) {
+        salesChartInstance.destroy();
+    }
+
+    salesChartInstance = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Penjualan (Rp)',
+                data: hourlyData,
+                borderColor: '#23979a',
+                backgroundColor: 'rgba(66, 184, 187, 0.15)',
+                fill: true,
+                tension: 0.35,
+                pointBackgroundColor: '#23979a',
+                pointRadius: 3,
+                pointHoverRadius: 6
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        callback: (val) => 'Rp ' + val.toLocaleString('id-ID'),
+                        font: { size: 9 }
+                    },
+                    grid: { color: '#f0f3f4' }
+                },
+                x: {
+                    ticks: { font: { size: 9 } },
+                    grid: { display: false }
+                }
+            }
+        }
+    });
+}
 
 function escapeHTML(value){
-
     return String(value)
         .replace(/&/g,"&amp;")
         .replace(/</g,"&lt;")
         .replace(/>/g,"&gt;")
         .replace(/"/g,"&quot;")
         .replace(/'/g,"&#039;");
-
 }
 
-
-/* =====================================================
-   TANGGAL
-===================================================== */
-
-function showDate(){
-
-    const now =
-        new Date();
-
-
-    const text =
-        now.toLocaleDateString(
-            "id-ID",
-            {
-                weekday:"long",
-                day:"numeric",
-                month:"long",
-                year:"numeric"
-            }
-        );
-
-
-    document.getElementById(
-        "tanggal"
-    ).textContent =
-        text;
-
-
-    document.getElementById(
-        "welcomeDate"
-    ).textContent =
-        text;
-
+function setPeriod(button, period){
+    document.querySelectorAll(".period-btn").forEach(btn => btn.classList.remove("active"));
+    button.classList.add("active");
 }
-
-
-/* =====================================================
-   PERIODE
-===================================================== */
-
-function setPeriod(button,period){
-
-    document
-        .querySelectorAll(
-            ".period-btn"
-        )
-        .forEach(btn => {
-
-            btn.classList.remove(
-                "active"
-            );
-
-        });
-
-
-    button.classList.add(
-        "active"
-    );
-
-}
-
-
-/* =====================================================
-   REFRESH
-===================================================== */
 
 async function refreshDashboard(){
-
     await loadProducts();
-
+    await loadSalesData();
 }
-
-
-/* =====================================================
-   SIDEBAR MOBILE
-===================================================== */
 
 function toggleSidebar(){
-
-    document
-        .getElementById("sidebar")
-        .classList.toggle("open");
-
+    document.getElementById("sidebar").classList.toggle("open");
 }
 
+/* NAVIGASI HALAMAN */
+function goDashboard(){ window.location.href = "admin.html"; }
+function goProduk(){ window.location.href = "produk.html"; }
+function goKategori(){ window.location.href = "kategori.html"; }
+function goInventori(){ window.location.href = "stok.html"; }
+function goKasir(){ window.location.href = "kasir.html"; }
+function goPesanan(){ window.location.href = "pesanan.html"; }
+function goInvoice(){ window.location.href = "invoice.html"; }
+function goPelanggan(){ window.location.href = "pelanggan.html"; }
+function goPembelian(){ window.location.href = "pembelian.html"; }
+function goSupplier(){ window.location.href = "supplier.html"; }
+function goPengeluaran(){ window.location.href = "pengeluaran.html"; }
+function goLaporan(){ window.location.href = "laporan.html"; }
+function goAnalisa(){ window.location.href = "analisa.html"; }
+function goPromosi(){ window.location.href = "promosi.html"; }
+function goKomisi(){ window.location.href = "komisi.html"; }
+function goMarketing(){ window.location.href = "marketing.html"; }
+function goPengaturan(){ window.location.href = "pengaturan.html"; }
 
-/* =====================================================
-   NAVIGASI
-===================================================== */
-
-function goDashboard(){
-
-    window.location.href =
-        "admin.html";
-
-}
-
-function goProduk(){
-
-    window.location.href =
-        "produk.html";
-
-}
-
-function goKategori(){
-
-    window.location.href =
-        "kategori.html";
-
-}
-
-function goInventori(){
-
-    window.location.href =
-        "stok.html";
-
-}
-
-function goKasir(){
-
-    window.location.href =
-        "kasir.html";
-
-}
-
-function goPesanan(){
-
-    window.location.href =
-        "pesanan.html";
-
-}
-
-function goInvoice(){
-
-    window.location.href =
-        "invoice.html";
-
-}
-
-function goPelanggan(){
-
-    window.location.href =
-        "pelanggan.html";
-
-}
-
-function goPembelian(){
-
-    window.location.href =
-        "pembelian.html";
-
-}
-
-function goSupplier(){
-
-    window.location.href =
-        "supplier.html";
-
-}
-
-function goPengeluaran(){
-
-    window.location.href =
-        "pengeluaran.html";
-
-}
-
-function goLaporan(){
-
-    window.location.href =
-        "laporan.html";
-
-}
-
-function goAnalisa(){
-
-    window.location.href =
-        "analisa.html";
-
-}
-
-function goPromosi(){
-
-    window.location.href =
-        "promosi.html";
-
-}
-
-function goKomisi(){
-
-    window.location.href =
-        "komisi.html";
-
-}
-
-function goMarketing(){
-
-    window.location.href =
-        "marketing.html";
-
-}
-
-function goPengaturan(){
-
-    window.location.href =
-        "pengaturan.html";
-
-}
-
-
-/* =====================================================
-   LOGOUT
-===================================================== */
-
+/* LOGOUT LANGSUNG (TANPA PROMPT BROWSER) */
 async function logout(){
-
-    const yakin =
-        confirm(
-            "Apakah Anda yakin ingin keluar?"
-        );
-
-
-    if(!yakin){
-        return;
-    }
-
-
-    await supabaseClient
-        .auth
-        .signOut();
-
-
-    window.location.href =
-        "login-admin.html";
-
+    await supabaseClient.auth.signOut();
+    window.location.href = "login-admin.html";
 }
 
-
-/* =====================================================
-   START
-===================================================== */
-
+/* INISIALISASI DASBOR */
 async function startDashboard(){
+    startRealtimeClock();
 
-    showDate();
-
-
-    const valid =
-        await checkOwner();
-
-
-    if(!valid){
-        return;
-    }
-
+    const valid = await checkOwner();
+    if(!valid) return;
 
     await loadProducts();
-
+    await loadSalesData();
 }
 
-
 startDashboard();
-
 </script>
 
 </body>
