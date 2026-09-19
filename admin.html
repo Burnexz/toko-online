@@ -97,14 +97,34 @@ body{
 ========================= */
 
 .brand{
-    min-height:82px;
+    min-height:92px;
 
     display:flex;
     align-items:center;
 
-    padding:14px 17px;
+    padding:12px 15px;
 
     border-bottom:1px solid rgba(255,255,255,.17);
+
+    cursor:pointer;
+    user-select:none;
+
+    transition:
+        background .18s ease,
+        transform .18s ease;
+}
+
+.brand:hover{
+    background:rgba(255,255,255,.08);
+}
+
+.brand:active{
+    transform:scale(.98);
+}
+
+.brand:focus{
+    outline:2px solid rgba(255,255,255,.7);
+    outline-offset:-3px;
 }
 
 .brand-left{
@@ -113,11 +133,13 @@ body{
     min-width:0;
 }
 
-.brand-logo{
-    width:42px;
-    height:42px;
+/* LOGO Z LEBIH BESAR */
 
-    border-radius:11px;
+.brand-logo{
+    width:58px;
+    height:58px;
+
+    border-radius:15px;
 
     background:#fff;
 
@@ -130,7 +152,9 @@ body{
     flex-shrink:0;
 
     box-shadow:
-        0 4px 12px rgba(0,0,0,.12);
+        0 6px 16px rgba(0,0,0,.18);
+
+    position:relative;
 }
 
 .brand-logo img{
@@ -139,32 +163,106 @@ body{
     object-fit:cover;
 }
 
+/* Z STYLE STREET / GRAFFITI */
+
 .brand-z{
     color:var(--primary);
-    font-size:24px;
+
+    font-family:
+        Impact,
+        Haettenschweiler,
+        "Arial Black",
+        sans-serif;
+
+    font-size:43px;
+
+    line-height:1;
+
     font-weight:900;
+
+    font-style:italic;
+
+    letter-spacing:-5px;
+
+    transform:
+        skew(-9deg)
+        rotate(-5deg);
+
+    text-shadow:
+        2px 2px 0 #111,
+        4px 4px 0 rgba(0,0,0,.12);
+
+    position:relative;
+
+    left:-2px;
+}
+
+.brand-z::after{
+    content:"";
+
+    position:absolute;
+
+    left:2px;
+    right:-4px;
+
+    bottom:-5px;
+
+    height:4px;
+
+    background:var(--primary);
+
+    border-radius:100%;
+
+    transform:rotate(-3deg);
 }
 
 .brand-text{
-    margin-left:10px;
+    margin-left:12px;
+
     min-width:0;
 }
 
 .brand-name{
-    font-size:17px;
+    font-family:
+        Impact,
+        Haettenschweiler,
+        "Arial Black",
+        sans-serif;
+
+    font-size:25px;
+
     font-weight:900;
-    letter-spacing:.8px;
+
+    font-style:italic;
+
+    letter-spacing:-.8px;
+
+    line-height:.95;
+
+    text-transform:uppercase;
 
     white-space:nowrap;
     overflow:hidden;
     text-overflow:ellipsis;
+
+    text-shadow:
+        2px 2px 0 rgba(0,0,0,.18);
+
+    transform:skew(-5deg);
 }
 
 .brand-store{
-    font-size:8px;
-    letter-spacing:3px;
-    opacity:.9;
-    margin-top:2px;
+    font-size:9px;
+
+    letter-spacing:4px;
+
+    font-weight:800;
+
+    opacity:.95;
+
+    margin-top:5px;
+
+    margin-left:2px;
 }
 
 /* =========================
@@ -287,6 +385,76 @@ body{
 
 .sidebar-overlay.show{
     display:block;
+}
+
+/* =========================
+   PROFILE DRAWER
+========================= */
+
+.profile-drawer-overlay{
+    position:fixed;
+
+    inset:0;
+
+    background:rgba(15,23,42,.48);
+
+    opacity:0;
+
+    visibility:hidden;
+
+    transition:
+        opacity .28s ease,
+        visibility .28s ease;
+
+    z-index:2400;
+
+    backdrop-filter:blur(1px);
+}
+
+.profile-drawer-overlay.show{
+    opacity:1;
+
+    visibility:visible;
+}
+
+.profile-drawer{
+    position:fixed;
+
+    top:0;
+    right:0;
+    bottom:0;
+
+    width:min(430px,92vw);
+
+    background:#fff;
+
+    transform:translateX(100%);
+
+    transition:
+        transform .32s
+        cubic-bezier(.4,0,.2,1);
+
+    z-index:2500;
+
+    box-shadow:
+        -15px 0 40px rgba(0,0,0,.20);
+
+    overflow:hidden;
+}
+
+.profile-drawer.show{
+    transform:translateX(0);
+}
+
+.profile-frame{
+    width:100%;
+    height:100%;
+
+    border:0;
+
+    display:block;
+
+    background:#fff;
 }
 
 /* =========================
@@ -1038,11 +1206,26 @@ body{
 }
 
 .logo-preview-z{
-    font-size:58px;
+    font-family:
+        Impact,
+        Haettenschweiler,
+        "Arial Black",
+        sans-serif;
+
+    font-size:78px;
 
     font-weight:900;
 
+    font-style:italic;
+
     color:var(--primary);
+
+    transform:
+        skew(-8deg)
+        rotate(-4deg);
+
+    text-shadow:
+        3px 3px 0 #111;
 }
 
 .logo-preview-card h3{
@@ -1383,6 +1566,30 @@ body{
 
 @media(max-width:480px){
 
+    .brand{
+        min-height:84px;
+
+        padding:10px 13px;
+    }
+
+    .brand-logo{
+        width:51px;
+        height:51px;
+    }
+
+    .brand-z{
+        font-size:37px;
+    }
+
+    .brand-name{
+        font-size:22px;
+    }
+
+    .brand-store{
+        font-size:8px;
+        letter-spacing:3px;
+    }
+
     .topbar{
         height:64px;
 
@@ -1446,6 +1653,10 @@ body{
         gap:12px;
     }
 
+    .profile-drawer{
+        width:92vw;
+    }
+
 }
 </style>
 </head>
@@ -1453,30 +1664,59 @@ body{
 <body>
 
 <!-- OVERLAY MOBILE -->
-<div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+<div
+    class="sidebar-overlay"
+    id="sidebarOverlay"
+    onclick="closeSidebar()">
+</div>
+
 
 <!-- =========================
      SIDEBAR
 ========================= -->
 
-<aside class="sidebar" id="sidebar">
+<aside
+    class="sidebar"
+    id="sidebar">
 
-    <div class="brand">
+    <!-- BRAND / PROFIL -->
+
+    <div
+        class="brand"
+        onclick="openProfileDrawer()"
+        role="button"
+        tabindex="0"
+        title="Buka Profil ZOKENT STORE"
+        onkeydown="
+            if(event.key==='Enter'||event.key===' ')
+            openProfileDrawer()
+        "
+    >
 
         <div class="brand-left">
 
-            <div class="brand-logo" id="sidebarLogo">
-                <span class="brand-z">Z</span>
+            <div
+                class="brand-logo"
+                id="sidebarLogo"
+            >
+                <span class="brand-z">
+                    Z
+                </span>
             </div>
 
             <div class="brand-text">
-                <div class="brand-name" id="sidebarStoreName">
+
+                <div
+                    class="brand-name"
+                    id="sidebarStoreName"
+                >
                     ZOKENT
                 </div>
 
                 <div class="brand-store">
                     STORE
                 </div>
+
             </div>
 
         </div>
@@ -2329,9 +2569,7 @@ body{
         </div>
 
 
-        <!-- =========================
-             KASIR
-        ========================= -->
+        <!-- KASIR -->
 
         <div
             id="sec-kasir"
@@ -2805,8 +3043,6 @@ body{
 
             <div class="settings-grid">
 
-                <!-- LOGO PREVIEW -->
-
                 <div class="panel">
 
                     <div class="logo-preview-card">
@@ -2860,8 +3096,6 @@ body{
 
                 </div>
 
-
-                <!-- FORM IDENTITAS -->
 
                 <div class="panel">
 
@@ -2937,8 +3171,6 @@ body{
 
                         Pengaturan logo dan identitas saat ini
                         disimpan di browser perangkat ini.
-                        Jadi setelah halaman direfresh,
-                        pengaturan tetap tersimpan.
 
                     </div>
 
@@ -2951,6 +3183,31 @@ body{
     </section>
 
 </main>
+
+
+<!-- =====================================================
+     PROFILE DRAWER
+===================================================== -->
+
+<div
+    class="profile-drawer-overlay"
+    id="profileDrawerOverlay"
+    onclick="closeProfileDrawer()">
+</div>
+
+<aside
+    class="profile-drawer"
+    id="profileDrawer"
+    aria-hidden="true">
+
+    <iframe
+        id="profileFrame"
+        class="profile-frame"
+        src="profil.html"
+        title="Profil ZOKENT STORE">
+    </iframe>
+
+</aside>
 
 
 <!-- TOAST -->
@@ -2986,36 +3243,181 @@ let salesChartInstance = null;
 
 
 /* =====================================================
+   PROFILE DRAWER
+===================================================== */
+
+function openProfileDrawer(){
+
+    const drawer =
+        document.getElementById(
+            "profileDrawer"
+        );
+
+    const overlay =
+        document.getElementById(
+            "profileDrawerOverlay"
+        );
+
+
+    if(!drawer || !overlay){
+        return;
+    }
+
+
+    /*
+       Kalau dibuka dari HP,
+       sidebar otomatis ditutup.
+    */
+
+    if(window.innerWidth <= 900){
+
+        closeSidebar();
+
+    }
+
+
+    drawer.classList.add(
+        "show"
+    );
+
+    overlay.classList.add(
+        "show"
+    );
+
+
+    drawer.setAttribute(
+        "aria-hidden",
+        "false"
+    );
+
+}
+
+
+function closeProfileDrawer(){
+
+    const drawer =
+        document.getElementById(
+            "profileDrawer"
+        );
+
+    const overlay =
+        document.getElementById(
+            "profileDrawerOverlay"
+        );
+
+
+    if(!drawer || !overlay){
+        return;
+    }
+
+
+    drawer.classList.remove(
+        "show"
+    );
+
+    overlay.classList.remove(
+        "show"
+    );
+
+
+    drawer.setAttribute(
+        "aria-hidden",
+        "true"
+    );
+
+}
+
+
+/* ESC = tutup profil */
+
+document.addEventListener(
+    "keydown",
+    function(event){
+
+        if(event.key === "Escape"){
+
+            closeProfileDrawer();
+
+        }
+
+    }
+);
+
+
+/*
+   Fungsi ini dipanggil oleh
+   profil.html setelah menyimpan.
+*/
+
+function refreshStoreSettingsFromProfile(){
+
+    loadStoreSettings();
+
+}
+
+
+/* =====================================================
    SIDEBAR MOBILE
 ===================================================== */
 
 function toggleSidebar(){
 
     const sidebar =
-        document.getElementById("sidebar");
+        document.getElementById(
+            "sidebar"
+        );
 
     const overlay =
-        document.getElementById("sidebarOverlay");
+        document.getElementById(
+            "sidebarOverlay"
+        );
 
-    sidebar.classList.toggle("open");
 
-    if(sidebar.classList.contains("open")){
-        overlay.classList.add("show");
+    sidebar.classList.toggle(
+        "open"
+    );
+
+
+    if(
+        sidebar.classList.contains(
+            "open"
+        )
+    ){
+
+        overlay.classList.add(
+            "show"
+        );
+
     }else{
-        overlay.classList.remove("show");
+
+        overlay.classList.remove(
+            "show"
+        );
+
     }
+
 }
 
 
 function closeSidebar(){
 
     document
-        .getElementById("sidebar")
-        .classList.remove("open");
+        .getElementById(
+            "sidebar"
+        )
+        .classList.remove(
+            "open"
+        );
+
 
     document
-        .getElementById("sidebarOverlay")
-        .classList.remove("show");
+        .getElementById(
+            "sidebarOverlay"
+        )
+        .classList.remove(
+            "show"
+        );
+
 }
 
 
@@ -3028,38 +3430,43 @@ function switchPage(
     btnElement = null
 ){
 
-    /* SEMBUNYIKAN SEMUA */
-
     document
-        .querySelectorAll(".page-section")
+        .querySelectorAll(
+            ".page-section"
+        )
         .forEach(sec => {
 
-            sec.classList.add("hidden");
+            sec.classList.add(
+                "hidden"
+            );
 
         });
 
-
-    /* TAMPILKAN TARGET */
 
     const target =
         document.getElementById(
             targetSectionId
         );
 
+
     if(target){
 
-        target.classList.remove("hidden");
+        target.classList.remove(
+            "hidden"
+        );
 
     }
 
 
-    /* UPDATE MENU AKTIF */
-
     document
-        .querySelectorAll(".menu-btn")
+        .querySelectorAll(
+            ".menu-btn"
+        )
         .forEach(btn => {
 
-            btn.classList.remove("active");
+            btn.classList.remove(
+                "active"
+            );
 
         });
 
@@ -3080,7 +3487,9 @@ function switchPage(
 
     if(activeButton){
 
-        activeButton.classList.add("active");
+        activeButton.classList.add(
+            "active"
+        );
 
 
         const titleText =
@@ -3090,16 +3499,14 @@ function switchPage(
 
 
         document
-            .getElementById("currentTitle")
-            .textContent = titleText;
+            .getElementById(
+                "currentTitle"
+            )
+            .textContent =
+                titleText;
 
     }
 
-
-    /* =================================================
-       PENTING:
-       JIKA HP → SIDEBAR LANGSUNG TUTUP
-    ================================================= */
 
     if(window.innerWidth <= 900){
 
@@ -3107,8 +3514,6 @@ function switchPage(
 
     }
 
-
-    /* Scroll ke atas */
 
     window.scrollTo({
         top:0,
@@ -3154,26 +3559,36 @@ function startRealtimeClock(){
             );
 
 
-        /* TOPBAR */
-
         document
-            .getElementById("realtimeClock")
-            .textContent = timeStr;
-
-
-        document
-            .getElementById("clockDate")
-            .textContent = dateStr;
+            .getElementById(
+                "realtimeClock"
+            )
+            .textContent =
+                timeStr;
 
 
         document
-            .getElementById("tanggal")
-            .textContent = dateStr;
+            .getElementById(
+                "clockDate"
+            )
+            .textContent =
+                dateStr;
 
 
         document
-            .getElementById("welcomeDate")
-            .textContent = dateStr;
+            .getElementById(
+                "tanggal"
+            )
+            .textContent =
+                dateStr;
+
+
+        document
+            .getElementById(
+                "welcomeDate"
+            )
+            .textContent =
+                dateStr;
 
     }
 
@@ -3222,32 +3637,39 @@ async function loadProducts(){
 
 
     document
-        .getElementById("totalProduk")
+        .getElementById(
+            "totalProduk"
+        )
         .textContent =
             products.length;
 
 
     const lowStock =
-        products.filter(product => {
+        products.filter(
+            product => {
 
-            const stock =
-                Number(
-                    product.stock_quantity || 0
-                );
-
-            const minimum =
-                Number(
-                    product.minimum_stock || 0
-                );
+                const stock =
+                    Number(
+                        product.stock_quantity || 0
+                    );
 
 
-            return stock <= minimum;
+                const minimum =
+                    Number(
+                        product.minimum_stock || 0
+                    );
 
-        });
+
+                return stock <= minimum;
+
+            }
+        );
 
 
     document
-        .getElementById("stokMenipis")
+        .getElementById(
+            "stokMenipis"
+        )
         .textContent =
             lowStock.length;
 
@@ -3294,6 +3716,7 @@ async function loadSalesData(){
             error
         );
 
+
         renderChart(
             Array(24).fill(0)
         );
@@ -3327,54 +3750,56 @@ async function loadSalesData(){
         Array(24).fill(0);
 
 
-    trxs.forEach(trx => {
+    trxs.forEach(
+        trx => {
 
-        const amount =
-            Number(
-                trx.total_amount || 0
-            );
-
-
-        totalPenjualan +=
-            amount;
+            const amount =
+                Number(
+                    trx.total_amount || 0
+                );
 
 
-        labaKotor +=
-            Number(
-                trx.gross_profit || 0
-            );
+            totalPenjualan +=
+                amount;
 
 
-        const method =
-            String(
-                trx.payment_method || ""
-            )
-            .toLowerCase();
+            labaKotor +=
+                Number(
+                    trx.gross_profit || 0
+                );
 
 
-        if(
-            Object.prototype.hasOwnProperty.call(
-                paymentTotals,
-                method
-            )
-        ){
+            const method =
+                String(
+                    trx.payment_method || ""
+                )
+                .toLowerCase();
 
-            paymentTotals[method] +=
+
+            if(
+                Object.prototype.hasOwnProperty.call(
+                    paymentTotals,
+                    method
+                )
+            ){
+
+                paymentTotals[method] +=
+                    amount;
+
+            }
+
+
+            const hour =
+                new Date(
+                    trx.created_at
+                ).getHours();
+
+
+            hourlyData[hour] +=
                 amount;
 
         }
-
-
-        const hour =
-            new Date(
-                trx.created_at
-            ).getHours();
-
-
-        hourlyData[hour] +=
-            amount;
-
-    });
+    );
 
 
     const rupiah =
@@ -3385,45 +3810,71 @@ async function loadSalesData(){
 
 
     document
-        .getElementById("totalPenjualan")
+        .getElementById(
+            "totalPenjualan"
+        )
         .textContent =
-            rupiah(totalPenjualan);
+            rupiah(
+                totalPenjualan
+            );
 
 
     document
-        .getElementById("penjualanKotor")
+        .getElementById(
+            "penjualanKotor"
+        )
         .textContent =
-            rupiah(totalPenjualan);
+            rupiah(
+                totalPenjualan
+            );
 
 
     document
-        .getElementById("labaKotor")
+        .getElementById(
+            "labaKotor"
+        )
         .textContent =
-            rupiah(labaKotor);
+            rupiah(
+                labaKotor
+            );
 
 
     document
-        .getElementById("totalTransaksi")
+        .getElementById(
+            "totalTransaksi"
+        )
         .textContent =
             trxs.length;
 
 
     document
-        .getElementById("payCash")
+        .getElementById(
+            "payCash"
+        )
         .textContent =
-            rupiah(paymentTotals.cash);
+            rupiah(
+                paymentTotals.cash
+            );
 
 
     document
-        .getElementById("payQris")
+        .getElementById(
+            "payQris"
+        )
         .textContent =
-            rupiah(paymentTotals.qris);
+            rupiah(
+                paymentTotals.qris
+            );
 
 
     document
-        .getElementById("payTransfer")
+        .getElementById(
+            "payTransfer"
+        )
         .textContent =
-            rupiah(paymentTotals.transfer);
+            rupiah(
+                paymentTotals.transfer
+            );
 
 
     renderChart(
@@ -3437,7 +3888,9 @@ async function loadSalesData(){
    CHART
 ===================================================== */
 
-function renderChart(hourlyData){
+function renderChart(
+    hourlyData
+){
 
     const canvas =
         document.getElementById(
@@ -3453,7 +3906,9 @@ function renderChart(hourlyData){
 
 
     const ctx =
-        canvas.getContext("2d");
+        canvas.getContext(
+            "2d"
+        );
 
 
     const labels =
@@ -3590,7 +4045,9 @@ function setPeriod(
 ){
 
     document
-        .querySelectorAll(".period-btn")
+        .querySelectorAll(
+            ".period-btn"
+        )
         .forEach(btn => {
 
             btn.classList.remove(
@@ -3627,7 +4084,9 @@ async function refreshDashboard(){
 let toastTimer;
 
 
-function showToast(message){
+function showToast(
+    message
+){
 
     const toast =
         document.getElementById(
@@ -3668,7 +4127,9 @@ function showToast(message){
    LOGO
 ===================================================== */
 
-function previewLogo(event){
+function previewLogo(
+    event
+){
 
     const file =
         event.target.files[0];
@@ -3709,12 +4170,6 @@ function previewLogo(event){
 
             image.onload =
                 function(){
-
-                    /*
-                       Resize gambar agar
-                       localStorage tidak
-                       terlalu besar.
-                    */
 
                     const maxSize =
                         500;
@@ -3797,8 +4252,6 @@ function previewLogo(event){
                         );
 
 
-                    /* PREVIEW */
-
                     const preview =
                         document.getElementById(
                             "settingsLogoPreview"
@@ -3808,12 +4261,6 @@ function previewLogo(event){
                     preview.innerHTML =
                         `<img src="${compressed}" alt="Logo">`;
 
-
-                    /*
-                       Simpan sementara
-                       agar tombol simpan
-                       nanti bisa mengambilnya.
-                    */
 
                     window.pendingLogo =
                         compressed;
@@ -3862,7 +4309,7 @@ function removeLogo(){
 
 
 /* =====================================================
-   UPDATE LOGO DI SELURUH UI
+   UPDATE LOGO
 ===================================================== */
 
 function updateLogoUI(
@@ -3951,18 +4398,20 @@ function loadStoreSettings(){
         "Toko SRC Utama";
 
 
-    /* LOGO */
-
     if(logo){
 
         updateLogoUI(
             logo
         );
 
+    }else{
+
+        updateLogoUI(
+            null
+        );
+
     }
 
-
-    /* FORM */
 
     document
         .getElementById(
@@ -4076,8 +4525,6 @@ function saveStoreSettings(){
         "Toko SRC Utama";
 
 
-    /* SIMPAN NAMA */
-
     localStorage.setItem(
         "zokent_store_name",
         storeName
@@ -4096,8 +4543,6 @@ function saveStoreSettings(){
     );
 
 
-    /* SIMPAN LOGO BARU */
-
     if(
         typeof window.pendingLogo !==
         "undefined"
@@ -4109,6 +4554,7 @@ function saveStoreSettings(){
                 "zokent_logo",
                 window.pendingLogo
             );
+
 
             updateLogoUI(
                 window.pendingLogo
