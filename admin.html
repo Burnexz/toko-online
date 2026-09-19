@@ -2048,87 +2048,39 @@ const supabaseClient =
    CEK LOGIN OWNER
 ===================================================== */
 
-async function checkOwner(){
+async function checkOwner() {
+  const { data: { session } } = await supabaseClient.auth.getSession();
 
-    const {
-        data:{
-            session
-        }
-    } =
-    await supabaseClient
-        .auth
-        .getSession();
+  // 1. Jika tidak ada sesi, kembalikan ke login
+  if (!session) {
+    window.location.href = "login-admin.html";
+    return false;
+  }
 
+  // 2. Ambil role dari Auth Metadata
+  const roleFromAuth = session.user.user_metadata?.role;
 
-    if(!session){
+  // 3. Ambil data dari tabel profiles (jika ada)
+  const { data: profile } = await supabaseClient
+    .from("profiles")
+    .select("role, is_active")
+    .eq("id", session.user.id)
+    .maybeSingle();
 
-        window.location.href =
-            "login-admin.html";
+  // Gabungkan penentuan role (utamakan tabel profiles, lalu user_metadata)
+  const currentRole = (profile?.role || roleFromAuth || "").toLowerCase();
+  const allowedRoles = ["owner", "admin", "pemilik"];
 
-        return false;
-    }
+  // 4. Validasi Role
+  if (!allowedRoles.includes(currentRole)) {
+    alert("Akun ini tidak memiliki akses Administrator.");
+    await supabaseClient.auth.signOut();
+    window.location.href = "login-admin.html";
+    return false;
+  }
 
-
-    const {
-        data:profile,
-        error
-    } =
-    await supabaseClient
-        .from("profiles")
-        .select(
-            "id,email,role,is_active"
-        )
-        .eq(
-            "id",
-            session.user.id
-        )
-        .maybeSingle();
-
-
-    if(error){
-
-        console.error(error);
-
-        alert(
-            "Tidak dapat memeriksa akun administrator."
-        );
-
-        await supabaseClient
-            .auth
-            .signOut();
-
-        window.location.href =
-            "login-admin.html";
-
-        return false;
-    }
-
-
-    if(
-        !profile ||
-        profile.role !== "owner" ||
-        profile.is_active !== true
-    ){
-
-        alert(
-            "Akun ini tidak memiliki akses Owner."
-        );
-
-        await supabaseClient
-            .auth
-            .signOut();
-
-        window.location.href =
-            "login-admin.html";
-
-        return false;
-    }
-
-
-    return true;
+  return true;
 }
-
-
 /* =====================================================
    PRODUK
 ===================================================== */
