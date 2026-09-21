@@ -25,7 +25,7 @@
     --text:#334155;
     --muted:#64748b;
     --bg:#f5f7fa;
-    --white:#ffffff;
+    --white:#fff;
     --border:#e5e7eb;
 
     --success:#16a34a;
@@ -35,9 +35,9 @@
     --sidebar-width:250px;
 }
 
-/* =========================
-   BODY
-========================= */
+html{
+    scroll-behavior:smooth;
+}
 
 body{
     font-family:
@@ -53,9 +53,9 @@ body{
     overflow-x:hidden;
 }
 
-/* =========================
+/* =====================================================
    SIDEBAR
-========================= */
+===================================================== */
 
 .sidebar{
     position:fixed;
@@ -92,9 +92,9 @@ body{
     border-radius:20px;
 }
 
-/* =========================
+/* =====================================================
    BRAND
-========================= */
+===================================================== */
 
 .brand{
     min-height:92px;
@@ -133,8 +133,6 @@ body{
     min-width:0;
 }
 
-/* LOGO Z LEBIH BESAR */
-
 .brand-logo{
     width:58px;
     height:58px;
@@ -162,8 +160,6 @@ body{
     height:100%;
     object-fit:cover;
 }
-
-/* Z STYLE STREET / GRAFFITI */
 
 .brand-z{
     color:var(--primary);
@@ -218,7 +214,6 @@ body{
 
 .brand-text{
     margin-left:12px;
-
     min-width:0;
 }
 
@@ -230,15 +225,10 @@ body{
         sans-serif;
 
     font-size:25px;
-
     font-weight:900;
-
     font-style:italic;
-
     letter-spacing:-.8px;
-
     line-height:.95;
-
     text-transform:uppercase;
 
     white-space:nowrap;
@@ -253,21 +243,16 @@ body{
 
 .brand-store{
     font-size:9px;
-
     letter-spacing:4px;
-
     font-weight:800;
-
     opacity:.95;
-
     margin-top:5px;
-
     margin-left:2px;
 }
 
-/* =========================
+/* =====================================================
    MENU
-========================= */
+===================================================== */
 
 .menu-section{
     padding:17px 16px 7px;
@@ -346,9 +331,9 @@ body{
     opacity:.6;
 }
 
-/* =========================
+/* =====================================================
    SIDEBAR BOTTOM
-========================= */
+===================================================== */
 
 .sidebar-bottom{
     padding:12px 9px 20px;
@@ -366,9 +351,9 @@ body{
     background:rgba(0,0,0,.12)!important;
 }
 
-/* =========================
-   MOBILE OVERLAY
-========================= */
+/* =====================================================
+   OVERLAY
+===================================================== */
 
 .sidebar-overlay{
     display:none;
@@ -387,93 +372,23 @@ body{
     display:block;
 }
 
-/* =========================
-   PROFILE DRAWER
-========================= */
-
-.profile-drawer-overlay{
-    position:fixed;
-
-    inset:0;
-
-    background:rgba(15,23,42,.48);
-
-    opacity:0;
-
-    visibility:hidden;
-
-    transition:
-        opacity .28s ease,
-        visibility .28s ease;
-
-    z-index:2400;
-
-    backdrop-filter:blur(1px);
-}
-
-.profile-drawer-overlay.show{
-    opacity:1;
-
-    visibility:visible;
-}
-
-.profile-drawer{
-    position:fixed;
-
-    top:0;
-    right:0;
-    bottom:0;
-
-    width:min(430px,92vw);
-
-    background:#fff;
-
-    transform:translateX(100%);
-
-    transition:
-        transform .32s
-        cubic-bezier(.4,0,.2,1);
-
-    z-index:2500;
-
-    box-shadow:
-        -15px 0 40px rgba(0,0,0,.20);
-
-    overflow:hidden;
-}
-
-.profile-drawer.show{
-    transform:translateX(0);
-}
-
-.profile-frame{
-    width:100%;
-    height:100%;
-
-    border:0;
-
-    display:block;
-
-    background:#fff;
-}
-
-/* =========================
+/* =====================================================
    MAIN
-========================= */
+===================================================== */
 
 .main{
     margin-left:var(--sidebar-width);
     min-height:100vh;
 }
 
-/* =========================
+/* =====================================================
    TOPBAR
-========================= */
+===================================================== */
 
 .topbar{
-    height:76px;
+    min-height:76px;
 
-    background:rgba(255,255,255,.96);
+    background:rgba(255,255,255,.97);
 
     border-bottom:1px solid var(--border);
 
@@ -481,7 +396,7 @@ body{
     align-items:center;
     justify-content:space-between;
 
-    padding:0 27px;
+    padding:10px 27px;
 
     position:sticky;
     top:0;
@@ -496,6 +411,8 @@ body{
     display:flex;
     align-items:center;
     gap:13px;
+
+    min-width:0;
 }
 
 .mobile-menu{
@@ -520,8 +437,6 @@ body{
     background:var(--primary-soft);
 }
 
-/* PAGE TITLE */
-
 .page-title{
     font-size:19px;
     font-weight:800;
@@ -534,9 +449,9 @@ body{
     margin-top:3px;
 }
 
-/* =========================
+/* =====================================================
    TOP RIGHT
-========================= */
+===================================================== */
 
 .top-right{
     display:flex;
@@ -544,10 +459,12 @@ body{
     gap:10px;
 }
 
-/* CLOCK */
+/* =====================================================
+   CLOCK
+===================================================== */
 
 .top-clock{
-    min-width:145px;
+    min-width:155px;
 
     display:flex;
     align-items:center;
@@ -560,6 +477,8 @@ body{
     border:1px solid var(--border);
 
     border-radius:11px;
+
+    box-shadow:0 2px 7px rgba(15,23,42,.03);
 }
 
 .clock-icon{
@@ -577,10 +496,13 @@ body{
     color:var(--primary);
 
     font-size:16px;
+
+    flex-shrink:0;
 }
 
 .clock-data{
     line-height:1.15;
+    min-width:0;
 }
 
 .clock-time{
@@ -590,11 +512,13 @@ body{
         monospace;
 
     font-size:13px;
-    font-weight:800;
+    font-weight:900;
 
     color:var(--dark);
 
     letter-spacing:.4px;
+
+    white-space:nowrap;
 }
 
 .clock-date{
@@ -607,7 +531,9 @@ body{
     white-space:nowrap;
 }
 
-/* TOP BUTTON */
+/* =====================================================
+   TOP BUTTON
+===================================================== */
 
 .icon-btn{
     width:38px;
@@ -646,7 +572,9 @@ body{
     background:var(--danger);
 }
 
-/* OUTLET */
+/* =====================================================
+   OUTLET
+===================================================== */
 
 .outlet{
     display:flex;
@@ -697,9 +625,9 @@ body{
     font-weight:500;
 }
 
-/* =========================
+/* =====================================================
    CONTENT
-========================= */
+===================================================== */
 
 .content{
     padding:24px 27px 45px;
@@ -713,18 +641,18 @@ body{
     display:none!important;
 }
 
-/* =========================
-   WELCOME
-========================= */
+/* =====================================================
+   WELCOME BANNER
+===================================================== */
 
 .welcome{
-    min-height:120px;
+    min-height:138px;
 
-    border-radius:14px;
+    border-radius:16px;
 
     color:#fff;
 
-    padding:24px 27px;
+    padding:25px 28px;
 
     position:relative;
     overflow:hidden;
@@ -738,13 +666,29 @@ body{
     background:
         linear-gradient(
             115deg,
-            #e51b23 0%,
-            #d5161e 55%,
-            #b91118 100%
+            #ed1c24 0%,
+            #dc1720 48%,
+            #b91018 100%
         );
 
     box-shadow:
-        0 8px 20px rgba(225,27,34,.14);
+        0 9px 25px rgba(225,27,34,.18);
+}
+
+.welcome::before{
+    content:"";
+
+    position:absolute;
+
+    width:250px;
+    height:250px;
+
+    right:-90px;
+    top:-105px;
+
+    border-radius:50%;
+
+    border:28px solid rgba(255,255,255,.07);
 }
 
 .welcome::after{
@@ -752,50 +696,108 @@ body{
 
     position:absolute;
 
-    width:180px;
-    height:180px;
+    width:155px;
+    height:155px;
 
-    right:-50px;
-    top:-70px;
+    right:80px;
+    bottom:-115px;
 
     border-radius:50%;
 
-    background:rgba(255,255,255,.08);
+    background:rgba(255,255,255,.07);
 }
 
 .welcome-text{
     position:relative;
-    z-index:1;
+    z-index:3;
+
+    max-width:760px;
 }
 
 .welcome-text h2{
-    font-size:21px;
-    margin-bottom:7px;
+    font-size:22px;
+    margin-bottom:8px;
+    line-height:1.25;
 }
 
 .welcome-text p{
     font-size:12px;
 
-    opacity:.9;
+    opacity:.92;
 
-    max-width:650px;
+    max-width:680px;
 
-    line-height:1.5;
+    line-height:1.55;
 }
 
 .welcome-date{
-    margin-top:11px;
+    margin-top:12px;
 
     font-size:11px;
 
-    font-weight:600;
+    font-weight:700;
 
-    opacity:.9;
+    opacity:.92;
 }
 
-/* =========================
+.welcome-logo{
+    position:relative;
+    z-index:3;
+
+    width:82px;
+    height:82px;
+
+    border-radius:20px;
+
+    background:rgba(255,255,255,.13);
+
+    border:1px solid rgba(255,255,255,.25);
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    overflow:hidden;
+
+    flex-shrink:0;
+
+    margin-left:20px;
+
+    box-shadow:
+        0 8px 22px rgba(0,0,0,.10);
+}
+
+.welcome-logo img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+}
+
+.welcome-logo-z{
+    font-family:
+        Impact,
+        Haettenschweiler,
+        "Arial Black",
+        sans-serif;
+
+    color:#fff;
+
+    font-size:60px;
+
+    font-style:italic;
+    font-weight:900;
+
+    transform:
+        skew(-8deg)
+        rotate(-5deg);
+
+    text-shadow:
+        3px 3px 0 rgba(0,0,0,.25);
+}
+
+/* =====================================================
    FILTER
-========================= */
+===================================================== */
 
 .dashboard-filter{
     background:#fff;
@@ -849,9 +851,9 @@ body{
     color:#fff;
 }
 
-/* =========================
+/* =====================================================
    STATS
-========================= */
+===================================================== */
 
 .stats{
     display:grid;
@@ -931,9 +933,9 @@ body{
     color:var(--danger);
 }
 
-/* =========================
+/* =====================================================
    PANELS
-========================= */
+===================================================== */
 
 .grid-2{
     display:grid;
@@ -1002,9 +1004,9 @@ body{
     font-weight:800;
 }
 
-/* =========================
+/* =====================================================
    CHART
-========================= */
+===================================================== */
 
 .chart-container{
     position:relative;
@@ -1014,9 +1016,9 @@ body{
     width:100%;
 }
 
-/* =========================
+/* =====================================================
    PAYMENT
-========================= */
+===================================================== */
 
 .payment-list{
     display:flex;
@@ -1074,9 +1076,9 @@ body{
     font-weight:800;
 }
 
-/* =========================
+/* =====================================================
    QUICK ACTION
-========================= */
+===================================================== */
 
 .quick-actions{
     display:grid;
@@ -1134,9 +1136,9 @@ body{
     margin-top:3px;
 }
 
-/* =========================
-   GENERIC SECTION
-========================= */
+/* =====================================================
+   GENERIC
+===================================================== */
 
 .section-header{
     margin-bottom:18px;
@@ -1156,9 +1158,143 @@ body{
     font-size:11px;
 }
 
-/* =========================
+/* =====================================================
+   PROFILE
+===================================================== */
+
+.profile-card{
+    display:grid;
+
+    grid-template-columns:230px 1fr;
+
+    gap:20px;
+}
+
+.profile-identity{
+    border:1px solid var(--border);
+
+    border-radius:13px;
+
+    padding:25px 18px;
+
+    text-align:center;
+
+    background:
+        linear-gradient(
+            180deg,
+            #fff,
+            #fff7f7
+        );
+}
+
+.profile-big-logo{
+    width:120px;
+    height:120px;
+
+    margin:0 auto 15px;
+
+    border-radius:25px;
+
+    background:var(--primary-soft);
+
+    border:2px solid #f3b2b5;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    overflow:hidden;
+}
+
+.profile-big-logo img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+}
+
+.profile-big-z{
+    font-family:
+        Impact,
+        Haettenschweiler,
+        "Arial Black",
+        sans-serif;
+
+    font-size:76px;
+
+    font-weight:900;
+    font-style:italic;
+
+    color:var(--primary);
+
+    transform:
+        skew(-8deg)
+        rotate(-4deg);
+
+    text-shadow:
+        3px 3px 0 #111;
+}
+
+.profile-identity h3{
+    font-size:16px;
+    color:var(--dark);
+    margin-bottom:4px;
+}
+
+.profile-identity p{
+    color:var(--muted);
+    font-size:10px;
+}
+
+.profile-info{
+    display:grid;
+
+    grid-template-columns:
+        repeat(2,1fr);
+
+    gap:13px;
+}
+
+.profile-info-box{
+    border:1px solid var(--border);
+
+    border-radius:11px;
+
+    padding:16px;
+
+    background:#fff;
+}
+
+.profile-info-label{
+    font-size:9px;
+
+    color:var(--muted);
+
+    font-weight:700;
+
+    text-transform:uppercase;
+
+    letter-spacing:.6px;
+
+    margin-bottom:6px;
+}
+
+.profile-info-value{
+    font-size:13px;
+
+    font-weight:800;
+
+    color:var(--dark);
+
+    word-break:break-word;
+}
+
+.profile-info-full{
+    grid-column:1 / -1;
+}
+
+/* =====================================================
    SETTINGS
-========================= */
+===================================================== */
 
 .settings-grid{
     display:grid;
@@ -1378,9 +1514,9 @@ body{
     line-height:1.5;
 }
 
-/* =========================
+/* =====================================================
    EMPTY
-========================= */
+===================================================== */
 
 .empty{
     text-align:center;
@@ -1392,9 +1528,9 @@ body{
     font-size:11px;
 }
 
-/* =========================
+/* =====================================================
    TOAST
-========================= */
+===================================================== */
 
 .toast{
     position:fixed;
@@ -1431,9 +1567,9 @@ body{
     transform:translateY(0);
 }
 
-/* =========================
+/* =====================================================
    RESPONSIVE
-========================= */
+===================================================== */
 
 @media(max-width:1200px){
 
@@ -1447,6 +1583,10 @@ body{
 @media(max-width:1000px){
 
     .settings-grid{
+        grid-template-columns:1fr;
+    }
+
+    .profile-card{
         grid-template-columns:1fr;
     }
 
@@ -1491,26 +1631,93 @@ body{
     }
 
     .topbar{
-        padding:0 18px;
+        padding:9px 18px;
     }
 
 }
 
 @media(max-width:700px){
 
-    .top-clock{
-        min-width:auto;
+    .topbar{
+        min-height:68px;
 
-        padding:6px 8px;
+        padding:8px 12px;
+
+        gap:8px;
     }
 
-    .clock-data{
-        display:none;
+    .top-left{
+        flex:1;
+        min-width:0;
+        gap:9px;
+    }
+
+    .mobile-menu{
+        width:38px;
+        height:38px;
+
+        flex-shrink:0;
+    }
+
+    .page-title{
+        font-size:15px;
+
+        white-space:nowrap;
+        overflow:hidden;
+        text-overflow:ellipsis;
+    }
+
+    .page-subtitle{
+        font-size:8px;
+    }
+
+    .top-right{
+        gap:5px;
+        flex-shrink:0;
+    }
+
+    /* JAM TETAP TERLIHAT */
+
+    .top-clock{
+        min-width:104px;
+
+        padding:5px 7px;
+
+        gap:6px;
+
+        border-radius:9px;
     }
 
     .clock-icon{
-        width:32px;
-        height:32px;
+        width:27px;
+        height:27px;
+
+        font-size:13px;
+
+        border-radius:7px;
+    }
+
+    .clock-time{
+        font-size:11px;
+        letter-spacing:0;
+    }
+
+    .clock-date{
+        font-size:7px;
+
+        margin-top:2px;
+
+        max-width:66px;
+
+        overflow:hidden;
+        text-overflow:ellipsis;
+    }
+
+    .top-right .icon-btn{
+        width:34px;
+        height:34px;
+
+        font-size:14px;
     }
 
     .content{
@@ -1518,9 +1725,15 @@ body{
     }
 
     .welcome{
-        padding:19px;
+        padding:20px;
 
-        min-height:125px;
+        min-height:135px;
+
+        border-radius:13px;
+    }
+
+    .welcome-text{
+        max-width:100%;
     }
 
     .welcome-text h2{
@@ -1529,6 +1742,25 @@ body{
 
     .welcome-text p{
         font-size:10px;
+
+        max-width:75%;
+    }
+
+    .welcome-date{
+        font-size:9px;
+    }
+
+    .welcome-logo{
+        width:58px;
+        height:58px;
+
+        border-radius:15px;
+
+        margin-left:8px;
+    }
+
+    .welcome-logo-z{
+        font-size:42px;
     }
 
     .stats{
@@ -1562,6 +1794,14 @@ body{
         font-size:9px;
     }
 
+    .profile-info{
+        grid-template-columns:1fr;
+    }
+
+    .profile-info-full{
+        grid-column:auto;
+    }
+
 }
 
 @media(max-width:480px){
@@ -1591,21 +1831,49 @@ body{
     }
 
     .topbar{
-        height:64px;
+        min-height:70px;
 
-        padding:0 12px;
+        padding:7px 9px;
+    }
+
+    .mobile-menu{
+        width:36px;
+        height:36px;
+
+        font-size:20px;
     }
 
     .page-title{
-        font-size:16px;
+        font-size:14px;
     }
 
     .page-subtitle{
-        font-size:9px;
+        font-size:7px;
     }
 
     .top-right{
-        gap:5px;
+        gap:4px;
+    }
+
+    .top-clock{
+        min-width:100px;
+
+        padding:5px 6px;
+    }
+
+    .clock-icon{
+        width:25px;
+        height:25px;
+        font-size:12px;
+    }
+
+    .clock-time{
+        font-size:10px;
+    }
+
+    .clock-date{
+        font-size:6.5px;
+        max-width:62px;
     }
 
     .top-right .icon-btn{
@@ -1617,6 +1885,10 @@ body{
     }
 
     .welcome{
+        min-height:140px;
+
+        padding:17px;
+
         border-radius:11px;
 
         margin-bottom:14px;
@@ -1626,8 +1898,22 @@ body{
         font-size:16px;
     }
 
-    .welcome-date{
+    .welcome-text p{
         font-size:9px;
+        max-width:72%;
+    }
+
+    .welcome-date{
+        font-size:8px;
+    }
+
+    .welcome-logo{
+        width:51px;
+        height:51px;
+    }
+
+    .welcome-logo-z{
+        font-size:37px;
     }
 
     .quick-actions{
@@ -1653,8 +1939,13 @@ body{
         gap:12px;
     }
 
-    .profile-drawer{
-        width:92vw;
+    .profile-big-logo{
+        width:100px;
+        height:100px;
+    }
+
+    .profile-big-z{
+        font-size:65px;
     }
 
 }
@@ -1663,7 +1954,10 @@ body{
 
 <body>
 
-<!-- OVERLAY MOBILE -->
+<!-- =====================================================
+     OVERLAY MOBILE
+===================================================== -->
+
 <div
     class="sidebar-overlay"
     id="sidebarOverlay"
@@ -1671,25 +1965,25 @@ body{
 </div>
 
 
-<!-- =========================
+<!-- =====================================================
      SIDEBAR
-========================= -->
+===================================================== -->
 
 <aside
     class="sidebar"
     id="sidebar">
 
-    <!-- BRAND / PROFIL -->
+    <!-- LOGO / PROFIL -->
 
     <div
         class="brand"
-        onclick="openProfileDrawer()"
+        onclick="openProfilePage()"
         role="button"
         tabindex="0"
         title="Buka Profil ZOKENT STORE"
         onkeydown="
             if(event.key==='Enter'||event.key===' ')
-            openProfileDrawer()
+            openProfilePage()
         "
     >
 
@@ -1699,9 +1993,7 @@ body{
                 class="brand-logo"
                 id="sidebarLogo"
             >
-                <span class="brand-z">
-                    Z
-                </span>
+                <span class="brand-z">Z</span>
             </div>
 
             <div class="brand-text">
@@ -1970,9 +2262,9 @@ body{
 </aside>
 
 
-<!-- =========================
+<!-- =====================================================
      MAIN
-========================= -->
+===================================================== -->
 
 <main class="main">
 
@@ -2056,9 +2348,7 @@ body{
                 title="Notifikasi"
             >
                 🔔
-
                 <span class="notification-dot"></span>
-
             </button>
 
 
@@ -2079,7 +2369,7 @@ body{
                         ZOKENT STORE
                     </div>
 
-                    <small>
+                    <small id="topStoreDescription">
                         Toko SRC Utama
                     </small>
 
@@ -2097,9 +2387,9 @@ body{
     <section class="content">
 
 
-        <!-- =========================
+        <!-- =================================================
              DASHBOARD
-        ========================= -->
+        ================================================= -->
 
         <div
             id="sec-dashboard"
@@ -2127,6 +2417,15 @@ body{
                         Memuat tanggal...
                     </div>
 
+                </div>
+
+                <div
+                    class="welcome-logo"
+                    id="welcomeLogo"
+                >
+                    <span class="welcome-logo-z">
+                        Z
+                    </span>
                 </div>
 
             </div>
@@ -2569,6 +2868,136 @@ body{
         </div>
 
 
+        <!-- =================================================
+             PROFIL
+        ================================================= -->
+
+        <div
+            id="sec-profil"
+            class="page-section hidden"
+        >
+
+            <div class="section-header">
+
+                <h2>
+                    Profil Toko
+                </h2>
+
+                <p>
+                    Informasi identitas ZOKENT STORE.
+                </p>
+
+            </div>
+
+
+            <div class="profile-card">
+
+                <div class="profile-identity">
+
+                    <div
+                        class="profile-big-logo"
+                        id="profileBigLogo"
+                    >
+                        <span class="profile-big-z">
+                            Z
+                        </span>
+                    </div>
+
+                    <h3 id="profileStoreName">
+                        ZOKENT STORE
+                    </h3>
+
+                    <p id="profileStoreDescription">
+                        Toko SRC Utama
+                    </p>
+
+                </div>
+
+
+                <div class="profile-info">
+
+                    <div class="profile-info-box">
+
+                        <div class="profile-info-label">
+                            Nama Toko
+                        </div>
+
+                        <div
+                            class="profile-info-value"
+                            id="profileNameValue"
+                        >
+                            ZOKENT STORE
+                        </div>
+
+                    </div>
+
+
+                    <div class="profile-info-box">
+
+                        <div class="profile-info-label">
+                            Nama Pendek
+                        </div>
+
+                        <div
+                            class="profile-info-value"
+                            id="profileShortValue"
+                        >
+                            ZOKENT
+                        </div>
+
+                    </div>
+
+
+                    <div class="profile-info-box profile-info-full">
+
+                        <div class="profile-info-label">
+                            Keterangan
+                        </div>
+
+                        <div
+                            class="profile-info-value"
+                            id="profileDescriptionValue"
+                        >
+                            Toko SRC Utama
+                        </div>
+
+                    </div>
+
+
+                    <div class="profile-info-box profile-info-full">
+
+                        <div class="profile-info-label">
+                            Status Sistem
+                        </div>
+
+                        <div
+                            class="profile-info-value"
+                            style="color:var(--success);"
+                        >
+                            ● Sistem Aktif
+                        </div>
+
+                    </div>
+
+
+                    <div class="profile-info-box profile-info-full">
+
+                        <button
+                            class="save-btn"
+                            onclick="switchPage('sec-pengaturan')"
+                        >
+                            ⚙️ Buka Pengaturan Toko
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
         <!-- KASIR -->
 
         <div
@@ -2577,23 +3006,14 @@ body{
         >
 
             <div class="section-header">
-
-                <h2>
-                    Kasir
-                </h2>
-
-                <p>
-                    Point of Sales untuk transaksi langsung.
-                </p>
-
+                <h2>Kasir</h2>
+                <p>Point of Sales untuk transaksi langsung.</p>
             </div>
 
             <div class="panel">
-
                 <div class="empty">
                     Modul kasir akan kita bangun di bagian ini.
                 </div>
-
             </div>
 
         </div>
@@ -2607,23 +3027,14 @@ body{
         >
 
             <div class="section-header">
-
-                <h2>
-                    Pesanan
-                </h2>
-
-                <p>
-                    Kelola pesanan yang masuk dari pelanggan.
-                </p>
-
+                <h2>Pesanan</h2>
+                <p>Kelola pesanan yang masuk dari pelanggan.</p>
             </div>
 
             <div class="panel">
-
                 <div class="empty">
                     Modul pesanan akan kita bangun berikutnya.
                 </div>
-
             </div>
 
         </div>
@@ -2637,23 +3048,14 @@ body{
         >
 
             <div class="section-header">
-
-                <h2>
-                    Invoice
-                </h2>
-
-                <p>
-                    Kelola dan cetak invoice transaksi.
-                </p>
-
+                <h2>Invoice</h2>
+                <p>Kelola dan cetak invoice transaksi.</p>
             </div>
 
             <div class="panel">
-
                 <div class="empty">
                     Modul invoice akan kita bangun berikutnya.
                 </div>
-
             </div>
 
         </div>
@@ -2667,23 +3069,14 @@ body{
         >
 
             <div class="section-header">
-
-                <h2>
-                    Pelanggan
-                </h2>
-
-                <p>
-                    Database pelanggan dan member toko.
-                </p>
-
+                <h2>Pelanggan</h2>
+                <p>Database pelanggan dan member toko.</p>
             </div>
 
             <div class="panel">
-
                 <div class="empty">
                     Modul pelanggan akan kita bangun berikutnya.
                 </div>
-
             </div>
 
         </div>
@@ -2697,23 +3090,14 @@ body{
         >
 
             <div class="section-header">
-
-                <h2>
-                    Produk
-                </h2>
-
-                <p>
-                    Kelola katalog, harga dan stok produk.
-                </p>
-
+                <h2>Produk</h2>
+                <p>Kelola katalog, harga dan stok produk.</p>
             </div>
 
             <div class="panel">
-
                 <div class="empty">
                     Modul produk akan kita bangun berikutnya.
                 </div>
-
             </div>
 
         </div>
@@ -2727,23 +3111,14 @@ body{
         >
 
             <div class="section-header">
-
-                <h2>
-                    Kategori
-                </h2>
-
-                <p>
-                    Kelola kategori produk toko.
-                </p>
-
+                <h2>Kategori</h2>
+                <p>Kelola kategori produk toko.</p>
             </div>
 
             <div class="panel">
-
                 <div class="empty">
                     Modul kategori akan kita bangun berikutnya.
                 </div>
-
             </div>
 
         </div>
@@ -2757,23 +3132,14 @@ body{
         >
 
             <div class="section-header">
-
-                <h2>
-                    Inventori
-                </h2>
-
-                <p>
-                    Pantau stok dan pergerakan barang.
-                </p>
-
+                <h2>Inventori</h2>
+                <p>Pantau stok dan pergerakan barang.</p>
             </div>
 
             <div class="panel">
-
                 <div class="empty">
                     Modul inventori akan kita bangun berikutnya.
                 </div>
-
             </div>
 
         </div>
@@ -2787,23 +3153,14 @@ body{
         >
 
             <div class="section-header">
-
-                <h2>
-                    Pembelian
-                </h2>
-
-                <p>
-                    Catat barang masuk dari supplier.
-                </p>
-
+                <h2>Pembelian</h2>
+                <p>Catat barang masuk dari supplier.</p>
             </div>
 
             <div class="panel">
-
                 <div class="empty">
                     Modul pembelian akan kita bangun berikutnya.
                 </div>
-
             </div>
 
         </div>
@@ -2817,23 +3174,14 @@ body{
         >
 
             <div class="section-header">
-
-                <h2>
-                    Supplier
-                </h2>
-
-                <p>
-                    Kelola pemasok dan distributor.
-                </p>
-
+                <h2>Supplier</h2>
+                <p>Kelola pemasok dan distributor.</p>
             </div>
 
             <div class="panel">
-
                 <div class="empty">
                     Modul supplier akan kita bangun berikutnya.
                 </div>
-
             </div>
 
         </div>
@@ -2847,23 +3195,14 @@ body{
         >
 
             <div class="section-header">
-
-                <h2>
-                    Pengeluaran
-                </h2>
-
-                <p>
-                    Catat pengeluaran operasional toko.
-                </p>
-
+                <h2>Pengeluaran</h2>
+                <p>Catat pengeluaran operasional toko.</p>
             </div>
 
             <div class="panel">
-
                 <div class="empty">
                     Modul pengeluaran akan kita bangun berikutnya.
                 </div>
-
             </div>
 
         </div>
@@ -2877,23 +3216,14 @@ body{
         >
 
             <div class="section-header">
-
-                <h2>
-                    Laporan
-                </h2>
-
-                <p>
-                    Laporan penjualan, laba dan transaksi.
-                </p>
-
+                <h2>Laporan</h2>
+                <p>Laporan penjualan, laba dan transaksi.</p>
             </div>
 
             <div class="panel">
-
                 <div class="empty">
                     Modul laporan akan kita bangun berikutnya.
                 </div>
-
             </div>
 
         </div>
@@ -2907,23 +3237,14 @@ body{
         >
 
             <div class="section-header">
-
-                <h2>
-                    Analisa Laporan
-                </h2>
-
-                <p>
-                    Analisis performa penjualan dan produk.
-                </p>
-
+                <h2>Analisa Laporan</h2>
+                <p>Analisis performa penjualan dan produk.</p>
             </div>
 
             <div class="panel">
-
                 <div class="empty">
                     Modul analisa akan kita bangun berikutnya.
                 </div>
-
             </div>
 
         </div>
@@ -2937,23 +3258,14 @@ body{
         >
 
             <div class="section-header">
-
-                <h2>
-                    Promosi
-                </h2>
-
-                <p>
-                    Kelola promo, diskon dan kupon.
-                </p>
-
+                <h2>Promosi</h2>
+                <p>Kelola promo, diskon dan kupon.</p>
             </div>
 
             <div class="panel">
-
                 <div class="empty">
                     Modul promosi akan kita bangun berikutnya.
                 </div>
-
             </div>
 
         </div>
@@ -2967,23 +3279,14 @@ body{
         >
 
             <div class="section-header">
-
-                <h2>
-                    Komisi
-                </h2>
-
-                <p>
-                    Kelola komisi dan bonus karyawan.
-                </p>
-
+                <h2>Komisi</h2>
+                <p>Kelola komisi dan bonus karyawan.</p>
             </div>
 
             <div class="panel">
-
                 <div class="empty">
                     Modul komisi akan kita bangun berikutnya.
                 </div>
-
             </div>
 
         </div>
@@ -2997,31 +3300,22 @@ body{
         >
 
             <div class="section-header">
-
-                <h2>
-                    Marketing
-                </h2>
-
-                <p>
-                    Kelola pemasaran dan komunikasi pelanggan.
-                </p>
-
+                <h2>Marketing</h2>
+                <p>Kelola pemasaran dan komunikasi pelanggan.</p>
             </div>
 
             <div class="panel">
-
                 <div class="empty">
                     Modul marketing akan kita bangun berikutnya.
                 </div>
-
             </div>
 
         </div>
 
 
-        <!-- =========================
+        <!-- =================================================
              PENGATURAN
-        ========================= -->
+        ================================================= -->
 
         <div
             id="sec-pengaturan"
@@ -3064,8 +3358,8 @@ body{
 
                         <p>
                             Logo ini akan digunakan
-                            pada sidebar dan header
-                            aplikasi POS.
+                            pada sidebar, profil,
+                            banner dan header aplikasi POS.
                         </p>
 
                         <br>
@@ -3185,31 +3479,6 @@ body{
 </main>
 
 
-<!-- =====================================================
-     PROFILE DRAWER
-===================================================== -->
-
-<div
-    class="profile-drawer-overlay"
-    id="profileDrawerOverlay"
-    onclick="closeProfileDrawer()">
-</div>
-
-<aside
-    class="profile-drawer"
-    id="profileDrawer"
-    aria-hidden="true">
-
-    <iframe
-        id="profileFrame"
-        class="profile-frame"
-        src="profil.html"
-        title="Profil ZOKENT STORE">
-    </iframe>
-
-</aside>
-
-
 <!-- TOAST -->
 
 <div
@@ -3243,115 +3512,14 @@ let salesChartInstance = null;
 
 
 /* =====================================================
-   PROFILE DRAWER
+   LOGO → PROFIL SEBAGAI SPA
 ===================================================== */
 
-function openProfileDrawer(){
+function openProfilePage(){
 
-    const drawer =
-        document.getElementById(
-            "profileDrawer"
-        );
-
-    const overlay =
-        document.getElementById(
-            "profileDrawerOverlay"
-        );
-
-
-    if(!drawer || !overlay){
-        return;
-    }
-
-
-    /*
-       Kalau dibuka dari HP,
-       sidebar otomatis ditutup.
-    */
-
-    if(window.innerWidth <= 900){
-
-        closeSidebar();
-
-    }
-
-
-    drawer.classList.add(
-        "show"
+    switchPage(
+        "sec-profil"
     );
-
-    overlay.classList.add(
-        "show"
-    );
-
-
-    drawer.setAttribute(
-        "aria-hidden",
-        "false"
-    );
-
-}
-
-
-function closeProfileDrawer(){
-
-    const drawer =
-        document.getElementById(
-            "profileDrawer"
-        );
-
-    const overlay =
-        document.getElementById(
-            "profileDrawerOverlay"
-        );
-
-
-    if(!drawer || !overlay){
-        return;
-    }
-
-
-    drawer.classList.remove(
-        "show"
-    );
-
-    overlay.classList.remove(
-        "show"
-    );
-
-
-    drawer.setAttribute(
-        "aria-hidden",
-        "true"
-    );
-
-}
-
-
-/* ESC = tutup profil */
-
-document.addEventListener(
-    "keydown",
-    function(event){
-
-        if(event.key === "Escape"){
-
-            closeProfileDrawer();
-
-        }
-
-    }
-);
-
-
-/*
-   Fungsi ini dipanggil oleh
-   profil.html setelah menyimpan.
-*/
-
-function refreshStoreSettingsFromProfile(){
-
-    loadStoreSettings();
 
 }
 
@@ -3505,6 +3673,27 @@ function switchPage(
             .textContent =
                 titleText;
 
+    }else{
+
+        /*
+           Logo / Profil tidak memiliki
+           tombol menu khusus.
+        */
+
+        if(
+            targetSectionId ===
+            "sec-profil"
+        ){
+
+            document
+                .getElementById(
+                    "currentTitle"
+                )
+                .textContent =
+                    "Profil Toko";
+
+        }
+
     }
 
 
@@ -3559,36 +3748,52 @@ function startRealtimeClock(){
             );
 
 
-        document
-            .getElementById(
+        const clock =
+            document.getElementById(
                 "realtimeClock"
-            )
-            .textContent =
-                timeStr;
+            );
 
 
-        document
-            .getElementById(
+        const clockDate =
+            document.getElementById(
                 "clockDate"
-            )
-            .textContent =
-                dateStr;
+            );
 
 
-        document
-            .getElementById(
+        const tanggal =
+            document.getElementById(
                 "tanggal"
-            )
-            .textContent =
-                dateStr;
+            );
 
 
-        document
-            .getElementById(
+        const welcomeDate =
+            document.getElementById(
                 "welcomeDate"
-            )
-            .textContent =
+            );
+
+
+        if(clock){
+            clock.textContent =
+                timeStr;
+        }
+
+
+        if(clockDate){
+            clockDate.textContent =
                 dateStr;
+        }
+
+
+        if(tanggal){
+            tanggal.textContent =
+                dateStr;
+        }
+
+
+        if(welcomeDate){
+            welcomeDate.textContent =
+                dateStr;
+        }
 
     }
 
@@ -3636,12 +3841,24 @@ async function loadProducts(){
         data || [];
 
 
-    document
-        .getElementById(
+    const totalProduk =
+        document.getElementById(
             "totalProduk"
-        )
-        .textContent =
+        );
+
+
+    const stokMenipis =
+        document.getElementById(
+            "stokMenipis"
+        );
+
+
+    if(totalProduk){
+
+        totalProduk.textContent =
             products.length;
+
+    }
 
 
     const lowStock =
@@ -3666,12 +3883,12 @@ async function loadProducts(){
         );
 
 
-    document
-        .getElementById(
-            "stokMenipis"
-        )
-        .textContent =
+    if(stokMenipis){
+
+        stokMenipis.textContent =
             lowStock.length;
+
+    }
 
 }
 
@@ -4124,7 +4341,7 @@ function showToast(
 
 
 /* =====================================================
-   LOGO
+   LOGO PREVIEW
 ===================================================== */
 
 function previewLogo(
@@ -4252,18 +4469,13 @@ function previewLogo(
                         );
 
 
-                    const preview =
-                        document.getElementById(
-                            "settingsLogoPreview"
-                        );
-
-
-                    preview.innerHTML =
-                        `<img src="${compressed}" alt="Logo">`;
-
-
                     window.pendingLogo =
                         compressed;
+
+
+                    updateLogoUI(
+                        compressed
+                    );
 
                 };
 
@@ -4309,7 +4521,7 @@ function removeLogo(){
 
 
 /* =====================================================
-   UPDATE LOGO
+   UPDATE SEMUA LOGO
 ===================================================== */
 
 function updateLogoUI(
@@ -4334,31 +4546,99 @@ function updateLogoUI(
         );
 
 
+    const welcomeLogo =
+        document.getElementById(
+            "welcomeLogo"
+        );
+
+
+    const profileBigLogo =
+        document.getElementById(
+            "profileBigLogo"
+        );
+
+
     if(logo){
 
-        sidebarLogo.innerHTML =
-            `<img src="${logo}" alt="Logo">`;
+        if(sidebarLogo){
+
+            sidebarLogo.innerHTML =
+                `<img src="${logo}" alt="Logo">`;
+
+        }
 
 
-        settingsPreview.innerHTML =
-            `<img src="${logo}" alt="Logo">`;
+        if(settingsPreview){
+
+            settingsPreview.innerHTML =
+                `<img src="${logo}" alt="Logo">`;
+
+        }
 
 
-        outletLogo.innerHTML =
-            `<img src="${logo}" alt="Logo">`;
+        if(outletLogo){
+
+            outletLogo.innerHTML =
+                `<img src="${logo}" alt="Logo">`;
+
+        }
+
+
+        if(welcomeLogo){
+
+            welcomeLogo.innerHTML =
+                `<img src="${logo}" alt="Logo">`;
+
+        }
+
+
+        if(profileBigLogo){
+
+            profileBigLogo.innerHTML =
+                `<img src="${logo}" alt="Logo">`;
+
+        }
 
     }else{
 
-        sidebarLogo.innerHTML =
-            `<span class="brand-z">Z</span>`;
+        if(sidebarLogo){
+
+            sidebarLogo.innerHTML =
+                `<span class="brand-z">Z</span>`;
+
+        }
 
 
-        settingsPreview.innerHTML =
-            `<span class="logo-preview-z">Z</span>`;
+        if(settingsPreview){
+
+            settingsPreview.innerHTML =
+                `<span class="logo-preview-z">Z</span>`;
+
+        }
 
 
-        outletLogo.innerHTML =
-            `🏪`;
+        if(outletLogo){
+
+            outletLogo.innerHTML =
+                `🏪`;
+
+        }
+
+
+        if(welcomeLogo){
+
+            welcomeLogo.innerHTML =
+                `<span class="welcome-logo-z">Z</span>`;
+
+        }
+
+
+        if(profileBigLogo){
+
+            profileBigLogo.innerHTML =
+                `<span class="profile-big-z">Z</span>`;
+
+        }
 
     }
 
@@ -4398,43 +4678,51 @@ function loadStoreSettings(){
         "Toko SRC Utama";
 
 
-    if(logo){
+    updateLogoUI(
+        logo || null
+    );
 
-        updateLogoUI(
-            logo
+
+    const storeNameInput =
+        document.getElementById(
+            "storeNameInput"
         );
 
-    }else{
 
-        updateLogoUI(
-            null
+    const shortNameInput =
+        document.getElementById(
+            "storeShortNameInput"
         );
+
+
+    const descriptionInput =
+        document.getElementById(
+            "storeDescriptionInput"
+        );
+
+
+    if(storeNameInput){
+
+        storeNameInput.value =
+            storeName;
 
     }
 
 
-    document
-        .getElementById(
-            "storeNameInput"
-        )
-        .value =
-            storeName;
+    if(shortNameInput){
 
-
-    document
-        .getElementById(
-            "storeShortNameInput"
-        )
-        .value =
+        shortNameInput.value =
             shortName;
 
+    }
 
-    document
-        .getElementById(
-            "storeDescriptionInput"
-        )
-        .value =
+
+    if(descriptionInput){
+
+        descriptionInput.value =
             description;
+
+    }
 
 
     applyStoreSettings(
@@ -4456,20 +4744,22 @@ function applyStoreSettings(
     description
 ){
 
-    document
-        .getElementById(
+    const sidebarStoreName =
+        document.getElementById(
             "sidebarStoreName"
-        )
-        .textContent =
-            shortName;
+        );
 
 
-    document
-        .getElementById(
+    const topStoreName =
+        document.getElementById(
             "topStoreName"
-        )
-        .textContent =
-            storeName;
+        );
+
+
+    const topStoreDescription =
+        document.getElementById(
+            "topStoreDescription"
+        );
 
 
     const welcomeTitle =
@@ -4478,11 +4768,105 @@ function applyStoreSettings(
         );
 
 
+    const profileStoreName =
+        document.getElementById(
+            "profileStoreName"
+        );
+
+
+    const profileStoreDescription =
+        document.getElementById(
+            "profileStoreDescription"
+        );
+
+
+    const profileNameValue =
+        document.getElementById(
+            "profileNameValue"
+        );
+
+
+    const profileShortValue =
+        document.getElementById(
+            "profileShortValue"
+        );
+
+
+    const profileDescriptionValue =
+        document.getElementById(
+            "profileDescriptionValue"
+        );
+
+
+    if(sidebarStoreName){
+
+        sidebarStoreName.textContent =
+            shortName;
+
+    }
+
+
+    if(topStoreName){
+
+        topStoreName.textContent =
+            storeName;
+
+    }
+
+
+    if(topStoreDescription){
+
+        topStoreDescription.textContent =
+            description;
+
+    }
+
+
     if(welcomeTitle){
 
         welcomeTitle.textContent =
             "Selamat datang di " +
             storeName;
+
+    }
+
+
+    if(profileStoreName){
+
+        profileStoreName.textContent =
+            storeName;
+
+    }
+
+
+    if(profileStoreDescription){
+
+        profileStoreDescription.textContent =
+            description;
+
+    }
+
+
+    if(profileNameValue){
+
+        profileNameValue.textContent =
+            storeName;
+
+    }
+
+
+    if(profileShortValue){
+
+        profileShortValue.textContent =
+            shortName;
+
+    }
+
+
+    if(profileDescriptionValue){
+
+        profileDescriptionValue.textContent =
+            description;
 
     }
 
@@ -4555,14 +4939,20 @@ function saveStoreSettings(){
                 window.pendingLogo
             );
 
-
-            updateLogoUI(
-                window.pendingLogo
-            );
-
         }
 
     }
+
+
+    const savedLogo =
+        localStorage.getItem(
+            "zokent_logo"
+        );
+
+
+    updateLogoUI(
+        savedLogo || null
+    );
 
 
     applyStoreSettings(
