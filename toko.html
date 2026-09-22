@@ -1,38 +1,18 @@
-<!DOCTYPE html>
-<html lang="id">
+<!DOCTYPE html><html lang="id">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>ZOKENT STORE - Belanja</title>
-
-<style>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"><title>ZOKENT STORE</title><style>
 *{
+    box-sizing:border-box;
     margin:0;
     padding:0;
-    box-sizing:border-box;
-}
-
-:root{
-    --blue:#0878e8;
-    --blue-dark:#005cc9;
-    --light:#f5f6f8;
-    --text:#222;
-    --muted:#777;
-    --border:#e8e8e8;
-    --red:#e53935;
-    --green:#16a34a;
-}
-
-html{
-    scroll-behavior:smooth;
 }
 
 body{
     font-family:Arial,Helvetica,sans-serif;
-    background:var(--light);
-    color:var(--text);
-    padding-bottom:80px;
+    background:#f5f7fb;
+    color:#172033;
+    padding-bottom:75px;
 }
 
 a{
@@ -42,266 +22,169 @@ a{
 
 button{
     font-family:inherit;
+    cursor:pointer;
+    border:0;
 }
 
-/* ================= HEADER ================= */
+/* =========================
+   HEADER
+========================= */
 
 .header{
-    background:linear-gradient(135deg,var(--blue),var(--blue-dark));
+    background:linear-gradient(135deg,#0877d1,#0057a8);
     color:white;
-    padding:14px 16px 16px;
+    padding:15px 16px 18px;
     position:sticky;
     top:0;
     z-index:100;
-    box-shadow:0 3px 12px rgba(0,0,0,.16);
+    box-shadow:0 3px 12px rgba(0,0,0,.12);
 }
 
 .header-top{
     display:flex;
-    justify-content:space-between;
     align-items:center;
+    justify-content:space-between;
     margin-bottom:13px;
 }
 
 .logo{
-    font-size:21px;
-    font-weight:900;
-    letter-spacing:.5px;
-}
-
-.header-actions{
     display:flex;
     align-items:center;
-    gap:14px;
+    gap:9px;
 }
 
-.header-action{
-    position:relative;
-    width:34px;
-    height:34px;
+.logo-icon{
+    width:39px;
+    height:39px;
+    background:white;
+    color:#0069bd;
+    border-radius:11px;
     display:flex;
     align-items:center;
     justify-content:center;
-    font-size:22px;
+    font-size:20px;
+    font-weight:800;
 }
 
-.badge{
-    position:absolute;
-    top:-2px;
-    right:-4px;
-    background:#ff3b30;
+.logo-text{
+    font-size:19px;
+    font-weight:800;
+}
+
+.logo-sub{
+    font-size:10px;
+    opacity:.85;
+    margin-top:2px;
+}
+
+.header-icons{
+    display:flex;
+    gap:8px;
+}
+
+.header-btn{
+    width:38px;
+    height:38px;
+    border-radius:50%;
+    background:rgba(255,255,255,.16);
     color:white;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:19px;
+    position:relative;
+}
+
+.cart-badge{
+    position:absolute;
+    top:-3px;
+    right:-2px;
     min-width:17px;
     height:17px;
+    padding:0 4px;
     border-radius:20px;
-    font-size:9px;
-    display:flex;
+    background:#ff4d4d;
+    color:white;
+    font-size:10px;
+    font-weight:bold;
+    display:none;
     align-items:center;
     justify-content:center;
-    padding:0 4px;
-    font-weight:bold;
 }
 
-/* ================= SEARCH ================= */
+/* =========================
+   LOCATION
+========================= */
 
-.search-box{
-    height:45px;
-    background:white;
-    border-radius:10px;
+.location{
     display:flex;
     align-items:center;
-    padding:0 13px;
-    color:#777;
-}
-
-.search-icon{
-    font-size:19px;
-    margin-right:9px;
-}
-
-.search-box input{
-    border:none;
-    outline:none;
-    width:100%;
-    font-size:14px;
-    color:#222;
-}
-
-.search-box input::placeholder{
-    color:#999;
-}
-
-/* ================= LOCATION ================= */
-
-.location-bar{
-    background:white;
-    min-height:43px;
-    display:flex;
-    align-items:center;
-    gap:8px;
-    padding:9px 15px;
-    border-bottom:1px solid var(--border);
+    gap:7px;
     font-size:12px;
-}
-
-.location-icon{
-    font-size:17px;
-}
-
-.location-text{
-    flex:1;
-    min-width:0;
-}
-
-.location-text span{
-    color:#888;
-    display:block;
-    font-size:10px;
-    margin-bottom:2px;
-}
-
-.location-text strong{
-    font-size:12px;
-    white-space:nowrap;
-    overflow:hidden;
-    text-overflow:ellipsis;
-    display:block;
-}
-
-.change-location{
-    color:var(--blue);
-    font-weight:bold;
-    font-size:11px;
-}
-
-/* ================= CONTAINER ================= */
-
-.container{
-    width:100%;
-    max-width:1100px;
-    margin:auto;
-}
-
-/* ================= BANNER ================= */
-
-.banner-section{
-    padding:13px 12px 5px;
-}
-
-.banner-slider{
-    position:relative;
-    height:160px;
-    overflow:hidden;
-    border-radius:15px;
-}
-
-.banner{
-    position:absolute;
-    inset:0;
-    padding:20px;
-    display:flex;
-    align-items:center;
-    color:white;
-    opacity:0;
-    transform:translateX(20px);
-    transition:.5s;
-    pointer-events:none;
-}
-
-.banner.active{
-    opacity:1;
-    transform:translateX(0);
-    pointer-events:auto;
-}
-
-.banner-1{
-    background:linear-gradient(120deg,#0068d9,#13a1ff);
-}
-
-.banner-2{
-    background:linear-gradient(120deg,#087b53,#13b87c);
-}
-
-.banner-3{
-    background:linear-gradient(120deg,#e85b00,#ff9d19);
-}
-
-.banner-content{
-    position:relative;
-    z-index:2;
-}
-
-.banner h2{
-    font-size:23px;
-    line-height:1.15;
-    margin-bottom:7px;
-}
-
-.banner p{
-    font-size:12px;
-    line-height:1.5;
     margin-bottom:12px;
 }
 
-.banner-button{
-    display:inline-flex;
-    align-items:center;
-    justify-content:center;
-    background:white;
-    color:var(--blue);
-    border:none;
-    border-radius:8px;
-    padding:8px 14px;
+.location strong{
+    font-size:13px;
+}
+
+.location-change{
+    margin-left:auto;
     font-size:11px;
     font-weight:bold;
+    text-decoration:underline;
 }
 
-.banner-graphic{
-    position:absolute;
-    right:15px;
-    bottom:-12px;
-    font-size:95px;
-    opacity:.2;
-}
+/* =========================
+   SEARCH
+========================= */
 
-.banner-dots{
-    position:absolute;
-    bottom:9px;
-    left:0;
-    right:0;
+.search{
     display:flex;
-    justify-content:center;
-    gap:5px;
-    z-index:5;
-}
-
-.banner-dot{
-    width:7px;
-    height:7px;
-    border-radius:50%;
-    background:rgba(255,255,255,.45);
-    transition:.2s;
-}
-
-.banner-dot.active{
-    width:19px;
-    border-radius:8px;
+    align-items:center;
     background:white;
+    border-radius:12px;
+    padding:0 13px;
+    height:46px;
 }
 
-/* ================= SECTION ================= */
+.search-icon{
+    color:#7b8797;
+    font-size:18px;
+    margin-right:8px;
+}
+
+.search input{
+    border:0;
+    outline:0;
+    width:100%;
+    font-size:13px;
+    color:#172033;
+}
+
+.search input::placeholder{
+    color:#9aa4b2;
+}
+
+/* =========================
+   CONTENT
+========================= */
+
+.container{
+    max-width:1100px;
+    margin:auto;
+    padding:15px;
+}
 
 .section{
-    background:white;
-    margin-top:9px;
-    padding:15px 12px;
+    margin-bottom:22px;
 }
 
 .section-title{
     display:flex;
-    align-items:center;
     justify-content:space-between;
-    margin-bottom:13px;
+    align-items:center;
+    margin-bottom:11px;
 }
 
 .section-title h2{
@@ -309,114 +192,169 @@ button{
 }
 
 .section-title a{
-    font-size:11px;
-    color:var(--blue);
+    color:#0877d1;
+    font-size:12px;
     font-weight:bold;
 }
 
-/* ================= CATEGORY ================= */
+/* =========================
+   BANNER
+========================= */
 
-.category-scroll{
-    display:flex;
-    gap:14px;
-    overflow-x:auto;
-    padding:2px 1px 5px;
+.banner-wrapper{
+    overflow:hidden;
+    border-radius:16px;
+    position:relative;
 }
 
-.category-scroll::-webkit-scrollbar{
+.banner-container{
+    display:flex;
+    transition:transform .5s ease;
+}
+
+.banner{
+    min-width:100%;
+    height:155px;
+    padding:22px;
+    color:white;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    position:relative;
+    overflow:hidden;
+}
+
+.banner:nth-child(1){
+    background:linear-gradient(135deg,#0877d1,#00a3ff);
+}
+
+.banner:nth-child(2){
+    background:linear-gradient(135deg,#006b52,#08a875);
+}
+
+.banner:nth-child(3){
+    background:linear-gradient(135deg,#ef7d00,#ffb000);
+}
+
+.banner h2{
+    font-size:21px;
+    margin-bottom:7px;
+    max-width:65%;
+}
+
+.banner p{
+    font-size:12px;
+    opacity:.95;
+    max-width:65%;
+    margin-bottom:12px;
+}
+
+.banner-btn{
+    width:max-content;
+    padding:8px 13px;
+    background:white;
+    color:#0877d1;
+    border-radius:8px;
+    font-size:11px;
+    font-weight:bold;
+}
+
+.banner-decoration{
+    position:absolute;
+    right:-25px;
+    bottom:-45px;
+    width:150px;
+    height:150px;
+    border-radius:50%;
+    background:rgba(255,255,255,.13);
+}
+
+.dots{
+    position:absolute;
+    bottom:9px;
+    left:0;
+    right:0;
+    display:flex;
+    justify-content:center;
+    gap:5px;
+}
+
+.dot{
+    width:6px;
+    height:6px;
+    border-radius:50%;
+    background:rgba(255,255,255,.55);
+}
+
+.dot.active{
+    width:17px;
+    border-radius:10px;
+    background:white;
+}
+
+/* =========================
+   CATEGORY
+========================= */
+
+.categories{
+    display:flex;
+    gap:12px;
+    overflow-x:auto;
+    padding-bottom:4px;
+    scrollbar-width:none;
+}
+
+.categories::-webkit-scrollbar{
     display:none;
 }
 
 .category{
-    flex:0 0 66px;
+    min-width:70px;
     text-align:center;
 }
 
 .category-icon{
     width:55px;
     height:55px;
-    margin:0 auto 7px;
-    background:#eef6ff;
-    border-radius:50%;
+    margin:auto;
+    background:white;
+    border-radius:15px;
     display:flex;
     align-items:center;
     justify-content:center;
-    font-size:27px;
-    transition:.2s;
-}
-
-.category:active .category-icon{
-    transform:scale(.93);
+    font-size:25px;
+    box-shadow:0 2px 9px rgba(0,0,0,.06);
+    margin-bottom:6px;
 }
 
 .category span{
-    display:block;
     font-size:10px;
-    color:#444;
+    color:#4c5768;
+    white-space:nowrap;
 }
 
-/* ================= PROMO ================= */
+/* =========================
+   PRODUCTS
+========================= */
 
-.promo-scroll{
-    display:flex;
-    gap:10px;
-    overflow-x:auto;
-}
-
-.promo-scroll::-webkit-scrollbar{
-    display:none;
-}
-
-.promo-card{
-    flex:0 0 225px;
-    height:88px;
-    border-radius:12px;
-    padding:13px;
-    color:white;
-}
-
-.promo-blue{
-    background:linear-gradient(135deg,#0878e8,#2b9cff);
-}
-
-.promo-pink{
-    background:linear-gradient(135deg,#d91b61,#ff4e8b);
-}
-
-.promo-green{
-    background:linear-gradient(135deg,#08784f,#16ad7b);
-}
-
-.promo-card h3{
-    font-size:14px;
-    margin-bottom:5px;
-}
-
-.promo-card p{
-    font-size:10px;
-    opacity:.95;
-}
-
-/* ================= PRODUCTS ================= */
-
-.products{
+.product-grid{
     display:grid;
-    grid-template-columns:repeat(2,minmax(0,1fr));
-    gap:10px;
+    grid-template-columns:repeat(2,1fr);
+    gap:11px;
 }
 
 .product{
     background:white;
-    border:1px solid var(--border);
-    border-radius:12px;
+    border-radius:13px;
     overflow:hidden;
-    position:relative;
+    box-shadow:0 2px 8px rgba(0,0,0,.05);
     min-width:0;
 }
 
 .product-image{
+    width:100%;
     height:145px;
-    background:#fafafa;
+    background:#f0f2f5;
     display:flex;
     align-items:center;
     justify-content:center;
@@ -429,130 +367,136 @@ button{
     object-fit:contain;
 }
 
-.product-placeholder{
-    font-size:55px;
-}
-
-.discount{
-    position:absolute;
-    left:7px;
-    top:7px;
-    z-index:2;
-    background:var(--red);
-    color:white;
-    padding:4px 6px;
-    border-radius:5px;
-    font-size:9px;
-    font-weight:bold;
+.no-image{
+    color:#a2aab6;
+    font-size:11px;
 }
 
 .product-info{
-    padding:9px;
+    padding:10px;
 }
 
 .product-name{
-    font-size:12px;
-    line-height:17px;
-    height:34px;
-    overflow:hidden;
-}
-
-.product-price{
-    color:var(--blue);
-    font-size:15px;
-    font-weight:800;
-    margin-top:6px;
-}
-
-.product-old-price{
-    color:#999;
-    font-size:9px;
-    text-decoration:line-through;
-    margin-top:2px;
-    min-height:11px;
+    font-size:13px;
+    line-height:1.35;
+    min-height:35px;
+    margin-bottom:5px;
 }
 
 .product-stock{
-    font-size:9px;
-    color:#777;
-    margin-top:5px;
+    color:#788394;
+    font-size:10px;
+    margin-bottom:6px;
+}
+
+.price-normal{
+    color:#9299a5;
+    text-decoration:line-through;
+    font-size:10px;
+    margin-bottom:2px;
+}
+
+.price{
+    color:#0877d1;
+    font-size:15px;
+    font-weight:800;
 }
 
 .product-bottom{
-    margin-top:8px;
-}
-
-.add-button{
-    width:100%;
-    height:34px;
-    border:1px solid var(--blue);
-    border-radius:7px;
-    background:white;
-    color:var(--blue);
-    font-size:12px;
-    font-weight:bold;
-    cursor:pointer;
-}
-
-.add-button:active{
-    background:var(--blue);
-    color:white;
-}
-
-.quantity-control{
-    display:none;
+    display:flex;
     align-items:center;
     justify-content:space-between;
-    border:1px solid var(--blue);
-    border-radius:7px;
-    height:34px;
-    overflow:hidden;
+    gap:5px;
+    margin-top:9px;
 }
 
-.quantity-control.show{
+.add-btn{
+    width:32px;
+    height:32px;
+    border-radius:9px;
+    background:#0877d1;
+    color:white;
+    font-size:20px;
     display:flex;
+    align-items:center;
+    justify-content:center;
 }
 
-.quantity-control button{
-    width:35px;
-    height:100%;
-    border:none;
-    background:#eef6ff;
-    color:var(--blue);
-    font-size:18px;
+.quantity{
+    display:none;
+    align-items:center;
+    gap:6px;
+}
+
+.quantity button{
+    width:27px;
+    height:27px;
+    border-radius:7px;
+    background:#eaf4fd;
+    color:#0877d1;
     font-weight:bold;
 }
 
-.quantity-control span{
+.quantity span{
     font-size:12px;
     font-weight:bold;
 }
 
-/* ================= FLOATING CART ================= */
+/* =========================
+   EMPTY
+========================= */
+
+.empty{
+    background:white;
+    border-radius:14px;
+    padding:35px 15px;
+    text-align:center;
+    color:#8b94a2;
+}
+
+.empty-icon{
+    font-size:35px;
+    margin-bottom:8px;
+}
+
+.empty p{
+    font-size:12px;
+}
+
+/* =========================
+   FLOATING CART
+========================= */
 
 .floating-cart{
     position:fixed;
-    right:15px;
+    right:17px;
     bottom:82px;
-    width:55px;
-    height:55px;
-    background:var(--blue);
+    z-index:90;
+}
+
+.floating-cart a{
+    width:54px;
+    height:54px;
     border-radius:50%;
+    background:#0877d1;
     color:white;
     display:flex;
     align-items:center;
     justify-content:center;
-    font-size:24px;
-    box-shadow:0 5px 18px rgba(0,0,0,.25);
-    z-index:90;
+    font-size:23px;
+    box-shadow:0 5px 18px rgba(0,102,190,.35);
+    position:relative;
 }
 
-.floating-cart .badge{
-    top:-2px;
-    right:-2px;
+.floating-cart .cart-badge{
+    display:flex;
+    top:-4px;
+    right:-3px;
 }
 
-/* ================= BOTTOM NAV ================= */
+/* =========================
+   BOTTOM NAV
+========================= */
 
 .bottom-nav{
     position:fixed;
@@ -561,71 +505,62 @@ button{
     right:0;
     height:68px;
     background:white;
-    border-top:1px solid var(--border);
+    border-top:1px solid #e5e8ed;
     display:flex;
     justify-content:space-around;
-    align-items:center;
     z-index:100;
+    box-shadow:0 -3px 12px rgba(0,0,0,.06);
 }
 
 .bottom-nav a{
     flex:1;
-    text-align:center;
-    color:#777;
-    font-size:9px;
-    padding:5px 0;
-}
-
-.bottom-nav a span{
-    display:block;
-    font-size:21px;
-    margin-bottom:3px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:4px;
+    color:#8992a0;
 }
 
 .bottom-nav a.active{
-    color:var(--blue);
-    font-weight:bold;
+    color:#0877d1;
 }
 
-/* ================= EMPTY ================= */
-
-.empty{
-    grid-column:1/-1;
-    text-align:center;
-    padding:35px 10px;
-    color:#888;
+.bottom-nav span{
+    font-size:19px;
 }
 
-.empty-icon{
-    font-size:50px;
-    margin-bottom:8px;
+.bottom-nav small{
+    font-size:10px;
 }
 
-/* ================= RESPONSIVE ================= */
+/* =========================
+   RESPONSIVE
+========================= */
 
 @media(min-width:600px){
 
-    .products{
-        grid-template-columns:repeat(3,minmax(0,1fr));
+    .container{
+        padding:22px;
     }
 
-    .banner-slider{
-        height:185px;
+    .product-grid{
+        grid-template-columns:repeat(4,1fr);
     }
 
     .product-image{
         height:180px;
+    }
+
+    .banner{
+        height:190px;
     }
 }
 
 @media(min-width:900px){
 
     body{
-        padding-bottom:20px;
-    }
-
-    .products{
-        grid-template-columns:repeat(5,minmax(0,1fr));
+        padding-bottom:0;
     }
 
     .bottom-nav{
@@ -636,193 +571,105 @@ button{
         bottom:25px;
     }
 
-    .banner-slider{
-        height:210px;
+    .product-grid{
+        grid-template-columns:repeat(5,1fr);
     }
 }
-</style>
-</head>
-
-<body>
-
-<!-- ==================================================
+</style></head><body><!-- =========================
      HEADER
-================================================== -->
+========================= --><header class="header"><div class="header-top">
 
-<header class="header">
+    <div class="logo">
+        <div class="logo-icon">Z</div>
 
-    <div class="header-top">
+        <div>
+            <div class="logo-text">ZOKENT STORE</div>
+            <div class="logo-sub">Belanja kebutuhan harian</div>
+        </div>
+    </div>
 
-        <a href="toko.html" class="logo">
-            ZOKENT STORE
+    <div class="header-icons">
+
+        <a href="notifikasi.html" class="header-btn">
+            🔔
         </a>
 
-        <div class="header-actions">
-
-            <a href="notifikasi.html" class="header-action">
-                🔔
-            </a>
-
-            <a href="keranjang.html" class="header-action">
-                🛒
-                <span class="badge" id="headerCartCount">0</span>
-            </a>
-
-        </div>
+        <a href="keranjang.html" class="header-btn">
+            🛒
+            <span class="cart-badge" id="headerCartBadge">0</span>
+        </a>
 
     </div>
-
-
-    <div class="search-box">
-
-        <span class="search-icon">🔍</span>
-
-        <input
-            type="search"
-            id="searchInput"
-            placeholder="Cari produk, merek, atau kategori..."
-            autocomplete="off"
-        >
-
-    </div>
-
-</header>
-
-
-<!-- ==================================================
-     LOCATION
-================================================== -->
-
-<div class="location-bar">
-
-    <div class="location-icon">
-        📍
-    </div>
-
-    <div class="location-text">
-
-        <span>Lokasi pengiriman</span>
-
-        <strong>
-            Toko ZOKENT STORE
-        </strong>
-
-    </div>
-
-    <a href="alamat.html" class="change-location">
-        Ubah
-    </a>
 
 </div>
 
+<div class="location">
+    <span>📍</span>
 
-<div class="container">
+    <div>
+        <div style="font-size:10px;opacity:.8;">Antar ke</div>
+        <strong id="locationText">Pilih alamat pengiriman</strong>
+    </div>
 
+    <a href="alamat.html" class="location-change">
+        Ubah
+    </a>
+</div>
 
-<!-- ==================================================
+<div class="search">
+    <span class="search-icon">🔍</span>
+
+    <input
+        type="search"
+        id="searchInput"
+        placeholder="Cari produk, merek, atau kategori..."
+        autocomplete="off"
+    >
+</div>
+
+</header><main class="container"><!-- =========================
      BANNER
-================================================== -->
+========================= -->
 
-<section class="banner-section">
+<section class="section">
 
-    <div class="banner-slider">
+    <div class="banner-wrapper">
 
-        <div class="banner banner-1 active">
+        <div class="banner-container" id="bannerContainer">
 
-            <div class="banner-content">
-
-                <h2>
-                    Belanja Hemat<br>
-                    Setiap Hari!
-                </h2>
-
-                <p>
-                    Temukan kebutuhan harian<br>
-                    dengan harga terbaik.
-                </p>
-
-                <a
-                    href="kategori.html"
-                    class="banner-button"
-                >
-                    Belanja Sekarang
-                </a>
-
-            </div>
-
-            <div class="banner-graphic">
-                🛒
-            </div>
-
-        </div>
-
-
-        <div class="banner banner-2">
-
-            <div class="banner-content">
-
-                <h2>
-                    Promo Spesial<br>
-                    ZOKENT STORE
-                </h2>
-
-                <p>
-                    Banyak produk pilihan<br>
-                    dengan harga menarik.
-                </p>
-
-                <a
-                    href="kategori.html?promo=1"
-                    class="banner-button"
-                >
+            <div class="banner">
+                <h2>Belanja Hemat di ZOKENT</h2>
+                <p>Temukan berbagai kebutuhan harian dengan mudah.</p>
+                <a href="promo.html" class="banner-btn">
                     Lihat Promo
                 </a>
-
+                <div class="banner-decoration"></div>
             </div>
 
-            <div class="banner-graphic">
-                🎁
-            </div>
-
-        </div>
-
-
-        <div class="banner banner-3">
-
-            <div class="banner-content">
-
-                <h2>
-                    Kebutuhan Harian<br>
-                    Ada di Sini!
-                </h2>
-
-                <p>
-                    Sembako, minuman, snack<br>
-                    dan kebutuhan lainnya.
-                </p>
-
-                <a
-                    href="kategori.html"
-                    class="banner-button"
-                >
-                    Mulai Belanja
+            <div class="banner">
+                <h2>Promo Pilihan Hari Ini</h2>
+                <p>Dapatkan harga spesial untuk produk tertentu.</p>
+                <a href="promo.html" class="banner-btn">
+                    Cek Promo
                 </a>
-
+                <div class="banner-decoration"></div>
             </div>
 
-            <div class="banner-graphic">
-                🛍️
+            <div class="banner">
+                <h2>Belanja Lebih Mudah</h2>
+                <p>Pilih produk, masukkan keranjang, lalu checkout.</p>
+                <a href="keranjang.html" class="banner-btn">
+                    Ke Keranjang
+                </a>
+                <div class="banner-decoration"></div>
             </div>
 
         </div>
 
-
-        <div class="banner-dots">
-
-            <span class="banner-dot active"></span>
-            <span class="banner-dot"></span>
-            <span class="banner-dot"></span>
-
+        <div class="dots">
+            <span class="dot active"></span>
+            <span class="dot"></span>
+            <span class="dot"></span>
         </div>
 
     </div>
@@ -830,379 +677,208 @@ button{
 </section>
 
 
-<!-- ==================================================
-     KATEGORI
-================================================== -->
+<!-- =========================
+     CATEGORY
+========================= -->
 
 <section class="section">
 
     <div class="section-title">
-
         <h2>Kategori</h2>
 
         <a href="kategori.html">
             Lihat Semua
         </a>
-
     </div>
 
+    <div class="categories">
 
-    <div class="category-scroll">
-
-        <a
-            href="kategori.html?kategori=Semua"
-            class="category"
-        >
+        <a href="kategori.html?kategori=semua" class="category">
             <div class="category-icon">🛒</div>
             <span>Semua</span>
         </a>
 
-
-        <a
-            href="kategori.html?kategori=Sembako"
-            class="category"
-        >
+        <a href="kategori.html?kategori=sembako" class="category">
             <div class="category-icon">🍚</div>
             <span>Sembako</span>
         </a>
 
-
-        <a
-            href="kategori.html?kategori=Minuman"
-            class="category"
-        >
+        <a href="kategori.html?kategori=minuman" class="category">
             <div class="category-icon">🥤</div>
             <span>Minuman</span>
         </a>
 
-
-        <a
-            href="kategori.html?kategori=Snack"
-            class="category"
-        >
+        <a href="kategori.html?kategori=snack" class="category">
             <div class="category-icon">🍪</div>
             <span>Snack</span>
         </a>
 
-
-        <a
-            href="kategori.html?kategori=Mandi"
-            class="category"
-        >
+        <a href="kategori.html?kategori=mandi" class="category">
             <div class="category-icon">🧴</div>
             <span>Mandi</span>
         </a>
 
-
-        <a
-            href="kategori.html?kategori=Rumah"
-            class="category"
-        >
+        <a href="kategori.html?kategori=rumah" class="category">
             <div class="category-icon">🧹</div>
             <span>Rumah</span>
         </a>
 
-
-        <a
-            href="kategori.html?kategori=Pulsa"
-            class="category"
-        >
+        <a href="kategori.html?kategori=pulsa" class="category">
             <div class="category-icon">📱</div>
             <span>Pulsa</span>
         </a>
 
-
-        <a
-            href="kategori.html?kategori=Rokok"
-            class="category"
-        >
-            <div class="category-icon">🚬</div>
-            <span>Rokok</span>
-        </a>
-
     </div>
 
 </section>
 
 
-<!-- ==================================================
+<!-- =========================
      PROMO
-================================================== -->
+========================= -->
 
 <section class="section">
 
     <div class="section-title">
-
-        <h2>Promo Untukmu 🔥</h2>
+        <h2>Promo Hari Ini</h2>
 
         <a href="promo.html">
             Lihat Semua
         </a>
-
     </div>
 
+    <div id="promoProducts" class="product-grid">
 
-    <div class="promo-scroll">
-
-        <a href="promo.html" class="promo-card promo-blue">
-
-            <h3>
-                🔥 Promo Hemat
-            </h3>
-
-            <p>
-                Harga spesial produk pilihan
-            </p>
-
-        </a>
-
-
-        <a href="promo.html" class="promo-card promo-pink">
-
-            <h3>
-                🎁 Harga Spesial
-            </h3>
-
-            <p>
-                Belanja lebih hemat hari ini
-            </p>
-
-        </a>
-
-
-        <a href="promo.html" class="promo-card promo-green">
-
-            <h3>
-                💙 ZOKENT DEAL
-            </h3>
-
-            <p>
-                Penawaran khusus pelanggan
-            </p>
-
-        </a>
+        <div class="empty">
+            <div class="empty-icon">🏷️</div>
+            <p>Belum ada produk promo.</p>
+        </div>
 
     </div>
 
 </section>
 
 
-<!-- ==================================================
-     PRODUK
-================================================== -->
+<!-- =========================
+     SEMUA PRODUK
+========================= -->
 
-<section class="section" id="produkSection">
+<section class="section">
 
     <div class="section-title">
-
-        <h2 id="productTitle">
-            Produk Pilihan
-        </h2>
+        <h2>Produk</h2>
 
         <a href="kategori.html">
-            Semua Produk
+            Lihat Semua
         </a>
+    </div>
+
+    <div id="productList" class="product-grid">
+
+        <div class="empty">
+            <div class="empty-icon">🛒</div>
+            <p>Produk akan tampil di sini.</p>
+        </div>
 
     </div>
 
-
-    <div class="products" id="productList"></div>
-
 </section>
 
-
-</div>
-
-
-<!-- ==================================================
+</main><!-- =========================
      FLOATING CART
-================================================== -->
-
-<a href="keranjang.html" class="floating-cart">
+========================= --><div class="floating-cart"><a href="keranjang.html">
 
     🛒
 
     <span
-        class="badge"
-        id="floatingCartCount"
-    >
-        0
-    </span>
+        class="cart-badge"
+        id="floatingCartBadge"
+    >0</span>
 
 </a>
 
-
-<!-- ==================================================
+</div><!-- =========================
      BOTTOM NAVIGATION
-================================================== -->
+========================= --><nav class="bottom-nav"><a href="toko.html" class="active">
+    <span>🏠</span>
+    <small>Beranda</small>
+</a>
 
-<nav class="bottom-nav">
+<a href="kategori.html">
+    <span>📂</span>
+    <small>Kategori</small>
+</a>
 
-    <a
-        href="toko.html"
-        class="active"
-    >
-        <span>🏠</span>
-        Beranda
-    </a>
+<a href="keranjang.html">
+    <span>🛒</span>
+    <small>Keranjang</small>
+</a>
 
+<a href="checkout.html">
+    <span>📦</span>
+    <small>Pesanan</small>
+</a>
 
-    <a href="kategori.html">
+</nav><script>
 
-        <span>📂</span>
-        Kategori
+/* =========================================
+   KONFIGURASI
+========================================= */
 
-    </a>
+/*
+   Produk BELUM dibuat dummy.
 
+   Bagian ini sengaja kosong sampai database
+   Supabase kita hubungkan.
 
-    <a href="keranjang.html">
+   Setelah Supabase siap, fungsi loadProducts()
+   akan mengambil produk asli dari database.
+*/
 
-        <span>🛒</span>
-        Keranjang
-
-    </a>
-
-
-    <a href="pesanan.html">
-
-        <span>📦</span>
-        Pesanan
-
-    </a>
-
-
-    <a href="akun.html">
-
-        <span>👤</span>
-        Akun
-
-    </a>
-
-</nav>
+let products = [];
 
 
-<script>
-
-/* ==================================================
-   DATA PRODUK SEMENTARA
-   NANTI DIGANTI SUPABASE
-================================================== */
-
-const products = [
-
-    {
-        id:1,
-        name:"Beras Premium 5 Kg",
-        price:75000,
-        oldPrice:80000,
-        stock:10,
-        image:"",
-        category:"Sembako"
-    },
-
-    {
-        id:2,
-        name:"Minyak Goreng 1 Liter",
-        price:18000,
-        oldPrice:20000,
-        stock:15,
-        image:"",
-        category:"Sembako"
-    },
-
-    {
-        id:3,
-        name:"Air Mineral 600 ml",
-        price:4000,
-        oldPrice:4500,
-        stock:30,
-        image:"",
-        category:"Minuman"
-    },
-
-    {
-        id:4,
-        name:"Teh Botol",
-        price:5000,
-        oldPrice:6000,
-        stock:20,
-        image:"",
-        category:"Minuman"
-    },
-
-    {
-        id:5,
-        name:"Biskuit Coklat",
-        price:8500,
-        oldPrice:10000,
-        stock:12,
-        image:"",
-        category:"Snack"
-    },
-
-    {
-        id:6,
-        name:"Sabun Mandi",
-        price:4500,
-        oldPrice:5000,
-        stock:18,
-        image:"",
-        category:"Mandi"
-    },
-
-    {
-        id:7,
-        name:"Deterjen Bubuk",
-        price:12000,
-        oldPrice:14000,
-        stock:10,
-        image:"",
-        category:"Rumah"
-    },
-
-    {
-        id:8,
-        name:"Pulsa 10.000",
-        price:11500,
-        oldPrice:12000,
-        stock:50,
-        image:"",
-        category:"Pulsa"
-    }
-
-];
-
-
-/* ==================================================
-   CART
-================================================== */
+/* =========================================
+   LOCAL CART
+========================================= */
 
 let cart = JSON.parse(
     localStorage.getItem("zokent_cart") || "[]"
 );
 
 
-/* ==================================================
-   FORMAT RUPIAH
-================================================== */
+/* =========================================
+   UPDATE CART BADGE
+========================================= */
 
-function rupiah(value){
+function updateCartBadge(){
 
-    return new Intl.NumberFormat(
-        "id-ID",
-        {
-            style:"currency",
-            currency:"IDR",
-            minimumFractionDigits:0
-        }
-    ).format(value);
+    const total = cart.reduce(
+        (sum,item) => sum + Number(item.qty || 0),
+        0
+    );
 
+    const badges = [
+        document.getElementById("headerCartBadge"),
+        document.getElementById("floatingCartBadge")
+    ];
+
+    badges.forEach(badge => {
+
+        if(!badge) return;
+
+        badge.textContent = total;
+
+        badge.style.display =
+            total > 0 ? "flex" : "none";
+
+    });
 }
 
 
-/* ==================================================
+/* =========================================
    SAVE CART
-================================================== */
+========================================= */
 
 function saveCart(){
 
@@ -1211,333 +887,182 @@ function saveCart(){
         JSON.stringify(cart)
     );
 
-    updateCartCount();
-
+    updateCartBadge();
 }
 
 
-/* ==================================================
-   CART COUNT
-================================================== */
-
-function updateCartCount(){
-
-    let total = 0;
-
-    cart.forEach(item => {
-
-        total += Number(item.qty) || 0;
-
-    });
-
-
-    document.getElementById(
-        "headerCartCount"
-    ).textContent = total;
-
-
-    document.getElementById(
-        "floatingCartCount"
-    ).textContent = total;
-
-}
-
-
-/* ==================================================
+/* =========================================
    ADD TO CART
-================================================== */
+========================================= */
 
-function addToCart(id){
+function addToCart(productId){
 
-    const product =
-        products.find(
-            item => item.id === id
-        );
+    const product = products.find(
+        item => String(item.id) === String(productId)
+    );
 
+    if(!product) return;
 
-    if(!product){
-        return;
-    }
-
-
-    const existing =
-        cart.find(
-            item => item.id === id
-        );
-
+    const existing = cart.find(
+        item => String(item.id) === String(productId)
+    );
 
     if(existing){
 
-        if(existing.qty < product.stock){
-
-            existing.qty++;
-
-        }else{
-
-            alert("Jumlah sudah mencapai stok.");
-
-        }
+        existing.qty++;
 
     }else{
 
         cart.push({
-
-            id:product.id,
-
-            name:product.name,
-
-            price:product.price,
-
-            image:product.image,
-
-            qty:1,
-
-            stock:product.stock
-
+            id: product.id,
+            nama: product.nama,
+            harga: Number(
+                product.harga_promo ||
+                product.harga ||
+                0
+            ),
+            gambar: product.gambar || "",
+            qty: 1
         });
 
     }
 
-
     saveCart();
 
-    renderProducts();
-
+    alert("Produk ditambahkan ke keranjang");
 }
 
 
-/* ==================================================
-   REMOVE FROM CART
-================================================== */
+/* =========================================
+   SEARCH
+========================================= */
 
-function removeFromCart(id){
+const searchInput =
+    document.getElementById("searchInput");
 
-    const item =
-        cart.find(
-            item => item.id === id
-        );
+searchInput.addEventListener(
+    "input",
+    function(){
 
+        const keyword =
+            this.value.toLowerCase().trim();
 
-    if(!item){
-        return;
-    }
+        const filtered = products.filter(product => {
 
+            const nama =
+                String(product.nama || "")
+                .toLowerCase();
 
-    item.qty--;
+            const kategori =
+                String(product.kategori || "")
+                .toLowerCase();
 
-
-    if(item.qty <= 0){
-
-        cart =
-            cart.filter(
-                item => item.id !== id
+            return (
+                nama.includes(keyword) ||
+                kategori.includes(keyword)
             );
 
-    }
+        });
 
-
-    saveCart();
-
-    renderProducts();
-
-}
-
-
-/* ==================================================
-   GET CART QTY
-================================================== */
-
-function getCartQty(id){
-
-    const item =
-        cart.find(
-            item => item.id === id
+        renderProducts(
+            filtered,
+            document.getElementById("productList")
         );
 
-
-    return item ? item.qty : 0;
-
-}
+    }
+);
 
 
-/* ==================================================
+/* =========================================
    RENDER PRODUCTS
-================================================== */
+========================================= */
 
-function renderProducts(list = products){
+function renderProducts(list, container){
 
-    const container =
-        document.getElementById("productList");
+    if(!container) return;
 
-
-    container.innerHTML = "";
-
-
-    if(list.length === 0){
+    if(!list.length){
 
         container.innerHTML = `
-
-            <div class="empty">
-
-                <div class="empty-icon">
-                    🔍
-                </div>
-
-                <p>
-                    Produk tidak ditemukan
-                </p>
-
+            <div class="empty" style="grid-column:1/-1;">
+                <div class="empty-icon">🔍</div>
+                <p>Produk tidak ditemukan.</p>
             </div>
-
         `;
 
         return;
-
     }
 
+    container.innerHTML = list.map(product => {
 
-    list.forEach(product => {
+        const harga =
+            Number(product.harga_promo || product.harga || 0);
 
-        const qty =
-            getCartQty(product.id);
+        const hargaNormal =
+            Number(product.harga || 0);
 
+        const hasPromo =
+            product.harga_promo &&
+            Number(product.harga_promo) < hargaNormal;
 
-        let discount = 0;
+        const stock =
+            Number(product.stok || 0);
 
+        const image = product.gambar
+            ? `<img src="${product.gambar}" alt="">`
+            : `<span class="no-image">Tidak ada gambar</span>`;
 
-        if(
-            product.oldPrice &&
-            product.oldPrice > product.price
-        ){
+        return `
 
-            discount =
-                Math.round(
-                    (
-                        (product.oldPrice-product.price)
-                        /
-                        product.oldPrice
-                    ) * 100
-                );
+            <div class="product">
 
-        }
-
-
-        const card =
-            document.createElement("div");
-
-
-        card.className = "product";
-
-
-        card.innerHTML = `
-
-            ${
-                discount
-                ?
-                `
-                <div class="discount">
-                    -${discount}%
+                <div class="product-image">
+                    ${image}
                 </div>
-                `
-                :
-                ""
-            }
 
+                <div class="product-info">
 
-            <a
-                href="produk.html?id=${product.id}"
-                class="product-image"
-            >
-
-                ${
-                    product.image
-                    ?
-                    `
-                    <img
-                        src="${product.image}"
-                        alt="${product.name}"
-                    >
-                    `
-                    :
-                    `
-                    <div class="product-placeholder">
-                        🛍️
+                    <div class="product-name">
+                        ${escapeHtml(product.nama || "Produk")}
                     </div>
-                    `
-                }
 
-            </a>
-
-
-            <div class="product-info">
-
-                <a
-                    href="produk.html?id=${product.id}"
-                    class="product-name"
-                >
-                    ${product.name}
-                </a>
-
-
-                <div class="product-price">
-                    ${rupiah(product.price)}
-                </div>
-
-
-                <div class="product-old-price">
+                    <div class="product-stock">
+                        Stok: ${stock}
+                    </div>
 
                     ${
-                        product.oldPrice
+                        hasPromo
                         ?
-                        rupiah(product.oldPrice)
+                        `<div class="price-normal">
+                            Rp ${formatRupiah(hargaNormal)}
+                         </div>`
                         :
                         ""
                     }
 
-                </div>
+                    <div class="price">
+                        Rp ${formatRupiah(harga)}
+                    </div>
 
+                    <div class="product-bottom">
 
-                <div class="product-stock">
-                    Stok tersedia: ${product.stock}
-                </div>
+                        <span style="
+                            font-size:10px;
+                            color:#8b94a2;
+                        ">
+                            ${escapeHtml(product.kategori || "")}
+                        </span>
 
-
-                <div class="product-bottom">
-
-                    ${
-                        qty === 0
-                        ?
-                        `
                         <button
-                            class="add-button"
-                            onclick="addToCart(${product.id})"
+                            class="add-btn"
+                            onclick="addToCart('${product.id}')"
+                            ${stock <= 0 ? "disabled" : ""}
+                            style="${stock <= 0 ? "opacity:.4;cursor:not-allowed;" : ""}"
                         >
-                            + Tambah
+                            +
                         </button>
-                        `
-                        :
-                        `
-                        <div class="quantity-control show">
 
-                            <button
-                                onclick="removeFromCart(${product.id})"
-                            >
-                                −
-                            </button>
-
-                            <span>
-                                ${qty}
-                            </span>
-
-                            <button
-                                onclick="addToCart(${product.id})"
-                            >
-                                +
-                            </button>
-
-                        </div>
-                        `
-                    }
+                    </div>
 
                 </div>
 
@@ -1545,131 +1070,157 @@ function renderProducts(list = products){
 
         `;
 
+    }).join("");
 
-        container.appendChild(card);
+}
+
+
+/* =========================================
+   PROMO PRODUCTS
+========================================= */
+
+function renderPromo(){
+
+    const promoContainer =
+        document.getElementById("promoProducts");
+
+    const promoProducts =
+        products.filter(product =>
+            product.harga_promo &&
+            Number(product.harga_promo) <
+            Number(product.harga || 0)
+        );
+
+    if(!promoProducts.length){
+
+        promoContainer.innerHTML = `
+            <div class="empty" style="grid-column:1/-1;">
+                <div class="empty-icon">🏷️</div>
+                <p>Belum ada produk promo.</p>
+            </div>
+        `;
+
+        return;
+    }
+
+    renderProducts(
+        promoProducts.slice(0,4),
+        promoContainer
+    );
+}
+
+
+/* =========================================
+   FORMAT RUPIAH
+========================================= */
+
+function formatRupiah(number){
+
+    return Number(number || 0)
+        .toLocaleString("id-ID");
+}
+
+
+/* =========================================
+   ESCAPE HTML
+========================================= */
+
+function escapeHtml(value){
+
+    return String(value)
+        .replace(/&/g,"&amp;")
+        .replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;")
+        .replace(/"/g,"&quot;")
+        .replace(/'/g,"&#039;");
+}
+
+
+/* =========================================
+   LOAD PRODUCTS
+========================================= */
+
+async function loadProducts(){
+
+    /*
+       Supabase akan dipasang di sini.
+
+       Saat ini sengaja tidak memakai produk
+       contoh/dummy.
+    */
+
+    products = [];
+
+    renderProducts(
+        products,
+        document.getElementById("productList")
+    );
+
+    renderPromo();
+
+}
+
+
+/* =========================================
+   BANNER SLIDER
+========================================= */
+
+let currentBanner = 0;
+
+const bannerContainer =
+    document.getElementById("bannerContainer");
+
+const dots =
+    document.querySelectorAll(".dot");
+
+function changeBanner(){
+
+    currentBanner++;
+
+    if(currentBanner >= 3){
+        currentBanner = 0;
+    }
+
+    bannerContainer.style.transform =
+        `translateX(-${currentBanner * 100}%)`;
+
+    dots.forEach((dot,index)=>{
+
+        dot.classList.toggle(
+            "active",
+            index === currentBanner
+        );
 
     });
 
 }
 
-
-/* ==================================================
-   SEARCH
-================================================== */
-
-document
-    .getElementById("searchInput")
-    .addEventListener(
-        "input",
-        function(){
-
-            const keyword =
-                this.value
-                    .trim()
-                    .toLowerCase();
+setInterval(changeBanner,4000);
 
 
-            if(!keyword){
+/* =========================================
+   LOCATION
+========================================= */
 
-                renderProducts();
+const savedAddress =
+    localStorage.getItem("zokent_address");
 
-                return;
+if(savedAddress){
 
-            }
-
-
-            const result =
-                products.filter(product =>
-
-                    product.name
-                        .toLowerCase()
-                        .includes(keyword)
-
-                    ||
-
-                    product.category
-                        .toLowerCase()
-                        .includes(keyword)
-
-                );
-
-
-            document.getElementById(
-                "productTitle"
-            ).textContent =
-                "Hasil Pencarian";
-
-
-            renderProducts(result);
-
-        }
-    );
-
-
-/* ==================================================
-   BANNER SLIDER
-================================================== */
-
-const banners =
-    document.querySelectorAll(".banner");
-
-const dots =
-    document.querySelectorAll(".banner-dot");
-
-let currentBanner = 0;
-
-
-function showBanner(index){
-
-    banners.forEach(
-        banner =>
-            banner.classList.remove("active")
-    );
-
-
-    dots.forEach(
-        dot =>
-            dot.classList.remove("active")
-    );
-
-
-    banners[index].classList.add("active");
-
-    dots[index].classList.add("active");
+    document.getElementById(
+        "locationText"
+    ).textContent = savedAddress;
 
 }
 
 
-setInterval(
-    function(){
+/* =========================================
+   START
+========================================= */
 
-        currentBanner++;
+updateCartBadge();
 
-        if(
-            currentBanner >= banners.length
-        ){
+loadProducts();
 
-            currentBanner = 0;
-
-        }
-
-
-        showBanner(currentBanner);
-
-    },
-    4000
-);
-
-
-/* ==================================================
-   INITIAL
-================================================== */
-
-renderProducts();
-
-updateCartCount();
-
-</script>
-
-</body>
+</script></body>
 </html>
