@@ -4,78 +4,230 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Cetak Label Harga</title>
+    <title>Cetak Label Harga - SRC Zokent</title>
 
     <script src="https://cdn.tailwindcss.com"></script>
 
     <style>
         /* =====================================================
-           SETTING KERTAS
-           ===================================================== */
-
-        @page {
-            size: A4 portrait;
-            margin: 10mm;
-        }
+           GLOBAL
+        ===================================================== */
 
         * {
             box-sizing: border-box;
         }
 
+        html,
         body {
             margin: 0;
             padding: 0;
-            background: #e5e7eb;
+        }
+
+        body {
+            background: #f1f5f9;
             font-family: Arial, Helvetica, sans-serif;
+            color: #111827;
         }
 
 
         /* =====================================================
-           AREA KERTAS A4
-           ===================================================== */
+           TOOLBAR
+        ===================================================== */
+
+        .topbar {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+
+            background: white;
+            border-bottom: 1px solid #e5e7eb;
+
+            padding: 14px 18px;
+
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+
+        /* =====================================================
+           EDITOR
+        ===================================================== */
+
+        .editor-card {
+            background: white;
+
+            border: 1px solid #e5e7eb;
+
+            border-radius: 12px;
+
+            padding: 16px;
+
+            box-shadow:
+                0 2px 6px rgba(0, 0, 0, 0.04);
+        }
+
+        .field-label {
+            display: block;
+
+            margin-bottom: 5px;
+
+            font-size: 12px;
+
+            font-weight: 700;
+
+            color: #374151;
+        }
+
+        .field-input {
+            width: 100%;
+
+            height: 38px;
+
+            padding: 8px 10px;
+
+            border: 1px solid #d1d5db;
+
+            border-radius: 7px;
+
+            outline: none;
+
+            font-size: 14px;
+
+            background: white;
+        }
+
+        .field-input:focus {
+            border-color: #2563eb;
+
+            box-shadow:
+                0 0 0 2px rgba(37, 99, 235, 0.12);
+        }
+
+        .field-input.price-input {
+            font-weight: 700;
+        }
+
+
+        /* =====================================================
+           BUTTON
+        ===================================================== */
+
+        .btn {
+            border: 0;
+
+            border-radius: 8px;
+
+            padding: 9px 14px;
+
+            cursor: pointer;
+
+            font-weight: 700;
+
+            font-size: 13px;
+        }
+
+        .btn-print {
+            background: #111827;
+
+            color: white;
+        }
+
+        .btn-print:hover {
+            background: #374151;
+        }
+
+        .btn-reset {
+            background: #e5e7eb;
+
+            color: #111827;
+        }
+
+        .btn-reset:hover {
+            background: #d1d5db;
+        }
+
+        .btn-add {
+            background: #2563eb;
+
+            color: white;
+        }
+
+        .btn-add:hover {
+            background: #1d4ed8;
+        }
+
+        .btn-delete {
+            background: #fee2e2;
+
+            color: #b91c1c;
+
+            padding: 6px 9px;
+
+            font-size: 12px;
+        }
+
+
+        /* =====================================================
+           PREVIEW AREA
+        ===================================================== */
+
+        .preview-wrapper {
+            overflow-x: auto;
+
+            padding: 20px;
+        }
+
+
+        /* =====================================================
+           A4 PAGE
+        ===================================================== */
 
         .print-page {
             width: 190mm;
             min-height: 277mm;
 
-            margin: 10mm auto;
+            margin: 0 auto;
+
+            padding: 0;
 
             display: grid;
 
-            /*
-             * 2 kolom
-             * 6 baris
-             * total = 12 label
-             */
             grid-template-columns: 90mm 90mm;
-            grid-template-rows: repeat(6, 42mm);
+
+            grid-template-rows:
+                repeat(6, 42mm);
 
             column-gap: 5mm;
+
             row-gap: 5mm;
 
             align-content: start;
 
             background: white;
+
+            box-shadow:
+                0 4px 20px rgba(0, 0, 0, 0.12);
         }
 
 
         /* =====================================================
            LABEL
-           ===================================================== */
+        ===================================================== */
 
         .price-label {
             width: 90mm;
+
             height: 42mm;
 
             position: relative;
 
             overflow: hidden;
 
-            background: #ffffff;
+            background: white;
 
             border: 0.35mm solid #b7b7b7;
 
             display: flex;
+
             flex-direction: column;
 
             font-family: "Courier New", monospace;
@@ -83,22 +235,25 @@
 
 
         /* =====================================================
-           HEADER LABEL
-           ===================================================== */
+           HEADER
+        ===================================================== */
 
         .label-header {
             height: 8mm;
+
+            min-height: 8mm;
 
             background: #e7b62c;
 
             padding: 1.2mm 3mm;
 
             display: flex;
+
             align-items: center;
+
             justify-content: space-between;
 
-            font-size: 9px;
-            font-weight: 900;
+            gap: 2mm;
 
             color: #111827;
 
@@ -106,22 +261,41 @@
         }
 
         .product-name {
+            flex: 1;
+
+            min-width: 0;
+
             white-space: nowrap;
+
             overflow: hidden;
+
             text-overflow: ellipsis;
 
-            max-width: 65mm;
+            font-size: 9px;
+
+            font-weight: 900;
         }
 
         .product-code {
+            flex-shrink: 0;
+
+            max-width: 25mm;
+
+            white-space: nowrap;
+
+            overflow: hidden;
+
+            text-overflow: ellipsis;
+
             font-size: 8px;
+
             font-weight: 700;
         }
 
 
         /* =====================================================
-           ISI LABEL
-           ===================================================== */
+           CONTENT
+        ===================================================== */
 
         .label-content {
             flex: 1;
@@ -131,11 +305,12 @@
             padding: 1mm 3mm 0 3mm;
         }
 
-
         .info-row {
             display: flex;
 
             justify-content: space-between;
+
+            gap: 5mm;
 
             font-size: 8px;
 
@@ -144,22 +319,27 @@
             font-weight: 700;
         }
 
-
         .left-info,
         .right-info {
-            display: flex;
-            flex-direction: column;
+            min-width: 0;
+
+            overflow: hidden;
+
+            white-space: nowrap;
+
+            text-overflow: ellipsis;
         }
 
 
         /* =====================================================
            HARGA
-           ===================================================== */
+        ===================================================== */
 
         .price-area {
             position: absolute;
 
             left: 0;
+
             right: 0;
 
             top: 9mm;
@@ -169,19 +349,18 @@
             align-items: center;
 
             padding-left: 3mm;
+
             padding-right: 3mm;
         }
 
         .currency {
-            font-family: Arial, sans-serif;
+            font-family: Arial, Helvetica, sans-serif;
 
             font-size: 10px;
 
             font-weight: 700;
 
             margin-right: 2mm;
-
-            align-self: center;
         }
 
         .price {
@@ -200,12 +379,18 @@
             letter-spacing: -1px;
 
             color: #111111;
+
+            white-space: nowrap;
+
+            overflow: hidden;
+
+            text-overflow: ellipsis;
         }
 
 
         /* =====================================================
            TANGGAL
-           ===================================================== */
+        ===================================================== */
 
         .date {
             position: absolute;
@@ -221,13 +406,14 @@
 
 
         /* =====================================================
-           GARIS WARNA BAWAH
-           ===================================================== */
+           GARIS WARNA
+        ===================================================== */
 
         .color-lines {
             position: absolute;
 
             left: 0;
+
             right: 0;
 
             bottom: 0;
@@ -235,345 +421,976 @@
             height: 2.5mm;
 
             display: flex;
+
             flex-direction: column;
         }
 
         .line-red {
             height: 0.7mm;
+
             background: #d62828;
         }
 
         .line-blue {
             height: 0.7mm;
+
             background: #0077b6;
         }
 
         .line-yellow {
             height: 0.7mm;
+
             background: #f5c400;
         }
 
         .line-green {
             height: 0.4mm;
+
             background: #008000;
         }
 
 
         /* =====================================================
-           SCREEN PREVIEW
-           ===================================================== */
+           EMPTY LABEL
+        ===================================================== */
 
-        .toolbar {
-            width: 100%;
+        .empty-label {
+            width: 90mm;
 
-            padding: 16px;
+            height: 42mm;
+
+            border: 1px dashed #d1d5db;
+
+            background: #f9fafb;
 
             display: flex;
 
+            align-items: center;
+
             justify-content: center;
 
-            gap: 10px;
-        }
+            color: #9ca3af;
 
-        .print-button {
-            border: 0;
-
-            padding: 10px 18px;
-
-            background: #111827;
-
-            color: white;
-
-            border-radius: 8px;
-
-            cursor: pointer;
-
-            font-weight: 700;
-        }
-
-        .print-button:hover {
-            background: #374151;
+            font-size: 12px;
         }
 
 
         /* =====================================================
-           PRINT MODE
-           ===================================================== */
+           MOBILE
+        ===================================================== */
+
+        @media (max-width: 900px) {
+
+            .preview-wrapper {
+                padding: 10px;
+            }
+
+            .print-page {
+                margin-left: 0;
+                margin-right: 0;
+            }
+        }
+
+
+        /* =====================================================
+           PRINT
+        ===================================================== */
+
+        @page {
+            size: A4 portrait;
+
+            margin: 10mm;
+        }
 
         @media print {
 
             html,
             body {
                 width: 210mm;
+
                 height: 297mm;
 
                 margin: 0;
+
                 padding: 0;
 
                 background: white;
             }
 
-            .toolbar {
+            .no-print {
                 display: none !important;
             }
 
-            .print-page {
-
-                width: 190mm;
-                height: 277mm;
+            .preview-wrapper {
+                padding: 0;
 
                 margin: 0;
+
+                overflow: visible;
+            }
+
+            .print-page {
+                width: 190mm;
+
+                height: 277mm;
+
+                min-height: 277mm;
+
+                margin: 0;
+
+                box-shadow: none;
 
                 display: grid;
 
                 grid-template-columns: 90mm 90mm;
-                grid-template-rows: repeat(6, 42mm);
+
+                grid-template-rows:
+                    repeat(6, 42mm);
 
                 column-gap: 5mm;
+
                 row-gap: 5mm;
 
-                background: white;
-
-                /*
-                 * Mencegah browser memecah label
-                 */
-                break-inside: avoid;
-                page-break-inside: avoid;
+                align-content: start;
             }
 
             .price-label {
                 break-inside: avoid;
+
                 page-break-inside: avoid;
 
-                /*
-                 * Warna tetap dicetak
-                 */
                 -webkit-print-color-adjust: exact;
+
                 print-color-adjust: exact;
             }
         }
     </style>
 </head>
 
+
 <body>
 
-    <!-- =====================================================
-         TOOLBAR
-         ===================================================== -->
 
-    <div class="toolbar">
-        <button
-            class="print-button"
-            onclick="window.print()"
-        >
-            🖨️ Cetak Label Harga
-        </button>
+<!-- =========================================================
+     TOP BAR
+========================================================= -->
+
+<header class="topbar no-print">
+
+    <div class="max-w-7xl mx-auto">
+
+        <div class="flex flex-wrap items-center justify-between gap-3">
+
+            <div>
+
+                <h1 class="text-lg font-bold text-gray-900">
+                    🏷️ Cetak Label Harga
+                </h1>
+
+                <p class="text-xs text-gray-500">
+                    Edit tulisan label sebelum dicetak.
+                    Perubahan hanya berlaku untuk sesi cetak ini.
+                </p>
+
+            </div>
+
+
+            <div class="flex flex-wrap gap-2">
+
+                <button
+                    type="button"
+                    class="btn btn-add"
+                    onclick="addLabel()"
+                >
+                    ＋ Tambah Label
+                </button>
+
+                <button
+                    type="button"
+                    class="btn btn-reset"
+                    onclick="resetAllLabels()"
+                >
+                    ↺ Reset Semua
+                </button>
+
+                <button
+                    type="button"
+                    class="btn btn-print"
+                    onclick="printLabels()"
+                >
+                    🖨️ Cetak Label
+                </button>
+
+            </div>
+
+        </div>
+
     </div>
 
-
-    <!-- =====================================================
-         A4
-         ===================================================== -->
-
-    <main class="print-page" id="printPage"></main>
+</header>
 
 
-    <script>
 
-        /*
-         * =====================================================
-         * DATA CONTOH
-         * Nanti bagian ini bisa diganti hasil query Supabase.
-         * =====================================================
-         */
+<!-- =========================================================
+     EDITOR
+========================================================= -->
 
-        const products = [
-            {
-                name: "INDOMIE GR AYAM 85 G",
-                code: "FD04-0-18-7",
-                sku: "20033231",
-                rack: "RT.(E-2E)",
-                price: 3300,
-                date: "28-10-26"
-            },
+<section class="no-print px-4 py-4">
 
-            {
-                name: "INDOMIE GORENG 85 G",
-                code: "FD04-0-18-8",
-                sku: "20033232",
-                rack: "RT.(E-2E)",
-                price: 3500,
-                date: "28-10-26"
-            },
+    <div class="max-w-7xl mx-auto">
 
-            {
-                name: "MIE SEDAAP GORENG",
-                code: "FD04-0-19-1",
-                sku: "20033233",
-                rack: "RT.(E-2F)",
-                price: 3500,
-                date: "28-10-26"
-            },
+        <div class="mb-3">
 
-            {
-                name: "MIE SEDAAP AYAM BAWANG",
-                code: "FD04-0-19-2",
-                sku: "20033234",
-                rack: "RT.(E-2F)",
-                price: 3200,
-                date: "28-10-26"
+            <h2 class="font-bold text-gray-800">
+                ✏️ Editor Label
+            </h2>
+
+            <p class="text-xs text-gray-500">
+                Setiap perubahan langsung terlihat di preview.
+                Data tidak disimpan ke database.
+            </p>
+
+        </div>
+
+
+        <div
+            id="editorContainer"
+            class="grid grid-cols-1 lg:grid-cols-2 gap-4"
+        ></div>
+
+    </div>
+
+</section>
+
+
+
+<!-- =========================================================
+     PREVIEW
+========================================================= -->
+
+<section class="preview-wrapper">
+
+    <div id="printPage" class="print-page"></div>
+
+</section>
+
+
+
+<script>
+
+/* =========================================================
+   DATA AWAL
+
+   Nantinya data ini bisa diganti hasil query Supabase.
+
+   PENTING:
+   Perubahan yang dilakukan admin hanya mengubah object
+   JavaScript di browser.
+
+   Tidak ada INSERT / UPDATE / DELETE ke Supabase.
+========================================================= */
+
+const originalLabels = [
+
+    {
+        id: 1,
+
+        name: "INDOMIE GR AYAM 85 G",
+
+        code: "FD04-0-18-7",
+
+        sku: "20033231",
+
+        rack: "RT.(E-2E)",
+
+        price: 3300,
+
+        date: "14-11-26"
+    },
+
+    {
+        id: 2,
+
+        name: "INDOMIE GORENG 85 G",
+
+        code: "FD04-0-18-8",
+
+        sku: "20033232",
+
+        rack: "RT.(E-2E)",
+
+        price: 3500,
+
+        date: "14-11-26"
+    },
+
+    {
+        id: 3,
+
+        name: "MIE SEDAAP GORENG",
+
+        code: "FD04-0-19-1",
+
+        sku: "20033233",
+
+        rack: "RT.(E-2F)",
+
+        price: 3500,
+
+        date: "14-11-26"
+    },
+
+    {
+        id: 4,
+
+        name: "MIE SEDAAP AYAM BAWANG",
+
+        code: "FD04-0-19-2",
+
+        sku: "20033234",
+
+        rack: "RT.(E-2F)",
+
+        price: 3200,
+
+        date: "14-11-26"
+    }
+
+];
+
+
+/* =========================================================
+   DATA AKTIF
+
+   Deep clone agar originalLabels tidak ikut berubah.
+========================================================= */
+
+let labels = structuredClone(originalLabels);
+
+
+/* =========================================================
+   FORMAT RUPIAH
+========================================================= */
+
+function formatRupiah(value) {
+
+    const number = Number(
+        String(value)
+            .replace(/[^\d]/g, "")
+    );
+
+    if (!Number.isFinite(number)) {
+        return "0";
+    }
+
+    return new Intl.NumberFormat("id-ID")
+        .format(number);
+}
+
+
+/* =========================================================
+   ESCAPE HTML
+========================================================= */
+
+function escapeHTML(value) {
+
+    return String(value ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+}
+
+
+/* =========================================================
+   RENDER EDITOR
+========================================================= */
+
+function renderEditors() {
+
+    const container =
+        document.getElementById("editorContainer");
+
+    container.innerHTML = "";
+
+
+    labels.forEach((label, index) => {
+
+        const editor = document.createElement("div");
+
+        editor.className = "editor-card";
+
+
+        editor.innerHTML = `
+
+            <div class="flex items-center justify-between mb-4">
+
+                <div>
+
+                    <h3 class="font-bold text-gray-900">
+                        Label ${index + 1}
+                    </h3>
+
+                    <p class="text-xs text-gray-500">
+                        Edit isi label
+                    </p>
+
+                </div>
+
+
+                <button
+                    type="button"
+                    class="btn btn-delete"
+                    data-delete="${label.id}"
+                >
+                    Hapus
+                </button>
+
+            </div>
+
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+
+
+                <!-- NAMA -->
+
+                <div class="sm:col-span-2">
+
+                    <label class="field-label">
+                        Nama Produk
+                    </label>
+
+                    <input
+                        class="field-input"
+                        type="text"
+                        value="${escapeHTML(label.name)}"
+                        data-id="${label.id}"
+                        data-field="name"
+                    >
+
+                </div>
+
+
+                <!-- KODE -->
+
+                <div>
+
+                    <label class="field-label">
+                        Kode
+                    </label>
+
+                    <input
+                        class="field-input"
+                        type="text"
+                        value="${escapeHTML(label.code)}"
+                        data-id="${label.id}"
+                        data-field="code"
+                    >
+
+                </div>
+
+
+                <!-- SKU -->
+
+                <div>
+
+                    <label class="field-label">
+                        SKU / Barcode
+                    </label>
+
+                    <input
+                        class="field-input"
+                        type="text"
+                        value="${escapeHTML(label.sku)}"
+                        data-id="${label.id}"
+                        data-field="sku"
+                    >
+
+                </div>
+
+
+                <!-- RAK -->
+
+                <div>
+
+                    <label class="field-label">
+                        Rak / Posisi
+                    </label>
+
+                    <input
+                        class="field-input"
+                        type="text"
+                        value="${escapeHTML(label.rack)}"
+                        data-id="${label.id}"
+                        data-field="rack"
+                    >
+
+                </div>
+
+
+                <!-- HARGA -->
+
+                <div>
+
+                    <label class="field-label">
+                        Harga
+                    </label>
+
+                    <input
+                        class="field-input price-input"
+                        type="text"
+                        inputmode="numeric"
+                        value="${escapeHTML(label.price)}"
+                        data-id="${label.id}"
+                        data-field="price"
+                    >
+
+                </div>
+
+
+                <!-- TANGGAL -->
+
+                <div>
+
+                    <label class="field-label">
+                        Tanggal
+                    </label>
+
+                    <input
+                        class="field-input"
+                        type="text"
+                        placeholder="14-11-26"
+                        value="${escapeHTML(label.date)}"
+                        data-id="${label.id}"
+                        data-field="date"
+                    >
+
+                </div>
+
+
+            </div>
+
+        `;
+
+
+        container.appendChild(editor);
+
+    });
+
+
+    attachEditorEvents();
+}
+
+
+/* =========================================================
+   EVENT EDITOR
+========================================================= */
+
+function attachEditorEvents() {
+
+    const inputs =
+        document.querySelectorAll(
+            "[data-id][data-field]"
+        );
+
+
+    inputs.forEach(input => {
+
+        input.addEventListener(
+            "input",
+            handleFieldChange
+        );
+
+    });
+
+
+    const deleteButtons =
+        document.querySelectorAll(
+            "[data-delete]"
+        );
+
+
+    deleteButtons.forEach(button => {
+
+        button.addEventListener(
+            "click",
+            () => {
+
+                const id =
+                    Number(
+                        button.dataset.delete
+                    );
+
+                deleteLabel(id);
+
             }
-        ];
+        );
+
+    });
+
+}
+
+
+/* =========================================================
+   HANDLE PERUBAHAN INPUT
+========================================================= */
+
+function handleFieldChange(event) {
+
+    const input = event.target;
+
+    const id =
+        Number(input.dataset.id);
+
+    const field =
+        input.dataset.field;
+
+
+    const label =
+        labels.find(item => item.id === id);
+
+
+    if (!label) {
+        return;
+    }
+
+
+    if (field === "price") {
+
+        /*
+         * Simpan angka saja.
+         */
+        label.price =
+            String(input.value)
+                .replace(/[^\d]/g, "");
 
 
         /*
-         * =====================================================
-         * FORMAT RUPIAH
-         * =====================================================
+         * Tampilkan format harga
+         * kembali ke input.
          */
+        input.value =
+            label.price;
 
-        function formatRupiah(number) {
-            return new Intl.NumberFormat("id-ID").format(number);
-        }
+    } else {
+
+        label[field] =
+            input.value;
+
+    }
 
 
-        /*
-         * =====================================================
-         * BUAT HTML LABEL
-         * =====================================================
-         */
+    renderPreview();
 
-        function createLabel(product) {
+}
 
-            return `
-                <div class="price-label">
 
-                    <!-- HEADER -->
+/* =========================================================
+   RENDER PREVIEW
+========================================================= */
 
-                    <div class="label-header">
+function renderPreview() {
 
-                        <div class="product-name">
-                            ${escapeHTML(product.name)}
-                        </div>
+    const page =
+        document.getElementById("printPage");
 
-                        <div class="product-code">
-                            ${escapeHTML(product.sku)}
-                        </div>
+    page.innerHTML = "";
 
+
+    /*
+     * Maksimal 12 label per A4.
+     */
+
+    labels
+        .slice(0, 12)
+        .forEach(label => {
+
+            const element =
+                document.createElement("div");
+
+            element.className =
+                "price-label";
+
+
+            element.innerHTML = `
+
+                <!-- HEADER -->
+
+                <div class="label-header">
+
+                    <div class="product-name">
+                        ${escapeHTML(label.name)}
                     </div>
 
-
-                    <!-- CONTENT -->
-
-                    <div class="label-content">
-
-                        <div class="info-row">
-
-                            <div class="left-info">
-                                <span>${escapeHTML(product.code)}</span>
-                            </div>
-
-                            <div class="right-info">
-                                <span>${escapeHTML(product.rack)}</span>
-                            </div>
-
-                        </div>
-
-
-                        <!-- HARGA -->
-
-                        <div class="price-area">
-
-                            <span class="currency">
-                                Rp
-                            </span>
-
-                            <span class="price">
-                                ${formatRupiah(product.price)}
-                            </span>
-
-                        </div>
-
-
-                        <!-- TANGGAL -->
-
-                        <div class="date">
-                            ${escapeHTML(product.date)}
-                        </div>
-
-                    </div>
-
-
-                    <!-- GARIS WARNA -->
-
-                    <div class="color-lines">
-                        <div class="line-red"></div>
-                        <div class="line-blue"></div>
-                        <div class="line-yellow"></div>
-                        <div class="line-green"></div>
+                    <div class="product-code">
+                        ${escapeHTML(label.sku)}
                     </div>
 
                 </div>
+
+
+                <!-- CONTENT -->
+
+                <div class="label-content">
+
+                    <div class="info-row">
+
+                        <div class="left-info">
+                            ${escapeHTML(label.code)}
+                        </div>
+
+                        <div class="right-info">
+                            ${escapeHTML(label.rack)}
+                        </div>
+
+                    </div>
+
+
+                    <!-- PRICE -->
+
+                    <div class="price-area">
+
+                        <span class="currency">
+                            Rp
+                        </span>
+
+                        <span class="price">
+                            ${formatRupiah(label.price)}
+                        </span>
+
+                    </div>
+
+
+                    <!-- DATE -->
+
+                    <div class="date">
+                        ${escapeHTML(label.date)}
+                    </div>
+
+                </div>
+
+
+                <!-- COLOR LINES -->
+
+                <div class="color-lines">
+
+                    <div class="line-red"></div>
+
+                    <div class="line-blue"></div>
+
+                    <div class="line-yellow"></div>
+
+                    <div class="line-green"></div>
+
+                </div>
+
             `;
-        }
 
 
-        /*
-         * =====================================================
-         * ESCAPE HTML
-         * Penting kalau data berasal dari Supabase.
-         * =====================================================
-         */
+            page.appendChild(element);
 
-        function escapeHTML(value) {
-
-            return String(value ?? "")
-                .replace(/&/g, "&amp;")
-                .replace(/</g, "&lt;")
-                .replace(/>/g, "&gt;")
-                .replace(/"/g, "&quot;")
-                .replace(/'/g, "&#039;");
-        }
+        });
 
 
-        /*
-         * =====================================================
-         * RENDER LABEL
-         * =====================================================
-         */
+    /*
+     * Isi slot kosong supaya grid A4
+     * tetap mempunyai 12 posisi.
+     */
 
-        function renderLabels() {
-
-            const container =
-                document.getElementById("printPage");
-
-            container.innerHTML = "";
-
-            /*
-             * Maksimal 12 label dalam satu A4
-             */
-            products
-                .slice(0, 12)
-                .forEach(product => {
-
-                    container.insertAdjacentHTML(
-                        "beforeend",
-                        createLabel(product)
-                    );
-
-                });
-        }
+    const emptySlots =
+        12 - Math.min(labels.length, 12);
 
 
-        /*
-         * =====================================================
-         * INIT
-         * =====================================================
-         */
+    for (
+        let i = 0;
+        i < emptySlots;
+        i++
+    ) {
 
-        renderLabels();
+        const empty =
+            document.createElement("div");
 
-    </script>
+        empty.className =
+            "empty-label";
+
+        empty.innerHTML =
+            "Kosong";
+
+        page.appendChild(empty);
+
+    }
+
+}
+
+
+/* =========================================================
+   TAMBAH LABEL
+========================================================= */
+
+function addLabel() {
+
+    /*
+     * Maksimal 12 label per halaman.
+     */
+
+    if (labels.length >= 12) {
+
+        alert(
+            "Maksimal 12 label dalam satu halaman A4."
+        );
+
+        return;
+    }
+
+
+    const newId =
+        Date.now();
+
+
+    labels.push({
+
+        id: newId,
+
+        name: "NAMA PRODUK",
+
+        code: "KODE",
+
+        sku: "SKU",
+
+        rack: "RAK",
+
+        price: 0,
+
+        date: new Date()
+            .toLocaleDateString(
+                "id-ID"
+            )
+            .replace(/\//g, "-")
+
+    });
+
+
+    renderEditors();
+
+    renderPreview();
+
+}
+
+
+/* =========================================================
+   HAPUS LABEL
+========================================================= */
+
+function deleteLabel(id) {
+
+    if (labels.length <= 1) {
+
+        alert(
+            "Minimal harus ada 1 label."
+        );
+
+        return;
+    }
+
+
+    const confirmed =
+        confirm(
+            "Hapus label ini dari halaman cetak?"
+        );
+
+
+    if (!confirmed) {
+        return;
+    }
+
+
+    labels =
+        labels.filter(
+            label => label.id !== id
+        );
+
+
+    renderEditors();
+
+    renderPreview();
+
+}
+
+
+/* =========================================================
+   RESET SATU / SEMUA
+========================================================= */
+
+function resetAllLabels() {
+
+    const confirmed =
+        confirm(
+            "Reset semua perubahan ke data awal?"
+        );
+
+
+    if (!confirmed) {
+        return;
+    }
+
+
+    labels =
+        structuredClone(
+            originalLabels
+        );
+
+
+    renderEditors();
+
+    renderPreview();
+
+}
+
+
+/* =========================================================
+   PRINT
+========================================================= */
+
+function printLabels() {
+
+    if (labels.length === 0) {
+
+        alert(
+            "Tidak ada label untuk dicetak."
+        );
+
+        return;
+    }
+
+
+    /*
+     * Pastikan preview terakhir
+     * sudah menggunakan data terbaru.
+     */
+
+    renderPreview();
+
+
+    /*
+     * Browser akan otomatis memakai
+     * @media print.
+     */
+
+    window.print();
+
+}
+
+
+/* =========================================================
+   INITIAL RENDER
+========================================================= */
+
+renderEditors();
+
+renderPreview();
+
+</script>
 
 </body>
 </html>
