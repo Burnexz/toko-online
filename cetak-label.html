@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Cetak Label Harga</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        /* =====================================================
+           SETTING KERTAS
+           ===================================================== */
+
+        @page {
+            size: A4 portrait;
+            margin: 10mm;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background: #e5e7eb;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+
+        /* =====================================================
+           AREA KERTAS A4
+           ===================================================== */
+
+        .print-page {
+            width: 190mm;
+            min-height: 277mm;
+
+            margin: 10mm auto;
+
+            display: grid;
+
+            /*
+             * 2 kolom
+             * 6 baris
+             * total = 12 label
+             */
+            grid-template-columns: 90mm 90mm;
+            grid-template-rows: repeat(6, 42mm);
+
+            column-gap: 5mm;
+            row-gap: 5mm;
+
+            align-content: start;
+
+            background: white;
+        }
+
+
+        /* =====================================================
+           LABEL
+           ===================================================== */
+
+        .price-label {
+            width: 90mm;
+            height: 42mm;
+
+            position: relative;
+
+            overflow: hidden;
+
+            background: #ffffff;
+
+            border: 0.35mm solid #b7b7b7;
+
+            display: flex;
+            flex-direction: column;
+
+            font-family: "Courier New", monospace;
+        }
+
+
+        /* =====================================================
+           HEADER LABEL
+           ===================================================== */
+
+        .label-header {
+            height: 8mm;
+
+            background: #e7b62c;
+
+            padding: 1.2mm 3mm;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            font-size: 9px;
+            font-weight: 900;
+
+            color: #111827;
+
+            border-bottom: 0.4mm solid #d2a51f;
+        }
+
+        .product-name {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+
+            max-width: 65mm;
+        }
+
+        .product-code {
+            font-size: 8px;
+            font-weight: 700;
+        }
+
+
+        /* =====================================================
+           ISI LABEL
+           ===================================================== */
+
+        .label-content {
+            flex: 1;
+
+            position: relative;
+
+            padding: 1mm 3mm 0 3mm;
+        }
+
+
+        .info-row {
+            display: flex;
+
+            justify-content: space-between;
+
+            font-size: 8px;
+
+            line-height: 3.5mm;
+
+            font-weight: 700;
+        }
+
+
+        .left-info,
+        .right-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+
+        /* =====================================================
+           HARGA
+           ===================================================== */
+
+        .price-area {
+            position: absolute;
+
+            left: 0;
+            right: 0;
+
+            top: 9mm;
+
+            display: flex;
+
+            align-items: center;
+
+            padding-left: 3mm;
+            padding-right: 3mm;
+        }
+
+        .currency {
+            font-family: Arial, sans-serif;
+
+            font-size: 10px;
+
+            font-weight: 700;
+
+            margin-right: 2mm;
+
+            align-self: center;
+        }
+
+        .price {
+            flex: 1;
+
+            text-align: right;
+
+            font-family: "Courier New", monospace;
+
+            font-size: 30px;
+
+            line-height: 30px;
+
+            font-weight: 900;
+
+            letter-spacing: -1px;
+
+            color: #111111;
+        }
+
+
+        /* =====================================================
+           TANGGAL
+           ===================================================== */
+
+        .date {
+            position: absolute;
+
+            left: 3mm;
+
+            bottom: 2.8mm;
+
+            font-size: 8px;
+
+            font-weight: 700;
+        }
+
+
+        /* =====================================================
+           GARIS WARNA BAWAH
+           ===================================================== */
+
+        .color-lines {
+            position: absolute;
+
+            left: 0;
+            right: 0;
+
+            bottom: 0;
+
+            height: 2.5mm;
+
+            display: flex;
+            flex-direction: column;
+        }
+
+        .line-red {
+            height: 0.7mm;
+            background: #d62828;
+        }
+
+        .line-blue {
+            height: 0.7mm;
+            background: #0077b6;
+        }
+
+        .line-yellow {
+            height: 0.7mm;
+            background: #f5c400;
+        }
+
+        .line-green {
+            height: 0.4mm;
+            background: #008000;
+        }
+
+
+        /* =====================================================
+           SCREEN PREVIEW
+           ===================================================== */
+
+        .toolbar {
+            width: 100%;
+
+            padding: 16px;
+
+            display: flex;
+
+            justify-content: center;
+
+            gap: 10px;
+        }
+
+        .print-button {
+            border: 0;
+
+            padding: 10px 18px;
+
+            background: #111827;
+
+            color: white;
+
+            border-radius: 8px;
+
+            cursor: pointer;
+
+            font-weight: 700;
+        }
+
+        .print-button:hover {
+            background: #374151;
+        }
+
+
+        /* =====================================================
+           PRINT MODE
+           ===================================================== */
+
+        @media print {
+
+            html,
+            body {
+                width: 210mm;
+                height: 297mm;
+
+                margin: 0;
+                padding: 0;
+
+                background: white;
+            }
+
+            .toolbar {
+                display: none !important;
+            }
+
+            .print-page {
+
+                width: 190mm;
+                height: 277mm;
+
+                margin: 0;
+
+                display: grid;
+
+                grid-template-columns: 90mm 90mm;
+                grid-template-rows: repeat(6, 42mm);
+
+                column-gap: 5mm;
+                row-gap: 5mm;
+
+                background: white;
+
+                /*
+                 * Mencegah browser memecah label
+                 */
+                break-inside: avoid;
+                page-break-inside: avoid;
+            }
+
+            .price-label {
+                break-inside: avoid;
+                page-break-inside: avoid;
+
+                /*
+                 * Warna tetap dicetak
+                 */
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- =====================================================
+         TOOLBAR
+         ===================================================== -->
+
+    <div class="toolbar">
+        <button
+            class="print-button"
+            onclick="window.print()"
+        >
+            🖨️ Cetak Label Harga
+        </button>
+    </div>
+
+
+    <!-- =====================================================
+         A4
+         ===================================================== -->
+
+    <main class="print-page" id="printPage"></main>
+
+
+    <script>
+
+        /*
+         * =====================================================
+         * DATA CONTOH
+         * Nanti bagian ini bisa diganti hasil query Supabase.
+         * =====================================================
+         */
+
+        const products = [
+            {
+                name: "INDOMIE GR AYAM 85 G",
+                code: "FD04-0-18-7",
+                sku: "20033231",
+                rack: "RT.(E-2E)",
+                price: 3300,
+                date: "28-10-26"
+            },
+
+            {
+                name: "INDOMIE GORENG 85 G",
+                code: "FD04-0-18-8",
+                sku: "20033232",
+                rack: "RT.(E-2E)",
+                price: 3500,
+                date: "28-10-26"
+            },
+
+            {
+                name: "MIE SEDAAP GORENG",
+                code: "FD04-0-19-1",
+                sku: "20033233",
+                rack: "RT.(E-2F)",
+                price: 3500,
+                date: "28-10-26"
+            },
+
+            {
+                name: "MIE SEDAAP AYAM BAWANG",
+                code: "FD04-0-19-2",
+                sku: "20033234",
+                rack: "RT.(E-2F)",
+                price: 3200,
+                date: "28-10-26"
+            }
+        ];
+
+
+        /*
+         * =====================================================
+         * FORMAT RUPIAH
+         * =====================================================
+         */
+
+        function formatRupiah(number) {
+            return new Intl.NumberFormat("id-ID").format(number);
+        }
+
+
+        /*
+         * =====================================================
+         * BUAT HTML LABEL
+         * =====================================================
+         */
+
+        function createLabel(product) {
+
+            return `
+                <div class="price-label">
+
+                    <!-- HEADER -->
+
+                    <div class="label-header">
+
+                        <div class="product-name">
+                            ${escapeHTML(product.name)}
+                        </div>
+
+                        <div class="product-code">
+                            ${escapeHTML(product.sku)}
+                        </div>
+
+                    </div>
+
+
+                    <!-- CONTENT -->
+
+                    <div class="label-content">
+
+                        <div class="info-row">
+
+                            <div class="left-info">
+                                <span>${escapeHTML(product.code)}</span>
+                            </div>
+
+                            <div class="right-info">
+                                <span>${escapeHTML(product.rack)}</span>
+                            </div>
+
+                        </div>
+
+
+                        <!-- HARGA -->
+
+                        <div class="price-area">
+
+                            <span class="currency">
+                                Rp
+                            </span>
+
+                            <span class="price">
+                                ${formatRupiah(product.price)}
+                            </span>
+
+                        </div>
+
+
+                        <!-- TANGGAL -->
+
+                        <div class="date">
+                            ${escapeHTML(product.date)}
+                        </div>
+
+                    </div>
+
+
+                    <!-- GARIS WARNA -->
+
+                    <div class="color-lines">
+                        <div class="line-red"></div>
+                        <div class="line-blue"></div>
+                        <div class="line-yellow"></div>
+                        <div class="line-green"></div>
+                    </div>
+
+                </div>
+            `;
+        }
+
+
+        /*
+         * =====================================================
+         * ESCAPE HTML
+         * Penting kalau data berasal dari Supabase.
+         * =====================================================
+         */
+
+        function escapeHTML(value) {
+
+            return String(value ?? "")
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
+
+        /*
+         * =====================================================
+         * RENDER LABEL
+         * =====================================================
+         */
+
+        function renderLabels() {
+
+            const container =
+                document.getElementById("printPage");
+
+            container.innerHTML = "";
+
+            /*
+             * Maksimal 12 label dalam satu A4
+             */
+            products
+                .slice(0, 12)
+                .forEach(product => {
+
+                    container.insertAdjacentHTML(
+                        "beforeend",
+                        createLabel(product)
+                    );
+
+                });
+        }
+
+
+        /*
+         * =====================================================
+         * INIT
+         * =====================================================
+         */
+
+        renderLabels();
+
+    </script>
+
+</body>
+</html>
